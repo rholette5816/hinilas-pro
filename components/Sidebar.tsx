@@ -86,7 +86,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-5 py-4 border-t border-gray-800">
         <p className="text-gray-500 text-xs">I&apos;m your Digital Marketing Assistant</p>
-        <p className="text-gray-700 text-xs mt-0.5">by Ken Allego</p>
+        <p className="text-gray-700 text-xs mt-0.5">By Basta Mag Ads Hilas</p>
       </div>
     </div>
   );
