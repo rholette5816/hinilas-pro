@@ -16,7 +16,7 @@ const PLANS = [
   },
   {
     key: "pro",
-    name: "Hinilas Pro",
+    name: "Hinilas Flex",
     tagline: "The Engine of Your Marketing",
     price: "₱999",
     period: "/month",
