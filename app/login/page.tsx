@@ -83,7 +83,6 @@ export default function LoginPage() {
                 style={{
                   background: "#1E2D45",
                   border: "1px solid #2B3D55",
-                  focusRingColor: "#2B7EC9",
                 }}
               />
             </div>
