@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
@@ -32,6 +32,18 @@ export default function CopyPage() {
   const [output, setOutput] = useState("");
   const [selectedFormulas, setSelectedFormulas] = useState<string[]>([]);
   const [language, setLanguage] = useState(setup?.language || "Taglish");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const uploadRef = useRef<HTMLInputElement>(null);
+
+  const activeImage = uploadedImage || creativeImage || null;
+
+  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setUploadedImage(reader.result as string);
+    reader.readAsDataURL(file);
+  }
 
   function toggleFormula(key: string) {
     setSelectedFormulas(prev => {
@@ -42,7 +54,7 @@ export default function CopyPage() {
   }
 
   async function generateCopy() {
-    if (!setup || !creativeImage) return;
+    if (!setup || !activeImage) return;
     setLoading(true);
     setOutput("");
 
@@ -57,7 +69,7 @@ export default function CopyPage() {
         body: JSON.stringify({
           prompt,
           systemPrompt: HILAS_KNOWLEDGE,
-          images: [creativeImage],
+          images: [activeImage],
         }),
       });
       const data = await res.json();
@@ -98,26 +110,59 @@ export default function CopyPage() {
             <p className="text-gray-400 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
           </div>
 
-          {/* Ad image preview */}
-          {creativeImage ? (
-            <div className="mb-6">
-              <p className="text-sm font-medium text-gray-300 mb-2">Ad Image Reference</p>
-              <div className="rounded-xl overflow-hidden border border-gray-700 max-w-xs">
-                <img src={creativeImage} alt="Ad creative reference" className="w-full object-cover" />
-              </div>
-              <p className="text-gray-500 text-xs mt-2">Copy will be written based on this image.</p>
-            </div>
-          ) : (
-            <div className="mb-6 bg-gray-800 border border-dashed border-gray-600 rounded-xl px-5 py-6 text-center">
-              <p className="text-gray-400 text-sm mb-2">No ad image generated yet.</p>
+          {/* Ad image reference */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-300">Ad Image Reference</p>
               <button
-                onClick={() => router.push("/creative")}
-                className="text-blue-400 hover:text-blue-300 text-sm underline"
+                onClick={() => uploadRef.current?.click()}
+                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-600 text-gray-300 hover:border-gray-400 hover:text-white transition-colors"
               >
-                Go to Creative to generate one first
+                Upload your own image
               </button>
+              <input ref={uploadRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
             </div>
-          )}
+
+            {activeImage ? (
+              <div>
+                <div className="rounded-xl overflow-hidden border border-gray-700 max-w-xs">
+                  <img src={activeImage} alt="Ad image reference" className="w-full object-cover" />
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <p className="text-gray-500 text-xs">
+                    {uploadedImage ? "Uploaded image" : "Generated from Creative"} — copy will be based on this.
+                  </p>
+                  {uploadedImage && (
+                    <button
+                      onClick={() => setUploadedImage(null)}
+                      className="text-xs text-red-400 hover:text-red-300"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-800 border border-dashed border-gray-600 rounded-xl px-5 py-6 text-center">
+                <p className="text-gray-400 text-sm mb-3">No image yet. Upload one or generate from Creative.</p>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => uploadRef.current?.click()}
+                    className="text-white px-4 py-2 rounded-lg text-xs font-semibold"
+                    style={{ background: "#2B7EC9" }}
+                  >
+                    Upload Image
+                  </button>
+                  <button
+                    onClick={() => router.push("/creative")}
+                    className="text-gray-300 px-4 py-2 rounded-lg text-xs font-semibold border border-gray-600 hover:border-gray-500"
+                  >
+                    Go to Creative
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Language selector */}
           <div className="mb-6">
@@ -182,7 +227,7 @@ export default function CopyPage() {
           <div className="flex gap-3 mb-6">
             <button
               onClick={generateCopy}
-              disabled={loading || !creativeImage}
+              disabled={loading || !activeImage}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
               style={{ background: "#2B7EC9" }}
             >
