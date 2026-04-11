@@ -170,7 +170,7 @@ export default function CreativePage() {
           <button
             onClick={generateImages}
             disabled={loading || !hook.trim()}
-            className="w-full bg-pink-600 hover:bg-pink-500 disabled:bg-gray-700 disabled:text-gray-500 text-white py-3 rounded-lg text-sm font-semibold transition-colors mb-6"
+            className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6" style={{ background: "#F5A623" }}
           >
             {loading ? "Generating 5 images..." : "Generate 5 Ad Images"}
           </button>

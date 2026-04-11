@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useApp } from "@/lib/context";
+import HinilasLogo, { HinilasIcon } from "@/components/HinilasLogo";
 
 const modules = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
@@ -15,20 +16,6 @@ const modules = [
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
 ];
 
-function HilasLogo() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
-        <span className="text-white font-bold text-sm">H</span>
-      </div>
-      <div className="leading-tight">
-        <p className="text-white font-bold text-sm tracking-wide">Hinilas Pro</p>
-        <p className="text-gray-500 text-[10px] leading-none">Meta Ads AI Assistant</p>
-      </div>
-    </div>
-  );
-}
-
 export default function Sidebar() {
   const pathname = usePathname();
   const { setup } = useApp();
@@ -38,8 +25,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
-        <HilasLogo />
-        {/* Close button — mobile only */}
+        <HinilasLogo size="md" showTagline={false} />
         <button
           onClick={() => setMobileOpen(false)}
           className="md:hidden text-gray-500 hover:text-white p-1"
@@ -50,9 +36,9 @@ export default function Sidebar() {
 
       {/* Business context */}
       {setup && (
-        <div className="px-4 py-3 mx-3 mt-3 rounded-lg bg-blue-950 border border-blue-800">
-          <p className="text-blue-300 text-xs font-medium truncate">{setup.businessName}</p>
-          <p className="text-blue-500 text-xs truncate">{setup.product}</p>
+        <div className="px-4 py-3 mx-3 mt-3 rounded-lg border" style={{ background: "#0F172A", borderColor: "#2B7EC930" }}>
+          <p className="text-xs font-medium truncate" style={{ color: "#2B7EC9" }}>{setup.businessName}</p>
+          <p className="text-xs truncate text-gray-500">{setup.product}</p>
         </div>
       )}
 
@@ -66,10 +52,9 @@ export default function Sidebar() {
               href={mod.href}
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
-                active
-                  ? "bg-[#1a8fc1] text-white"
-                  : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                active ? "text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
               }`}
+              style={active ? { background: "#2B7EC9" } : {}}
             >
               <span className="text-base w-5 text-center">{mod.icon}</span>
               <div className="min-w-0">
@@ -94,8 +79,8 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
-        <HilasLogo />
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 border-b border-gray-800 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A" }}>
+        <HinilasLogo size="sm" />
         <button
           onClick={() => setMobileOpen(true)}
           className="text-gray-400 hover:text-white p-1"
@@ -119,15 +104,16 @@ export default function Sidebar() {
 
       {/* Mobile drawer */}
       <aside
-        className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 bg-gray-900 border-r border-gray-800 transform transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 border-r border-gray-800 transform transition-transform duration-300 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{ background: "#0F172A" }}
       >
         <SidebarContent />
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 bg-gray-900 border-r border-gray-800 flex-col h-full shrink-0">
+      <aside className="hidden md:flex w-64 border-r border-gray-800 flex-col h-full shrink-0" style={{ background: "#0F172A" }}>
         <SidebarContent />
       </aside>
     </>

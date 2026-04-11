@@ -82,7 +82,7 @@ export default function AnglesPage() {
             <button
               onClick={generateAngles}
               disabled={loading}
-              className="bg-orange-600 hover:bg-orange-500 disabled:bg-gray-700 disabled:text-gray-500 text-white px-6 py-3 rounded-lg text-sm font-semibold transition-colors"
+              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40" style={{ background: "#F5A623" }}
             >
               {loading ? "Generating..." : anglesOutput ? "Regenerate Angles" : "Generate Angles"}
             </button>

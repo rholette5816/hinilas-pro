@@ -162,7 +162,7 @@ Product Cost: P${d.productCost || "not provided"}
           <button
             onClick={analyze}
             disabled={loading}
-            className="w-full bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-700 disabled:text-gray-500 text-white py-3 rounded-lg text-sm font-semibold transition-colors mb-6"
+            className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6" style={{ background: "#2B7EC9" }}
           >
             {loading ? "Analyzing..." : "Analyze My Results"}
           </button>

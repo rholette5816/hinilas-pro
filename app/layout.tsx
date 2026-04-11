@@ -6,8 +6,8 @@ import { AppProvider } from "@/lib/context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Hinilas Pro",
-  description: "AI-powered Meta Ads assistant — from idea to first sale",
+  title: "Hinilas Pro — AI Driven. Results Focused.",
+  description: "Your AI-powered Digital Marketing Assistant. Market research, ad angles, copy, creatives, and results analysis — powered by the Basta Mag Ads Hilas framework.",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} bg-gray-950 text-white antialiased h-full`}>
+      <body className={`${inter.className} text-white antialiased h-full`} style={{ background: "#0B1120" }}>
         <AppProvider>{children}</AppProvider>
       </body>
     </html>

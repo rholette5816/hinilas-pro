@@ -88,14 +88,14 @@ export default function CopyPage() {
             <button
               onClick={generateCopy}
               disabled={loading || !selectedAngle.trim()}
-              className="bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-500 text-white px-6 py-3 rounded-lg text-sm font-semibold transition-colors"
+              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40" style={{ background: "#2B7EC9" }}
             >
               {loading ? "Writing..." : output ? "Rewrite Copy" : "Generate Ad Copy"}
             </button>
             {output && !loading && (
               <button
                 onClick={() => router.push("/creative")}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-semibold transition-colors"
+                className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90" style={{ background: "#F5A623" }}
               >
                 Next: Generate Creatives →
               </button>

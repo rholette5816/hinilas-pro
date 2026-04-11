@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { useApp, UserSetup } from "@/lib/context";
 
+const BRAND_BLUE = "#2B7EC9";
+const BRAND_ORANGE = "#F5A623";
+
 export default function SetupPage() {
   const { setup, setSetup } = useApp();
   const router = useRouter();
@@ -31,9 +34,9 @@ export default function SetupPage() {
         <div className="max-w-2xl mx-auto px-6 py-10">
           {/* Header */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-950 border border-blue-800 rounded-full px-3 py-1 mb-4">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              <span className="text-blue-300 text-xs font-medium">Setup</span>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4 border" style={{ background: "#0F172A", borderColor: BRAND_BLUE + "40" }}>
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: BRAND_BLUE }} />
+              <span className="text-xs font-medium" style={{ color: BRAND_BLUE }}>Setup</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Tell us about your business</h1>
             <p className="text-gray-400 text-sm">This powers every module. Be specific — the more detail, the better the output.</p>
@@ -49,7 +52,8 @@ export default function SetupPage() {
                 placeholder="e.g. Glow PH, FitLife Cebu"
                 value={form.businessName}
                 onChange={e => setForm({ ...form, businessName: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                style={{ "--tw-ring-color": BRAND_BLUE } as React.CSSProperties}
               />
             </div>
 
@@ -62,7 +66,7 @@ export default function SetupPage() {
                 placeholder="e.g. Whitening soap for women with sensitive skin, P299/bar, COD available"
                 value={form.product}
                 onChange={e => setForm({ ...form, product: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none resize-none"
               />
             </div>
 
@@ -75,7 +79,7 @@ export default function SetupPage() {
                 placeholder="e.g. Women 18–35 in Visayas who struggle with dark skin"
                 value={form.targetAudience}
                 onChange={e => setForm({ ...form, targetAudience: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none"
               />
             </div>
 
@@ -87,7 +91,7 @@ export default function SetupPage() {
                 placeholder="Philippines"
                 value={form.market}
                 onChange={e => setForm({ ...form, market: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none"
               />
             </div>
 
@@ -104,11 +108,11 @@ export default function SetupPage() {
                     type="button"
                     key={opt.value}
                     onClick={() => setForm({ ...form, businessType: opt.value as UserSetup["businessType"] })}
-                    className={`p-3 rounded-lg border text-left transition-colors ${
-                      form.businessType === opt.value
-                        ? "bg-blue-600 border-blue-500 text-white"
-                        : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
-                    }`}
+                    className="p-3 rounded-lg border text-left transition-all"
+                    style={form.businessType === opt.value
+                      ? { background: BRAND_BLUE, borderColor: BRAND_BLUE, color: "white" }
+                      : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                    }
                   >
                     <p className="text-xs font-medium">{opt.label}</p>
                     <p className="text-xs opacity-70 mt-0.5">{opt.sub}</p>
@@ -130,11 +134,11 @@ export default function SetupPage() {
                     type="button"
                     key={opt.value}
                     onClick={() => setForm({ ...form, stage: opt.value as UserSetup["stage"] })}
-                    className={`w-full p-3 rounded-lg border text-left transition-colors flex items-center justify-between ${
-                      form.stage === opt.value
-                        ? "bg-blue-600 border-blue-500 text-white"
-                        : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
-                    }`}
+                    className="w-full p-3 rounded-lg border text-left transition-all flex items-center justify-between"
+                    style={form.stage === opt.value
+                      ? { background: BRAND_BLUE, borderColor: BRAND_BLUE, color: "white" }
+                      : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                    }
                   >
                     <div>
                       <p className="text-sm font-medium">{opt.label}</p>
@@ -148,7 +152,8 @@ export default function SetupPage() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg text-sm transition-colors mt-2"
+              className="w-full text-white font-semibold py-3 rounded-lg text-sm transition-opacity hover:opacity-90 mt-2"
+              style={{ background: BRAND_ORANGE }}
             >
               Save & Start →
             </button>
