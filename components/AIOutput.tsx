@@ -24,17 +24,6 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
 
   if (!content) return null;
 
-  const isError = content.startsWith("Error:");
-
-  if (isError) {
-    return (
-      <div className="rounded-xl p-5 border border-yellow-800 bg-yellow-950/40">
-        <p className="text-yellow-400 font-semibold text-sm mb-1">⚡ We hit a small snag</p>
-        <p className="text-yellow-200/70 text-sm">Our AI is a little busy right now. 🙏 Wait a few seconds and try again. It usually clears up fast! 🚀</p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
       <div className="prose prose-invert prose-sm max-w-none">
