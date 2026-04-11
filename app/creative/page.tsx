@@ -6,13 +6,6 @@ import Sidebar from "@/components/Sidebar";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
-type SizeKey = "1:1" | "9:16" | "1.91:1";
-
-const EXTRA_SIZES: { key: SizeKey; label: string; sub: string }[] = [
-  { key: "9:16", label: "9:16 Vertical", sub: "Stories and Reels" },
-  { key: "1.91:1", label: "1.91:1 Banner", sub: "Banner ads" },
-];
-
 export default function CreativePage() {
   const { setup, selectedAngle, setCreativeImage, credits, refreshCredits } = useApp();
   const router = useRouter();
@@ -20,8 +13,10 @@ export default function CreativePage() {
   const [extraPrompt, setExtraPrompt] = useState("");
   const [logoFile, setLogoFile] = useState<string | null>(null);
   const [productFile, setProductFile] = useState<string | null>(null);
-  const [images, setImages] = useState<Partial<Record<SizeKey, string>>>({});
-  const [loading, setLoading] = useState<Partial<Record<SizeKey, boolean>>>({});
+  const [mainImage, setMainImage] = useState<string | null>(null);
+  const [iterations, setIterations] = useState<(string | null)[]>([null, null]);
+  const [loadingMain, setLoadingMain] = useState(false);
+  const [loadingIter, setLoadingIter] = useState<boolean[]>([false, false]);
   const [error, setError] = useState("");
   const [noCredits, setNoCredits] = useState(false);
 
@@ -53,47 +48,59 @@ export default function CreativePage() {
     }
   }
 
-  async function generate(size: SizeKey) {
+  async function callImageAPI(prompt: string, referenceImage?: string): Promise<string | null> {
+    const res = await fetch("/api/image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, count: 1, aspectRatio: "1:1", referenceImage }),
+    });
+    const data = await res.json();
+    if (data.code === "NO_CREDITS") { setNoCredits(true); return null; }
+    if (data.error) { setError(data.error); return null; }
+    await refreshCredits();
+    return data.images?.[0] || null;
+  }
+
+  async function generateMain() {
     if (!setup) return;
-    setLoading(prev => ({ ...prev, [size]: true }));
+    setLoadingMain(true);
     setError("");
     setNoCredits(false);
-
     try {
       const [logoDesc, productDesc] = await Promise.all([
         logoFile ? describeImage(logoFile, "brand logo") : Promise.resolve(""),
         productFile ? describeImage(productFile, "product") : Promise.resolve(""),
       ]);
-
       const userCtx = buildUserContext(setup);
       const angle = selectedAngle || "General product promotion";
-      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, size);
-
-      const res = await fetch("/api/image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          count: 1,
-          aspectRatio: size,
-          // For non-square sizes, pass the 1:1 as reference to stay consistent
-          referenceImage: size !== "1:1" ? images["1:1"] : undefined,
-        }),
-      });
-      const data = await res.json();
-      if (data.code === "NO_CREDITS") {
-        setNoCredits(true);
-      } else if (data.error) {
-        setError(data.error);
-      } else if (data.images?.[0]) {
-        setImages(prev => ({ ...prev, [size]: data.images[0] }));
-        if (size === "1:1") setCreativeImage(data.images[0]);
-        await refreshCredits();
+      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, "1:1");
+      const img = await callImageAPI(prompt);
+      if (img) {
+        setMainImage(img);
+        setCreativeImage(img);
+        setIterations([null, null]);
       }
     } catch {
       setError("Something went wrong. Try again.");
     } finally {
-      setLoading(prev => ({ ...prev, [size]: false }));
+      setLoadingMain(false);
+    }
+  }
+
+  async function generateIteration(index: number) {
+    if (!mainImage) return;
+    setLoadingIter(prev => { const n = [...prev]; n[index] = true; return n; });
+    setError("");
+    setNoCredits(false);
+    try {
+      const img = await callImageAPI("", mainImage);
+      if (img) {
+        setIterations(prev => { const n = [...prev]; n[index] = img; return n; });
+      }
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoadingIter(prev => { const n = [...prev]; n[index] = false; return n; });
     }
   }
 
@@ -110,8 +117,6 @@ export default function CreativePage() {
       </div>
     );
   }
-
-  const mainGenerated = !!images["1:1"];
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -141,42 +146,33 @@ export default function CreativePage() {
 
           {/* Brand assets */}
           <div className="grid grid-cols-2 gap-4 mb-5">
-            {/* Logo upload */}
             <div>
               <p className="text-sm font-medium text-gray-300 mb-1.5">Brand Logo <span className="text-gray-500 font-normal">(optional)</span></p>
               <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setLogoFile)} />
               {logoFile ? (
-                <div className="relative bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
                   <img src={logoFile} alt="Logo" className="w-10 h-10 object-contain rounded" />
                   <p className="text-gray-300 text-xs flex-1">Logo uploaded</p>
                   <button onClick={() => setLogoFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
-                <button
-                  onClick={() => logoRef.current?.click()}
-                  className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors"
-                >
+                <button onClick={() => logoRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
                   <p className="text-gray-400 text-sm">Upload logo</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
               )}
             </div>
-
-            {/* Product image upload */}
             <div>
               <p className="text-sm font-medium text-gray-300 mb-1.5">Product Image <span className="text-gray-500 font-normal">(optional)</span></p>
               <input ref={productRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setProductFile)} />
               {productFile ? (
-                <div className="relative bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
                   <img src={productFile} alt="Product" className="w-10 h-10 object-contain rounded" />
                   <p className="text-gray-300 text-xs flex-1">Product uploaded</p>
                   <button onClick={() => setProductFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
-                <button
-                  onClick={() => productRef.current?.click()}
-                  className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors"
-                >
+                <button onClick={() => productRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
                   <p className="text-gray-400 text-sm">Upload product photo</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
@@ -206,26 +202,13 @@ export default function CreativePage() {
                 <h2 className="text-white font-bold text-lg mb-2">You&apos;re out of credits</h2>
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
-                  <a
-                    href="/pricing"
-                    className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
-                    style={{ background: "#F5A623" }}
-                  >
+                  <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>
                     Upgrade to Pro — ₱999/mo
                   </a>
-                  <a
-                    href="/pricing#topup"
-                    className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
-                    style={{ background: "#2B7EC9" }}
-                  >
+                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#2B7EC9" }}>
                     Get 50 Credits — ₱499
                   </a>
-                  <button
-                    onClick={() => setNoCredits(false)}
-                    className="text-gray-500 text-sm hover:text-gray-400"
-                  >
-                    Cancel
-                  </button>
+                  <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
                 </div>
               </div>
             </div>
@@ -237,37 +220,33 @@ export default function CreativePage() {
               {credits === 1 ? "1 credit remaining" : `${credits} credits remaining`}
             </span>
             {credits <= 5 && (
-              <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">
-                Top up
-              </a>
+              <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>
             )}
           </div>
 
           {/* Error */}
           {error && (
-            <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-6">
-              {error}
-            </div>
+            <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-6">{error}</div>
           )}
 
-          {/* Main 1:1 image */}
+          {/* Main image */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-white font-semibold text-sm">1:1 Square</p>
-                <p className="text-gray-500 text-xs">Feed ads</p>
+                <p className="text-white font-semibold text-sm">Ad Creative</p>
+                <p className="text-gray-500 text-xs">1:1 — Feed ads</p>
               </div>
               <button
-                onClick={() => generate("1:1")}
-                disabled={loading["1:1"]}
+                onClick={generateMain}
+                disabled={loadingMain}
                 className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: "#F5A623" }}
               >
-                {loading["1:1"] ? "Generating..." : images["1:1"] ? "Regenerate" : "Generate Image"}
+                {loadingMain ? "Generating..." : mainImage ? "Regenerate" : "Generate Image"}
               </button>
             </div>
 
-            {loading["1:1"] && (
+            {loadingMain && (
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
                 <div className="flex justify-center gap-1 mb-3">
                   <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -275,19 +254,15 @@ export default function CreativePage() {
                   <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
                 <p className="text-gray-400 text-sm">Generating your ad image...</p>
-                <p className="text-gray-600 text-xs mt-1">Analyzing assets and generating — about 20 to 40 seconds</p>
+                <p className="text-gray-600 text-xs mt-1">About 20 to 40 seconds</p>
               </div>
             )}
 
-            {images["1:1"] && !loading["1:1"] && (
+            {mainImage && !loadingMain && (
               <div className="relative rounded-xl overflow-hidden border border-gray-700">
-                <img src={images["1:1"]} alt="1:1 Ad creative" className="w-full object-cover" />
+                <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
                 <div className="absolute bottom-3 right-3">
-                  <a
-                    href={images["1:1"]}
-                    download="hinilas-ad-1x1.png"
-                    className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100"
-                  >
+                  <a href={mainImage} download="hinilas-ad.png" className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100">
                     Download
                   </a>
                 </div>
@@ -295,70 +270,68 @@ export default function CreativePage() {
             )}
           </div>
 
-          {/* Other sizes — only show after 1:1 is generated */}
-          {mainGenerated && (
-            <div className="space-y-6">
-              <div className="border-t border-gray-700 pt-6">
-                <p className="text-white font-semibold text-sm mb-1">Generate other sizes</p>
-                <p className="text-gray-500 text-xs mb-5">Same concept, different formats. Each generates independently.</p>
+          {/* Iterations — only show after main is generated */}
+          {mainImage && !loadingMain && (
+            <div className="border-t border-gray-700 pt-6 mb-8">
+              <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
+              <p className="text-gray-500 text-xs mb-5">2 more iterations of the same concept. Each uses 1 credit.</p>
 
-                {EXTRA_SIZES.map(size => (
-                  <div key={size.key} className="mb-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="text-white font-semibold text-sm">{size.label}</p>
-                        <p className="text-gray-500 text-xs">{size.sub}</p>
-                      </div>
+              <div className="grid grid-cols-2 gap-4">
+                {[0, 1].map(i => (
+                  <div key={i}>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-gray-300 text-xs font-medium">Variation {i + 2}</p>
                       <button
-                        onClick={() => generate(size.key)}
-                        disabled={loading[size.key]}
-                        className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+                        onClick={() => generateIteration(i)}
+                        disabled={loadingIter[i]}
+                        className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                         style={{ background: "#2B7EC9" }}
                       >
-                        {loading[size.key] ? "Generating..." : images[size.key] ? "Regenerate" : "Generate"}
+                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate" : "Generate"}
                       </button>
                     </div>
 
-                    {loading[size.key] && (
-                      <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
-                        <div className="flex justify-center gap-1 mb-3">
-                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    {loadingIter[i] && (
+                      <div className="bg-gray-800 border border-gray-700 rounded-xl aspect-square flex items-center justify-center">
+                        <div className="flex gap-1">
+                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                         </div>
-                        <p className="text-gray-400 text-sm">Generating {size.label}...</p>
                       </div>
                     )}
 
-                    {images[size.key] && !loading[size.key] && (
+                    {iterations[i] && !loadingIter[i] && (
                       <div className="relative rounded-xl overflow-hidden border border-gray-700">
-                        <img src={images[size.key]} alt={`${size.label} Ad creative`} className="w-full object-cover" />
-                        <div className="absolute bottom-3 right-3">
-                          <a
-                            href={images[size.key]}
-                            download={`hinilas-ad-${size.key.replace(":", "x")}.png`}
-                            className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100"
-                          >
+                        <img src={iterations[i]!} alt={`Variation ${i + 2}`} className="w-full object-cover" />
+                        <div className="absolute bottom-2 right-2">
+                          <a href={iterations[i]!} download={`hinilas-ad-v${i + 2}.png`} className="bg-white text-black px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-gray-100">
                             Download
                           </a>
                         </div>
                       </div>
                     )}
+
+                    {!iterations[i] && !loadingIter[i] && (
+                      <div className="bg-gray-800 border border-dashed border-gray-700 rounded-xl aspect-square flex items-center justify-center">
+                        <p className="text-gray-600 text-xs">Not generated</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-
-              {/* Next step */}
-              <div className="pt-2">
-                <button
-                  onClick={() => router.push("/copy")}
-                  className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
-                  style={{ background: "#F5A623" }}
-                >
-                  Next: Write Ad Copy →
-                </button>
-              </div>
             </div>
+          )}
+
+          {/* Next step */}
+          {mainImage && !loadingMain && (
+            <button
+              onClick={() => router.push("/copy")}
+              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ background: "#F5A623" }}
+            >
+              Next: Write Ad Copy →
+            </button>
           )}
 
         </div>
