@@ -6,22 +6,110 @@ import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
-const QUICK_TOPICS = [
-  "What do I need before running ads?",
-  "How do I set up my Business Portfolio?",
-  "What is Campaign, Ad Set, and Ad?",
-  "What campaign objective should I use?",
-  "What is the Learning Phase?",
-  "How do I set up Messenger auto-reply?",
-  "What is Conversations Optimization?",
-  "How does broad targeting work in 2025?",
-  "What are marketing angles?",
-  "How do I write a hook for my ad?",
-  "What is PAS formula?",
-  "How do I know if my ad is working?",
-  "When should I turn off an ad?",
-  "How do I scale my budget safely?",
-  "What is ad creative fatigue?",
+const MODULES = [
+  {
+    title: "Phase 1 — Foundation",
+    color: "#2B7EC9",
+    topics: [
+      "What do I need before running Meta Ads?",
+      "How do I create a Facebook Business Portfolio?",
+      "What kind of Facebook account should I use for ads?",
+      "What payment methods work for Meta Ads in the Philippines?",
+      "How do I create and set up a Facebook Page for my business?",
+      "What starting budget do I need?",
+      "What mistakes should I avoid before running ads?",
+    ],
+  },
+  {
+    title: "Phase 2 — Setup",
+    color: "#8B5CF6",
+    topics: [
+      "How do I create a Meta Ads account?",
+      "How do I connect my Facebook Page to my Ad Account?",
+      "How do I add a payment method in Meta Ads Manager?",
+      "What is Business Manager and do I need it?",
+      "How do I verify my business on Meta?",
+      "What is the Facebook Pixel and how do I set it up?",
+      "How do I set up a Messenger auto-reply before launching?",
+    ],
+  },
+  {
+    title: "Phase 3 — Launch",
+    color: "#F5A623",
+    topics: [
+      "What is Campaign, Ad Set, and Ad?",
+      "What campaign objective should I use for my first campaign?",
+      "Why use Engagement — Messages objective?",
+      "How do I set up my first campaign step by step?",
+      "What is Ad Set Budget vs Campaign Budget?",
+      "What is the best daily budget to start with?",
+      "How do I set my campaign start date and schedule?",
+      "What is Advantage+ Campaign Budget and should I use it?",
+      "How do I set up the Messenger destination and chat flow?",
+    ],
+  },
+  {
+    title: "Phase 4 — Targeting",
+    color: "#10B981",
+    topics: [
+      "How does broad targeting work in 2025?",
+      "Should I use interest targeting or leave it blank?",
+      "What is Advantage+ Audience and how does it work?",
+      "What audience size is ideal for Philippine ads?",
+      "How do I target by location in the Philippines?",
+      "What are Custom Audiences and how do I use them?",
+      "What are Lookalike Audiences?",
+      "How do I retarget people who messaged me before?",
+    ],
+  },
+  {
+    title: "Phase 5 — Creative & Copy",
+    color: "#EC4899",
+    topics: [
+      "What are marketing angles and why do they matter?",
+      "What are the 5 types of marketing angles?",
+      "How do I write a scroll-stopping hook?",
+      "What is the PAS formula and how do I use it?",
+      "What is the BAB formula?",
+      "What is the AIDA formula?",
+      "What is the Story formula?",
+      "What makes a good ad image?",
+      "How long should my ad caption be?",
+      "What is a CTA and what CTA should I use?",
+    ],
+  },
+  {
+    title: "Phase 6 — Metrics & Optimization",
+    color: "#EF4444",
+    topics: [
+      "What metrics should I track in Meta Ads?",
+      "What is a good Cost Per Message in the Philippines?",
+      "What is CTR and what is a good rate?",
+      "What is CPM and why does it matter?",
+      "What is Frequency and when is it too high?",
+      "What is the Learning Phase and how long does it last?",
+      "How do I know if my ad is working?",
+      "When should I turn off an ad?",
+      "How do I scale my budget safely?",
+      "What is ad creative fatigue and how do I fix it?",
+      "How do I calculate my profit from ads?",
+    ],
+  },
+  {
+    title: "Phase 7 — Troubleshooting",
+    color: "#6B7280",
+    topics: [
+      "Why is my ad not getting approved?",
+      "Why was my ad account disabled and how do I recover it?",
+      "Why am I spending but getting no messages?",
+      "Why are my messages not converting to sales?",
+      "Why did my ad stop performing after a few days?",
+      "What are the 8 beginner mistakes to avoid?",
+      "What are Meta Ads policies I should know?",
+      "How do I duplicate a winning ad set?",
+      "How do I refresh a creative without resetting the learning phase?",
+    ],
+  },
 ];
 
 export default function LearnPage() {
@@ -29,6 +117,7 @@ export default function LearnPage() {
   const [topic, setTopic] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeModule, setActiveModule] = useState<number | null>(null);
 
   async function askQuestion(q: string) {
     const question = q || topic.trim();
@@ -60,33 +149,18 @@ export default function LearnPage() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-3xl mx-auto px-6 py-10">
+
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-indigo-300 text-xs font-medium">📖 Learn</span>
+              <span className="text-indigo-300 text-xs font-medium">📖 Courses</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Marketing & Ads Education</h1>
-            <p className="text-gray-400 text-sm">Ask anything about Meta Ads, marketing, or the Hilas system. Pick a topic or type your own question.</p>
-          </div>
-
-          {/* Quick topics */}
-          <div className="mb-6">
-            <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-3">Quick Topics</p>
-            <div className="flex flex-wrap gap-2">
-              {QUICK_TOPICS.map(t => (
-                <button
-                  key={t}
-                  onClick={() => askQuestion(t)}
-                  className="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 text-gray-300 px-3 py-1.5 rounded-full transition-colors"
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Meta Ads Course</h1>
+            <p className="text-gray-400 text-sm">Full Meta Ads roadmap from zero to profitable campaigns. Pick a topic or ask your own question.</p>
           </div>
 
           {/* Custom question */}
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-8">
             <input
               type="text"
               value={topic}
@@ -105,7 +179,52 @@ export default function LearnPage() {
           </div>
 
           {/* Output */}
-          <AIOutput content={output} loading={loading} loadingText="Loading lesson..." />
+          {(output || loading) && (
+            <div className="mb-8">
+              <AIOutput content={output} loading={loading} loadingText="Loading lesson..." />
+            </div>
+          )}
+
+          {/* Modules */}
+          <div className="space-y-3">
+            {MODULES.map((mod, i) => (
+              <div key={i} className="border border-gray-700 rounded-xl overflow-hidden" style={{ background: "#0F172A" }}>
+                <button
+                  onClick={() => setActiveModule(activeModule === i ? null : i)}
+                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ background: mod.color }} />
+                    <span className="text-white font-semibold text-sm">{mod.title}</span>
+                    <span className="text-gray-600 text-xs">{mod.topics.length} topics</span>
+                  </div>
+                  <span className="text-gray-500 text-sm">{activeModule === i ? "▲" : "▼"}</span>
+                </button>
+
+                {activeModule === i && (
+                  <div className="border-t border-gray-700 px-5 py-4">
+                    <div className="flex flex-wrap gap-2">
+                      {mod.topics.map(t => (
+                        <button
+                          key={t}
+                          onClick={() => askQuestion(t)}
+                          className="text-xs border px-3 py-1.5 rounded-full transition-colors hover:text-white"
+                          style={{
+                            background: "#1E293B",
+                            borderColor: mod.color + "50",
+                            color: "#CBD5E1",
+                          }}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
         </div>
       </main>
     </div>
