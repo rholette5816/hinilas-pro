@@ -37,7 +37,7 @@ export default function CreativePage() {
       const res = await fetch("/api/image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, count: 5 }),
+        body: JSON.stringify({ prompt, count: images.length === 1 ? 3 : 1 }),
       });
       const data = await res.json();
       if (data.error) {
@@ -77,7 +77,7 @@ export default function CreativePage() {
               <span className="text-pink-300 text-xs font-medium">🖼 Creative</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Generate Ad Images</h1>
-            <p className="text-gray-400 text-sm">Your image stops the scroll. Fill in the details and get 5 ready-to-use ad creatives.</p>
+            <p className="text-gray-400 text-sm">Your image stops the scroll. Generate 1 ad creative, then get 3 variations if you want more.</p>
           </div>
 
           {/* Angle context */}
@@ -172,7 +172,11 @@ export default function CreativePage() {
             disabled={loading || !hook.trim()}
             className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6" style={{ background: "#F5A623" }}
           >
-            {loading ? "Generating 5 images..." : "Generate 5 Ad Images"}
+            {loading
+              ? "Generating..."
+              : images.length === 1
+              ? "Generate 3 More Variations"
+              : "Generate Ad Image"}
           </button>
 
           {/* Error */}
@@ -190,8 +194,8 @@ export default function CreativePage() {
                 <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                 <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
-              <p className="text-gray-400 text-sm">Generating your ad images with GPT-image-1...</p>
-              <p className="text-gray-600 text-xs mt-1">This takes about 30–60 seconds</p>
+              <p className="text-gray-400 text-sm">Generating your ad image...</p>
+              <p className="text-gray-600 text-xs mt-1">This takes about 15 to 30 seconds</p>
             </div>
           )}
 
