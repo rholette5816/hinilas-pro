@@ -1,53 +1,24 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for auth callback
-  if (pathname.startsWith("/auth")) {
+  // Skip middleware for auth routes
+  if (pathname.startsWith("/auth") || pathname === "/login") {
     return NextResponse.next();
   }
 
-  let supabaseResponse = NextResponse.next({ request });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
+  // Check for Supabase session cookie
+  const cookies = request.cookies.getAll();
+  const hasSession = cookies.some(
+    (c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token")
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // Allow login page always
-  if (pathname === "/login") {
-    if (session) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return supabaseResponse;
-  }
-
-  // Protect all other routes
-  if (!session) {
+  if (!hasSession) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return supabaseResponse;
+  return NextResponse.next();
 }
 
 export const config = {

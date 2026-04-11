@@ -13,29 +13,16 @@ export default function AuthCallbackPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         setStatus("Success! Redirecting...");
-        window.location.href = "/";
+        setTimeout(() => { window.location.href = "/"; }, 800);
       }
     });
 
     // Also check if session already exists
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        window.location.href = "/";
+        setTimeout(() => { window.location.href = "/"; }, 800);
       }
     });
-
-    // Handle PKCE code if present
-    const url = new URL(window.location.href);
-    const code = url.searchParams.get("code");
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
-        if (error) {
-          setStatus(`Error: ${error.message}`);
-        } else if (data.session) {
-          window.location.href = "/";
-        }
-      });
-    }
 
     return () => subscription.unsubscribe();
   }, []);
