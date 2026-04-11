@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { prompt, count = 5 } = await req.json();
+  const { prompt, count = 1, aspectRatio = "1:1" } = await req.json();
 
   const apiKey = process.env.GEMINI_IMAGE_API_KEY;
   if (!apiKey) {
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
             instances: [{ prompt }],
             parameters: {
               sampleCount: 1,
-              aspectRatio: "1:1",
+              aspectRatio,
               safetyFilterLevel: "block_only_high",
               personGeneration: "allow_adult",
             },

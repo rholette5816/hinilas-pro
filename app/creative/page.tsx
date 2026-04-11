@@ -6,49 +6,48 @@ import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
-const FORMATS = [
-  { value: "1024x1024", label: "1:1 Square", sub: "Feed ads", icon: "⬛" },
-  { value: "1024x1792", label: "9:16 Vertical", sub: "Stories & Reels", icon: "▮" },
-  { value: "1792x1024", label: "1.91:1 Landscape", sub: "Banner ads", icon: "▬" },
+type SizeKey = "1:1" | "9:16" | "1.91:1";
+
+const EXTRA_SIZES: { key: SizeKey; label: string; sub: string; icon: string }[] = [
+  { key: "9:16", label: "9:16 Vertical", sub: "Stories and Reels", icon: "▮" },
+  { key: "1.91:1", label: "1.91:1 Banner", sub: "Banner ads", icon: "▬" },
 ];
 
 export default function CreativePage() {
   const { setup, selectedAngle } = useApp();
   const router = useRouter();
 
-  const [hook, setHook] = useState("");
-  const [subheadline, setSubheadline] = useState("");
-  const [cta, setCta] = useState("Message Us Now");
-  const [format, setFormat] = useState("1024x1024");
-  const [images, setImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [extraPrompt, setExtraPrompt] = useState("");
+  const [images, setImages] = useState<Record<SizeKey, string>>({} as Record<SizeKey, string>);
+  const [loading, setLoading] = useState<Record<SizeKey, boolean>>({} as Record<SizeKey, boolean>);
   const [error, setError] = useState("");
 
-  async function generateImages() {
-    if (!setup || !hook.trim()) return;
-    setLoading(true);
+  async function generate(size: SizeKey) {
+    if (!setup) return;
+    setLoading(prev => ({ ...prev, [size]: true }));
     setError("");
-    setImages([]);
 
     const userCtx = `${setup.businessName} — ${setup.product}`;
-    const prompt = MODULE_PROMPTS.creative(userCtx, selectedAngle || "Problem angle", hook, subheadline, cta, format);
+    const angle = selectedAngle || "Problem angle";
+    const prompt = MODULE_PROMPTS.creative(userCtx, angle, "", "", "", size) +
+      (extraPrompt.trim() ? `\n\nAdditional details: ${extraPrompt.trim()}` : "");
 
     try {
       const res = await fetch("/api/image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, count: images.length === 1 ? 3 : 1 }),
+        body: JSON.stringify({ prompt, count: 1, aspectRatio: size }),
       });
       const data = await res.json();
       if (data.error) {
         setError(data.error);
-      } else {
-        setImages(data.images);
+      } else if (data.images?.[0]) {
+        setImages(prev => ({ ...prev, [size]: data.images[0] }));
       }
     } catch {
       setError("Something went wrong. Try again.");
     } finally {
-      setLoading(false);
+      setLoading(prev => ({ ...prev, [size]: false }));
     }
   }
 
@@ -66,6 +65,8 @@ export default function CreativePage() {
     );
   }
 
+  const mainGenerated = !!images["1:1"];
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
@@ -77,7 +78,7 @@ export default function CreativePage() {
               <span className="text-pink-300 text-xs font-medium">🖼 Creative</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Generate Ad Images</h1>
-            <p className="text-gray-400 text-sm">Your image stops the scroll. Generate 1 ad creative, then get 3 variations if you want more.</p>
+            <p className="text-gray-400 text-sm">AI generates your ad creative from your angle and business context.</p>
           </div>
 
           {/* Angle context */}
@@ -91,93 +92,19 @@ export default function CreativePage() {
             </div>
           )}
 
-          {/* Form */}
-          <div className="space-y-5 mb-6">
-            {/* Hook */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                Hook Text <span className="text-gray-500 font-normal">(main headline on the image)</span>
-              </label>
-              <input
-                type="text"
-                value={hook}
-                onChange={e => setHook(e.target.value)}
-                placeholder='e.g. "Still struggling with acne?" or "5 customers in 3 days"'
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
-              />
-            </div>
-
-            {/* Sub-headline */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                Sub-headline <span className="text-gray-500 font-normal">(supports the hook)</span>
-              </label>
-              <input
-                type="text"
-                value={subheadline}
-                onChange={e => setSubheadline(e.target.value)}
-                placeholder='e.g. "Gentle formula for clear skin in 7 days"'
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
-              />
-            </div>
-
-            {/* CTA */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Call to Action</label>
-              <div className="flex gap-2 flex-wrap">
-                {["Message Us Now", "Order Now", "Shop Now", "Learn More", "I-message Ko"].map(c => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setCta(c)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                      cta === c
-                        ? "bg-pink-600 border-pink-500 text-white"
-                        : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Format */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Ad Format</label>
-              <div className="grid grid-cols-3 gap-2">
-                {FORMATS.map(f => (
-                  <button
-                    key={f.value}
-                    type="button"
-                    onClick={() => setFormat(f.value)}
-                    className={`p-3 rounded-lg border text-center transition-colors ${
-                      format === f.value
-                        ? "bg-pink-600 border-pink-500 text-white"
-                        : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
-                    }`}
-                  >
-                    <p className="text-lg mb-1">{f.icon}</p>
-                    <p className="text-xs font-medium">{f.label}</p>
-                    <p className="text-xs opacity-70">{f.sub}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
+          {/* Additional prompt */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">
+              Additional details <span className="text-gray-500 font-normal">(optional)</span>
+            </label>
+            <textarea
+              rows={2}
+              value={extraPrompt}
+              onChange={e => setExtraPrompt(e.target.value)}
+              placeholder="e.g. dark themed, show product close-up, warm colors, lifestyle photo..."
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+            />
           </div>
-
-          {/* Generate button */}
-          <button
-            onClick={generateImages}
-            disabled={loading || !hook.trim()}
-            className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6" style={{ background: "#F5A623" }}
-          >
-            {loading
-              ? "Generating..."
-              : images.length === 1
-              ? "Generate 3 More Variations"
-              : "Generate Ad Image"}
-          </button>
 
           {/* Error */}
           {error && (
@@ -186,45 +113,112 @@ export default function CreativePage() {
             </div>
           )}
 
-          {/* Loading state */}
-          {loading && (
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
-              <div className="flex justify-center gap-1 mb-4">
-                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+          {/* Main 1:1 image */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-white font-semibold text-sm">1:1 Square</p>
+                <p className="text-gray-500 text-xs">Feed ads</p>
               </div>
-              <p className="text-gray-400 text-sm">Generating your ad image...</p>
-              <p className="text-gray-600 text-xs mt-1">This takes about 15 to 30 seconds</p>
+              <button
+                onClick={() => generate("1:1")}
+                disabled={loading["1:1"]}
+                className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+                style={{ background: "#F5A623" }}
+              >
+                {loading["1:1"] ? "Generating..." : images["1:1"] ? "Regenerate" : "Generate Image"}
+              </button>
             </div>
-          )}
 
-          {/* Image grid */}
-          {images.length > 0 && (
-            <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-3">
-                {images.length} Ad Images Generated
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                {images.map((src, i) => (
-                  <div key={i} className="group relative rounded-xl overflow-hidden border border-gray-700">
-                    <img src={src} alt={`Ad creative ${i + 1}`} className="w-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                      <a
-                        href={src}
-                        download={`hinilas-ad-${i + 1}.png`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-white text-black px-4 py-2 rounded-lg text-xs font-semibold hover:bg-gray-100"
+            {loading["1:1"] && (
+              <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
+                <div className="flex justify-center gap-1 mb-3">
+                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+                <p className="text-gray-400 text-sm">Generating your ad image...</p>
+              </div>
+            )}
+
+            {images["1:1"] && !loading["1:1"] && (
+              <div className="relative rounded-xl overflow-hidden border border-gray-700">
+                <img src={images["1:1"]} alt="1:1 Ad creative" className="w-full object-cover" />
+                <div className="absolute bottom-3 right-3">
+                  <a
+                    href={images["1:1"]}
+                    download="hinilas-ad-1x1.png"
+                    className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100 mr-2"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Other sizes — only show after 1:1 is generated */}
+          {mainGenerated && (
+            <div className="space-y-6">
+              <div className="border-t border-gray-700 pt-6">
+                <p className="text-white font-semibold text-sm mb-1">Generate other sizes</p>
+                <p className="text-gray-500 text-xs mb-5">Same concept, different formats. Each generates independently.</p>
+
+                {EXTRA_SIZES.map(size => (
+                  <div key={size.key} className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="text-white font-semibold text-sm">{size.label}</p>
+                        <p className="text-gray-500 text-xs">{size.sub}</p>
+                      </div>
+                      <button
+                        onClick={() => generate(size.key)}
+                        disabled={loading[size.key]}
+                        className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+                        style={{ background: "#2B7EC9" }}
                       >
-                        Download
-                      </a>
+                        {loading[size.key] ? "Generating..." : images[size.key] ? "Regenerate" : "Generate"}
+                      </button>
                     </div>
-                    <div className="absolute bottom-2 left-2 bg-black/70 rounded px-2 py-0.5">
-                      <p className="text-white text-xs">Ad {i + 1}</p>
-                    </div>
+
+                    {loading[size.key] && (
+                      <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
+                        <div className="flex justify-center gap-1 mb-3">
+                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </div>
+                        <p className="text-gray-400 text-sm">Generating {size.label}...</p>
+                      </div>
+                    )}
+
+                    {images[size.key] && !loading[size.key] && (
+                      <div className="relative rounded-xl overflow-hidden border border-gray-700">
+                        <img src={images[size.key]} alt={`${size.label} Ad creative`} className="w-full object-cover" />
+                        <div className="absolute bottom-3 right-3">
+                          <a
+                            href={images[size.key]}
+                            download={`hinilas-ad-${size.key.replace(":", "x")}.png`}
+                            className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100"
+                          >
+                            Download
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
+              </div>
+
+              {/* Next step */}
+              <div className="pt-2">
+                <button
+                  onClick={() => router.push("/copy")}
+                  className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+                  style={{ background: "#F5A623" }}
+                >
+                  Next: Write Ad Copy →
+                </button>
               </div>
             </div>
           )}
