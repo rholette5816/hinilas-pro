@@ -1,41 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function AuthCallbackPage() {
+  const [status, setStatus] = useState("Signing you in...");
 
   useEffect(() => {
     const supabase = createClient();
-
     const url = new URL(window.location.href);
     const code = url.searchParams.get("code");
+
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (!error) {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+        if (error) {
+          setStatus(`Error: ${error.message}`);
+        } else if (data.session) {
+          setStatus("Success! Redirecting...");
           window.location.href = "/";
         } else {
-          window.location.href = "/login";
+          setStatus("No session returned. Please try again.");
         }
       });
     } else {
-      // Check if already signed in (e.g. hash-based flow)
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          window.location.href = "/";
-        } else {
-          window.location.href = "/login";
-        }
-      });
+      setStatus("No code found in URL.");
     }
-  }, [router]);
+  }, []);
 
   return (
     <div
       className="min-h-screen flex items-center justify-center"
       style={{ background: "#0B1120" }}
     >
-      <p className="text-white text-sm">Signing you in...</p>
+      <p className="text-white text-sm">{status}</p>
     </div>
   );
 }
