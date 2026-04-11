@@ -117,7 +117,7 @@ export function useApp() {
   return ctx;
 }
 
-export function buildUserContext(setup: UserSetup): string {
+export function buildUserContext(setup: UserSetup, languageOverride?: string): string {
   return `Business: ${setup.businessName}
 Product/Service: ${setup.product}
 Target Audience: ${setup.targetAudience}
@@ -125,5 +125,5 @@ Unique Selling Offer: ${setup.uniqueSellingOffer || "Not specified"}
 Market: ${setup.market}
 Business Type: ${setup.businessType.replace("_", " ")}
 Stage: ${setup.stage.replace(/_/g, " ")}
-Language/Dialect: ${setup.language}`;
+Language/Dialect: ${languageOverride || setup.language}`;
 }

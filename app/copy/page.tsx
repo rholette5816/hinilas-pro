@@ -59,7 +59,7 @@ export default function CopyPage() {
     setOutput("");
 
     const formulas = selectedFormulas.length > 0 ? selectedFormulas : ["PAS", "BAB"];
-    const userCtx = buildUserContext(setup);
+    const userCtx = buildUserContext(setup, language);
     const prompt = MODULE_PROMPTS.copy(userCtx, formulas, language);
 
     try {

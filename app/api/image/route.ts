@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-image-preview" });
 
     const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
     const fullPrompt = `${prompt}\n\nGenerate this as a ${ratioLabel} image.`;
