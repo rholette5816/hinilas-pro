@@ -214,15 +214,17 @@ ${userContext}
 ${researchContext ? `# RESEARCH INSIGHTS\n${researchContext}` : ''}
 
 # TASK
-Generate 8 marketing angles for this product/business. For each angle:
+Generate 5 marketing angles for this product/business. For each angle output exactly this structure:
 
-**ANGLE NAME** (type: Problem/Solution/Transformation/Story/Testimonial)
-- Core Message: one sentence
-- Hook Line: the opening line of the ad
-- Formula to use: PAS / BAB / AIDA / Story
-- Why it works: one sentence explanation
+**ANGLE [number]: [ANGLE NAME]** (type: Problem/Solution/Transformation/Story/Testimonial)
 
-Focus on angles that work for Philippine Facebook/Messenger ads. Use specific pain points from the research. Make hooks punchy and scroll-stopping.
+- **Core Message:** One sentence — the single idea this angle communicates.
+- **Hook Line:** The opening line of the ad. Must follow the 3C formula: Context (who this is for or what situation they're in) + Curiosity (something unexpected or unresolved) + Clarity (what they'll get or what this is about). Make it punchy and scroll-stopping.
+- **Formula:** PAS / BAB / AIDA / Story — which formula to use for the full caption.
+- **Why It Works:** One sentence — why this angle resonates with the target audience.
+- **Unique Selling Offer:** What specific offer or promise makes this angle compelling. Include a reason to act now (urgency, exclusivity, result guarantee, or value stack).
+
+Focus on angles that work for Philippine Facebook/Messenger ads. Use specific pain points and desires from the research. Each angle must feel distinct — no repeating the same idea with different words.
 `,
 
   copy: (userContext: string, selectedAngle: string, formulas: string[]) => `
