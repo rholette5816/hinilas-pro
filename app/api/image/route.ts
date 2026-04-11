@@ -9,7 +9,7 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  const { prompt, count = 1, aspectRatio = "1:1", referenceImage } = await req.json();
+  const { prompt, count = 1, aspectRatio = "1:1", referenceImage, isVariation = false } = await req.json();
 
   // --- Credit gate ---
   const supabase = await createClient();
@@ -54,9 +54,16 @@ export async function POST(req: NextRequest) {
         const [header, data] = (referenceImage as string).split(",");
         const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
         parts.push({ inlineData: { mimeType, data } });
-        parts.push({
-          text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
-        });
+
+        if (isVariation) {
+          parts.push({
+            text: `This is the original ad creative. Generate a NEW variation of this ad — keep the same product, brand, and core message, but use a completely different visual composition, layout, background, color treatment, or creative angle. It should feel like a fresh creative option, not a copy. Same ${ratioLabel} format.`,
+          });
+        } else {
+          parts.push({
+            text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
+          });
+        }
       } else {
         parts.push({ text: `${prompt}\n\nGenerate this as a ${ratioLabel} image.` });
       }
