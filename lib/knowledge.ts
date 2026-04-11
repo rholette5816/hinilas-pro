@@ -294,7 +294,7 @@ Which is the likely root cause and why?
 `,
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
-You are creating a static Facebook/Instagram ad image for the Philippine market. This is a real ad creative that will run on Meta Ads.
+You are creating a high-converting static Facebook/Instagram ad image for the Philippine market.
 
 PRODUCT/BUSINESS:
 ${userContext}
@@ -304,21 +304,27 @@ ${angle}
 
 AD FORMAT: ${format} aspect ratio
 
-${logoDesc ? `BRAND LOGO DESCRIPTION (match these brand colors and visual style exactly):\n${logoDesc}\n` : ""}
-${productDesc ? `PRODUCT DESCRIPTION (feature this product prominently and accurately):\n${productDesc}\n` : ""}
-${extraDetails ? `ADDITIONAL CREATIVE DIRECTION:\n${extraDetails}\n` : ""}
+${logoDesc ? `BRAND LOGO (match these brand colors, fonts, and visual style exactly):\n${logoDesc}\n` : ""}
+${productDesc ? `PRODUCT (feature this product prominently and accurately):\n${productDesc}\n` : ""}
+${extraDetails ? `ADDITIONAL DIRECTION:\n${extraDetails}\n` : ""}
 
-REQUIREMENTS:
-- The entire image must visually communicate the marketing angle above — this is the core message
-- Static ad design — no animation, no video elements
-- Bold headline text overlaid on the image that captures the hook of the angle (2-6 words)
-- Short supporting subheadline that reinforces the message
-- Clear CTA text element (e.g. "I-message na", "Order Now", "Shop Now")
-- All text must be crisp, high contrast, fully legible — no blurry or distorted text
-- One strong visual focal point — product, result, or person
-- Lifestyle or studio photography aesthetic — not generic stock photo
-- Filipino buyer psychology: aspirational but relatable, warm and direct
+VISUAL STYLE GUIDE:
+${logoDesc ? `- Brand logo provided: follow the brand colors, fonts, and visual identity from the logo above. Let the brand guide the palette and style.` : `- No brand logo provided. Use a dark, cinematic background (deep navy or near-black gradient) as the default.`}
+${extraDetails ? `- User's creative direction takes full priority over any defaults below.` : ``}
+
+Default style framework (apply only where the user has not specified otherwise):
+- Background: deep dark gradient — near-black with dark navy or charcoal tones, cinematic feel
+- Layout: bold headline top-left or top-center, subject or product center-right, brand badge bottom-center
+- Typography: large uppercase white headline (2 to 5 words), key word highlighted in bright orange or accent color, subheadline in smaller white text with key metric in orange
+- Subject: dramatic rim lighting with glowing edges, energy or light effects around focal point
+- Effects: depth from floating icons, particles, or light streaks relevant to the product or message
+- Default color palette: black + dark navy + bright orange + white — only if brand colors are not provided
+- Mood: bold, high-energy, aspirational — Filipino digital marketing aesthetic, agency-quality output
+
+RULES (always apply):
+- All text must be crisp, sharp, and fully legible — no blur, no distortion
+- One clear message — do not clutter the image
+- The headline must directly reflect the marketing angle
 - No watermarks, no borders, no frames
-- Colors, typography, and mood must stay consistent with the business and angle throughout
 `,
 };
