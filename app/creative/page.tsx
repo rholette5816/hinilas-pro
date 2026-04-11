@@ -14,7 +14,7 @@ const EXTRA_SIZES: { key: SizeKey; label: string; sub: string }[] = [
 ];
 
 export default function CreativePage() {
-  const { setup, selectedAngle } = useApp();
+  const { setup, selectedAngle, setCreativeImage } = useApp();
   const router = useRouter();
 
   const [extraPrompt, setExtraPrompt] = useState("");
@@ -77,6 +77,7 @@ export default function CreativePage() {
         setError(data.error);
       } else if (data.images?.[0]) {
         setImages(prev => ({ ...prev, [size]: data.images[0] }));
+        if (size === "1:1") setCreativeImage(data.images[0]);
       }
     } catch {
       setError("Something went wrong. Try again.");

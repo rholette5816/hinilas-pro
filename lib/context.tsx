@@ -23,6 +23,8 @@ interface AppContextType {
   setAnglesOutput: (s: string) => void;
   selectedAngle: string;
   setSelectedAngle: (s: string) => void;
+  creativeImage: string;
+  setCreativeImage: (s: string) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -32,6 +34,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [researchOutput, setResearchOutputState] = useState("");
   const [anglesOutput, setAnglesOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
+  const [creativeImage, setCreativeImageState] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
@@ -89,6 +92,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     persist({ selected_angle: s });
   }
 
+  function setCreativeImage(s: string) {
+    setCreativeImageState(s);
+  }
+
   if (!hydrated) return null;
 
   return (
@@ -97,6 +104,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       researchOutput, setResearchOutput,
       anglesOutput, setAnglesOutput,
       selectedAngle, setSelectedAngle,
+      creativeImage, setCreativeImage,
     }}>
       {children}
     </AppContext.Provider>

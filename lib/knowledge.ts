@@ -227,25 +227,24 @@ Generate 5 marketing angles for this product/business. For each angle output exa
 Focus on angles that work for Philippine Facebook/Messenger ads. Use specific pain points and desires from the research. Each angle must feel distinct — no repeating the same idea with different words.
 `,
 
-  copy: (userContext: string, selectedAngle: string, formulas: string[]) => `
+  copy: (userContext: string, formulas: string[]) => `
 ${HILAS_KNOWLEDGE}
 
 # USER CONTEXT
 ${userContext}
 
-# SELECTED ANGLE
-${selectedAngle}
-
 # FORMULAS TO USE
 ${formulas.join(" and ")}
 
 # TASK
-Write 2 caption variations using the selected formulas. For each variation output:
+An ad image has been provided. Study it carefully — the visual, the message it communicates, the product shown, the mood, and any text visible on the image.
+
+Write 2 caption variations based on what you see in the image. The copy must match and complement the ad creative — same message, same energy. For each variation output:
 
 ## VARIATION [1 or 2] — [Formula Name]
 
 ### CAPTION
-(Full caption — Hook + Body + Proof + CTA. Ready to paste into Ads Manager. Use the selected formula structure.)
+(Full caption — Hook + Body + Proof + CTA. Ready to paste into Ads Manager. Use the selected formula structure. Must align with what the image is communicating.)
 
 ### HEADLINE
 (A CTA-style headline that drives action — max 40 characters. Example: "Order Now and Get Yours Today")
@@ -254,7 +253,7 @@ Write 2 caption variations using the selected formulas. For each variation outpu
 (One powerful, bold statement about the product. The kind of claim that makes people stop. Max 1 sentence.)
 
 ### HOOK LINE
-(First line only — the scroll-stopper that opens the caption)
+(First line only — the scroll-stopper that opens the caption. Must match the visual hook in the image.)
 
 ### CTA BUTTON
 (Choose one: Message Now / Learn More / Shop Now / Order Now)

@@ -15,7 +15,7 @@ const FORMULAS = [
 ];
 
 export default function CopyPage() {
-  const { setup, selectedAngle, setSelectedAngle } = useApp();
+  const { setup, creativeImage } = useApp();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
@@ -30,19 +30,23 @@ export default function CopyPage() {
   }
 
   async function generateCopy() {
-    if (!setup || !selectedAngle.trim()) return;
+    if (!setup || !creativeImage) return;
     setLoading(true);
     setOutput("");
 
     const formulas = selectedFormulas.length > 0 ? selectedFormulas : ["PAS", "BAB"];
     const userCtx = buildUserContext(setup);
-    const prompt = MODULE_PROMPTS.copy(userCtx, selectedAngle, formulas);
+    const prompt = MODULE_PROMPTS.copy(userCtx, formulas);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
+        body: JSON.stringify({
+          prompt,
+          systemPrompt: HILAS_KNOWLEDGE,
+          images: [creativeImage],
+        }),
       });
       const data = await res.json();
       setOutput(data.error ? `Error: ${data.error}` : data.content);
@@ -79,27 +83,29 @@ export default function CopyPage() {
               <span className="text-purple-300 text-xs font-medium">✍ Sales Copy</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Write Your Captions</h1>
-            <p className="text-gray-400 text-sm">Pick up to 2 formulas. AI writes 2 variations with caption, headline, bold claim, and hook line.</p>
+            <p className="text-gray-400 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
           </div>
 
-          {/* Angle input */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-300 mb-2">Marketing Angle</label>
-            <textarea
-              rows={3}
-              value={selectedAngle}
-              onChange={e => setSelectedAngle(e.target.value)}
-              placeholder="Paste or describe your angle here. e.g. Problem Angle — target women 25–35 struggling with acne who've tried many products with no results..."
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-            />
-            {!selectedAngle && (
-              <p className="text-gray-500 text-xs mt-1.5">
-                No angle selected.{" "}
-                <button onClick={() => router.push("/angles")} className="text-blue-400 hover:text-blue-300 underline">Go to Angles</button>{" "}
-                to generate one first.
-              </p>
-            )}
-          </div>
+          {/* Ad image preview */}
+          {creativeImage ? (
+            <div className="mb-6">
+              <p className="text-sm font-medium text-gray-300 mb-2">Ad Image Reference</p>
+              <div className="rounded-xl overflow-hidden border border-gray-700 max-w-xs">
+                <img src={creativeImage} alt="Ad creative reference" className="w-full object-cover" />
+              </div>
+              <p className="text-gray-500 text-xs mt-2">Copy will be written based on this image.</p>
+            </div>
+          ) : (
+            <div className="mb-6 bg-gray-800 border border-dashed border-gray-600 rounded-xl px-5 py-6 text-center">
+              <p className="text-gray-400 text-sm mb-2">No ad image generated yet.</p>
+              <button
+                onClick={() => router.push("/creative")}
+                className="text-blue-400 hover:text-blue-300 text-sm underline"
+              >
+                Go to Creative to generate one first
+              </button>
+            </div>
+          )}
 
           {/* Formula selector */}
           <div className="mb-6">
@@ -142,7 +148,7 @@ export default function CopyPage() {
           <div className="flex gap-3 mb-6">
             <button
               onClick={generateCopy}
-              disabled={loading || !selectedAngle.trim()}
+              disabled={loading || !creativeImage}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
               style={{ background: "#2B7EC9" }}
             >
