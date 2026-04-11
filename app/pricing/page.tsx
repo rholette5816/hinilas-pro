@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
@@ -13,7 +12,6 @@ const PLANS = [
     price: "Free",
     credits: "5 one-time credits",
     features: ["5 ad image generations", "Unlimited text generation", "All AI modules", "Standard quality"],
-    cta: null,
     highlight: false,
   },
   {
@@ -24,7 +22,6 @@ const PLANS = [
     period: "/month",
     credits: "150 credits/month",
     features: ["150 image generations/month", "Unlimited text generation", "All AI modules", "Gemini 3.1 Flash speed", "Standard support"],
-    cta: "Subscribe to Pro",
     highlight: true,
   },
   {
@@ -35,7 +32,6 @@ const PLANS = [
     period: "/month",
     credits: "500 credits/month",
     features: ["500 image generations/month", "Unlimited text generation", "All AI modules", "Bulk generation mode", "Priority support", "Agency Dashboard"],
-    cta: "Subscribe to Max",
     highlight: false,
   },
 ];
@@ -44,32 +40,8 @@ const BRAND_BLUE = "#2B7EC9";
 const BRAND_ORANGE = "#F5A623";
 
 export default function PricingPage() {
-  const { plan: currentPlan, refreshCredits } = useApp();
+  const { plan: currentPlan } = useApp();
   const router = useRouter();
-  const [loading, setLoading] = useState<string | null>(null);
-  const [error, setError] = useState("");
-
-  async function handleSubscribe(planKey: string) {
-    setLoading(planKey);
-    setError("");
-    try {
-      const res = await fetch("/api/payments/create-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: planKey }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        setError(data.error);
-      } else if (data.checkout_url) {
-        window.location.href = data.checkout_url;
-      }
-    } catch {
-      setError("Something went wrong. Try again.");
-    } finally {
-      setLoading(null);
-    }
-  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -82,12 +54,6 @@ export default function PricingPage() {
             <h1 className="text-3xl font-bold text-white mb-3">Choose Your Plan</h1>
             <p className="text-gray-400 text-sm">1 credit = 1 image generation. Text generation is always unlimited.</p>
           </div>
-
-          {error && (
-            <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-6 text-center">
-              {error}
-            </div>
-          )}
 
           {/* Plan cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
@@ -113,7 +79,7 @@ export default function PricingPage() {
                   <h2 className="text-white font-bold text-lg mb-1">{p.name}</h2>
                   <div className="flex items-end gap-1 mb-1">
                     <span className="text-3xl font-bold text-white">{p.price}</span>
-                    {p.period && <span className="text-gray-400 text-sm mb-1">{p.period}</span>}
+                    {"period" in p && p.period && <span className="text-gray-400 text-sm mb-1">{p.period}</span>}
                   </div>
                   <p className="text-xs mb-5" style={{ color: BRAND_ORANGE }}>{p.credits}</p>
 
@@ -130,22 +96,17 @@ export default function PricingPage() {
                     <div className="w-full py-2.5 rounded-lg text-center text-sm font-semibold border border-gray-600 text-gray-400">
                       Current Plan
                     </div>
-                  ) : p.cta ? (
-                    <button
-                      onClick={() => handleSubscribe(p.key)}
-                      disabled={loading === p.key}
-                      className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                      style={{ background: p.highlight ? BRAND_ORANGE : BRAND_BLUE }}
-                    >
-                      {loading === p.key ? "Redirecting..." : p.cta}
-                    </button>
-                  ) : (
+                  ) : p.key === "lite" ? (
                     <button
                       onClick={() => router.push("/")}
                       className="w-full py-2.5 rounded-lg text-sm font-semibold border border-gray-600 text-gray-400 hover:text-white hover:border-gray-500 transition-colors"
                     >
                       Get Started Free
                     </button>
+                  ) : (
+                    <div className="w-full py-2.5 rounded-lg text-center text-sm font-semibold border border-gray-700 text-gray-500">
+                      Coming Soon
+                    </div>
                   )}
                 </div>
               );
@@ -157,23 +118,14 @@ export default function PricingPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h3 className="text-white font-bold text-lg mb-1">Need more credits?</h3>
-                <p className="text-gray-400 text-sm">The Refill Pack — 50 instant credits added to your account. No plan change needed.</p>
+                <p className="text-gray-400 text-sm">The Refill Pack — 50 instant credits. No plan change needed.</p>
                 <p className="text-xs mt-1" style={{ color: BRAND_ORANGE }}>₱499 · 50 credits · Never expires</p>
               </div>
-              <button
-                onClick={() => handleSubscribe("topup")}
-                disabled={loading === "topup"}
-                className="shrink-0 text-white px-8 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ background: BRAND_BLUE }}
-              >
-                {loading === "topup" ? "Redirecting..." : "Get Top-up — ₱499"}
-              </button>
+              <div className="shrink-0 text-gray-500 text-sm font-semibold px-8 py-3 rounded-lg border border-gray-700 text-center">
+                Coming Soon
+              </div>
             </div>
           </div>
-
-          <p className="text-center text-gray-600 text-xs mt-6">
-            Payments processed securely via PayMongo. GCash, Maya, and credit cards accepted.
-          </p>
 
         </div>
       </main>
