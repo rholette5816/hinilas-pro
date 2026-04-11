@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
