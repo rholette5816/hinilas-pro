@@ -38,7 +38,7 @@ export default function AnglesPage() {
 
   function selectAngle(angle: string) {
     setSelectedAngle(angle);
-    router.push("/copy");
+    router.push("/creative");
   }
 
   if (!setup) {
@@ -108,7 +108,7 @@ export default function AnglesPage() {
                 disabled={!customAngle.trim()}
                 className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
               >
-                Write Copy for This Angle →
+                Generate Creative for This Angle →
               </button>
             </div>
           )}

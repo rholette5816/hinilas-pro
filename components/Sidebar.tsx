@@ -15,6 +15,7 @@ const modules = [
   { href: "/angles", label: "Angles", icon: "🎯", description: "Find winning angles" },
   { href: "/creative", label: "Creative", icon: "🖼", description: "Generate ad images" },
   { href: "/copy", label: "Copy", icon: "✍", description: "Write your ad copy" },
+
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
 ];
 
