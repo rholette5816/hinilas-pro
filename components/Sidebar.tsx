@@ -13,8 +13,8 @@ const modules = [
   { href: "/learn", label: "Learn", icon: "📖", description: "Marketing & ads education" },
   { href: "/research", label: "Research", icon: "🔍", description: "Know your customer" },
   { href: "/angles", label: "Angles", icon: "🎯", description: "Find winning angles" },
-  { href: "/copy", label: "Copy", icon: "✍", description: "Write your ad copy" },
   { href: "/creative", label: "Creative", icon: "🖼", description: "Generate ad images" },
+  { href: "/copy", label: "Copy", icon: "✍", description: "Write your ad copy" },
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
 ];
 
