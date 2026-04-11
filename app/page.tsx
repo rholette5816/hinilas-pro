@@ -19,6 +19,7 @@ export default function SetupPage() {
     market: "Philippines",
     businessType: "physical_product",
     stage: "just_starting",
+    language: "Taglish",
   });
 
   function handleSubmit(e: React.FormEvent) {
@@ -145,6 +146,38 @@ export default function SetupPage() {
                       <p className="text-xs opacity-70">{opt.sub}</p>
                     </div>
                     {form.stage === opt.value && <span className="text-white text-sm">✓</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Language */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Language / Dialect</label>
+              <p className="text-xs text-gray-500 mb-3">How the AI responds and how ad copy sounds to your target market.</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: "Taglish", label: "Taglish", sub: "Tagalog + English mix" },
+                  { value: "Bislish", label: "Bislish", sub: "Bisaya + English mix" },
+                  { value: "Filipino", label: "Filipino/Tagalog", sub: "National language" },
+                  { value: "Bisaya", label: "Bisaya/Cebuano", sub: "Visayas and Mindanao" },
+                  { value: "Ilocano", label: "Ilocano", sub: "Northern Luzon" },
+                  { value: "Hiligaynon", label: "Hiligaynon/Ilonggo", sub: "Western Visayas" },
+                  { value: "Kapampangan", label: "Kapampangan", sub: "Pampanga area" },
+                  { value: "English", label: "English", sub: "Formal or national brands" },
+                ].map(opt => (
+                  <button
+                    type="button"
+                    key={opt.value}
+                    onClick={() => setForm({ ...form, language: opt.value })}
+                    className="p-3 rounded-lg border text-left transition-all"
+                    style={form.language === opt.value
+                      ? { background: BRAND_BLUE, borderColor: BRAND_BLUE, color: "white" }
+                      : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                    }
+                  >
+                    <p className="text-xs font-medium">{opt.label}</p>
+                    <p className="text-xs opacity-70 mt-0.5">{opt.sub}</p>
                   </button>
                 ))}
               </div>

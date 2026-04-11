@@ -10,6 +10,7 @@ export interface UserSetup {
   market: string;
   businessType: "physical_product" | "service" | "digital";
   stage: "just_starting" | "have_page" | "running_ads";
+  language: string;
 }
 
 interface AppContextType {
@@ -113,5 +114,6 @@ Product/Service: ${setup.product}
 Target Audience: ${setup.targetAudience}
 Market: ${setup.market}
 Business Type: ${setup.businessType.replace("_", " ")}
-Stage: ${setup.stage.replace(/_/g, " ")}`;
+Stage: ${setup.stage.replace(/_/g, " ")}
+Language/Dialect: ${setup.language}`;
 }
