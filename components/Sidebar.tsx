@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useApp } from "@/lib/context";
 import HinilasLogo, { HinilasIcon } from "@/components/HinilasLogo";
+import { createClient } from "@/lib/supabase/client";
 
 const modules = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
@@ -18,8 +19,16 @@ const modules = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { setup } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -72,6 +81,12 @@ export default function Sidebar() {
       <div className="px-5 py-4 border-t border-gray-800">
         <p className="text-gray-500 text-xs">I&apos;m your Digital Marketing Assistant</p>
         <p className="text-gray-700 text-xs mt-0.5">By Basta Mag Ads Hilas</p>
+        <button
+          onClick={handleLogout}
+          className="mt-3 text-xs text-gray-600 hover:text-gray-400 transition-colors"
+        >
+          Log out
+        </button>
       </div>
     </div>
   );
