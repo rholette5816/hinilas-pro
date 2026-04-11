@@ -70,7 +70,13 @@ export default function CreativePage() {
       const res = await fetch("/api/image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, count: 1, aspectRatio: size }),
+        body: JSON.stringify({
+          prompt,
+          count: 1,
+          aspectRatio: size,
+          // For non-square sizes, pass the 1:1 as reference to stay consistent
+          referenceImage: size !== "1:1" ? images["1:1"] : undefined,
+        }),
       });
       const data = await res.json();
       if (data.error) {

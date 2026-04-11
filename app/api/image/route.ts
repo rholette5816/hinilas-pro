@@ -8,7 +8,7 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  const { prompt, count = 1, aspectRatio = "1:1" } = await req.json();
+  const { prompt, count = 1, aspectRatio = "1:1", referenceImage } = await req.json();
 
   const apiKey = process.env.GEMINI_IMAGE_API_KEY;
   if (!apiKey) {
@@ -20,21 +20,35 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-image-preview" });
 
     const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
-    const fullPrompt = `${prompt}\n\nGenerate this as a ${ratioLabel} image.`;
 
     const images: string[] = [];
 
     for (let i = 0; i < count; i++) {
+      // Build parts — if a reference image is provided, include it so the model stays consistent
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const parts: any[] = [];
+
+      if (referenceImage) {
+        const [header, data] = (referenceImage as string).split(",");
+        const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+        parts.push({ inlineData: { mimeType, data } });
+        parts.push({
+          text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
+        });
+      } else {
+        parts.push({ text: `${prompt}\n\nGenerate this as a ${ratioLabel} image.` });
+      }
+
       const result = await model.generateContent({
-        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
+        contents: [{ role: "user", parts }],
         generationConfig: {
           // @ts-expect-error responseModalities is valid but not yet in type definitions
           responseModalities: ["IMAGE", "TEXT"],
         },
       });
 
-      const parts = result.response.candidates?.[0]?.content?.parts ?? [];
-      for (const part of parts) {
+      const responseParts = result.response.candidates?.[0]?.content?.parts ?? [];
+      for (const part of responseParts) {
         if (part.inlineData?.data) {
           const mimeType = part.inlineData.mimeType || "image/png";
           images.push(`data:${mimeType};base64,${part.inlineData.data}`);
