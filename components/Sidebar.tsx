@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/lib/context";
-import HinilasLogo, { HinilasIcon } from "@/components/HinilasLogo";
+import HinilasLogo from "@/components/HinilasLogo";
 import { createClient } from "@/lib/supabase/client";
+import Image from "next/image";
 
 const modules = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
@@ -22,6 +23,19 @@ export default function Sidebar() {
   const router = useRouter();
   const { setup } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUser({
+          name: user.user_metadata?.full_name || user.email || "User",
+          avatar: user.user_metadata?.avatar_url || "",
+        });
+      }
+    });
+  }, []);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -78,15 +92,34 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-gray-800">
-        <p className="text-gray-500 text-xs">I&apos;m your Digital Marketing Assistant</p>
-        <p className="text-gray-700 text-xs mt-0.5">By Basta Mag Ads Hilas</p>
-        <button
-          onClick={handleLogout}
-          className="mt-3 text-xs text-gray-600 hover:text-gray-400 transition-colors"
-        >
-          Log out
-        </button>
+      <div className="px-4 py-4 border-t border-gray-800">
+        {user && (
+          <div className="flex items-center gap-3 mb-3">
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.name}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "#2B7EC9" }}>
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-white text-xs font-medium truncate">{user.name}</p>
+              <button
+                onClick={handleLogout}
+                className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+              >
+                Log out
+              </button>
+            </div>
+          </div>
+        )}
+        <p className="text-gray-700 text-xs">By Basta Mag Ads Hilas</p>
       </div>
     </div>
   );
