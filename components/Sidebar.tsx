@@ -18,15 +18,11 @@ const modules = [
 function HilasLogo() {
   return (
     <div className="flex items-center gap-2.5">
-      {/* Logo mark — blue square with HILAS brand style */}
-      <div className="w-8 h-8 rounded-lg bg-[#1a8fc1] flex items-center justify-center shrink-0 shadow-lg">
-        <span className="text-white font-black text-xs leading-none tracking-tighter">H</span>
+      <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+        <span className="text-white font-bold text-sm">H</span>
       </div>
       <div className="leading-tight">
-        <div className="flex items-baseline gap-0.5">
-          <span className="text-white font-black text-sm tracking-wide uppercase">HILAS</span>
-          <span className="text-[#f5a623] font-black text-sm">.</span>
-        </div>
+        <p className="text-white font-bold text-sm tracking-wide">Hinilas Pro</p>
         <p className="text-gray-500 text-[10px] leading-none">Meta Ads AI Assistant</p>
       </div>
     </div>
