@@ -14,12 +14,24 @@ const FORMULAS = [
   { key: "Story", label: "Story", angle: "Story Angle", desc: "Hook → Story → Lesson → CTA" },
 ];
 
+const LANGUAGES = [
+  { value: "Taglish", label: "Taglish", sub: "Tagalog + English" },
+  { value: "Bislish", label: "Bislish", sub: "Bisaya + English" },
+  { value: "Filipino", label: "Filipino", sub: "Tagalog" },
+  { value: "Bisaya", label: "Bisaya", sub: "Cebuano" },
+  { value: "Ilocano", label: "Ilocano", sub: "Northern Luzon" },
+  { value: "Hiligaynon", label: "Hiligaynon", sub: "Ilonggo" },
+  { value: "Kapampangan", label: "Kapampangan", sub: "Pampanga" },
+  { value: "English", label: "English", sub: "Formal" },
+];
+
 export default function CopyPage() {
   const { setup, creativeImage } = useApp();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const [selectedFormulas, setSelectedFormulas] = useState<string[]>([]);
+  const [language, setLanguage] = useState(setup?.language || "Taglish");
 
   function toggleFormula(key: string) {
     setSelectedFormulas(prev => {
@@ -36,7 +48,7 @@ export default function CopyPage() {
 
     const formulas = selectedFormulas.length > 0 ? selectedFormulas : ["PAS", "BAB"];
     const userCtx = buildUserContext(setup);
-    const prompt = MODULE_PROMPTS.copy(userCtx, formulas);
+    const prompt = MODULE_PROMPTS.copy(userCtx, formulas, language);
 
     try {
       const res = await fetch("/api/chat", {
@@ -106,6 +118,28 @@ export default function CopyPage() {
               </button>
             </div>
           )}
+
+          {/* Language selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">Language / Dialect</label>
+            <div className="grid grid-cols-4 gap-2">
+              {LANGUAGES.map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setLanguage(opt.value)}
+                  className="p-2.5 rounded-lg border text-left transition-all"
+                  style={language === opt.value
+                    ? { background: "#2B7EC9", borderColor: "#2B7EC9", color: "white" }
+                    : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                  }
+                >
+                  <p className="text-xs font-medium">{opt.label}</p>
+                  <p className="text-xs opacity-60 mt-0.5">{opt.sub}</p>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Formula selector */}
           <div className="mb-6">

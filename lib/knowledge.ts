@@ -227,7 +227,7 @@ Generate 5 marketing angles for this product/business. For each angle output exa
 Focus on angles that work for Philippine Facebook/Messenger ads. Use specific pain points and desires from the research. Each angle must feel distinct — no repeating the same idea with different words.
 `,
 
-  copy: (userContext: string, formulas: string[]) => `
+  copy: (userContext: string, formulas: string[], language: string) => `
 ${HILAS_KNOWLEDGE}
 
 # USER CONTEXT
@@ -236,29 +236,28 @@ ${userContext}
 # FORMULAS TO USE
 ${formulas.join(" and ")}
 
+# LANGUAGE
+Write everything in ${language}. This applies to the caption, headline, and all copy.
+
 # TASK
-An ad image has been provided. Study it carefully — the visual, the message it communicates, the product shown, the mood, and any text visible on the image.
+An ad image has been provided. Study it — the product, the message, the mood, and the visual story it tells.
 
-Write 2 caption variations based on what you see in the image. The copy must match and complement the ad creative — same message, same energy. For each variation output:
+Write 2 caption variations based on what you see. Each caption must feel like it was made for that image — same energy, same message.
 
-## VARIATION [1 or 2] — [Formula Name]
+Output format for each variation:
 
-### CAPTION
-(Full caption — Hook + Body + Proof + CTA. Ready to paste into Ads Manager. Use the selected formula structure. Must align with what the image is communicating.)
+---
+**VARIATION [1 or 2] — [Formula Name]**
 
-### HEADLINE
-(A CTA-style headline that drives action — max 40 characters. Example: "Order Now and Get Yours Today")
+**CAPTION:**
+[Ready-to-paste caption. Short, punchy, scroll-stopping. 3 to 6 lines max. Use emojis naturally to break up the text and add personality. Hook first, body second, CTA last. No long paragraphs.]
 
-### BOLD CLAIM
-(One powerful, bold statement about the product. The kind of claim that makes people stop. Max 1 sentence.)
+**HEADLINE:** [Max 40 characters. CTA-style. Example: "Order Now — Free Shipping!"]
 
-### HOOK LINE
-(First line only — the scroll-stopper that opens the caption. Must match the visual hook in the image.)
+**CTA BUTTON:** Message Now / Learn More / Shop Now / Order Now
+---
 
-### CTA BUTTON
-(Choose one: Message Now / Learn More / Shop Now / Order Now)
-
-Write in a tone that matches Philippine Facebook users — direct, relatable, conversational. Taglish is acceptable if it fits naturally.
+Keep it simple. Write like a real Filipino online seller — direct, warm, confident. Emojis should feel natural, not spammy. The caption must be ready to paste straight into Meta Ads Manager.
 `,
 
   analyze: (userContext: string, adData: string) => `
