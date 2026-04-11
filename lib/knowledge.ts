@@ -287,21 +287,27 @@ Check in this order: Creative → Audience → Budget → Offer
 Which is the likely root cause and why?
 `,
 
-  creative: (userContext: string, angle: string, _hook: string, _subheadline: string, _cta: string, format: string) => `
-Create a hyper-realistic, high-converting Facebook/Instagram ad image optimized for the Philippine market.
+  creative: (userContext: string, angle: string, extraDetails: string, hasLogo: boolean, hasProduct: boolean, format: string) => `
+Create a hyper-realistic, high-converting static Facebook/Instagram ad image optimized for the Philippine market.
 
 Product/Business: ${userContext}
 Marketing angle: ${angle}
 Aspect ratio: ${format}
+${hasLogo ? "Brand logo is provided — match the brand colors, fonts, and visual style from the logo." : ""}
+${hasProduct ? "Product image is provided — feature the product prominently and realistically in the ad." : ""}
+${extraDetails ? `Additional details: ${extraDetails}` : ""}
 
 Image requirements:
+- Static ad format — this will run directly on Facebook and Instagram feeds
 - Hyper-realistic photography or photorealistic 3D render style
-- No text overlays — pure visual image only
-- The image should visually communicate the marketing angle without words
-- High contrast, bold composition that stops the scroll
-- One clear visual focal point, no clutter
-- No watermarks, no borders, no logos
+- Include bold, legible headline text on the image that reflects the marketing angle
+- Include a short supporting subheadline text
+- Include a visible CTA element (e.g. "Message Us Now", "Order Now", "Shop Now")
+- All text must be precisely rendered with crisp edges, no blurring or distortion
+- High contrast between text and background for readability
+- Bold, scroll-stopping composition with one clear visual focal point
+- No watermarks, no borders
 - Suitable for Filipino buyer psychology and aesthetics
-- Lifestyle or product photography feel, not stock photo generic
+- Lifestyle or product photography feel, not generic stock photo
 `,
 };
