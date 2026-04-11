@@ -25,6 +25,8 @@ interface AppContextType {
   setSelectedAngle: (s: string) => void;
   creativeImage: string;
   setCreativeImage: (s: string) => void;
+  savedImages: { main: string | null; v1: string | null; v2: string | null };
+  saveAdImages: (main: string | null, v1: string | null, v2: string | null) => Promise<void>;
   credits: number;
   creditsTotal: number;
   plan: string;
@@ -39,6 +41,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [anglesOutput, setAnglesOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
   const [creativeImage, setCreativeImageState] = useState("");
+  const [savedImages, setSavedImages] = useState<{ main: string | null; v1: string | null; v2: string | null }>({ main: null, v1: null, v2: null });
   const [credits, setCredits] = useState(0);
   const [creditsTotal, setCreditsTotal] = useState(5);
   const [plan, setPlan] = useState("lite");
@@ -66,6 +69,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.credits_remaining !== undefined) setCredits(data.credits_remaining);
         if (data.credits_total !== undefined) setCreditsTotal(data.credits_total);
         if (data.plan) setPlan(data.plan);
+        setSavedImages({
+          main: data.main_image_url || null,
+          v1: data.variation_1_url || null,
+          v2: data.variation_2_url || null,
+        });
       }
 
       setHydrated(true);
@@ -106,6 +114,37 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCreativeImageState(s);
   }
 
+  async function uploadToStorage(base64: string, filename: string): Promise<string | null> {
+    if (!userId) return null;
+    try {
+      const supabase = createClient();
+      const [header, data] = base64.split(",");
+      const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+      const ext = mimeType.split("/")[1] || "png";
+      const byteString = atob(data);
+      const bytes = new Uint8Array(byteString.length);
+      for (let i = 0; i < byteString.length; i++) bytes[i] = byteString.charCodeAt(i);
+      const blob = new Blob([bytes], { type: mimeType });
+      const path = `${userId}/${filename}.${ext}`;
+      const { error } = await supabase.storage.from("ad-creatives").upload(path, blob, { upsert: true });
+      if (error) return null;
+      const { data: { publicUrl } } = supabase.storage.from("ad-creatives").getPublicUrl(path);
+      return publicUrl;
+    } catch {
+      return null;
+    }
+  }
+
+  async function saveAdImages(main: string | null, v1: string | null, v2: string | null) {
+    const [mainUrl, v1Url, v2Url] = await Promise.all([
+      main && main.startsWith("data:") ? uploadToStorage(main, "main") : Promise.resolve(main),
+      v1 && v1.startsWith("data:") ? uploadToStorage(v1, "variation_1") : Promise.resolve(v1),
+      v2 && v2.startsWith("data:") ? uploadToStorage(v2, "variation_2") : Promise.resolve(v2),
+    ]);
+    setSavedImages({ main: mainUrl, v1: v1Url, v2: v2Url });
+    await persist({ main_image_url: mainUrl, variation_1_url: v1Url, variation_2_url: v2Url });
+  }
+
   async function refreshCredits() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -131,6 +170,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       anglesOutput, setAnglesOutput,
       selectedAngle, setSelectedAngle,
       creativeImage, setCreativeImage,
+      savedImages, saveAdImages,
       credits, creditsTotal, plan, refreshCredits,
     }}>
       {children}

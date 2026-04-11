@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 export default function CreativePage() {
-  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits } = useApp();
+  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages } = useApp();
   const router = useRouter();
 
   const [extraPrompt, setExtraPrompt] = useState("");
@@ -15,6 +15,12 @@ export default function CreativePage() {
   const [productFile, setProductFile] = useState<string | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [iterations, setIterations] = useState<(string | null)[]>([null, null]);
+
+  // Load saved images on mount
+  useEffect(() => {
+    if (savedImages.main) setMainImage(savedImages.main);
+    if (savedImages.v1 || savedImages.v2) setIterations([savedImages.v1, savedImages.v2]);
+  }, [savedImages.main, savedImages.v1, savedImages.v2]);
   const [loadingMain, setLoadingMain] = useState(false);
   const [loadingIter, setLoadingIter] = useState<boolean[]>([false, false]);
   const [error, setError] = useState("");
@@ -79,6 +85,7 @@ export default function CreativePage() {
         setMainImage(img);
         setCreativeImage(img);
         setIterations([null, null]);
+        await saveAdImages(img, null, null);
       }
     } catch {
       setError("Something went wrong. Try again.");
@@ -95,7 +102,12 @@ export default function CreativePage() {
     try {
       const img = await callImageAPI("", mainImage);
       if (img) {
-        setIterations(prev => { const n = [...prev]; n[index] = img; return n; });
+        setIterations(prev => {
+          const n = [...prev];
+          n[index] = img;
+          saveAdImages(mainImage, index === 0 ? img : n[0], index === 1 ? img : n[1]);
+          return n;
+        });
       }
     } catch {
       setError("Something went wrong. Try again.");
