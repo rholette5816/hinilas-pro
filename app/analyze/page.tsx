@@ -1,69 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
-interface AdData {
-  spend: string;
-  reach: string;
-  impressions: string;
-  ctr: string;
-  cpm: string;
-  costPerMessage: string;
-  frequency: string;
-  messages: string;
-  productPrice: string;
-  productCost: string;
-  daysRunning: string;
-}
-
-const EMPTY: AdData = {
-  spend: "", reach: "", impressions: "", ctr: "", cpm: "",
-  costPerMessage: "", frequency: "", messages: "",
-  productPrice: "", productCost: "", daysRunning: "",
-};
-
 export default function AnalyzePage() {
   const { setup } = useApp();
   const router = useRouter();
-  const [data, setData] = useState<AdData>(EMPTY);
+  const [screenshot, setScreenshot] = useState<string | null>(null);
+  const [productPrice, setProductPrice] = useState("");
+  const [productCost, setProductCost] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  function formatAdData(d: AdData): string {
-    return `
-Ad Spend: P${d.spend || "?"}
-Reach: ${d.reach || "?"}
-Impressions: ${d.impressions || "?"}
-CTR: ${d.ctr || "?"}%
-CPM: P${d.cpm || "?"}
-Cost Per Message: P${d.costPerMessage || "?"}
-Frequency: ${d.frequency || "?"}
-Messages/Conversations: ${d.messages || "?"}
-Days Running: ${d.daysRunning || "?"}
-Product Selling Price: P${d.productPrice || "not provided"}
-Product Cost: P${d.productCost || "not provided"}
-    `.trim();
+  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setScreenshot(reader.result as string);
+    reader.readAsDataURL(file);
   }
 
   async function analyze() {
-    if (!setup) return;
+    if (!setup || !screenshot) return;
     setLoading(true);
     setOutput("");
 
     const userCtx = buildUserContext(setup);
-    const adDataStr = formatAdData(data);
-    const prompt = MODULE_PROMPTS.analyze(userCtx, adDataStr);
+    const profitInfo = productPrice || productCost
+      ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}`
+      : "";
+    const prompt = MODULE_PROMPTS.analyze(userCtx, profitInfo);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
+        body: JSON.stringify({
+          prompt,
+          systemPrompt: HILAS_KNOWLEDGE,
+          images: [screenshot],
+        }),
       });
       const d = await res.json();
       setOutput(d.error ? `Error: ${d.error}` : d.content);
@@ -72,24 +53,6 @@ Product Cost: P${d.productCost || "not provided"}
     } finally {
       setLoading(false);
     }
-  }
-
-  function field(label: string, key: keyof AdData, placeholder: string, prefix = "") {
-    return (
-      <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1">{label}</label>
-        <div className="relative">
-          {prefix && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">{prefix}</span>}
-          <input
-            type="text"
-            value={data[key]}
-            onChange={e => setData(prev => ({ ...prev, [key]: e.target.value }))}
-            placeholder={placeholder}
-            className={`w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${prefix ? "pl-7 pr-3" : "px-3"}`}
-          />
-        </div>
-      </div>
-    );
   }
 
   if (!setup) {
@@ -111,64 +74,100 @@ Product Cost: P${d.productCost || "not provided"}
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-3xl mx-auto px-6 py-10">
+
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-yellow-950 border border-yellow-800 rounded-full px-3 py-1 mb-4">
               <span className="text-yellow-300 text-xs font-medium">📊 Analyze</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Analyze Your Ad Results</h1>
-            <p className="text-gray-400 text-sm">Paste your numbers. Get a clear diagnosis and specific next steps based on PH benchmarks.</p>
+            <p className="text-gray-400 text-sm">Upload a screenshot of your Ads Manager. AI reads the numbers and gives you a full diagnosis.</p>
           </div>
 
-          {/* Form */}
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
-            <p className="text-gray-300 text-sm font-semibold mb-4">Ad Performance Data</p>
+          {/* Screenshot upload */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">Ads Manager Screenshot</label>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              {field("Ad Spend (PHP)", "spend", "e.g. 1500", "P")}
-              {field("Days Running", "daysRunning", "e.g. 7")}
-              {field("Reach", "reach", "e.g. 12000")}
-              {field("Impressions", "impressions", "e.g. 18000")}
-              {field("CTR (%)", "ctr", "e.g. 2.5")}
-              {field("CPM (PHP)", "cpm", "e.g. 150", "P")}
-              {field("Cost Per Message (PHP)", "costPerMessage", "e.g. 45", "P")}
-              {field("Messages / Conversations", "messages", "e.g. 33")}
-              {field("Frequency", "frequency", "e.g. 1.8")}
-            </div>
-
-            <div className="border-t border-gray-700 pt-4">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-3">Optional — for profit analysis</p>
-              <div className="grid grid-cols-2 gap-4">
-                {field("Product Selling Price (PHP)", "productPrice", "e.g. 499", "P")}
-                {field("Product Cost (PHP)", "productCost", "e.g. 180", "P")}
+            {screenshot ? (
+              <div className="rounded-xl overflow-hidden border border-gray-700 mb-2">
+                <img src={screenshot} alt="Ads Manager screenshot" className="w-full object-contain max-h-72" />
               </div>
-            </div>
+            ) : (
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-gray-500 transition-colors"
+              >
+                <p className="text-gray-300 text-sm font-medium mb-1">Upload screenshot</p>
+                <p className="text-gray-600 text-xs">PNG, JPG — screenshot from Meta Ads Manager</p>
+              </button>
+            )}
+
+            {screenshot && (
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  className="text-xs text-blue-400 hover:text-blue-300"
+                >
+                  Replace image
+                </button>
+                <button
+                  onClick={() => setScreenshot(null)}
+                  className="text-xs text-red-400 hover:text-red-300"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Benchmarks reference */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 mb-6">
-            <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-3">PH Benchmarks</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
-              <div className="flex justify-between"><span className="text-gray-500">Cost/Message excellent</span><span className="text-green-400">P15–60</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">CTR excellent</span><span className="text-green-400">3–5%</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Cost/Message stop</span><span className="text-red-400">P350+</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">CTR bad</span><span className="text-red-400">below 1%</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">CPM good</span><span className="text-blue-400">P120–180</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Frequency healthy</span><span className="text-blue-400">1–2.5</span></div>
+          {/* Optional profit inputs */}
+          <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
+            <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-3">Optional — Profit Analysis</p>
+            <p className="text-gray-400 text-xs mb-4">Add product price and cost to get a profit calculation alongside the diagnosis.</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Selling Price (PHP)</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">P</span>
+                  <input
+                    type="text"
+                    value={productPrice}
+                    onChange={e => setProductPrice(e.target.value)}
+                    placeholder="e.g. 499"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Product Cost (PHP)</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">P</span>
+                  <input
+                    type="text"
+                    value={productCost}
+                    onChange={e => setProductCost(e.target.value)}
+                    placeholder="e.g. 180"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Action */}
           <button
             onClick={analyze}
-            disabled={loading}
-            className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6" style={{ background: "#2B7EC9" }}
+            disabled={loading || !screenshot}
+            className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6"
+            style={{ background: "#2B7EC9" }}
           >
             {loading ? "Analyzing..." : "Analyze My Results"}
           </button>
 
           {/* Output */}
-          <AIOutput content={output} loading={loading} loadingText="Diagnosing your ad results..." />
+          <AIOutput content={output} loading={loading} loadingText="Reading your screenshot and diagnosing results..." />
+
         </div>
       </main>
     </div>

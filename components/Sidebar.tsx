@@ -10,13 +10,12 @@ import Image from "next/image";
 
 const modules = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
-  { href: "/learn", label: "Learn", icon: "📖", description: "Marketing & ads education" },
   { href: "/research", label: "Research", icon: "🔍", description: "Know your customer" },
   { href: "/angles", label: "Angles", icon: "🎯", description: "Find winning angles" },
   { href: "/creative", label: "Creative", icon: "🖼", description: "Generate ad images" },
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
-
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
+  { href: "/learn", label: "Courses", icon: "📖", description: "Marketing & ads education" },
   { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
 

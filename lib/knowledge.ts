@@ -260,37 +260,40 @@ Output format for each variation:
 Keep it simple. Write like a real Filipino online seller — direct, warm, confident. Emojis should feel natural, not spammy. The caption must be ready to paste straight into Meta Ads Manager.
 `,
 
-  analyze: (userContext: string, adData: string) => `
+  analyze: (userContext: string, profitInfo: string) => `
 ${HILAS_KNOWLEDGE}
 
 # USER CONTEXT
 ${userContext}
 
-# AD DATA
-${adData}
+${profitInfo ? `# PROFIT DATA\n${profitInfo}` : ""}
 
 # TASK
-Analyze these ad results using these benchmarks for the Philippine market.
+A screenshot of the Meta Ads Manager has been provided. Read all the metrics visible in the image.
+
+Analyze the results using PH market benchmarks and output:
+
+## METRICS READ
+List every metric you can see in the screenshot with its value.
 
 ## PERFORMANCE DIAGNOSIS
 Rate each metric: Excellent / Good / Acceptable / Bad
-- Cost Per Message vs benchmark (P15–60 excellent, P60–120 good, P120–200 acceptable, P350+ stop)
-- CTR vs benchmark (3–5% excellent, 2–3% good, 1–2% weak, below 1% bad)
-- CPM vs benchmark (P120–180 good, P180–300 okay, P300+ expensive)
-- Frequency vs benchmark (1–2.5 healthy, 2.5–3 watch, 3.5+ overexposed)
+- Cost Per Message: P15–60 excellent, P60–120 good, P120–200 acceptable, P350+ stop
+- CTR: 3–5% excellent, 2–3% good, 1–2% weak, below 1% bad
+- CPM: P120–180 good, P180–300 okay, P300+ expensive
+- Frequency: 1–2.5 healthy, 2.5–3 watch, 3.5+ overexposed
 
 ## OVERALL VERDICT
-CONTINUE / OPTIMIZE / TURN OFF — and why in one sentence.
+CONTINUE / OPTIMIZE / TURN OFF — one sentence explanation.
 
 ## PROFIT CHECK
-If product price and cost are provided, calculate: Is this profitable?
+${profitInfo ? "Calculate profit per sale and whether the ad spend is profitable based on the data provided." : "No product price provided — skip this section."}
 
-## SPECIFIC NEXT STEPS
-3 concrete actions to take right now. Be specific — not generic advice.
+## NEXT STEPS
+3 specific actions to take right now. Be direct — no generic advice.
 
 ## ROOT CAUSE (if underperforming)
-Check in this order: Creative → Audience → Budget → Offer
-Which is the likely root cause and why?
+Diagnose in this order: Creative → Audience → Budget → Offer. What is the likely issue and why?
 `,
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
@@ -233,15 +232,6 @@ export default function CopyPage() {
             >
               {loading ? "Writing..." : output ? "Rewrite Captions" : "Generate Captions"}
             </button>
-            {output && !loading && (
-              <button
-                onClick={() => router.push("/analyze")}
-                className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
-                style={{ background: "#F5A623" }}
-              >
-                Next: Analyze Results →
-              </button>
-            )}
           </div>
 
           {/* Output */}
