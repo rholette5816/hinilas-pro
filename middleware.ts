@@ -2,6 +2,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip middleware for auth callback
+  if (pathname.startsWith("/auth")) {
+    return NextResponse.next();
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -25,28 +32,18 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
-
-  // Allow auth callback
-  if (pathname.startsWith("/auth/callback")) {
-    return supabaseResponse;
-  }
+  const { data: { session } } = await supabase.auth.getSession();
 
   // Allow login page always
   if (pathname === "/login") {
-    // If already logged in, redirect to app
-    if (user) {
+    if (session) {
       return NextResponse.redirect(new URL("/", request.url));
     }
     return supabaseResponse;
   }
 
   // Protect all other routes
-  if (!user) {
+  if (!session) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -55,6 +52,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/|auth/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/).*)",
   ],
 };
