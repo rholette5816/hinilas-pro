@@ -293,27 +293,32 @@ Check in this order: Creative → Audience → Budget → Offer
 Which is the likely root cause and why?
 `,
 
-  creative: (userContext: string, angle: string, extraDetails: string, hasLogo: boolean, hasProduct: boolean, format: string) => `
-Create a hyper-realistic, high-converting static Facebook/Instagram ad image optimized for the Philippine market.
+  creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
+You are creating a static Facebook/Instagram ad image for the Philippine market. This is a real ad creative that will run on Meta Ads.
 
-Product/Business: ${userContext}
-Marketing angle: ${angle}
-Aspect ratio: ${format}
-${hasLogo ? "Brand logo is provided — match the brand colors, fonts, and visual style from the logo." : ""}
-${hasProduct ? "Product image is provided — feature the product prominently and realistically in the ad." : ""}
-${extraDetails ? `Additional details: ${extraDetails}` : ""}
+PRODUCT/BUSINESS:
+${userContext}
 
-Image requirements:
-- Static ad format — this will run directly on Facebook and Instagram feeds
-- Hyper-realistic photography or photorealistic 3D render style
-- Include bold, legible headline text on the image that reflects the marketing angle
-- Include a short supporting subheadline text
-- Include a visible CTA element (e.g. "Message Us Now", "Order Now", "Shop Now")
-- All text must be precisely rendered with crisp edges, no blurring or distortion
-- High contrast between text and background for readability
-- Bold, scroll-stopping composition with one clear visual focal point
-- No watermarks, no borders
-- Suitable for Filipino buyer psychology and aesthetics
-- Lifestyle or product photography feel, not generic stock photo
+MARKETING ANGLE TO VISUALIZE:
+${angle}
+
+AD FORMAT: ${format} aspect ratio
+
+${logoDesc ? `BRAND LOGO DESCRIPTION (match these brand colors and visual style exactly):\n${logoDesc}\n` : ""}
+${productDesc ? `PRODUCT DESCRIPTION (feature this product prominently and accurately):\n${productDesc}\n` : ""}
+${extraDetails ? `ADDITIONAL CREATIVE DIRECTION:\n${extraDetails}\n` : ""}
+
+REQUIREMENTS:
+- The entire image must visually communicate the marketing angle above — this is the core message
+- Static ad design — no animation, no video elements
+- Bold headline text overlaid on the image that captures the hook of the angle (2-6 words)
+- Short supporting subheadline that reinforces the message
+- Clear CTA text element (e.g. "I-message na", "Order Now", "Shop Now")
+- All text must be crisp, high contrast, fully legible — no blurry or distorted text
+- One strong visual focal point — product, result, or person
+- Lifestyle or studio photography aesthetic — not generic stock photo
+- Filipino buyer psychology: aspirational but relatable, warm and direct
+- No watermarks, no borders, no frames
+- Colors, typography, and mood must stay consistent with the business and angle throughout
 `,
 };

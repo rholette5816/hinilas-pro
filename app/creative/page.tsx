@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { useApp } from "@/lib/context";
+import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 type SizeKey = "1:1" | "9:16" | "1.91:1";
@@ -35,16 +35,38 @@ export default function CreativePage() {
     reader.readAsDataURL(file);
   }
 
+  async function describeImage(base64: string, label: string): Promise<string> {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: `Describe this ${label} image in detail for use as a reference in generating an ad creative. Include: dominant colors, visual style, any text or typography present, mood, and key visual elements. Be specific and concise — 3 to 5 sentences.`,
+          images: [base64],
+        }),
+      });
+      const data = await res.json();
+      return data.content || "";
+    } catch {
+      return "";
+    }
+  }
+
   async function generate(size: SizeKey) {
     if (!setup) return;
     setLoading(prev => ({ ...prev, [size]: true }));
     setError("");
 
-    const userCtx = `${setup.businessName} — ${setup.product}`;
-    const angle = selectedAngle || "Problem angle";
-    const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, !!logoFile, !!productFile, size);
-
     try {
+      const [logoDesc, productDesc] = await Promise.all([
+        logoFile ? describeImage(logoFile, "brand logo") : Promise.resolve(""),
+        productFile ? describeImage(productFile, "product") : Promise.resolve(""),
+      ]);
+
+      const userCtx = buildUserContext(setup);
+      const angle = selectedAngle || "General product promotion";
+      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, size);
+
       const res = await fetch("/api/image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -196,7 +218,7 @@ export default function CreativePage() {
                   <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
                 <p className="text-gray-400 text-sm">Generating your ad image...</p>
-                <p className="text-gray-600 text-xs mt-1">This takes about 15 to 30 seconds</p>
+                <p className="text-gray-600 text-xs mt-1">Analyzing assets and generating — about 20 to 40 seconds</p>
               </div>
             )}
 
