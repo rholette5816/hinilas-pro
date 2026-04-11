@@ -7,6 +7,7 @@ export interface UserSetup {
   businessName: string;
   product: string;
   targetAudience: string;
+  uniqueSellingOffer: string;
   market: string;
   businessType: "physical_product" | "service" | "digital";
   stage: "just_starting" | "have_page" | "running_ads";
@@ -112,6 +113,7 @@ export function buildUserContext(setup: UserSetup): string {
   return `Business: ${setup.businessName}
 Product/Service: ${setup.product}
 Target Audience: ${setup.targetAudience}
+Unique Selling Offer: ${setup.uniqueSellingOffer || "Not specified"}
 Market: ${setup.market}
 Business Type: ${setup.businessType.replace("_", " ")}
 Stage: ${setup.stage.replace(/_/g, " ")}

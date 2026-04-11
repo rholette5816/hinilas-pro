@@ -16,6 +16,7 @@ export default function SetupPage() {
     businessName: "",
     product: "",
     targetAudience: "",
+    uniqueSellingOffer: "",
     market: "Philippines",
     businessType: "physical_product",
     stage: "just_starting",
@@ -82,6 +83,19 @@ export default function SetupPage() {
                 onChange={e => setForm({ ...form, targetAudience: e.target.value })}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none"
               />
+            </div>
+
+            {/* Unique Selling Offer */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">Unique Selling Offer</label>
+              <textarea
+                rows={2}
+                placeholder="e.g. Only whitening soap with glutathione + kojic, P299 with FREE shipping, COD available, results in 2 weeks or money back"
+                value={form.uniqueSellingOffer}
+                onChange={e => setForm({ ...form, uniqueSellingOffer: e.target.value })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none resize-none"
+              />
+              <p className="text-gray-600 text-xs mt-1">What makes your offer worth buying right now? Include price, freebies, guarantee, urgency — anything that makes them act.</p>
             </div>
 
             {/* Market */}

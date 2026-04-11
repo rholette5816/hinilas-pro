@@ -175,7 +175,7 @@ ${HILAS_KNOWLEDGE}
 ${userContext}
 
 # TASK
-Do a deep market research for this business/product. Return a structured output:
+Do a deep market research for this business/product. Use the Unique Selling Offer from the USER CONTEXT to shape the pains, desires, and targeting — the offer must feel like the answer to what this customer is already looking for. Return a structured output:
 
 ## CUSTOMER PROFILE
 - Demographics (age, gender, location, income level)
