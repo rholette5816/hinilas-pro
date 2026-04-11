@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { useApp } from "@/lib/context";
 
 const modules = [
@@ -14,21 +15,41 @@ const modules = [
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
 ];
 
+function HilasLogo() {
+  return (
+    <div className="flex items-center gap-2.5">
+      {/* Logo mark — blue square with HILAS brand style */}
+      <div className="w-8 h-8 rounded-lg bg-[#1a8fc1] flex items-center justify-center shrink-0 shadow-lg">
+        <span className="text-white font-black text-xs leading-none tracking-tighter">H</span>
+      </div>
+      <div className="leading-tight">
+        <div className="flex items-baseline gap-0.5">
+          <span className="text-white font-black text-sm tracking-wide uppercase">HILAS</span>
+          <span className="text-[#f5a623] font-black text-sm">.</span>
+        </div>
+        <p className="text-gray-500 text-[10px] leading-none">Meta Ads AI Assistant</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const { setup } = useApp();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
-    <aside className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-full shrink-0">
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-800">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-xs font-bold">H</div>
-          <div>
-            <p className="text-white font-bold text-sm tracking-wide">Hinilas Pro</p>
-            <p className="text-gray-500 text-xs">Meta Ads AI Assistant</p>
-          </div>
-        </div>
+      <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+        <HilasLogo />
+        {/* Close button — mobile only */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="md:hidden text-gray-500 hover:text-white p-1"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Business context */}
@@ -47,16 +68,17 @@ export default function Sidebar() {
             <Link
               key={mod.href}
               href={mod.href}
+              onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
                 active
-                  ? "bg-blue-600 text-white"
+                  ? "bg-[#1a8fc1] text-white"
                   : "text-gray-400 hover:bg-gray-800 hover:text-white"
               }`}
             >
               <span className="text-base w-5 text-center">{mod.icon}</span>
               <div className="min-w-0">
                 <p className={`text-sm font-medium ${active ? "text-white" : ""}`}>{mod.label}</p>
-                <p className={`text-xs truncate ${active ? "text-blue-200" : "text-gray-600 group-hover:text-gray-400"}`}>
+                <p className={`text-xs truncate ${active ? "text-blue-100" : "text-gray-600 group-hover:text-gray-400"}`}>
                   {mod.description}
                 </p>
               </div>
@@ -66,10 +88,52 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-800">
-        <p className="text-gray-600 text-xs">Powered by JBI / Hilas Framework</p>
-        <p className="text-gray-700 text-xs">by Ken Allego</p>
+      <div className="px-5 py-4 border-t border-gray-800">
+        <p className="text-gray-500 text-xs">I&apos;m your Digital Marketing Assistant</p>
+        <p className="text-gray-700 text-xs mt-0.5">by Ken Allego</p>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+        <HilasLogo />
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="text-gray-400 hover:text-white p-1"
+          aria-label="Open menu"
+        >
+          <div className="space-y-1.5">
+            <span className="block w-6 h-0.5 bg-current" />
+            <span className="block w-6 h-0.5 bg-current" />
+            <span className="block w-6 h-0.5 bg-current" />
+          </div>
+        </button>
+      </div>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/60"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 bg-gray-900 border-r border-gray-800 transform transition-transform duration-300 ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-64 bg-gray-900 border-r border-gray-800 flex-col h-full shrink-0">
+        <SidebarContent />
+      </aside>
+    </>
   );
 }
