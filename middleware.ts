@@ -31,6 +31,11 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // Allow auth callback
+  if (pathname.startsWith("/auth/callback")) {
+    return supabaseResponse;
+  }
+
   // Allow login page always
   if (pathname === "/login") {
     // If already logged in, redirect to app
