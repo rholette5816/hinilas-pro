@@ -8,46 +8,21 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const supabase = createClient();
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
 
-    async function handleCallback() {
-      // Try hash fragment (implicit flow)
-      const hash = window.location.hash.substring(1);
-      const hashParams = new URLSearchParams(hash);
-      const accessToken = hashParams.get("access_token");
-      const refreshToken = hashParams.get("refresh_token");
-
-      if (accessToken && refreshToken) {
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!error) {
           window.location.replace("/");
-          return;
         } else {
           setStatus(`Error: ${error.message}`);
-          return;
         }
-      }
-
-      // Try PKCE code
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (!error) {
-          window.location.replace("/");
-          return;
-        } else {
-          setStatus(`Error: ${error.message}`);
-          return;
-        }
-      }
-
-      setStatus("Debug: hash=" + (hash || "empty") + " | search=" + window.location.search);
+      });
+    } else {
+      const errorDesc = url.searchParams.get("error_description");
+      setStatus(errorDesc ? `Error: ${errorDesc}` : "No code found. Please try again.");
     }
-
-    handleCallback();
   }, []);
 
   return (
