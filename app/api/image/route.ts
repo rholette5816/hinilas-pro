@@ -1,4 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const ASPECT_RATIO_LABELS: Record<string, string> = {
+  "1:1": "square (1:1 aspect ratio)",
+  "9:16": "vertical portrait (9:16 aspect ratio, taller than wide)",
+  "1.91:1": "horizontal landscape banner (1.91:1 aspect ratio, wider than tall)",
+};
 
 export async function POST(req: NextRequest) {
   const { prompt, count = 1, aspectRatio = "1:1" } = await req.json();
@@ -9,37 +16,35 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+
+    const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
+    const fullPrompt = `${prompt}\n\nGenerate this as a ${ratioLabel} image.`;
+
     const images: string[] = [];
 
     for (let i = 0; i < count; i++) {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            instances: [{ prompt }],
-            parameters: {
-              sampleCount: 1,
-              aspectRatio,
-              safetyFilterLevel: "block_only_high",
-              personGeneration: "allow_adult",
-            },
-          }),
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
+        generationConfig: {
+          // @ts-expect-error responseModalities is valid but not yet in type definitions
+          responseModalities: ["IMAGE", "TEXT"],
+        },
+      });
+
+      const parts = result.response.candidates?.[0]?.content?.parts ?? [];
+      for (const part of parts) {
+        if (part.inlineData?.data) {
+          const mimeType = part.inlineData.mimeType || "image/png";
+          images.push(`data:${mimeType};base64,${part.inlineData.data}`);
+          break;
         }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errMsg = data.error?.message || "Imagen API error";
-        return NextResponse.json({ error: errMsg }, { status: 500 });
       }
+    }
 
-      const b64 = data.predictions?.[0]?.bytesBase64Encoded;
-      if (b64) {
-        images.push(`data:image/png;base64,${b64}`);
-      }
+    if (images.length === 0) {
+      return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
 
     return NextResponse.json({ images });
