@@ -28,22 +28,41 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
     <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
       <div className="prose prose-invert prose-sm max-w-none">
         {content.split("\n").map((line, i) => {
-          if (line.startsWith("## ")) {
-            return <h2 key={i} className="text-blue-400 font-bold text-base mt-4 mb-2 first:mt-0">{line.replace("## ", "")}</h2>;
+          // Dividers
+          if (line.trim() === "---" || line.trim() === "***") {
+            return <div key={i} className="h-px bg-gray-700 my-3" />;
           }
+          // H1
           if (line.startsWith("# ")) {
-            return <h1 key={i} className="text-white font-bold text-lg mt-4 mb-2 first:mt-0">{line.replace("# ", "")}</h1>;
+            return <h1 key={i} className="text-white font-bold text-lg mt-5 mb-2">{line.replace(/^# /, "")}</h1>;
           }
-          if (line.startsWith("**") && line.endsWith("**")) {
+          // H2
+          if (line.startsWith("## ")) {
+            return <h2 key={i} className="text-blue-400 font-bold text-base mt-4 mb-2">{line.replace(/^## /, "")}</h2>;
+          }
+          // H3
+          if (line.startsWith("### ")) {
+            return <h3 key={i} className="text-gray-300 font-semibold text-sm mt-3 mb-1">{line.replace(/^### /, "")}</h3>;
+          }
+          // Bold-only line
+          if (line.startsWith("**") && line.endsWith("**") && line.length > 4) {
             return <p key={i} className="font-bold text-white text-sm mt-3 mb-1">{line.replace(/\*\*/g, "")}</p>;
           }
+          // Bullet points
           if (line.startsWith("- ")) {
-            return <p key={i} className="text-gray-300 text-sm pl-3 before:content-['•'] before:mr-2 before:text-blue-400">{line.replace("- ", "")}</p>;
+            return <p key={i} className="text-gray-300 text-sm pl-3 before:content-['•'] before:mr-2 before:text-blue-400">{line.replace(/^- /, "")}</p>;
           }
+          // Numbered list
+          if (/^\d+\.\s/.test(line)) {
+            const num = line.match(/^(\d+)\.\s/)?.[1];
+            const text = line.replace(/^\d+\.\s/, "");
+            return <p key={i} className="text-gray-300 text-sm pl-3"><span className="text-blue-400 font-semibold mr-2">{num}.</span>{text}</p>;
+          }
+          // Empty line
           if (line.trim() === "") {
             return <div key={i} className="h-2" />;
           }
-          // Handle inline bold
+          // Inline bold
           if (line.includes("**")) {
             const parts = line.split(/(\*\*[^*]+\*\*)/g);
             return (
@@ -56,6 +75,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
               </p>
             );
           }
+          // Plain text
           return <p key={i} className="text-gray-300 text-sm leading-relaxed">{line}</p>;
         })}
       </div>
