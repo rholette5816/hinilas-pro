@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     for (let i = 0; i < count; i++) {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-preview-06-06:predict?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

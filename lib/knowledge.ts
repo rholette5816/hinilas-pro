@@ -287,23 +287,25 @@ Which is the likely root cause and why?
 `,
 
   creative: (userContext: string, angle: string, hook: string, subheadline: string, cta: string, format: string) => `
-Create a professional static Facebook/Instagram ad image.
+Create a hyper-realistic, high-converting Facebook/Instagram ad image optimized for the Philippine market.
 
 Product/Business: ${userContext}
 Marketing angle: ${angle}
 Hook text: ${hook}
 Sub-headline: ${subheadline}
-CTA: ${cta}
-Format: ${format}
+CTA button text: ${cta}
+Format/Aspect ratio: ${format}
 
-Style requirements:
-- Clean, professional social media ad aesthetic
-- High contrast colors that stop the scroll
-- Bold, readable typography for the hook text
-- The hook, sub-headline, and CTA must appear as text in the image
-- Suitable for Philippine market
-- No watermarks, no borders
-- Photorealistic or graphic design style appropriate for the product
-- One clear visual focus — do not clutter
+Image requirements:
+- Hyper-realistic photography or photorealistic 3D render style
+- The exact hook text "${hook}" must appear as sharp, clearly legible text overlaid on the image
+- The exact sub-headline "${subheadline}" must appear as readable supporting text below the hook
+- A CTA button with the text "${cta}" must be visible and prominent
+- All text must be precisely rendered with crisp edges, no blurring or distortion
+- High contrast between text and background to ensure readability
+- Bold, attention-grabbing composition that stops the scroll
+- Clean layout with one clear visual focal point — no clutter
+- No watermarks, no borders, no logos
+- Suitable for Filipino buyer psychology and aesthetics
 `,
 };
