@@ -17,12 +17,13 @@ const modules = [
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
 
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
+  { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { setup } = useApp();
+  const { setup, credits, creditsTotal, plan } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
@@ -94,6 +95,31 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-gray-800">
+        {/* Credits display */}
+        <Link href="/pricing" onClick={() => setMobileOpen(false)} className="block mb-3">
+          <div className="rounded-lg px-3 py-2 border border-gray-700 hover:border-gray-600 transition-colors" style={{ background: "#0F172A" }}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-400">
+                {plan === "lite" ? "Lite" : plan === "pro" ? "Pro" : plan === "max" ? "Max" : "Lite"} Plan
+              </span>
+              <span className="text-xs font-semibold" style={{
+                color: credits === 0 ? "#EF4444" : credits / creditsTotal < 0.2 ? "#F59E0B" : "#22C55E"
+              }}>
+                {credits} credits
+              </span>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-1">
+              <div
+                className="h-1 rounded-full transition-all"
+                style={{
+                  width: `${creditsTotal > 0 ? Math.min((credits / creditsTotal) * 100, 100) : 0}%`,
+                  background: credits === 0 ? "#EF4444" : credits / creditsTotal < 0.2 ? "#F59E0B" : "#22C55E",
+                }}
+              />
+            </div>
+          </div>
+        </Link>
+
         {user && (
           <div className="flex items-center gap-3 mb-3">
             {user.avatar ? (

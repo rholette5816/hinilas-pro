@@ -25,6 +25,10 @@ interface AppContextType {
   setSelectedAngle: (s: string) => void;
   creativeImage: string;
   setCreativeImage: (s: string) => void;
+  credits: number;
+  creditsTotal: number;
+  plan: string;
+  refreshCredits: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -35,6 +39,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [anglesOutput, setAnglesOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
   const [creativeImage, setCreativeImageState] = useState("");
+  const [credits, setCredits] = useState(0);
+  const [creditsTotal, setCreditsTotal] = useState(5);
+  const [plan, setPlan] = useState("lite");
   const [userId, setUserId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
@@ -56,6 +63,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.research_output) setResearchOutputState(data.research_output);
         if (data.angles_output) setAnglesOutputState(data.angles_output);
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
+        if (data.credits_remaining !== undefined) setCredits(data.credits_remaining);
+        if (data.credits_total !== undefined) setCreditsTotal(data.credits_total);
+        if (data.plan) setPlan(data.plan);
       }
 
       setHydrated(true);
@@ -96,6 +106,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCreativeImageState(s);
   }
 
+  async function refreshCredits() {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("user_data")
+      .select("credits_remaining, credits_total, plan")
+      .eq("user_id", user.id)
+      .single();
+    if (data) {
+      setCredits(data.credits_remaining);
+      setCreditsTotal(data.credits_total);
+      setPlan(data.plan);
+    }
+  }
+
   if (!hydrated) return null;
 
   return (
@@ -105,6 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       anglesOutput, setAnglesOutput,
       selectedAngle, setSelectedAngle,
       creativeImage, setCreativeImage,
+      credits, creditsTotal, plan, refreshCredits,
     }}>
       {children}
     </AppContext.Provider>

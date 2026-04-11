@@ -14,7 +14,7 @@ const EXTRA_SIZES: { key: SizeKey; label: string; sub: string }[] = [
 ];
 
 export default function CreativePage() {
-  const { setup, selectedAngle, setCreativeImage } = useApp();
+  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits } = useApp();
   const router = useRouter();
 
   const [extraPrompt, setExtraPrompt] = useState("");
@@ -23,6 +23,7 @@ export default function CreativePage() {
   const [images, setImages] = useState<Partial<Record<SizeKey, string>>>({});
   const [loading, setLoading] = useState<Partial<Record<SizeKey, boolean>>>({});
   const [error, setError] = useState("");
+  const [noCredits, setNoCredits] = useState(false);
 
   const logoRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<HTMLInputElement>(null);
@@ -56,6 +57,7 @@ export default function CreativePage() {
     if (!setup) return;
     setLoading(prev => ({ ...prev, [size]: true }));
     setError("");
+    setNoCredits(false);
 
     try {
       const [logoDesc, productDesc] = await Promise.all([
@@ -79,11 +81,14 @@ export default function CreativePage() {
         }),
       });
       const data = await res.json();
-      if (data.error) {
+      if (data.code === "NO_CREDITS") {
+        setNoCredits(true);
+      } else if (data.error) {
         setError(data.error);
       } else if (data.images?.[0]) {
         setImages(prev => ({ ...prev, [size]: data.images[0] }));
         if (size === "1:1") setCreativeImage(data.images[0]);
+        await refreshCredits();
       }
     } catch {
       setError("Something went wrong. Try again.");
@@ -191,6 +196,51 @@ export default function CreativePage() {
               placeholder="e.g. dark themed, warm colors, show before and after, minimalist design..."
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
             />
+          </div>
+
+          {/* No credits modal */}
+          {noCredits && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+                <div className="text-4xl mb-4">⚡</div>
+                <h2 className="text-white font-bold text-lg mb-2">You&apos;re out of credits</h2>
+                <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
+                <div className="flex flex-col gap-3">
+                  <a
+                    href="/pricing"
+                    className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
+                    style={{ background: "#F5A623" }}
+                  >
+                    Upgrade to Pro — ₱999/mo
+                  </a>
+                  <a
+                    href="/pricing#topup"
+                    className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
+                    style={{ background: "#2B7EC9" }}
+                  >
+                    Get 50 Credits — ₱499
+                  </a>
+                  <button
+                    onClick={() => setNoCredits(false)}
+                    className="text-gray-500 text-sm hover:text-gray-400"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Credits remaining */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs text-gray-500">
+              {credits === 1 ? "1 credit remaining" : `${credits} credits remaining`}
+            </span>
+            {credits <= 5 && (
+              <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">
+                Top up
+              </a>
+            )}
           </div>
 
           {/* Error */}

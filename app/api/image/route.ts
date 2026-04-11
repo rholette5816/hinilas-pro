@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from "@/lib/supabase/server";
 
 const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1:1": "square (1:1 aspect ratio)",
@@ -9,6 +10,28 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   const { prompt, count = 1, aspectRatio = "1:1", referenceImage } = await req.json();
+
+  // --- Credit gate ---
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: userData } = await supabase
+    .from("user_data")
+    .select("credits_remaining")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!userData || userData.credits_remaining <= 0) {
+    return NextResponse.json(
+      { error: "No credits remaining", code: "NO_CREDITS" },
+      { status: 402 }
+    );
+  }
+  // --- End credit gate ---
 
   const apiKey = process.env.GEMINI_IMAGE_API_KEY;
   if (!apiKey) {
@@ -24,7 +47,6 @@ export async function POST(req: NextRequest) {
     const images: string[] = [];
 
     for (let i = 0; i < count; i++) {
-      // Build parts — if a reference image is provided, include it so the model stays consistent
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parts: any[] = [];
 
@@ -61,7 +83,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
 
-    return NextResponse.json({ images });
+    // Deduct credit after successful generation
+    const newCredits = userData.credits_remaining - 1;
+    await supabase
+      .from("user_data")
+      .update({ credits_remaining: newCredits })
+      .eq("user_id", user.id);
+
+    await supabase.from("credit_transactions").insert({
+      user_id: user.id,
+      type: "use",
+      amount: -1,
+      description: "Image generation",
+    });
+
+    return NextResponse.json({ images, creditsRemaining: newCredits });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Image generation error";
     return NextResponse.json({ error: message }, { status: 500 });
