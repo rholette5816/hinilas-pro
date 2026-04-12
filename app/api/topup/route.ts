@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           <tr><td style="padding:6px 12px;color:#6B7280">Credits to Add</td><td style="padding:6px 12px"><strong>${credits} credits</strong></td></tr>
           <tr><td style="padding:6px 12px;color:#6B7280">Reference No.</td><td style="padding:6px 12px"><strong>${referenceNumber}</strong></td></tr>
         </table>
-        <p style="margin-top:16px;color:#6B7280;font-size:13px">Verify the payment in GCash/bank then add credits manually in Supabase.</p>
+        <p style="margin-top:16px;color:#6B7280;font-size:13px">Credits will be added automatically once the GCash payment is detected.</p>
       `,
     });
   } catch {
