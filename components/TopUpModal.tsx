@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const PACKAGES = [
   { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "One-time", color: "#2B7EC9" },
@@ -18,8 +19,11 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   const [selected, setSelected] = useState(PACKAGES[0]);
   const [step, setStep] = useState<"select" | "confirm" | "done">("select");
   const [refNumber, setRefNumber] = useState("");
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,6 +31,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
       setSelected(pkg);
       setStep(defaultPackage ? "confirm" : "select");
       setRefNumber("");
+      setScreenshot(null);
+      setScreenshotPreview(null);
       setError("");
       setSubmitting(false);
     }
@@ -37,15 +43,42 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   function reset() {
     setStep("select");
     setRefNumber("");
+    setScreenshot(null);
+    setScreenshotPreview(null);
     setError("");
     setSubmitting(false);
   }
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setScreenshot(file);
+    setScreenshotPreview(URL.createObjectURL(file));
+  }
+
   async function submit() {
-    if (!refNumber.trim()) { setError("Enter your GCash/bank reference number."); return; }
+    if (!refNumber.trim()) { setError("Enter your GCash reference number."); return; }
+    if (!screenshot) { setError("Upload a screenshot of your payment."); return; }
     setSubmitting(true);
     setError("");
+
     try {
+      // Upload screenshot to Supabase Storage
+      const supabase = createClient();
+      const ext = screenshot.name.split(".").pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("topup-receipts")
+        .upload(fileName, screenshot, { contentType: screenshot.type });
+
+      if (uploadError) throw new Error("Upload failed");
+
+      const { data: urlData } = supabase.storage
+        .from("topup-receipts")
+        .getPublicUrl(fileName);
+
+      const screenshotUrl = urlData.publicUrl;
+
       const res = await fetch("/api/topup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,6 +87,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
           referenceNumber: refNumber.trim(),
           amount: selected.price,
           credits: selected.credits,
+          screenshotUrl,
         }),
       });
       if (!res.ok) throw new Error();
@@ -77,7 +111,6 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
 
         {step === "select" && (
           <div className="p-5 space-y-4">
-            {/* Package selector */}
             <div className="space-y-2">
               {PACKAGES.map(pkg => (
                 <button
@@ -103,7 +136,6 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 </button>
               ))}
             </div>
-
             <button
               onClick={() => setStep("confirm")}
               className="w-full py-3 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -115,12 +147,10 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
         )}
 
         {step === "confirm" && (
-          <div className="p-5 space-y-5">
+          <div className="p-5 space-y-4">
             {/* GCash QR */}
             <div className="rounded-xl overflow-hidden border border-gray-800 bg-blue-600 flex flex-col items-center py-5 px-4">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-white font-bold text-lg">GCash</span>
-              </div>
+              <span className="text-white font-bold text-lg mb-4">GCash</span>
               <div className="bg-white rounded-xl p-3 mb-4">
                 <img
                   src="/gcash-qr.jpg"
@@ -133,32 +163,22 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                     (e.target as HTMLImageElement).nextElementSibling?.removeAttribute("style");
                   }}
                 />
-                <div style={{ display: "none", width: 160, height: 160 }} className="flex items-center justify-center bg-gray-100 rounded text-gray-400 text-xs text-center p-2">
-                  Add gcash-qr.png to /public folder
+                <div style={{ display: "none", width: 140, height: 140 }} className="flex items-center justify-center bg-gray-100 rounded text-gray-400 text-xs text-center p-2">
+                  QR not found
                 </div>
               </div>
               <p className="text-blue-100 text-xs mb-1">Transfer fees may apply.</p>
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-white font-bold text-base">Donna Lim</p>
-                <button
-                  onClick={() => navigator.clipboard.writeText("Donna Lim")}
-                  className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all"
-                >
-                  Copy
-                </button>
+                <button onClick={() => navigator.clipboard.writeText("Donna Lim")} className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-blue-200 text-sm">0956 160 3751</p>
-                <button
-                  onClick={() => navigator.clipboard.writeText("09561603751")}
-                  className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all"
-                >
-                  Copy
-                </button>
+                <button onClick={() => navigator.clipboard.writeText("09561603751")} className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
             </div>
 
-            {/* Amount reminder */}
+            {/* Amount */}
             <div className="flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3">
               <div>
                 <p className="text-white font-bold text-sm">{selected.label} — {selected.credits} credits</p>
@@ -169,7 +189,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
 
             {/* Reference number */}
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-1.5">GCash / Bank Reference Number</label>
+              <label className="block text-xs font-semibold text-gray-400 mb-1.5">GCash Reference Number</label>
               <input
                 type="text"
                 value={refNumber}
@@ -177,6 +197,38 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 placeholder="e.g. 1234567890"
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+
+            {/* Screenshot upload */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-400 mb-1.5">Payment Screenshot</label>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {screenshotPreview ? (
+                <div className="relative rounded-xl overflow-hidden border border-gray-700">
+                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-gray-900" />
+                  <button
+                    onClick={() => { setScreenshot(null); setScreenshotPreview(null); if (fileRef.current) fileRef.current.value = ""; }}
+                    className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg hover:bg-black/80"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  className="w-full py-4 rounded-xl border border-dashed border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200 text-sm transition-colors flex flex-col items-center gap-1"
+                  style={{ background: "#0A0F1A" }}
+                >
+                  <span className="text-2xl">📎</span>
+                  <span>Tap to upload screenshot</span>
+                </button>
+              )}
               {error && <p className="text-red-400 text-xs mt-1.5">{error}</p>}
             </div>
 
@@ -193,7 +245,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white disabled:opacity-50 transition-opacity hover:opacity-90"
                 style={{ background: selected.color }}
               >
-                {submitting ? "Submitting..." : "Submit Request"}
+                {submitting ? "Uploading..." : "Submit Request"}
               </button>
             </div>
 

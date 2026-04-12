@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { package: pkg, referenceNumber, amount, credits } = await req.json();
+  const { package: pkg, referenceNumber, amount, credits, screenshotUrl } = await req.json();
 
   await supabase.from("top_up_requests").insert({
     user_id: user.id,
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
     amount_paid: amount,
     credits_requested: credits,
     reference_number: referenceNumber,
+    screenshot_url: screenshotUrl || null,
     status: "pending",
   });
 
@@ -34,6 +35,7 @@ export async function POST(req: Request) {
           <tr><td style="padding:6px 12px;color:#6B7280">Credits to Add</td><td style="padding:6px 12px"><strong>${credits} credits</strong></td></tr>
           <tr><td style="padding:6px 12px;color:#6B7280">Reference No.</td><td style="padding:6px 12px"><strong>${referenceNumber}</strong></td></tr>
         </table>
+        ${screenshotUrl ? `<p style="margin-top:16px;color:#6B7280;font-size:13px;margin-bottom:8px">Payment Screenshot:</p><img src="${screenshotUrl}" alt="Payment Screenshot" style="max-width:400px;border-radius:8px;border:1px solid #374151" />` : ""}
         <p style="margin-top:16px;color:#6B7280;font-size:13px">Credits will be added automatically once the GCash payment is detected.</p>
       `,
     });
