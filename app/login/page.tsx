@@ -22,14 +22,15 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-3">
-            <HinilasIcon size="lg" accentColor="#2B7EC9" />
+            <HinilasIcon size="lg" accentColor="#F5A623" />
             <div className="leading-tight">
               <div className="flex items-baseline">
                 <span className="text-white font-bold text-xl tracking-wide">Hinilas</span>
-                <span className="font-bold text-xl tracking-wide" style={{ color: "#2B7EC9" }}>Pro</span>
+                <span className="font-bold text-xl tracking-wide" style={{ color: "#F5A623" }}>Pro</span>
               </div>
-              <p className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>
-                AI Driven. Results Focused.
+              <p className="text-[10px] font-semibold tracking-widest uppercase leading-none mt-0.5">
+                <span style={{ color: "#2B7EC9" }}>AI Driven. </span>
+                <span style={{ color: "#F5A623" }}>Results Focused.</span>
               </p>
             </div>
           </div>
