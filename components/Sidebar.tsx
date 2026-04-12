@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useApp, derivePlan } from "@/lib/context";
 import HinilasLogo from "@/components/HinilasLogo";
 import FloatingExpert from "@/components/FloatingExpert";
+import FloatingFeedback from "@/components/FloatingFeedback";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
@@ -26,6 +27,7 @@ export default function Sidebar() {
   const { setup, credits, creditsTotal, plan } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -55,11 +57,11 @@ export default function Sidebar() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setExpertOpen(true); setMobileOpen(false); }}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+            className="hidden md:flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold transition-opacity hover:opacity-90"
             style={{ background: "#F5A623", color: "#000" }}
           >
-            <span>🎙</span>
-            <span>Book Expert</span>
+            <span className="text-xs">🎙</span>
+            <span>Expert</span>
           </button>
           <button
             onClick={() => setMobileOpen(false)}
@@ -168,11 +170,11 @@ export default function Sidebar() {
                 className="rounded-full"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "#2B7EC9" }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
                 {user.name.charAt(0).toUpperCase()}
               </div>
             )}
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-white text-xs font-medium truncate">{user.name}</p>
               <button
                 onClick={handleLogout}
@@ -181,6 +183,12 @@ export default function Sidebar() {
                 Log out
               </button>
             </div>
+            <button
+              onClick={() => setFeedbackOpen(true)}
+              className="shrink-0 text-xs text-gray-500 hover:text-gray-300 border border-gray-700 hover:border-gray-500 px-2 py-1 rounded-md transition-colors"
+            >
+              💬
+            </button>
           </div>
         )}
         <p className="text-gray-700 text-xs">By Basta Mag Ads Hilas</p>
@@ -241,6 +249,9 @@ export default function Sidebar() {
 
       {/* Expert booking modal */}
       <FloatingExpert isOpen={expertOpen} onClose={() => setExpertOpen(false)} />
+
+      {/* Feedback modal */}
+      <FloatingFeedback isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </>
   );
 }

@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
-import FloatingFeedback from "@/components/FloatingFeedback";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +28,6 @@ export default function RootLayout({
       <body className={`${inter.className} text-white antialiased`} style={{ background: "#0B1120" }}>
         <AppProvider>
           {children}
-          <FloatingFeedback />
         </AppProvider>
       </body>
     </html>
