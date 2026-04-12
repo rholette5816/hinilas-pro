@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   const { package: pkg, referenceNumber, amount, credits, screenshotUrl } = await req.json();
 
-  const { data: insertedRequest } = await supabase.from("top_up_requests").insert({
+  await supabase.from("top_up_requests").insert({
     user_id: user.id,
     user_email: user.email,
     package: pkg,
@@ -36,7 +36,17 @@ export async function POST(req: Request) {
     reference_number: referenceNumber,
     screenshot_url: screenshotUrl || null,
     status: "pending",
-  }).select("id").single();
+  });
+
+  // Fetch the request ID we just inserted
+  const { data: insertedRequest } = await supabase
+    .from("top_up_requests")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
 
   const requestId = insertedRequest?.id;
 
