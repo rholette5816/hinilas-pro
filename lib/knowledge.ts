@@ -333,54 +333,62 @@ ${userContext}
 ${profitInfo ? `# PROFIT DATA\n${profitInfo}` : ""}
 
 # TASK
-A screenshot of the Meta Ads Manager has been provided. Read all the metrics visible in the image.
+A screenshot of Meta Ads Manager has been provided. Read all visible metrics and give a fast, scannable diagnosis. No long paragraphs. Use the format below exactly.
 
-Analyze the results following the correct priority stack order and output:
-
-## METRICS READ
-List every metric visible in the screenshot with its value. If a metric is not visible, note it as "not shown".
-
-## STEP 1 — GOAL CHECK: Cost per Conversation + Volume
-Rate Cost per Conversation: Excellent / Good / Acceptable / Bad (P15–60 / P60–120 / P120–200 / P350+)
-State the number of Conversations Started. Is the volume sufficient?
-
-## STEP 2 — SAMPLE VALIDITY: Amount Spent
-How much was spent? Is this enough to make a decision?
-- Below P300: not enough data yet — do not kill the ad
-- P300–P500: borderline — consider the full picture
-- P500+: sufficient sample to judge
-
-## STEP 3 — CREATIVE STRENGTH: CTR + CPC
-Rate CTR: Excellent (3–5%) / Good (2–3%) / Weak (1–2%) / Bad (below 1%)
-Rate CPC: Strong or Weak based on pairing with CTR.
-Is the ad creative performing?
-
-## STEP 4 — FUNNEL CHECK: Conversation Rate
-If visible or calculable (Conversations ÷ Link Clicks): is there a drop-off after click?
-If not calculable from the screenshot, note it.
-
-## STEP 5 — DELIVERY HEALTH: CPM + Frequency
-Rate CPM: Good (P120–180) / Okay (P180–300) / Expensive (P300+)
-Rate Frequency: Healthy (1–2.5) / Watch (2.5–3) / Overexposed (3.5+)
-Any fatigue or audience saturation signals?
+---
 
 ## OVERALL VERDICT
-CONTINUE / OPTIMIZE / TURN OFF / WAIT (not enough data yet) — one clear sentence.
+One line. Use one of these with the matching indicator:
+🟢 CONTINUE — [one sentence why]
+🟡 OPTIMIZE — [one sentence what to fix]
+🔴 TURN OFF — [one sentence why]
+⏳ WAIT — Not enough spend data yet. Let it run.
 
-## PROFIT & ROAS CHECK
-${profitInfo ? `Use the data provided to calculate all of the following:
-- Gross Profit per Sale = Selling Price minus Product Cost
-- Total Revenue = Selling Price x Number of Sales
-- Total Profit = Total Revenue minus Amount Spent minus (Product Cost x Number of Sales)
-- ROAS = Total Revenue / Amount Spent
-- Break-even Cost per Conversation = Gross Profit per Sale x Conversion Rate (estimate if conversion rate not given)
-State clearly: is this campaign profitable or not? By how much?` : "No profit data provided — skip this section."}
+---
 
-## ROOT CAUSE (if underperforming)
-Diagnose in this order: Creative → Audience → Budget → Offer. What is the most likely issue and why?
+## METRICS
+One line per metric. Format: [indicator] [Metric Name] — [value] ([rating])
+
+Indicators:
+🟢 = Excellent/Good | 🟡 = Acceptable/Watch | 🔴 = Bad/Stop
+
+Rate using these benchmarks:
+- Cost per Conversation: 🟢 P15–120 | 🟡 P120–200 | 🔴 P200+
+- Conversations Started: 🟢 10+ | 🟡 5–10 | 🔴 below 5
+- Amount Spent: 🟢 P500+ (enough data) | 🟡 P300–500 (borderline) | 🔴 below P300 (too early to judge)
+- CTR: 🟢 2%+ | 🟡 1–2% | 🔴 below 1%
+- CPC: 🟢 low | 🟡 average | 🔴 high (judge relative to CTR)
+- CPM: 🟢 P120–180 | 🟡 P180–300 | 🔴 P300+
+- Frequency: 🟢 1–2.5 | 🟡 2.5–3 | 🔴 3.5+
+
+Only show metrics visible in the screenshot. Skip what is not shown.
+
+---
+
+## ROOT CAUSE
+Only if verdict is OPTIMIZE or TURN OFF.
+One line. Format: ⚠️ [Creative / Audience / Budget / Offer] — [specific reason]
+
+---
 
 ## NEXT STEPS
-3 specific actions to take right now. Be direct and specific — no generic advice.
+Exactly 3 actions. One line each. Start each with a number.
+1.
+2.
+3.
+
+---
+
+${profitInfo ? `## PROFIT
+Calculate and show only the numbers:
+- Gross Profit per Sale: P[result]
+- Total Revenue: P[result]
+- Total Ad Cost: P[result]
+- Net Profit: P[result]
+- ROAS: [result]x
+- Verdict: 🟢 Profitable / 🔴 Not Profitable` : ""}
+
+Keep the entire response short. No explanations beyond what the format asks for. Be direct.
 `,
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
