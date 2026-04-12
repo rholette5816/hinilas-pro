@@ -21,6 +21,8 @@ interface AppContextType {
   setResearchOutput: (s: string) => void;
   anglesOutput: string;
   setAnglesOutput: (s: string) => void;
+  copyOutput: string;
+  setCopyOutput: (s: string) => void;
   selectedAngle: string;
   setSelectedAngle: (s: string) => void;
   creativeImage: string;
@@ -45,6 +47,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
   const [researchOutput, setResearchOutputState] = useState("");
   const [anglesOutput, setAnglesOutputState] = useState("");
+  const [copyOutput, setCopyOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
   const [creativeImage, setCreativeImageState] = useState("");
   const [savedImages, setSavedImages] = useState<{ main: string | null; v1: string | null; v2: string | null }>({ main: null, v1: null, v2: null });
@@ -70,6 +73,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.setup) setSetupState(data.setup);
         if (data.research_output) setResearchOutputState(data.research_output);
         if (data.angles_output) setAnglesOutputState(data.angles_output);
+        if (data.copy_output) setCopyOutputState(data.copy_output);
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
         if (data.credits_remaining !== undefined) setCredits(data.credits_remaining);
         if (data.credits_total !== undefined) setCreditsTotal(data.credits_total);
@@ -107,6 +111,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function setAnglesOutput(s: string) {
     setAnglesOutputState(s);
     persist({ angles_output: s });
+  }
+
+  function setCopyOutput(s: string) {
+    setCopyOutputState(s);
+    persist({ copy_output: s });
   }
 
   function setSelectedAngle(s: string) {
@@ -171,6 +180,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setup, setSetup,
       researchOutput, setResearchOutput,
       anglesOutput, setAnglesOutput,
+      copyOutput, setCopyOutput,
       selectedAngle, setSelectedAngle,
       creativeImage, setCreativeImage,
       savedImages, saveAdImages,

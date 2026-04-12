@@ -1,7 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+
+function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = useCallback(() => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [text]);
+  return (
+    <button
+      onClick={copy}
+      className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-all shrink-0"
+      style={{ background: copied ? "#22c55e20" : "#0A0F1A", color: copied ? "#22c55e" : "#6B7280", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
+    >
+      {copied ? "Copied!" : label}
+    </button>
+  );
+}
 import Sidebar from "@/components/Sidebar";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
@@ -231,19 +249,25 @@ export default function AnglesPage() {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => useAngle(angle, idx)}
-                        className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
-                        style={{ background: color, color: "#000" }}
-                      >
-                        {isSelected ? "Going..." : "Use This →"}
-                      </button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <CopyBtn text={`ANGLE ${angle.number}: ${angle.name}\n\nCore Message: ${angle.coreMessage}\nHook: ${angle.hookLine}\nFormula: ${angle.formula}\nUSO: ${angle.uso}`} label="Copy" />
+                        <button
+                          onClick={() => useAngle(angle, idx)}
+                          className="text-xs font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
+                          style={{ background: color, color: "#000" }}
+                        >
+                          {isSelected ? "Going..." : "Use This →"}
+                        </button>
+                      </div>
                     </div>
 
                     {/* Hook line */}
                     {angle.hookLine && (
                       <div className="mx-5 mb-4 rounded-lg px-4 py-3 border" style={{ background: "#0A0F1A", borderColor: color + "30" }}>
-                        <p className="text-xs font-semibold mb-1" style={{ color }}>Hook Line</p>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-semibold" style={{ color }}>Hook Line</p>
+                          <CopyBtn text={angle.hookLine} label="Copy Hook" />
+                        </div>
                         <p className="text-gray-300 text-sm italic">"{angle.hookLine}"</p>
                       </div>
                     )}

@@ -7,6 +7,24 @@ import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+  return (
+    <button
+      onClick={copy}
+      className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
+      style={{ background: copied ? "#22c55e20" : "#1E293B", color: copied ? "#22c55e" : "#9CA3AF", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
+    >
+      {copied ? "Copied!" : "Copy All"}
+    </button>
+  );
+}
+
 const FORMULAS = [
   { key: "PAS", label: "PAS", angle: "Problem Angle", desc: "Problem → Agitate → Solution → CTA" },
   { key: "BAB", label: "BAB", angle: "Transformation", desc: "Before → After → Bridge" },
@@ -26,10 +44,11 @@ const LANGUAGES = [
 ];
 
 export default function CopyPage() {
-  const { setup, creativeImage } = useApp();
+  const { setup, creativeImage, copyOutput, setCopyOutput } = useApp();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [output, setOutput] = useState("");
+  const output = copyOutput;
+  const setOutput = setCopyOutput;
   const [selectedFormulas, setSelectedFormulas] = useState<string[]>([]);
   const [language, setLanguage] = useState(setup?.language || "Taglish");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -245,6 +264,11 @@ export default function CopyPage() {
           </div>
 
           {/* Output */}
+          {output && !loading && (
+            <div className="flex justify-end mb-2">
+              <CopyButton text={output} />
+            </div>
+          )}
           <AIOutput content={output} loading={loading} loadingText="Writing your captions..." />
 
         </div>
