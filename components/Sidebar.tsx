@@ -42,6 +42,7 @@ const modules: { href: string; label: string; icon: string; description: string;
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
   { href: "/learn", label: "Courses", icon: "📖", description: "Marketing & ads education" },
+  { href: "/community", label: "Community", icon: "💬", description: "Chat with other users" },
   { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
 
