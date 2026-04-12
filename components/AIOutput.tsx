@@ -44,9 +44,9 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
         {lines.map((line, i) => {
           const trimmed = line.trim();
 
-          // Divider
+          // Divider — skip, no visual clutter
           if (trimmed === "---" || trimmed === "***")
-            return <div key={i} className="h-px bg-gray-700 my-4" />;
+            return null;
 
           // H1
           if (line.startsWith("# "))
@@ -81,9 +81,9 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
             );
           }
 
-          // Empty line — small gap
+          // Empty line — skip
           if (trimmed === "")
-            return <div key={i} className="h-2" />;
+            return null;
 
           // Bold-only line (acts as a label/heading)
           if (trimmed.startsWith("**") && trimmed.endsWith("**") && trimmed.length > 4)
