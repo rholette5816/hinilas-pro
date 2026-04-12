@@ -116,10 +116,10 @@ export default function FloatingChat() {
       {/* Chat window */}
       {open && (
         <div
-          className="fixed bottom-20 right-6 z-50 w-80 md:w-96 rounded-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden"
+          className="fixed bottom-12 right-3 z-50 w-72 md:w-80 rounded-t-2xl rounded-bl-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden"
           style={{
             background: "#0F172A",
-            height: "420px",
+            height: "400px",
             animation: "slideUp 0.2s ease-out",
           }}
         >
@@ -127,7 +127,7 @@ export default function FloatingChat() {
           <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between shrink-0" style={{ background: "#0A0F1A" }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white text-sm font-bold">Community</span>
+              <span className="text-white text-sm font-bold">Mga Hilason</span>
               <span className="text-gray-600 text-xs">{messages.length} messages</span>
             </div>
             <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-white text-base">✕</button>
@@ -201,24 +201,28 @@ export default function FloatingChat() {
       )}
 
       {/* Floating button */}
-      <button
-        onClick={() => setOpen(prev => !prev)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-2xl text-sm font-semibold transition-transform hover:scale-105 active:scale-95"
-        style={{
-          background: open ? "#1E293B" : "linear-gradient(135deg, #7C3AED, #2B7EC9)",
-          color: "#fff",
-          boxShadow: glowing ? "0 0 0 4px #7C3AED40, 0 0 20px #7C3AED60" : "0 4px 24px rgba(0,0,0,0.4)",
-          animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",
-        }}
-      >
-        <span className="text-base">💬</span>
-        <span>Community</span>
-        {unread > 0 && !open && (
-          <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "#EF4444", color: "#fff" }}>
-            {unread > 9 ? "9+" : unread}
-          </span>
-        )}
-      </button>
+      <div className="fixed bottom-0 right-3 z-50 flex flex-col items-center" style={{ width: "48px" }}>
+        <button
+          onClick={() => setOpen(prev => !prev)}
+          className="relative flex flex-col items-center justify-center transition-transform hover:scale-105 active:scale-95"
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "10px 10px 0 0",
+            background: open ? "#1E293B" : "linear-gradient(135deg, #7C3AED, #2B7EC9)",
+            boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
+            animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",
+          }}
+        >
+          <span className="text-lg leading-none">💬</span>
+          <span className="text-white font-bold leading-none mt-0.5" style={{ fontSize: "8px", letterSpacing: "0.02em" }}>HILASON</span>
+          {unread > 0 && !open && (
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center font-bold" style={{ background: "#EF4444", color: "#fff", fontSize: "9px" }}>
+              {unread > 9 ? "9+" : unread}
+            </span>
+          )}
+        </button>
+      </div>
 
       <style>{`
         @keyframes slideUp {
