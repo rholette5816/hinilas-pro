@@ -241,35 +241,38 @@ export default function PricingPage() {
               ))}
             </div>
 
-            {/* Mobile: per-feature rows with tier badges */}
-            <div className="md:hidden">
-              {FEATURES.map(group => (
-                <div key={group.category}>
-                  <div className="px-4 py-2 border-b border-gray-800" style={{ background: "#0F172A" }}>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{group.category}</p>
+            {/* Mobile: tier cards */}
+            <div className="md:hidden divide-y divide-gray-800">
+              {[
+                { key: "lite", label: "Lite", color: "#9CA3AF", field: "lite" as const },
+                { key: "flex", label: "Flex", color: BRAND_ORANGE, field: "flex" as const },
+                { key: "max", label: "Max", color: BRAND_RED, field: "max" as const },
+              ].map(tier => (
+                <div key={tier.key} className="p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full" style={{ background: tier.color }} />
+                    <p className="text-sm font-bold uppercase tracking-wide" style={{ color: tier.color }}>
+                      Hinilas {tier.label}
+                    </p>
                   </div>
-                  {group.items.map((item, idx) => (
-                    <div
-                      key={item.label}
-                      className={`px-4 py-3 ${idx < group.items.length - 1 ? "border-b border-gray-800" : ""}`}
-                    >
-                      <p className="text-gray-200 text-sm mb-2">{item.label}</p>
-                      <div className="flex gap-3">
-                        {[
-                          { key: "lite", color: "#9CA3AF", value: item.lite },
-                          { key: "flex", color: BRAND_ORANGE, value: item.flex },
-                          { key: "max", color: BRAND_RED, value: item.max },
-                        ].map(tier => (
-                          <div key={tier.key} className="flex items-center gap-1">
-                            <span className="text-xs font-bold uppercase" style={{ color: tier.color }}>{tier.key}</span>
-                            <span className="text-xs" style={{ color: tier.color }}>
-                              {tier.value === false ? "—" : typeof tier.value === "string" ? tier.value : "✓"}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                  <div className="space-y-2">
+                    {FEATURES.flatMap(group => group.items).map(item => {
+                      const value = item[tier.field];
+                      return (
+                        <div key={item.label} className="flex items-start gap-2">
+                          <span className="mt-0.5 text-xs w-4 shrink-0" style={{ color: value === false ? "#374151" : tier.color }}>
+                            {value === false ? "—" : "✓"}
+                          </span>
+                          <span className={`text-xs leading-snug ${value === false ? "text-gray-600" : "text-gray-300"}`}>
+                            {item.label}
+                            {typeof value === "string" && (
+                              <span className="ml-1 font-semibold" style={{ color: tier.color }}>({value})</span>
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
             </div>
