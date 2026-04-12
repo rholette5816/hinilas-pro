@@ -123,7 +123,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               </div>
               <div className="bg-white rounded-xl p-3 mb-4">
                 <img
-                  src="/gcash-qr.png"
+                  src="/gcash-qr.jpg"
                   alt="GCash QR Code"
                   width={160}
                   height={160}
