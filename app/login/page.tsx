@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import HinilasLogo from "@/components/HinilasLogo";
+import { HinilasIcon } from "@/components/HinilasLogo";
 
 export default function LoginPage() {
   async function handleGoogle() {
@@ -21,7 +21,18 @@ export default function LoginPage() {
     >
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-8">
-          <HinilasLogo size="lg" showTagline={false} />
+          <div className="flex items-center gap-3">
+            <HinilasIcon size="lg" accentColor="#2B7EC9" />
+            <div className="leading-tight">
+              <div className="flex items-baseline">
+                <span className="text-white font-bold text-xl tracking-wide">Hinilas</span>
+                <span className="font-bold text-xl tracking-wide" style={{ color: "#2B7EC9" }}>Pro</span>
+              </div>
+              <p className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>
+                AI Driven. Results Focused.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div

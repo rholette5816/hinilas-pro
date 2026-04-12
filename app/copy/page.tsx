@@ -224,7 +224,7 @@ export default function CopyPage() {
           </div>
 
           {/* Action */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex flex-wrap gap-3 mb-6">
             <button
               onClick={generateCopy}
               disabled={loading || !activeImage}
@@ -233,6 +233,15 @@ export default function CopyPage() {
             >
               {loading ? "Writing..." : output ? "Rewrite Captions" : "Generate Captions"}
             </button>
+            {output && !loading && (
+              <button
+                onClick={() => router.push("/campaign-setup")}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ background: "#22c55e20", color: "#22c55e", border: "1px solid #22c55e40" }}
+              >
+                Proceed to Campaign Setup →
+              </button>
+            )}
           </div>
 
           {/* Output */}
