@@ -38,7 +38,9 @@ export default function FloatingChat() {
   const [glowing, setGlowing] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; avatar: string | null } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const lastCountRef = useRef(0);
+  const lastCountRef = useRef<number>(
+    typeof window !== "undefined" ? parseInt(localStorage.getItem("hilason_last_count") || "0") : 0
+  );
   const supabase = createClient();
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function FloatingChat() {
       setUnread(prev => prev + newCount);
       setGlowing(true);
     }
-    lastCountRef.current = msgs.length;
+    lastCountRef.current = open ? msgs.length : lastCountRef.current;
   }
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export default function FloatingChat() {
       setUnread(0);
       setGlowing(false);
       lastCountRef.current = messages.length;
+      localStorage.setItem("hilason_last_count", String(messages.length));
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
     }
   }, [open]);
