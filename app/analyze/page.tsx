@@ -76,9 +76,10 @@ export default function AnalyzePage() {
   const [shippingFee, setShippingFee] = useState("");
   const [rtsPercent, setRtsPercent] = useState("");
 
-  const [output, setOutput] = useState("");
-  const [savedMode, setSavedMode] = useState<Mode | null>(null);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [outputBasic, setOutputBasic] = useState("");
+  const [outputAdvanced, setOutputAdvanced] = useState("");
+  const [savedAtBasic, setSavedAtBasic] = useState<string | null>(null);
+  const [savedAtAdvanced, setSavedAtAdvanced] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [userName, setUserName] = useState("User");
@@ -95,16 +96,23 @@ export default function AnalyzePage() {
     });
   }, []);
 
-  // Restore last analysis on load
+  // Restore last analyses on load
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      const { output: savedOutput, mode: savedModeVal, savedAt: ts } = JSON.parse(saved);
-      setOutput(savedOutput);
-      setSavedMode(savedModeVal);
-      setSavedAt(ts);
+      const parsed = JSON.parse(saved);
+      if (parsed.basic?.output) { setOutputBasic(parsed.basic.output); setSavedAtBasic(parsed.basic.savedAt); }
+      if (parsed.advanced?.output) { setOutputAdvanced(parsed.advanced.output); setSavedAtAdvanced(parsed.advanced.savedAt); }
+      // legacy single-result migration
+      if (parsed.output && parsed.mode) {
+        if (parsed.mode === "basic") { setOutputBasic(parsed.output); setSavedAtBasic(parsed.savedAt); }
+        else { setOutputAdvanced(parsed.output); setSavedAtAdvanced(parsed.savedAt); }
+      }
     }
   }, []);
+
+  const output = mode === "advanced" ? outputAdvanced : outputBasic;
+  const savedAt = mode === "advanced" ? savedAtAdvanced : savedAtBasic;
 
   async function downloadPDF() {
     if (!output || !reportRef.current) return;
@@ -158,7 +166,6 @@ export default function AnalyzePage() {
     if (mode === "advanced" && !csvText) return;
 
     setLoading(true);
-    setOutput("");
     const userCtx = buildUserContext(setup);
 
     try {
@@ -175,11 +182,11 @@ export default function AnalyzePage() {
         });
         const d = await res.json();
         const result = d.error ? `Error: ${d.error}` : d.content;
-        setOutput(result);
+        setOutputBasic(result);
         const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
-        setSavedMode(mode);
-        setSavedAt(ts);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ output: result, mode, savedAt: ts }));
+        setSavedAtBasic(ts);
+        const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, basic: { output: result, savedAt: ts } }));
       } else {
         const hasExtra = sellingPrice || cogs || shippingFee || rtsPercent;
         const extraData = hasExtra
@@ -193,14 +200,15 @@ export default function AnalyzePage() {
         });
         const d = await res.json();
         const result = d.error ? `Error: ${d.error}` : d.content;
-        setOutput(result);
+        setOutputAdvanced(result);
         const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
-        setSavedMode(mode);
-        setSavedAt(ts);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ output: result, mode, savedAt: ts }));
+        setSavedAtAdvanced(ts);
+        const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, advanced: { output: result, savedAt: ts } }));
       }
     } catch {
-      setOutput("Something went wrong. Try again.");
+      if (mode === "basic") setOutputBasic("Something went wrong. Try again.");
+      else setOutputAdvanced("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
@@ -238,7 +246,7 @@ export default function AnalyzePage() {
           {/* Mode selector */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
-              onClick={() => { setMode("basic"); setOutput(""); }}
+              onClick={() => setMode("basic")}
               className="rounded-xl border p-5 text-left transition-all"
               style={{
                 background: mode === "basic" ? "#0F172A" : "#0A0F1A",
@@ -251,7 +259,7 @@ export default function AnalyzePage() {
               <p className="text-gray-500 text-xs">Messaging Ads — upload a screenshot</p>
             </button>
             <button
-              onClick={() => { setMode("advanced"); setOutput(""); }}
+              onClick={() => setMode("advanced")}
               className="rounded-xl border p-5 text-left transition-all"
               style={{
                 background: mode === "advanced" ? "#0F172A" : "#0A0F1A",
@@ -445,7 +453,7 @@ export default function AnalyzePage() {
           {savedAt && !loading && output && (
             <div className="flex items-center justify-between mb-3">
               <p className="text-gray-600 text-xs">
-                Last analysis: <span className="text-gray-500">{savedAt}</span> · <span className="text-gray-500 uppercase text-xs">{savedMode}</span>
+                Last analysis: <span className="text-gray-500">{savedAt}</span> · <span className="text-gray-500 uppercase text-xs">{mode === "advanced" ? "Advanced" : "Basic"}</span>
               </p>
               <button
                 onClick={() => { setOutput(""); localStorage.removeItem(STORAGE_KEY); setSavedAt(null); }}
@@ -499,7 +507,7 @@ export default function AnalyzePage() {
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: "12px", fontWeight: "bold", color: "#111" }}>{userName}</div>
                       <div style={{ fontSize: "11px", color: "#6B7280" }}>{savedAt}</div>
-                      <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{savedMode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
                     </div>
                   </div>
 
