@@ -47,25 +47,19 @@ export async function POST(req: Request) {
 
   const { package: pkg, referenceNumber, amount, credits, screenshotUrl } = await req.json();
 
-  await supabase.from("top_up_requests").insert({
-    user_id: user.id,
-    user_email: user.email,
-    package: pkg,
-    amount_paid: amount,
-    credits_requested: credits,
-    reference_number: referenceNumber,
-    screenshot_url: screenshotUrl || null,
-    status: "pending",
-  });
-
-  // Fetch the request ID using admin client to bypass RLS
   const { data: insertedRequest } = await adminClient()
     .from("top_up_requests")
+    .insert({
+      user_id: user.id,
+      user_email: user.email,
+      package: pkg,
+      amount_paid: amount,
+      credits_requested: credits,
+      reference_number: referenceNumber,
+      screenshot_url: screenshotUrl || null,
+      status: "pending",
+    })
     .select("id")
-    .eq("user_id", user.id)
-    .eq("status", "pending")
-    .order("created_at", { ascending: false })
-    .limit(1)
     .single();
 
   const requestId = insertedRequest?.id;
