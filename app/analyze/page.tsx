@@ -456,7 +456,13 @@ export default function AnalyzePage() {
                 Last analysis: <span className="text-gray-500">{savedAt}</span> · <span className="text-gray-500 uppercase text-xs">{mode === "advanced" ? "Advanced" : "Basic"}</span>
               </p>
               <button
-                onClick={() => { setOutput(""); localStorage.removeItem(STORAGE_KEY); setSavedAt(null); }}
+                onClick={() => {
+                  if (mode === "advanced") { setOutputAdvanced(""); setSavedAtAdvanced(null); }
+                  else { setOutputBasic(""); setSavedAtBasic(null); }
+                  const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+                  if (mode === "advanced") delete prev.advanced; else delete prev.basic;
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(prev));
+                }}
                 className="text-xs text-red-500 hover:text-red-400"
               >
                 Clear
