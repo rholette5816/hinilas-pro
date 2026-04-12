@@ -13,6 +13,7 @@ export default function AnalyzePage() {
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [productPrice, setProductPrice] = useState("");
   const [productCost, setProductCost] = useState("");
+  const [amountSpent, setAmountSpent] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -31,8 +32,8 @@ export default function AnalyzePage() {
     setOutput("");
 
     const userCtx = buildUserContext(setup);
-    const profitInfo = productPrice || productCost
-      ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}`
+    const profitInfo = productPrice || productCost || amountSpent
+      ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}\nAmount Spent on Ads: P${amountSpent || "not provided"}`
       : "";
     const prompt = MODULE_PROMPTS.analyze(userCtx, profitInfo);
 
@@ -84,10 +85,34 @@ export default function AnalyzePage() {
             <p className="text-gray-400 text-sm">Upload a screenshot of your Ads Manager. AI reads the numbers and gives you a full diagnosis.</p>
           </div>
 
+          {/* Column setup instructions */}
+          <div className="rounded-xl border border-blue-900 bg-blue-950/40 px-5 py-4 mb-6">
+            <p className="text-blue-300 text-sm font-semibold mb-2">Before you screenshot — arrange your columns</p>
+            <p className="text-gray-400 text-xs mb-3">Set your Ads Manager columns in this exact order for the most accurate analysis:</p>
+            <ol className="space-y-1 mb-3">
+              {[
+                "Conversations Started",
+                "Cost per Messaging Conversation",
+                "Amount Spent",
+                "CTR (Link Click-Through Rate)",
+                "CPC (Cost per Link Click)",
+                "CPM (Cost per 1,000 Impressions)",
+                "Frequency",
+              ].map((col, i) => (
+                <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#1E3A5F", color: "#2B7EC9" }}>{i + 1}</span>
+                  {col}
+                </li>
+              ))}
+            </ol>
+            <p className="text-gray-500 text-xs">Take a screenshot of that view, then upload it below.</p>
+            <p className="text-gray-600 text-xs mt-1">On mobile? Tap the upload button and use your camera to take a photo of your screen.</p>
+          </div>
+
           {/* Screenshot upload */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-300 mb-2">Ads Manager Screenshot</label>
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+            <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleUpload} />
 
             {screenshot ? (
               <div className="rounded-xl overflow-hidden border border-gray-700 mb-2">

@@ -84,33 +84,78 @@ Hook types:
 - Simple + Clear + One message
 - Stop the scroll, create curiosity
 
-## AD METRICS — PH BENCHMARKS
-Cost Per Message:
+## AD METRICS — PRIORITY STACK (read in this order)
+
+### 1. Cost per Messaging Conversation
+Primary KPI. Your real goal metric.
 - P15–60 = Excellent
 - P60–120 = Good
 - P120–200 = Acceptable
-- P350+ = Stop
+- P350+ = Stop immediately
+Compare across ads. Kill expensive ones. Scale cheap ones.
 
-CTR (Click Rate):
+### 2. Conversations Started (Volume)
+Raw number of conversations. Low cost means nothing without volume.
+Need both: low cost AND sufficient volume.
+
+### 3. Amount Spent
+Sample validity check. Never judge performance without knowing spend.
+- Low cost on P50 spent = meaningless, not enough data
+- Same result on P2,000 spent = real signal worth acting on
+- Spending with zero results = money leak, cut immediately
+Minimum spend before making kill/scale decisions: P300–P500.
+
+### 4. CTR (Click-Through Rate)
+Creative performance signal.
 - 3%–5% = Excellent
 - 2%–3% = Good
 - 1%–2% = Weak
-- Below 1% = Bad
+- Below 1% = Bad (hook is failing)
 
-CPM:
+### 5. CPC (Cost per Link Click)
+Traffic efficiency. Always read together with CTR.
+- High CPC + low CTR = bad ad
+- Low CPC + high CTR = strong ad
+
+### 6. Conversation Rate (manual metric)
+Formula: Conversations Started ÷ Link Clicks
+Funnel integrity metric. Not shown in Meta — calculate it yourself.
+- High CTR but low conversation rate = drop-off after click (weak intent, confusing transition, wrong expectation set in ad)
+
+### 7. CPM (Cost per 1,000 Impressions)
+Context metric only. Do NOT use to judge success.
 - P120–180 = Good
 - P180–300 = Okay
 - P300+ = Expensive
+Use to compare audiences, detect scaling issues, spot ad fatigue.
 
-Frequency:
+### 8. Frequency
+Fatigue detector.
 - 1.0–2.5 = Healthy
 - 2.5–3.0 = Watch
 - 3.5+ = Overexposed (refresh creative)
+Rising frequency + falling CTR = creative burnout.
+
+### 9. Engagement (Likes, Comments, Shares)
+Pure vanity. Use only for social proof signal. Never optimize for it.
+
+## CORRECT DASHBOARD ANALYSIS FLOW
+Step 1: Cost per Conversation + Conversations Started — is this ad producing conversations efficiently?
+Step 2: Amount Spent — is the sample size valid enough to make a decision?
+Step 3: CTR + CPC — is the ad creative strong or weak?
+Step 4: Conversation Rate (manual) — are clicks turning into messages?
+Step 5: CPM + Frequency — is delivery healthy or is the ad burning out?
+Step 6: Engagement — is it getting attention? (context only)
 
 ## AD DECISION RULES
-CONTINUE RUNNING: CTR above 2%, Cost below P120, Frequency below 2.5
+CONTINUE RUNNING: CTR above 2%, Cost per Conversation below P120, Frequency below 2.5, sufficient spend
 OPTIMIZE: CTR 1%–2%, Cost P120–200 → change image or angle
 TURN OFF: CTR below 1%, Cost above P350, Frequency above 3
+WAIT (not enough data): Amount Spent below P300 — do not kill yet, let it spend more
+
+## HARD RULE
+Never judge an ad on Meta metrics alone. Good Meta metrics does not equal good business results.
+Optimize using CTR, CPC, CPM. Decide using Cost per Conversation. Always validate with Amount Spent.
 
 ## PROFIT FORMULA
 Profit = Revenue – Ads Cost – Product Cost
@@ -290,29 +335,46 @@ ${profitInfo ? `# PROFIT DATA\n${profitInfo}` : ""}
 # TASK
 A screenshot of the Meta Ads Manager has been provided. Read all the metrics visible in the image.
 
-Analyze the results using PH market benchmarks and output:
+Analyze the results following the correct priority stack order and output:
 
 ## METRICS READ
-List every metric you can see in the screenshot with its value.
+List every metric visible in the screenshot with its value. If a metric is not visible, note it as "not shown".
 
-## PERFORMANCE DIAGNOSIS
-Rate each metric: Excellent / Good / Acceptable / Bad
-- Cost Per Message: P15–60 excellent, P60–120 good, P120–200 acceptable, P350+ stop
-- CTR: 3–5% excellent, 2–3% good, 1–2% weak, below 1% bad
-- CPM: P120–180 good, P180–300 okay, P300+ expensive
-- Frequency: 1–2.5 healthy, 2.5–3 watch, 3.5+ overexposed
+## STEP 1 — GOAL CHECK: Cost per Conversation + Volume
+Rate Cost per Conversation: Excellent / Good / Acceptable / Bad (P15–60 / P60–120 / P120–200 / P350+)
+State the number of Conversations Started. Is the volume sufficient?
+
+## STEP 2 — SAMPLE VALIDITY: Amount Spent
+How much was spent? Is this enough to make a decision?
+- Below P300: not enough data yet — do not kill the ad
+- P300–P500: borderline — consider the full picture
+- P500+: sufficient sample to judge
+
+## STEP 3 — CREATIVE STRENGTH: CTR + CPC
+Rate CTR: Excellent (3–5%) / Good (2–3%) / Weak (1–2%) / Bad (below 1%)
+Rate CPC: Strong or Weak based on pairing with CTR.
+Is the ad creative performing?
+
+## STEP 4 — FUNNEL CHECK: Conversation Rate
+If visible or calculable (Conversations ÷ Link Clicks): is there a drop-off after click?
+If not calculable from the screenshot, note it.
+
+## STEP 5 — DELIVERY HEALTH: CPM + Frequency
+Rate CPM: Good (P120–180) / Okay (P180–300) / Expensive (P300+)
+Rate Frequency: Healthy (1–2.5) / Watch (2.5–3) / Overexposed (3.5+)
+Any fatigue or audience saturation signals?
 
 ## OVERALL VERDICT
-CONTINUE / OPTIMIZE / TURN OFF — one sentence explanation.
+CONTINUE / OPTIMIZE / TURN OFF / WAIT (not enough data yet) — one clear sentence.
 
 ## PROFIT CHECK
-${profitInfo ? "Calculate profit per sale and whether the ad spend is profitable based on the data provided." : "No product price provided — skip this section."}
-
-## NEXT STEPS
-3 specific actions to take right now. Be direct — no generic advice.
+${profitInfo ? "Calculate: Revenue per sale = Selling Price minus Product Cost. Then calculate how many conversations need to convert to break even on ad spend. Is this campaign profitable?" : "No product price provided — skip this section."}
 
 ## ROOT CAUSE (if underperforming)
-Diagnose in this order: Creative → Audience → Budget → Offer. What is the likely issue and why?
+Diagnose in this order: Creative → Audience → Budget → Offer. What is the most likely issue and why?
+
+## NEXT STEPS
+3 specific actions to take right now. Be direct and specific — no generic advice.
 `,
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
