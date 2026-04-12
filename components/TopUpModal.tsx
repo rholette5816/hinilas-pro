@@ -138,8 +138,24 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 </div>
               </div>
               <p className="text-blue-100 text-xs mb-1">Transfer fees may apply.</p>
-              <p className="text-white font-bold text-base">Donna Lim</p>
-              <p className="text-blue-200 text-sm">0956 160 3751</p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-white font-bold text-base">Donna Lim</p>
+                <button
+                  onClick={() => navigator.clipboard.writeText("Donna Lim")}
+                  className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all"
+                >
+                  Copy
+                </button>
+              </div>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-blue-200 text-sm">0956 160 3751</p>
+                <button
+                  onClick={() => navigator.clipboard.writeText("09561603751")}
+                  className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
 
             {/* Amount reminder */}
