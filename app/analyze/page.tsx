@@ -102,6 +102,23 @@ export default function AnalyzePage() {
             <p className="text-gray-400 text-sm">Upload a screenshot of your Ads Manager. AI reads the numbers and gives you a full diagnosis.</p>
           </div>
 
+          {/* Video instruction */}
+          <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#0F172A" }}>
+            <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
+              <span className="text-red-400 text-sm">▶</span>
+              <p className="text-white text-sm font-semibold">Watch before analyzing</p>
+              <span className="text-gray-600 text-xs ml-auto">Video guide</span>
+            </div>
+            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+              <iframe
+                src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+                style={{ border: "none" }}
+              />
+            </div>
+          </div>
+
           {/* Column setup instructions */}
           <div className="rounded-xl border border-blue-900 bg-blue-950/40 px-5 py-4 mb-6">
             <p className="text-blue-300 text-sm font-semibold mb-2">Before you screenshot — arrange your columns</p>
