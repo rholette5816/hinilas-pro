@@ -42,8 +42,6 @@ const modules: { href: string; label: string; icon: string; description: string;
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
   { href: "/learn", label: "Courses", icon: "📖", description: "Marketing & ads education" },
-  { href: "/community", label: "Mga Hilason", icon: "💬", description: "Chat with other users" },
-  { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
 
 export default function Sidebar() {
@@ -135,49 +133,53 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-4 py-4 border-t border-gray-800">
         {/* Credits display */}
-        <Link href="/pricing" onClick={() => setMobileOpen(false)} className="block mb-3">
-          <div className="rounded-lg px-3 py-2 border border-gray-700 hover:border-gray-600 transition-colors" style={{ background: "#0F172A" }}>
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="text-xs font-bold px-1.5 py-0.5 rounded"
-                  style={{
-                    background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1A1A1A",
-                    color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
-                    border: `1px solid ${plan === "max" ? "#EF444450" : plan === "flex" ? "#F5A62350" : "#374151"}`,
-                  }}
-                >
-                  {plan === "max" ? "MAX" : plan === "flex" ? "FLEX" : "LITE"}
-                </span>
-                <span className="text-xs text-gray-500">
-                  {plan === "lite" ? "0–49 cr" : plan === "flex" ? "50–299 cr" : "300+ cr"}
-                </span>
-              </div>
-              <span className="text-xs font-semibold" style={{
-                color: credits === 0 ? "#EF4444" : plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF"
-              }}>
-                {credits} credits
+        <div className="rounded-lg px-3 py-2 border border-gray-700 mb-3" style={{ background: "#0F172A" }}>
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="text-xs font-bold px-1.5 py-0.5 rounded"
+                style={{
+                  background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1A1A1A",
+                  color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
+                  border: `1px solid ${plan === "max" ? "#EF444450" : plan === "flex" ? "#F5A62350" : "#374151"}`,
+                }}
+              >
+                {plan === "max" ? "MAX" : plan === "flex" ? "FLEX" : "LITE"}
+              </span>
+              <span className="text-xs text-gray-500">
+                {plan === "lite" ? "0–49 cr" : plan === "flex" ? "50–299 cr" : "300+ cr"}
               </span>
             </div>
-            {/* Threshold bar */}
-            <div className="relative w-full bg-gray-800 rounded-full h-1.5">
-              {/* Flex threshold marker at 50/300 */}
-              <div className="absolute top-0 bottom-0 w-px bg-gray-600" style={{ left: `${(50/300)*100}%` }} />
-              <div
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: `${Math.min((credits / 300) * 100, 100)}%`,
-                  background: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
-                }}
-              />
-            </div>
-            <div className="flex justify-between mt-1">
-              <span className="text-gray-700 text-xs">0</span>
-              <span className="text-gray-700 text-xs">50</span>
-              <span className="text-gray-700 text-xs">300</span>
-            </div>
+            <span className="text-xs font-semibold" style={{
+              color: credits === 0 ? "#EF4444" : plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF"
+            }}>
+              {credits} credits
+            </span>
           </div>
-        </Link>
+          <div className="relative w-full bg-gray-800 rounded-full h-1.5 mb-1">
+            <div className="absolute top-0 bottom-0 w-px bg-gray-600" style={{ left: `${(50/300)*100}%` }} />
+            <div
+              className="h-1.5 rounded-full transition-all"
+              style={{
+                width: `${Math.min((credits / 300) * 100, 100)}%`,
+                background: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
+              }}
+            />
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="text-gray-700 text-xs">0</span>
+            <span className="text-gray-700 text-xs">50</span>
+            <span className="text-gray-700 text-xs">300</span>
+          </div>
+          <Link
+            href="/pricing"
+            onClick={() => setMobileOpen(false)}
+            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
+            style={{ background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1E293B", color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF", border: `1px solid ${plan === "max" ? "#EF444430" : plan === "flex" ? "#F5A62330" : "#374151"}` }}
+          >
+            {credits === 0 ? "Out of credits — Top Up" : "Top Up / Upgrade"}
+          </Link>
+        </div>
 
         {user && (
           <div className="flex items-center gap-3 mb-3">
