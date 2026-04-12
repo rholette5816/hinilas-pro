@@ -58,7 +58,7 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
 }
 
 export default function AnalyzePage() {
-  const { setup } = useApp();
+  const { setup, credits, refreshCredits } = useApp();
   const router = useRouter();
   const [mode, setMode] = useState<Mode | null>(null);
 
@@ -629,6 +629,24 @@ show(0);
         const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, basic: { output: result, savedAt: ts } }));
       } else {
+        // Deduct 1.5 credits for advanced analysis
+        if (credits < 1.5) {
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 1.5 credits.");
+          setLoading(false);
+          return;
+        }
+        const deductRes = await fetch("/api/credits/use", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: 1.5 }),
+        });
+        if (!deductRes.ok) {
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 1.5 credits.");
+          setLoading(false);
+          return;
+        }
+        await refreshCredits();
+
         const hasExtra = sellingPrice || cogs || shippingFee || rtsPercent;
         const extraData = hasExtra
           ? `Selling Price: P${sellingPrice || "not provided"}\nCOGS: P${cogs || "not provided"}\nShipping Fee: P${shippingFee || "not provided"}\nEstimated RTS %: ${rtsPercent || "not provided"}%`
@@ -709,7 +727,10 @@ show(0);
               }}
             >
               <div className="text-2xl mb-2">📄</div>
-              <p className="text-white font-bold text-sm mb-1">Advanced Analysis</p>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-white font-bold text-sm">Advanced Analysis</p>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "#F5A62320", color: "#F5A623", border: "1px solid #F5A62340" }}>1.5 credits</span>
+              </div>
               <p className="text-gray-500 text-xs">Purchase Ads — upload exported CSV</p>
             </button>
           </div>
@@ -934,121 +955,14 @@ show(0);
             <div className="flex gap-3 mt-4">
               <button
                 onClick={downloadHTMLDeck}
-                className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-blue-500 transition-colors"
-                style={{ background: "#0F172A", color: "#fff" }}
+                className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+                style={{ background: "#2B7EC9", color: "#fff" }}
               >
-                <span>🖥️</span> HTML Deck
-              </button>
-              <button
-                onClick={() => setShowReport(true)}
-                className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
-                style={{ background: "#0F172A", color: "#fff" }}
-              >
-                <span>📄</span> PDF Report
+                <span>🖥️</span> Get Report Presentation
               </button>
             </div>
           )}
 
-          {/* Report Modal */}
-          {showReport && (
-            <div className="fixed inset-0 z-50 bg-black/80 flex flex-col" style={{ overflow: "hidden" }}>
-              {/* Sticky toolbar */}
-              <div className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-700" style={{ background: "#0A0F1A" }}>
-                <p className="text-white text-sm font-semibold">Report Preview</p>
-                <div className="flex gap-3 items-center">
-                  <button
-                    onClick={downloadPDF}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold"
-                    style={{ background: "#2B7EC9", color: "#fff" }}
-                  >
-                    Download PDF
-                  </button>
-                  <button onClick={() => setShowReport(false)} className="text-gray-400 hover:text-white text-xl px-2 leading-none">✕</button>
-                </div>
-              </div>
-
-              {/* Scrollable report content */}
-              <div className="flex-1 overflow-y-auto p-6 flex justify-center">
-                <div ref={reportRef} style={{ background: "#fff", padding: "48px", fontFamily: "Georgia, serif", color: "#111", borderRadius: "8px", width: "100%", maxWidth: "720px" }}>
-                  {/* Header */}
-                  <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "20px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                    <div>
-                      <div style={{ fontSize: "24px", fontWeight: "bold", color: "#111", fontFamily: "Arial, sans-serif" }}>{userName}</div>
-                      <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Arial, sans-serif", marginTop: "2px" }}>Meta Ads Analysis Report</div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Arial, sans-serif" }}>{savedAt}</div>
-                      <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>{mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
-                    </div>
-                  </div>
-
-                  {/* Budget summary block */}
-                  {(() => {
-                    const b = buildBudgetSummary();
-                    if (!b) return null;
-                    return (
-                      <div style={{ marginBottom: "28px", padding: "20px 24px", background: "#F8FAFC", borderRadius: "10px", border: "1px solid #E2E8F0" }}>
-                        <div style={{ fontSize: "11px", fontWeight: "800", letterSpacing: "0.1em", textTransform: "uppercase", color: "#2B7EC9", marginBottom: "14px", fontFamily: "Arial, sans-serif" }}>Budget Breakdown</div>
-                        <div style={{ display: "flex", gap: "12px", marginBottom: b.roas ? "14px" : "0", flexWrap: "wrap" }}>
-                          {b.stats.map((s, i) => (
-                            <div key={i} style={{ flex: "1", minWidth: "100px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px", padding: "12px 14px" }}>
-                              <div style={{ fontSize: "20px", fontWeight: "900", color: s.color || "#111", fontFamily: "Arial, sans-serif", marginBottom: "3px" }}>{s.value}</div>
-                              <div style={{ fontSize: "10px", fontWeight: "700", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "Arial, sans-serif" }}>{s.label}</div>
-                              <div style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Arial, sans-serif" }}>{s.sub}</div>
-                            </div>
-                          ))}
-                          {b.roas && (
-                            <div style={{ flex: "1", minWidth: "100px", background: "#fff", border: `1px solid ${b.verdictColor}40`, borderRadius: "8px", padding: "12px 14px" }}>
-                              <div style={{ fontSize: "20px", fontWeight: "900", color: b.verdictColor, fontFamily: "Arial, sans-serif", marginBottom: "3px" }}>{b.roas}x ROAS</div>
-                              <div style={{ fontSize: "10px", fontWeight: "700", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "Arial, sans-serif" }}>Return on Ad Spend</div>
-                              <div style={{ fontSize: "10px", color: b.verdictColor, fontFamily: "Arial, sans-serif", fontWeight: "600" }}>{b.verdict}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Structured content */}
-                  <div style={{ fontFamily: "Arial, sans-serif" }}>
-                    {output.split("\n").map((line, i) => {
-                      const t = line.trim();
-                      if (!t || t === "---" || t === "***") return <div key={i} style={{ height: "8px" }} />;
-                      if (t.startsWith("## ")) return (
-                        <div key={i} style={{ fontSize: "13px", fontWeight: "bold", color: "#2B7EC9", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "28px", marginBottom: "10px", borderBottom: "1px solid #E5E7EB", paddingBottom: "6px" }}>
-                          {t.slice(3)}
-                        </div>
-                      );
-                      if (t.startsWith("# ")) return (
-                        <div key={i} style={{ fontSize: "18px", fontWeight: "bold", color: "#111", marginTop: "16px", marginBottom: "8px" }}>
-                          {t.slice(2)}
-                        </div>
-                      );
-                      if (t.startsWith("- ") || t.startsWith("* ")) {
-                        const text = t.slice(2).replace(/\*\*(.*?)\*\*/g, "$1").replace(/🟢/g, "✓").replace(/🟡/g, "~").replace(/🔴/g, "✗");
-                        return (
-                          <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "6px", alignItems: "flex-start" }}>
-                            <span style={{ color: "#2B7EC9", fontWeight: "bold", fontSize: "14px", lineHeight: "1.6", flexShrink: 0 }}>•</span>
-                            <span style={{ fontSize: "13px", lineHeight: "1.7", color: "#1F2937" }}>{text}</span>
-                          </div>
-                        );
-                      }
-                      const plain = t.replace(/\*\*(.*?)\*\*/g, "$1").replace(/🟢/g, "✓").replace(/🟡/g, "~").replace(/🔴/g, "✗");
-                      return (
-                        <p key={i} style={{ fontSize: "13px", lineHeight: "1.8", color: "#374151", marginBottom: "6px" }}>{plain}</p>
-                      );
-                    })}
-                  </div>
-
-                  {/* Footer */}
-                  <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "40px", paddingTop: "14px", fontSize: "10px", color: "#9CA3AF", fontFamily: "Arial, sans-serif", display: "flex", justifyContent: "space-between" }}>
-                    <span>Generated by {userName}</span>
-                    <span>{savedAt}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
         </div>
       </main>
