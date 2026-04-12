@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useApp, derivePlan } from "@/lib/context";
 
-const EXPERT_COST = 20;
+const EXPERT_COST = 100;
 
 const TIME_SLOTS = [
   "9:00 AM", "10:00 AM", "11:00 AM",
@@ -84,11 +84,11 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
               <span className="text-2xl">⚡</span>
             </div>
             <h3 className="text-white font-bold text-lg mb-2">Not Enough Credits</h3>
-            <p className="text-gray-400 text-sm mb-1">Live consultation costs <span className="text-white font-semibold">20 credits</span>.</p>
+            <p className="text-gray-400 text-sm mb-1">Live consultation costs <span className="text-white font-semibold">100 credits</span>.</p>
             <p className="text-gray-500 text-xs mb-6">You have {credits} credits remaining. Top up to book a session.</p>
             <div className="flex gap-3">
               <button onClick={close} className="flex-1 py-2.5 rounded-xl border border-gray-700 text-gray-400 text-sm">Cancel</button>
-              <a href="/pricing#topup" className="flex-1 py-2.5 rounded-xl text-center text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
+              <a href="/pricing#topup" onClick={close} className="flex-1 py-2.5 rounded-xl text-center text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
                 Get Credits
               </a>
             </div>
@@ -101,7 +101,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
             <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
               <div>
                 <h3 className="text-white font-bold text-base">Book a Live Consultation</h3>
-                <p className="text-gray-500 text-xs mt-0.5">1-on-1 session with Ken · 20 credits</p>
+                <p className="text-gray-500 text-xs mt-0.5">1-on-1 session with Ken · 100 credits</p>
               </div>
               <button onClick={close} className="text-gray-500 hover:text-white text-lg px-1">✕</button>
             </div>
@@ -151,7 +151,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
 
               <div className="rounded-xl border border-amber-900 px-4 py-3 flex items-center justify-between" style={{ background: "#1C1200" }}>
                 <div>
-                  <p className="text-amber-300 text-sm font-semibold">20 credits will be deducted</p>
+                  <p className="text-amber-300 text-sm font-semibold">100 credits will be deducted</p>
                   <p className="text-amber-700 text-xs">You have {credits} credits · {credits - EXPERT_COST} remaining after</p>
                 </div>
                 <span className="text-amber-400 text-xl">⚡</span>
@@ -194,7 +194,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                 </div>
                 <div>
                   <p className="text-gray-500 text-xs">Cost</p>
-                  <p className="text-sm mt-0.5 font-semibold" style={{ color: "#F5A623" }}>20 credits</p>
+                  <p className="text-sm mt-0.5 font-semibold" style={{ color: "#F5A623" }}>100 credits</p>
                 </div>
               </div>
               <p className="text-gray-600 text-xs">Ken will confirm your slot via the platform. Credits are deducted immediately upon booking.</p>
@@ -222,7 +222,8 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
             <h3 className="text-white font-bold text-lg mb-2">Booking Confirmed!</h3>
             <p className="text-gray-400 text-sm mb-1">Ref: <span className="text-white font-mono font-semibold">#{bookingRef}</span></p>
             <p className="text-gray-500 text-xs mb-1">{date} · {time} GMT+8</p>
-            <p className="text-gray-600 text-xs mb-6">Ken will reach out to confirm your slot. Check your email.</p>
+            <p className="text-gray-400 text-xs mb-2">A <strong className="text-white">Google Meet link</strong> will be sent to your email approximately <strong className="text-white">1 hour before</strong> your session.</p>
+            <p className="text-amber-600 text-xs mb-6">If you don't see it, please check your spam or junk folder.</p>
             <button onClick={close} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
               Done
             </button>
