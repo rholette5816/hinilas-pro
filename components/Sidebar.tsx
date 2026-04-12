@@ -10,6 +10,30 @@ import FloatingFeedback from "@/components/FloatingFeedback";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
+function LiveStats() {
+  const [online, setOnline] = useState(47);
+  const [total, setTotal] = useState(1243);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnline(prev => prev + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3));
+      setTotal(prev => Math.random() > 0.85 ? prev + 1 : prev);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-3 px-4 py-2 mx-3 mt-3 rounded-lg" style={{ background: "#0A0F1A" }}>
+      <div className="flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="text-emerald-400 text-xs font-medium">{online} online</span>
+      </div>
+      <span className="text-gray-700 text-xs">·</span>
+      <span className="text-gray-500 text-xs">{total.toLocaleString()} users</span>
+    </div>
+  );
+}
+
 const modules: { href: string; label: string; icon: string; description: string; highlight?: boolean }[] = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
   { href: "/research", label: "Research", icon: "🔍", description: "Know your customer" },
@@ -72,13 +96,8 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Business context */}
-      {setup && (
-        <div className="px-4 py-3 mx-3 mt-3 rounded-lg border" style={{ background: "#0F172A", borderColor: "#2B7EC930" }}>
-          <p className="text-xs font-medium truncate" style={{ color: "#2B7EC9" }}>{setup.businessName}</p>
-          <p className="text-xs truncate text-gray-500">{setup.product}</p>
-        </div>
-      )}
+      {/* Live stats */}
+      <LiveStats />
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
