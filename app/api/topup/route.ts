@@ -10,33 +10,26 @@ function adminClient() {
   );
 }
 
-async function sendMessengerNotification(message: string) {
-  const pageToken = process.env.FB_PAGE_ACCESS_TOKEN;
-  const recipientIds = [
-    process.env.FB_ADMIN_USER_ID,
-    process.env.FB_ADMIN_USER_ID_2,
-  ].filter(Boolean) as string[];
+async function sendTelegramNotification(message: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatIds = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
 
-  if (!pageToken || recipientIds.length === 0) {
-    console.log("Messenger: missing FB_PAGE_ACCESS_TOKEN or no recipient IDs configured");
+  if (!botToken || chatIds.length === 0) {
+    console.log("Telegram: missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_IDS");
     return;
   }
 
-  for (const recipientId of recipientIds) {
+  for (const chatId of chatIds) {
     try {
-      const pageId = process.env.FB_PAGE_ID || "615811264570188";
-      const res = await fetch(`https://graph.facebook.com/v21.0/${pageId}/messages?access_token=${pageToken}`, {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipient: { id: recipientId },
-          message: { text: message },
-        }),
+        body: JSON.stringify({ chat_id: chatId, text: message }),
       });
       const data = await res.json();
-      console.log(`Messenger response for ${recipientId}:`, JSON.stringify(data));
+      console.log(`Telegram response for ${chatId}:`, JSON.stringify(data));
     } catch (e) {
-      console.log(`Messenger error for ${recipientId}:`, e);
+      console.log(`Telegram error for ${chatId}:`, e);
     }
   }
 }
@@ -90,8 +83,8 @@ export async function POST(req: Request) {
     // Email failure doesn't block the request
   }
 
-  // Messenger notification
-  await sendMessengerNotification(
+  // Telegram notification
+  await sendTelegramNotification(
     `💰 New Top-Up Request\n\nUser: ${user.email}\nPackage: ${pkg}\nAmount: ₱${amount}\nCredits: ${credits}\n\nApprove here:\n${approveUrl}`
   );
 
