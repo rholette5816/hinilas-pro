@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
+
+const STORAGE_KEY = "hinilas_last_analysis";
 
 const BASIC_COLUMNS = [
   "Conversations Started",
@@ -74,10 +76,39 @@ export default function AnalyzePage() {
   const [rtsPercent, setRtsPercent] = useState("");
 
   const [output, setOutput] = useState("");
+  const [savedMode, setSavedMode] = useState<Mode | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const csvRef = useRef<HTMLInputElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  // Restore last analysis on load
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const { output: savedOutput, mode: savedModeVal, savedAt: ts } = JSON.parse(saved);
+      setOutput(savedOutput);
+      setSavedMode(savedModeVal);
+      setSavedAt(ts);
+    }
+  }, []);
+
+  async function downloadPDF() {
+    if (!output || !reportRef.current) return;
+    const html2pdf = (await import("html2pdf.js")).default;
+    html2pdf()
+      .set({
+        margin: [10, 10, 10, 10],
+        filename: `hinilas-analysis-${new Date().toISOString().slice(0, 10)}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .from(reportRef.current)
+      .save();
+  }
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -132,7 +163,12 @@ export default function AnalyzePage() {
           body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, images: [screenshot] }),
         });
         const d = await res.json();
-        setOutput(d.error ? `Error: ${d.error}` : d.content);
+        const result = d.error ? `Error: ${d.error}` : d.content;
+        setOutput(result);
+        const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+        setSavedMode(mode);
+        setSavedAt(ts);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ output: result, mode, savedAt: ts }));
       } else {
         const hasExtra = sellingPrice || cogs || shippingFee || rtsPercent;
         const extraData = hasExtra
@@ -145,7 +181,12 @@ export default function AnalyzePage() {
           body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
         });
         const d = await res.json();
-        setOutput(d.error ? `Error: ${d.error}` : d.content);
+        const result = d.error ? `Error: ${d.error}` : d.content;
+        setOutput(result);
+        const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+        setSavedMode(mode);
+        setSavedAt(ts);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ output: result, mode, savedAt: ts }));
       }
     } catch {
       setOutput("Something went wrong. Try again.");
@@ -389,8 +430,69 @@ export default function AnalyzePage() {
             </button>
           )}
 
+          {/* Last saved indicator */}
+          {savedAt && !loading && output && (
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-gray-600 text-xs">
+                Last analysis: <span className="text-gray-500">{savedAt}</span> · <span className="text-gray-500 uppercase text-xs">{savedMode}</span>
+              </p>
+              <button
+                onClick={() => { setOutput(""); localStorage.removeItem(STORAGE_KEY); setSavedAt(null); }}
+                className="text-xs text-red-500 hover:text-red-400"
+              >
+                Clear
+              </button>
+            </div>
+          )}
+
           {/* Output */}
           <AIOutput content={output} loading={loading} loadingText="Analyzing your data..." />
+
+          {/* Download PDF button */}
+          {output && !loading && (
+            <>
+              <button
+                onClick={downloadPDF}
+                className="w-full mt-4 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
+                style={{ background: "#0F172A", color: "#fff" }}
+              >
+                <span>📄</span> Download Report as PDF
+              </button>
+
+              {/* Hidden PDF report template */}
+              <div ref={reportRef} style={{ position: "absolute", left: "-9999px", top: 0, width: "800px", background: "#fff", padding: "40px", fontFamily: "Arial, sans-serif", color: "#111" }}>
+                {/* Header */}
+                <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "16px", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                  <div>
+                    <div style={{ fontSize: "22px", fontWeight: "bold", color: "#2B7EC9" }}>Hinilas Pro</div>
+                    <div style={{ fontSize: "11px", color: "#6B7280" }}>Meta Ads AI Assistant — Ad Analysis Report</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "11px", color: "#6B7280" }}>{savedAt}</div>
+                    <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{savedMode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div style={{ fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#1F2937" }}>
+                  {output
+                    .replace(/🟢/g, "✓")
+                    .replace(/🟡/g, "⚠")
+                    .replace(/🔴/g, "✗")
+                    .replace(/⏳/g, "⏳")
+                    .replace(/⚠️/g, "⚠")
+                    .replace(/\*\*(.*?)\*\*/g, "$1")
+                  }
+                </div>
+
+                {/* Footer */}
+                <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "32px", paddingTop: "12px", fontSize: "10px", color: "#9CA3AF", display: "flex", justifyContent: "space-between" }}>
+                  <span>Generated by Hinilas Pro — hinilas.pro</span>
+                  <span>By Basta Mag Ads Hilas</span>
+                </div>
+              </div>
+            </>
+          )}
 
         </div>
       </main>
