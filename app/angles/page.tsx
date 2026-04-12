@@ -27,7 +27,7 @@ interface Angle {
 }
 
 function parseAngles(output: string): Angle[] {
-  const blocks = output.split(/(?=\*\*ANGLE\s+\d+)/i).filter(b => b.trim());
+  const blocks = output.split(/(?=\*\*ANGLE\s+\d+)/i).filter(b => b.trim() && /\*\*ANGLE\s+\d+/i.test(b));
   return blocks.map(block => {
     const numberMatch = block.match(/\*\*ANGLE\s+(\d+)[:\s—-]+([^*\n(]+)/i);
     const typeMatch = block.match(/\(type:\s*([^)]+)\)/i);
@@ -59,7 +59,7 @@ export default function AnglesPage() {
   const [showAdjust, setShowAdjust] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-  const angles = anglesOutput ? parseAngles(anglesOutput) : [];
+  const angles = anglesOutput ? parseAngles(anglesOutput).filter(a => a.number && a.coreMessage) : [];
 
   async function generateAngles(adjustment?: string) {
     if (!setup) return;
