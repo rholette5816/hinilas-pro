@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useApp, derivePlan } from "@/lib/context";
 import HinilasLogo from "@/components/HinilasLogo";
+import FloatingExpert from "@/components/FloatingExpert";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
@@ -24,6 +25,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { setup, credits, creditsTotal, plan } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expertOpen, setExpertOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -50,12 +52,22 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
         <HinilasLogo size="md" showTagline={false} />
-        <button
-          onClick={() => setMobileOpen(false)}
-          className="md:hidden text-gray-500 hover:text-white p-1"
-        >
-          ✕
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { setExpertOpen(true); setMobileOpen(false); }}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+            style={{ background: "#F5A623", color: "#000" }}
+          >
+            <span>🎙</span>
+            <span>Book Expert</span>
+          </button>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden text-gray-500 hover:text-white p-1"
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
       {/* Business context */}
@@ -181,17 +193,27 @@ export default function Sidebar() {
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 border-b border-gray-800 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A" }}>
         <HinilasLogo size="sm" />
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="text-gray-400 hover:text-white p-1"
-          aria-label="Open menu"
-        >
-          <div className="space-y-1.5">
-            <span className="block w-6 h-0.5 bg-current" />
-            <span className="block w-6 h-0.5 bg-current" />
-            <span className="block w-6 h-0.5 bg-current" />
-          </div>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setExpertOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+            style={{ background: "#F5A623", color: "#000" }}
+          >
+            <span>🎙</span>
+            <span>Book Expert</span>
+          </button>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="text-gray-400 hover:text-white p-1"
+            aria-label="Open menu"
+          >
+            <div className="space-y-1.5">
+              <span className="block w-6 h-0.5 bg-current" />
+              <span className="block w-6 h-0.5 bg-current" />
+              <span className="block w-6 h-0.5 bg-current" />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Mobile overlay */}
@@ -216,6 +238,9 @@ export default function Sidebar() {
       <aside className="hidden md:flex w-64 border-r border-gray-800 flex-col h-full shrink-0" style={{ background: "#0F172A" }}>
         <SidebarContent />
       </aside>
+
+      {/* Expert booking modal */}
+      <FloatingExpert isOpen={expertOpen} onClose={() => setExpertOpen(false)} />
     </>
   );
 }
