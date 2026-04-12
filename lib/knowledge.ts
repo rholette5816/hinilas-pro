@@ -406,17 +406,17 @@ Think through the full funnel before outputting anything:
 - Is the creative stopping the scroll? (Hook Rate)
 - Is the creative holding attention? (Hold Rate)
 - Are clicks turning into landing page visits? (Landing Rate)
-- Are visitors converting to buyers? (CVR)
-- Is the cost per purchase sustainable given the margins?
+- Are visitors converting? (CVR = Results ÷ LP Views)
+- Is the Cost per Result sustainable given the margins?
 - Is there audience fatigue? (Frequency + CPM trend)
-- Is the ROAS actually profitable after RTS and COGS?
+- Is the Result ROAS actually profitable after RTS and COGS?
 
 Use these PH benchmarks as your baseline:
 - Hook Rate (3-sec views ÷ Impressions): 30%+ good, below 20% = creative problem
 - Hold Rate (ThruPlays ÷ 3-sec views): 25%+ good, below 15% = weak body/story
 - Landing Rate (LP Views ÷ Link Clicks): 70%+ good, below 50% = page load or UX issue
-- CVR (Purchases ÷ LP Views): 3%+ good, 1–3% = optimize offer, below 1% = landing page problem
-- Cost per Purchase: sustainable if below 30% of selling price
+- CVR (Results ÷ LP Views): 3%+ good, 1–3% = optimize offer, below 1% = landing page problem
+- Cost per Result: sustainable if below 30% of selling price or Result Value
 - ROAS: 3x+ scale, 2–3x maintain, below 2x review, below 1.5x pause
 - CTR: 2%+ strong, 1–2% average, below 1% = hook failing
 - CPM: P120–180 good, P300+ = expensive audience or low quality score
@@ -434,7 +434,8 @@ Output using this exact format. Be concise. No fluff. Every word must earn its p
 
 ## METRICS SCORECARD
 One line per metric. Format: [🟢🟡🔴] Metric — Value (Rating)
-Calculate Hook Rate, Hold Rate, Landing Rate, CVR if raw numbers are available.
+Key columns to look for: Amount Spent, Results, Cost per Result, Result ROAS, Result Value, CTR, 3-Second Video Views, ThruPlays, Impressions, Landing Page Views, Add to Cart, Initiate Checkout, CPM, Frequency.
+Calculate Hook Rate (3-sec ÷ Impressions), Hold Rate (ThruPlays ÷ 3-sec), Landing Rate (LP Views ÷ Clicks), CVR (Results ÷ LP Views) if raw numbers are available.
 Only show metrics present in the data.
 
 ---
@@ -463,14 +464,14 @@ Exactly 3 decisions. Each one actionable today.
 ---
 
 ${extraData ? `## TRUE PROFIT (COD-Adjusted)
-Calculate precisely:
+Use Results column as total orders. Calculate precisely:
 - Gross Margin per Order = Selling Price − COGS − Shipping Fee
 - Delivered Rate = 1 − (RTS% ÷ 100)
-- Delivered Orders = Total Orders × Delivered Rate
-- Actual Revenue = Selling Price × Delivered Orders
-- Total Fulfillment Cost = (COGS + Shipping) × Total Orders
-- Net Profit = Actual Revenue − Total Fulfillment Cost − Ad Spend
-- True ROAS = Actual Revenue ÷ Ad Spend
+- Delivered Orders = Results × Delivered Rate
+- Actual Revenue = Selling Price × Delivered Orders (cross-check against Result Value if available)
+- Total Fulfillment Cost = (COGS + Shipping) × Results
+- Net Profit = Actual Revenue − Total Fulfillment Cost − Amount Spent
+- True ROAS = Actual Revenue ÷ Amount Spent (cross-check against Result ROAS column)
 - Break-even ROAS = (COGS + Shipping + Ad Spend per Order) ÷ (Selling Price × Delivered Rate)
 - Verdict: 🟢 Profitable | 🟡 Break-even | 🔴 Losing Money
 - One line insight on whether to scale, maintain, or cut spend` : ""}
