@@ -55,30 +55,19 @@ export default function CommunityPage() {
     });
   }, []);
 
-  useEffect(() => {
-    // Load initial messages
-    supabase
+  async function fetchMessages() {
+    const { data } = await supabase
       .from("community_messages")
       .select("*")
       .order("created_at", { ascending: true })
-      .limit(100)
-      .then(({ data }) => {
-        if (data) setMessages(data as Message[]);
-      });
+      .limit(100);
+    if (data) setMessages(data as Message[]);
+  }
 
-    // Subscribe to new messages
-    const channel = supabase
-      .channel("community")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "community_messages" },
-        (payload) => {
-          setMessages(prev => [...prev, payload.new as Message]);
-        }
-      )
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+  useEffect(() => {
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
