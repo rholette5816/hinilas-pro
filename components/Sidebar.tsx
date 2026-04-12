@@ -7,7 +7,6 @@ import { useApp, derivePlan } from "@/lib/context";
 import HinilasLogo from "@/components/HinilasLogo";
 import FloatingExpert from "@/components/FloatingExpert";
 import FloatingFeedback from "@/components/FloatingFeedback";
-import TopUpModal from "@/components/TopUpModal";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
@@ -52,7 +51,6 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [topUpOpen, setTopUpOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -174,7 +172,7 @@ export default function Sidebar() {
             <span className="text-gray-700 text-xs">300</span>
           </div>
           <button
-            onClick={() => { setMobileOpen(false); setTopUpOpen(true); }}
+            onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
             className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
             style={{ background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1E293B", color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF", border: `1px solid ${plan === "max" ? "#EF444430" : plan === "flex" ? "#F5A62330" : "#374151"}` }}
           >
@@ -276,8 +274,6 @@ export default function Sidebar() {
       {/* Feedback modal */}
       <FloatingFeedback isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
 
-      {/* Top Up modal */}
-      <TopUpModal isOpen={topUpOpen} onClose={() => setTopUpOpen(false)} />
     </>
   );
 }

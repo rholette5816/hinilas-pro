@@ -48,60 +48,39 @@ function checkGCashEmails() {
 }
 
 function parseAmount(text) {
-  // Match ₱499.00 / PHP 499 / 499.00 / 499
-  var patterns = [
-    /₱\s*([\d,]+(?:\.\d{1,2})?)/,
-    /PHP\s*([\d,]+(?:\.\d{1,2})?)/i,
-    /received\s+([\d,]+(?:\.\d{1,2})?)/i,
-    /amount[:\s]+([\d,]+(?:\.\d{1,2})?)/i,
-  ];
+  var m;
+  m = text.match(/PHP\s*([\d,]+(?:\.\d{1,2})?)/i);
+  if (m) return Math.round(parseFloat(m[1].replace(/,/g, "")));
 
-  for (var i = 0; i < patterns.length; i++) {
-    var match = text.match(patterns[i]);
-    if (match) {
-      // Remove commas, parse as float, return as integer
-      var val = parseFloat(match[1].replace(/,/g, ""));
-      if (val > 0) return Math.round(val);
-    }
-  }
+  m = text.match(/amount[:\s]+([\d,]+(?:\.\d{1,2})?)/i);
+  if (m) return Math.round(parseFloat(m[1].replace(/,/g, "")));
+
+  m = text.match(/received\s+([\d,]+(?:\.\d{1,2})?)/i);
+  if (m) return Math.round(parseFloat(m[1].replace(/,/g, "")));
+
   return null;
 }
 
 function parseSender(text) {
-  // Try to find sender name
-  var patterns = [
-    /from\s+([A-Z][a-zA-Z\s]+?)(?:\s+via|\s+has|\s+sent|\.|,)/,
-    /received from\s+([A-Z][a-zA-Z\s]+?)(?:\s+via|\s+has|\s+sent|\.|,)/i,
-  ];
-
-  for (var i = 0; i < patterns.length; i++) {
-    var match = text.match(patterns[i]);
-    if (match) return match[1].trim();
-  }
+  var m = text.match(/from\s+([A-Z][a-zA-Z\s]+?)(?:\s+via|\s+has|\s+sent|\.|,)/);
+  if (m) return m[1].trim();
   return null;
 }
 
 function callApproveEndpoint(amount, senderName) {
-  var payload = JSON.stringify({
-    amount: amount,
-    senderName: senderName || "",
-  });
-
+  var payload = JSON.stringify({ amount: amount, senderName: senderName || "" });
   var options = {
     method: "post",
     contentType: "application/json",
-    headers: {
-      "x-webhook-secret": WEBHOOK_SECRET,
-    },
+    headers: { "x-webhook-secret": WEBHOOK_SECRET },
     payload: payload,
-    muteHttpExceptions: true,
+    muteHttpExceptions: true
   };
-
   try {
     var response = UrlFetchApp.fetch(WEBHOOK_URL, options);
     return JSON.parse(response.getContentText());
   } catch (e) {
-    Logger.log("Error calling approve endpoint: " + e.toString());
+    Logger.log("Error: " + e.toString());
     return { error: e.toString() };
   }
 }

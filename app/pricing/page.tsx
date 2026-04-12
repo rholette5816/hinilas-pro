@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import TopUpModal from "@/components/TopUpModal";
 import { useApp } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -48,6 +50,13 @@ function Check({ value, color }: { value: FeatureValue; color: string }) {
 export default function PricingPage() {
   const { plan: currentPlan, credits } = useApp();
   const router = useRouter();
+  const [topUpOpen, setTopUpOpen] = useState(false);
+  const [topUpPackage, setTopUpPackage] = useState<string | undefined>(undefined);
+
+  function openTopUp(packageId: string) {
+    setTopUpPackage(packageId);
+    setTopUpOpen(true);
+  }
 
   const plans = [
     {
@@ -176,10 +185,22 @@ export default function PricingPage() {
                     >
                       Get Started Free
                     </button>
+                  ) : p.key === "flex" ? (
+                    <button
+                      onClick={() => openTopUp("pro_150")}
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-black transition-opacity hover:opacity-90"
+                      style={{ background: BRAND_ORANGE }}
+                    >
+                      Get Flex — ₱999
+                    </button>
                   ) : (
-                    <div className="mt-auto w-full py-2 rounded-xl text-center text-sm font-semibold border border-gray-700 text-gray-600">
-                      Coming Soon
-                    </div>
+                    <button
+                      onClick={() => openTopUp("max_500")}
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
+                      style={{ background: BRAND_RED }}
+                    >
+                      Get Max — ₱2,499
+                    </button>
                   )}
                 </div>
               );
@@ -229,14 +250,19 @@ export default function PricingPage() {
                   <span className="text-xs text-gray-600">Adds to your current balance</span>
                 </div>
               </div>
-              <div className="shrink-0 text-gray-600 text-sm font-semibold px-8 py-3 rounded-xl border border-gray-700 text-center">
-                Coming Soon
-              </div>
+              <button
+                onClick={() => openTopUp("topup_50")}
+                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl transition-opacity hover:opacity-90"
+                style={{ background: BRAND_BLUE, color: "#fff" }}
+              >
+                Get 50 Credits — ₱499
+              </button>
             </div>
           </div>
 
         </div>
       </main>
+      <TopUpModal isOpen={topUpOpen} onClose={() => setTopUpOpen(false)} defaultPackage={topUpPackage} />
     </div>
   );
 }

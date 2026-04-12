@@ -11,10 +11,11 @@ const PACKAGES = [
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  defaultPackage?: string;
 }
 
-export default function TopUpModal({ isOpen, onClose }: Props) {
-  const [selected, setSelected] = useState(PACKAGES[0]);
+export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
+  const [selected, setSelected] = useState(() => PACKAGES.find(p => p.id === defaultPackage) || PACKAGES[0]);
   const [step, setStep] = useState<"select" | "confirm" | "done">("select");
   const [refNumber, setRefNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -110,7 +111,6 @@ export default function TopUpModal({ isOpen, onClose }: Props) {
                 <span className="text-white font-bold text-lg">GCash</span>
               </div>
               <div className="bg-white rounded-xl p-3 mb-4">
-                {/* QR placeholder — replace public/gcash-qr.png with your actual QR */}
                 <img
                   src="/gcash-qr.png"
                   alt="GCash QR Code"
