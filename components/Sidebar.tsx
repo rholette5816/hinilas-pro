@@ -108,9 +108,9 @@ export default function Sidebar() {
                 <span
                   className="text-xs font-bold px-1.5 py-0.5 rounded"
                   style={{
-                    background: plan === "max" ? "#1C1A00" : plan === "flex" ? "#0F172A" : "#1A1A1A",
-                    color: plan === "max" ? "#F5A623" : plan === "flex" ? "#2B7EC9" : "#6B7280",
-                    border: `1px solid ${plan === "max" ? "#F5A62350" : plan === "flex" ? "#2B7EC950" : "#374151"}`,
+                    background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1A1A1A",
+                    color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
+                    border: `1px solid ${plan === "max" ? "#EF444450" : plan === "flex" ? "#F5A62350" : "#374151"}`,
                   }}
                 >
                   {plan === "max" ? "MAX" : plan === "flex" ? "FLEX" : "LITE"}
@@ -120,9 +120,9 @@ export default function Sidebar() {
                 </span>
               </div>
               <span className="text-xs font-semibold" style={{
-                color: credits === 0 ? "#EF4444" : credits < 50 ? "#F59E0B" : "#22C55E"
+                color: credits === 0 ? "#EF4444" : plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF"
               }}>
-                {credits} left
+                {credits} credits
               </span>
             </div>
             {/* Threshold bar */}
@@ -133,7 +133,7 @@ export default function Sidebar() {
                 className="h-1.5 rounded-full transition-all"
                 style={{
                   width: `${Math.min((credits / 300) * 100, 100)}%`,
-                  background: plan === "max" ? "#F5A623" : plan === "flex" ? "#2B7EC9" : "#6B7280",
+                  background: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF",
                 }}
               />
             </div>
