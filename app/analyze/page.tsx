@@ -14,9 +14,11 @@ export default function AnalyzePage() {
   const [productPrice, setProductPrice] = useState("");
   const [productCost, setProductCost] = useState("");
   const [amountSpent, setAmountSpent] = useState("");
+  const [numSales, setNumSales] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -32,8 +34,9 @@ export default function AnalyzePage() {
     setOutput("");
 
     const userCtx = buildUserContext(setup);
-    const profitInfo = productPrice || productCost || amountSpent
-      ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}\nAmount Spent on Ads: P${amountSpent || "not provided"}`
+    const hasProfit = productPrice || productCost || amountSpent || numSales;
+    const profitInfo = hasProfit
+      ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}\nAmount Spent on Ads: P${amountSpent || "not provided"}\nNumber of Sales / Conversions: ${numSales || "not provided"}`
       : "";
     const prompt = MODULE_PROMPTS.analyze(userCtx, profitInfo);
 
@@ -106,61 +109,67 @@ export default function AnalyzePage() {
               ))}
             </ol>
             <p className="text-gray-500 text-xs">Take a screenshot of that view, then upload it below.</p>
-            <p className="text-gray-600 text-xs mt-1">On mobile? Tap the upload button and use your camera to take a photo of your screen.</p>
           </div>
 
           {/* Screenshot upload */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-300 mb-2">Ads Manager Screenshot</label>
-            <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleUpload} />
+
+            {/* Hidden file inputs */}
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+            <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleUpload} />
 
             {screenshot ? (
-              <div className="rounded-xl overflow-hidden border border-gray-700 mb-2">
-                <img src={screenshot} alt="Ads Manager screenshot" className="w-full object-contain max-h-72" />
-              </div>
+              <>
+                <div className="rounded-xl overflow-hidden border border-gray-700 mb-2">
+                  <img src={screenshot} alt="Ads Manager screenshot" className="w-full object-contain max-h-72" />
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <button onClick={() => fileRef.current?.click()} className="text-xs text-blue-400 hover:text-blue-300">
+                    Replace image
+                  </button>
+                  <button onClick={() => setScreenshot(null)} className="text-xs text-red-400 hover:text-red-300">
+                    Remove
+                  </button>
+                </div>
+              </>
             ) : (
-              <button
-                onClick={() => fileRef.current?.click()}
-                className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-gray-500 transition-colors"
-              >
-                <p className="text-gray-300 text-sm font-medium mb-1">Upload screenshot</p>
-                <p className="text-gray-600 text-xs">PNG, JPG — screenshot from Meta Ads Manager</p>
-              </button>
-            )}
-
-            {screenshot && (
-              <div className="flex items-center gap-3 mt-2">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="text-xs text-blue-400 hover:text-blue-300"
+                  className="flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-5 text-center hover:border-blue-600 hover:bg-gray-700 transition-colors"
                 >
-                  Replace image
+                  <span className="text-2xl">🖼</span>
+                  <p className="text-gray-300 text-sm font-medium">Upload Screenshot</p>
+                  <p className="text-gray-600 text-xs">From your files</p>
                 </button>
                 <button
-                  onClick={() => setScreenshot(null)}
-                  className="text-xs text-red-400 hover:text-red-300"
+                  onClick={() => cameraRef.current?.click()}
+                  className="flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-5 text-center hover:border-blue-600 hover:bg-gray-700 transition-colors"
                 >
-                  Remove
+                  <span className="text-2xl">📷</span>
+                  <p className="text-gray-300 text-sm font-medium">Take a Photo</p>
+                  <p className="text-gray-600 text-xs">Use your camera</p>
                 </button>
               </div>
             )}
           </div>
 
-          {/* Optional profit inputs */}
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
-            <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-3">Optional — Profit Analysis</p>
-            <p className="text-gray-400 text-xs mb-4">Add product price and cost to get a profit calculation alongside the diagnosis.</p>
+          {/* Profit & ROAS Calculator */}
+          <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#0F172A" }}>
+            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
+            <p className="text-gray-500 text-xs mb-4">Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1">Selling Price (PHP)</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">P</span>
                   <input
-                    type="text"
+                    type="number"
                     value={productPrice}
                     onChange={e => setProductPrice(e.target.value)}
                     placeholder="e.g. 499"
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -169,13 +178,36 @@ export default function AnalyzePage() {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">P</span>
                   <input
-                    type="text"
+                    type="number"
                     value={productCost}
                     onChange={e => setProductCost(e.target.value)}
                     placeholder="e.g. 180"
-                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Amount Spent on Ads (PHP)</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">P</span>
+                  <input
+                    type="number"
+                    value={amountSpent}
+                    onChange={e => setAmountSpent(e.target.value)}
+                    placeholder="e.g. 800"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Number of Sales</label>
+                <input
+                  type="number"
+                  value={numSales}
+                  onChange={e => setNumSales(e.target.value)}
+                  placeholder="e.g. 5"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 px-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
             </div>
           </div>

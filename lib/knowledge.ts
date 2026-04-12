@@ -367,8 +367,14 @@ Any fatigue or audience saturation signals?
 ## OVERALL VERDICT
 CONTINUE / OPTIMIZE / TURN OFF / WAIT (not enough data yet) — one clear sentence.
 
-## PROFIT CHECK
-${profitInfo ? "Calculate: Revenue per sale = Selling Price minus Product Cost. Then calculate how many conversations need to convert to break even on ad spend. Is this campaign profitable?" : "No product price provided — skip this section."}
+## PROFIT & ROAS CHECK
+${profitInfo ? `Use the data provided to calculate all of the following:
+- Gross Profit per Sale = Selling Price minus Product Cost
+- Total Revenue = Selling Price x Number of Sales
+- Total Profit = Total Revenue minus Amount Spent minus (Product Cost x Number of Sales)
+- ROAS = Total Revenue / Amount Spent
+- Break-even Cost per Conversation = Gross Profit per Sale x Conversion Rate (estimate if conversion rate not given)
+State clearly: is this campaign profitable or not? By how much?` : "No profit data provided — skip this section."}
 
 ## ROOT CAUSE (if underperforming)
 Diagnose in this order: Creative → Audience → Budget → Offer. What is the most likely issue and why?
