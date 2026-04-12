@@ -183,23 +183,6 @@ export default function AnalyzePage() {
             <p className="text-gray-400 text-sm">Choose your analysis type below.</p>
           </div>
 
-          {/* Video instruction */}
-          <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#0F172A" }}>
-            <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
-              <span className="text-red-400 text-sm">▶</span>
-              <p className="text-white text-sm font-semibold">Watch before analyzing</p>
-              <span className="text-gray-600 text-xs ml-auto">Video guide</span>
-            </div>
-            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-              <iframe
-                src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-                style={{ border: "none" }}
-              />
-            </div>
-          </div>
-
           {/* Mode selector */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
@@ -233,6 +216,23 @@ export default function AnalyzePage() {
           {/* BASIC MODE */}
           {mode === "basic" && (
             <>
+              {/* Video guide */}
+              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#0F172A" }}>
+                <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
+                  <span className="text-red-400 text-sm">▶</span>
+                  <p className="text-white text-sm font-semibold">Watch before analyzing</p>
+                  <span className="text-gray-600 text-xs ml-auto">Video guide</span>
+                </div>
+                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                  <iframe
+                    src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                    style={{ border: "none" }}
+                  />
+                </div>
+              </div>
+
               {/* Column instructions */}
               <div className="rounded-xl border border-blue-900 bg-blue-950/40 px-5 py-4 mb-6">
                 <p className="text-blue-300 text-sm font-semibold mb-2">Before you screenshot — arrange your columns</p>
@@ -300,6 +300,15 @@ export default function AnalyzePage() {
           {/* ADVANCED MODE */}
           {mode === "advanced" && (
             <>
+              {/* Video guide placeholder */}
+              <div className="rounded-xl border border-dashed border-gray-700 px-5 py-6 mb-6 flex items-center gap-3" style={{ background: "#0A0F1A" }}>
+                <span className="text-2xl">▶</span>
+                <div>
+                  <p className="text-gray-400 text-sm font-medium">Video guide coming soon</p>
+                  <p className="text-gray-600 text-xs">Watch this before running an advanced analysis.</p>
+                </div>
+              </div>
+
               {/* Column instructions */}
               <div className="rounded-xl border border-orange-900 bg-orange-950/30 px-5 py-4 mb-6">
                 <p className="text-orange-300 text-sm font-semibold mb-2">Before you export — include these columns</p>
