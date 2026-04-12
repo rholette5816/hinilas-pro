@@ -15,6 +15,18 @@ body {
 
 html, body {
   height: 100%;
+  height: -webkit-fill-available;
+}
+
+/* iOS Safari: fix 100vh not accounting for dynamic address bar */
+.h-screen {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Smooth scrolling on iOS */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
 }
 
 * {

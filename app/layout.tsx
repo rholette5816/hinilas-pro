@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
@@ -10,14 +10,22 @@ export const metadata: Metadata = {
   description: "Your AI-powered Digital Marketing Assistant. Market research, ad angles, copy, creatives, and results analysis — powered by the Basta Mag Ads Hilas framework.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} text-white antialiased h-full`} style={{ background: "#0B1120" }}>
+    <html lang="en">
+      <body className={`${inter.className} text-white antialiased`} style={{ background: "#0B1120" }}>
         <AppProvider>{children}</AppProvider>
       </body>
     </html>
