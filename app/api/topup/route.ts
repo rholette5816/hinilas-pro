@@ -10,7 +10,7 @@ function adminClient() {
   );
 }
 
-async function sendTelegramNotification(message: string) {
+async function sendTelegramNotification(message: string, screenshotUrl?: string) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatIds = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
 
@@ -21,13 +21,23 @@ async function sendTelegramNotification(message: string) {
 
   for (const chatId of chatIds) {
     try {
-      const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, text: message }),
-      });
-      const data = await res.json();
-      console.log(`Telegram response for ${chatId}:`, JSON.stringify(data));
+      if (screenshotUrl) {
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, photo: screenshotUrl, caption: message }),
+        });
+        const data = await res.json();
+        console.log(`Telegram photo response for ${chatId}:`, JSON.stringify(data));
+      } else {
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, text: message }),
+        });
+        const data = await res.json();
+        console.log(`Telegram response for ${chatId}:`, JSON.stringify(data));
+      }
     } catch (e) {
       console.log(`Telegram error for ${chatId}:`, e);
     }
@@ -85,7 +95,8 @@ export async function POST(req: Request) {
 
   // Telegram notification
   await sendTelegramNotification(
-    `💰 New Top-Up Request\n\nUser: ${user.email}\nPackage: ${pkg}\nAmount: ₱${amount}\nCredits: ${credits}\n\nApprove here:\n${approveUrl}`
+    `💰 New Top-Up Request\n\nUser: ${user.email}\nPackage: ${pkg}\nAmount: ₱${amount}\nCredits: ${credits}\n\nApprove here:\n${approveUrl}`,
+    screenshotUrl || undefined
   );
 
   return NextResponse.json({ success: true });
