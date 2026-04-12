@@ -114,19 +114,10 @@ export default function AnalyzePage() {
   const output = mode === "advanced" ? outputAdvanced : outputBasic;
   const savedAt = mode === "advanced" ? savedAtAdvanced : savedAtBasic;
 
-  async function downloadPPTX() {
+  function downloadHTMLDeck() {
     if (!output) return;
-    const PptxGenJS = (await import("pptxgenjs")).default;
-    const prs = new PptxGenJS();
 
-    prs.layout = "LAYOUT_WIDE";
-    const BLUE = "2B7EC9";
-    const DARK = "0F172A";
-    const WHITE = "FFFFFF";
-    const GRAY = "94A3B8";
-    const LIGHT = "E2E8F0";
-
-    // Parse output into sections
+    // Parse into sections
     const sections: { title: string; lines: string[] }[] = [];
     let current: { title: string; lines: string[] } | null = null;
     for (const rawLine of output.split("\n")) {
@@ -140,67 +131,137 @@ export default function AnalyzePage() {
     }
     if (current) sections.push(current);
 
-    function cleanText(t: string) {
-      return t
-        .replace(/\*\*(.*?)\*\*/g, "$1")
-        .replace(/🟢/g, "✓ ")
-        .replace(/🟡/g, "~ ")
-        .replace(/🔴/g, "✗ ")
-        .replace(/^[-*]\s+/, "")
-        .trim();
+    function renderLine(line: string): string {
+      return line
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/🟢/g, '<span style="color:#22c55e">●</span>')
+        .replace(/🟡/g, '<span style="color:#eab308">●</span>')
+        .replace(/🔴/g, '<span style="color:#ef4444">●</span>');
     }
 
-    // Slide 1 — Cover
-    const cover = prs.addSlide();
-    cover.background = { color: DARK };
-    cover.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
-    cover.addText("Meta Ads Analysis Report", { x: 0.6, y: 1.6, w: 12, h: 1, fontSize: 40, bold: true, color: WHITE, fontFace: "Arial" });
-    cover.addText(`${mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}`, { x: 0.6, y: 2.7, w: 12, h: 0.5, fontSize: 18, color: BLUE, fontFace: "Arial" });
-    cover.addShape(prs.ShapeType.line, { x: 0.6, y: 3.4, w: 5, h: 0, line: { color: BLUE, width: 1 } });
-    cover.addText(userName, { x: 0.6, y: 3.7, w: 8, h: 0.45, fontSize: 16, bold: true, color: WHITE, fontFace: "Arial" });
-    cover.addText(savedAt || new Date().toLocaleDateString(), { x: 0.6, y: 4.2, w: 8, h: 0.35, fontSize: 12, color: GRAY, fontFace: "Arial" });
-
-    // Content slides — one per section
-    for (const section of sections) {
-      const slide = prs.addSlide();
-      slide.background = { color: DARK };
-      slide.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
-
-      // Section title
-      slide.addText(section.title.toUpperCase(), {
-        x: 0.6, y: 0.35, w: 12, h: 0.5,
-        fontSize: 14, bold: true, color: BLUE, fontFace: "Arial", charSpacing: 2,
-      });
-      slide.addShape(prs.ShapeType.line, { x: 0.6, y: 0.92, w: 12, h: 0, line: { color: "1E3A5F", width: 1 } });
-
-      // Bullets
-      const bulletRows = section.lines
-        .filter(l => l && l !== "---")
-        .slice(0, 10)
-        .map(l => ({
-          text: cleanText(l),
-          options: { fontSize: 14, color: "CBD5E1", fontFace: "Arial", bullet: { type: "bullet" as const }, paraSpaceAfter: 6 },
-        }));
-
-      if (bulletRows.length > 0) {
-        slide.addText(bulletRows, { x: 0.6, y: 1.1, w: 12.2, h: 5.4, valign: "top" });
-      }
-
-      // Footer
-      slide.addText(userName, {
-        x: 0.6, y: 7.1, w: 12, h: 0.25, fontSize: 9, color: "475569", fontFace: "Arial",
-      });
+    function sectionToSlide(title: string, lines: string[], idx: number, total: number): string {
+      const bullets = lines.map(l => {
+        const t = l.replace(/^[-*]\s+/, "");
+        return `<div class="bullet"><span class="dot">—</span><span>${renderLine(t)}</span></div>`;
+      }).join("");
+      return `
+        <div class="slide" id="slide-${idx}">
+          <div class="slide-top-bar"></div>
+          <div class="slide-inner">
+            <div class="section-label">${title.toUpperCase()}</div>
+            <div class="divider"></div>
+            <div class="bullets">${bullets}</div>
+          </div>
+          <div class="slide-footer">
+            <span>${userName}</span>
+            <span>${idx + 1} / ${total}</span>
+          </div>
+        </div>`;
     }
 
-    // Last slide — closing
-    const end = prs.addSlide();
-    end.background = { color: DARK };
-    end.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
-    end.addText("Scale What Works.", { x: 0.6, y: 2.4, w: 12, h: 1, fontSize: 40, bold: true, color: WHITE, fontFace: "Arial" });
-    end.addText("Pause What Doesn't.", { x: 0.6, y: 3.4, w: 12, h: 0.8, fontSize: 40, bold: true, color: BLUE, fontFace: "Arial" });
-    end.addText(userName, { x: 0.6, y: 6.8, w: 12, h: 0.3, fontSize: 11, color: "475569", fontFace: "Arial" });
+    const totalSlides = sections.length + 2; // cover + sections + closing
+    let slidesHTML = "";
 
-    await prs.writeFile({ fileName: `hinilas-report-${new Date().toISOString().slice(0, 10)}.pptx` });
+    // Cover
+    slidesHTML += `
+      <div class="slide" id="slide-0">
+        <div class="slide-top-bar"></div>
+        <div class="slide-inner cover-inner">
+          <div class="cover-title">Meta Ads Analysis Report</div>
+          <div class="cover-sub">${mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+          <div class="cover-line"></div>
+          <div class="cover-name">${userName}</div>
+          <div class="cover-date">${savedAt || new Date().toLocaleDateString()}</div>
+        </div>
+        <div class="slide-footer"><span></span><span>1 / ${totalSlides}</span></div>
+      </div>`;
+
+    // Section slides
+    sections.forEach((s, i) => {
+      slidesHTML += sectionToSlide(s.title, s.lines, i + 1, totalSlides);
+    });
+
+    // Closing
+    slidesHTML += `
+      <div class="slide" id="slide-${totalSlides - 1}">
+        <div class="slide-top-bar"></div>
+        <div class="slide-inner cover-inner">
+          <div class="closing-line1">Scale What Works.</div>
+          <div class="closing-line2">Pause What Doesn't.</div>
+          <div class="cover-line" style="margin-top:32px"></div>
+          <div class="cover-date">${userName}</div>
+        </div>
+        <div class="slide-footer"><span></span><span>${totalSlides} / ${totalSlides}</span></div>
+      </div>`;
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ad Analysis Report — ${userName}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; font-family: Arial, sans-serif; overflow: hidden; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { display: none; width: 100vw; height: 100vh; background: #0F172A; flex-direction: column; position: absolute; top: 0; left: 0; }
+  .slide.active { display: flex; }
+  .slide-top-bar { height: 5px; background: #2B7EC9; flex-shrink: 0; }
+  .slide-inner { flex: 1; padding: 52px 72px 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+  .section-label { font-size: 13px; font-weight: 800; color: #2B7EC9; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+  .divider { height: 1px; background: #1E3A5F; margin-bottom: 24px; }
+  .bullets { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+  .bullet { display: flex; gap: 14px; align-items: flex-start; font-size: 17px; color: #CBD5E1; line-height: 1.6; }
+  .dot { color: #2B7EC9; font-weight: bold; flex-shrink: 0; margin-top: 1px; }
+  .bullet strong { color: #fff; }
+  .cover-inner { justify-content: center; }
+  .cover-title { font-size: 48px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 16px; }
+  .cover-sub { font-size: 20px; color: #2B7EC9; margin-bottom: 32px; }
+  .cover-line { width: 80px; height: 3px; background: #2B7EC9; margin-bottom: 28px; }
+  .cover-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .cover-date { font-size: 13px; color: #64748B; }
+  .closing-line1 { font-size: 52px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 8px; }
+  .closing-line2 { font-size: 52px; font-weight: 800; color: #2B7EC9; line-height: 1.1; margin-bottom: 8px; }
+  .slide-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 72px; border-top: 1px solid #1E293B; font-size: 11px; color: #475569; flex-shrink: 0; }
+  .nav { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 100; }
+  .nav button { background: #1E293B; border: 1px solid #334155; color: #94A3B8; font-size: 18px; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .nav button:hover { background: #2B7EC9; color: #fff; border-color: #2B7EC9; }
+  .progress { position: fixed; top: 0; left: 0; height: 5px; background: #2B7EC9; transition: width 0.3s; z-index: 200; }
+</style>
+</head>
+<body>
+<div id="progress" class="progress"></div>
+<div class="deck">${slidesHTML}</div>
+<div class="nav">
+  <button onclick="go(-1)">&#8592;</button>
+  <button onclick="go(1)">&#8594;</button>
+</div>
+<script>
+  let cur = 0;
+  const total = ${totalSlides};
+  function show(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    cur = Math.max(0, Math.min(n, total - 1));
+    document.getElementById('slide-' + cur).classList.add('active');
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+  }
+  function go(dir) { show(cur + dir); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
+  });
+  show(0);
+<\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analysis-deck-${new Date().toISOString().slice(0, 10)}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function downloadPDF() {
@@ -560,17 +621,41 @@ export default function AnalyzePage() {
           )}
 
           {/* Output */}
-          <AIOutput content={output} loading={loading} loadingText="Analyzing your data..." />
+          {(output || loading) && (
+            <div className="relative">
+              {output && !loading && (
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Analysis Result</span>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(output)}
+                    className="text-xs px-3 py-1 rounded-lg border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white transition-colors"
+                  >
+                    Copy
+                  </button>
+                </div>
+              )}
+              <AIOutput content={output} loading={loading} loadingText="Analyzing your data..." />
+            </div>
+          )}
 
-          {/* Generate Report button */}
+          {/* Report action buttons */}
           {output && !loading && (
-            <button
-              onClick={() => setShowReport(true)}
-              className="w-full mt-4 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
-              style={{ background: "#0F172A", color: "#fff" }}
-            >
-              <span>📄</span> Generate Report
-            </button>
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={downloadHTMLDeck}
+                className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-blue-500 transition-colors"
+                style={{ background: "#0F172A", color: "#fff" }}
+              >
+                <span>🖥️</span> HTML Deck
+              </button>
+              <button
+                onClick={() => setShowReport(true)}
+                className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
+                style={{ background: "#0F172A", color: "#fff" }}
+              >
+                <span>📄</span> PDF Report
+              </button>
+            </div>
           )}
 
           {/* Report Modal */}
@@ -580,13 +665,6 @@ export default function AnalyzePage() {
               <div className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-700" style={{ background: "#0A0F1A" }}>
                 <p className="text-white text-sm font-semibold">Report Preview</p>
                 <div className="flex gap-3 items-center">
-                  <button
-                    onClick={downloadPPTX}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-600 hover:border-gray-400 transition-colors"
-                    style={{ background: "#1E293B", color: "#fff" }}
-                  >
-                    Download Slides (.pptx)
-                  </button>
                   <button
                     onClick={downloadPDF}
                     className="px-4 py-2 rounded-lg text-sm font-semibold"
