@@ -57,7 +57,6 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   }
 
   async function submit() {
-    if (!refNumber.trim()) { setError("Enter your GCash reference number."); return; }
     if (!screenshot) { setError("Upload a screenshot of your payment."); return; }
     setSubmitting(true);
     setError("");
@@ -185,18 +184,6 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 <p className="text-gray-500 text-xs">{selected.tag}</p>
               </div>
               <p className="text-white font-bold">₱{selected.price.toLocaleString()}</p>
-            </div>
-
-            {/* Reference number */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-1.5">GCash Reference Number</label>
-              <input
-                type="text"
-                value={refNumber}
-                onChange={e => setRefNumber(e.target.value)}
-                placeholder="e.g. 1234567890"
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
             </div>
 
             {/* Screenshot upload */}
