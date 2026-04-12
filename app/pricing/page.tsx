@@ -74,8 +74,8 @@ export default function PricingPage() {
       name: "Flex",
       tagline: "The engine of your marketing",
       price: "₱999",
-      period: "/month",
-      credits: "150 credits/month",
+      period: " / 150 credits",
+      credits: "150 credits — never expires",
       threshold: "50 – 299 credits",
       color: BRAND_ORANGE,
       popular: true,
@@ -85,8 +85,8 @@ export default function PricingPage() {
       name: "Max",
       tagline: "Unmatched power. Zero limits.",
       price: "₱2,499",
-      period: "/month",
-      credits: "500 credits/month",
+      period: " / 500 credits",
+      credits: "500 credits — never expires",
       threshold: "300+ credits",
       color: BRAND_RED,
     },
@@ -101,7 +101,7 @@ export default function PricingPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Credits & Plans</h1>
-            <p className="text-gray-400 text-sm">Your tier unlocks automatically based on your <span className="text-white font-medium">credits remaining</span>.</p>
+            <p className="text-gray-400 text-sm">Buy credits once — they never expire. Your tier unlocks automatically based on your <span className="text-white font-medium">credits remaining</span>.</p>
           </div>
 
           {/* Threshold bar */}
@@ -283,9 +283,9 @@ export default function PricingPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h3 className="text-white font-bold text-lg mb-1">Need more credits?</h3>
-                <p className="text-gray-400 text-sm">The Refill Pack — 50 instant credits. Buying this unlocks Flex tier.</p>
+                <p className="text-gray-400 text-sm">Need a small top-up? Get 50 credits added to your balance instantly.</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs font-semibold" style={{ color: BRAND_ORANGE }}>₱499 · 50 credits · Never expires</span>
+                  <span className="text-xs font-semibold" style={{ color: BRAND_BLUE }}>₱499 · 50 credits · Never expires</span>
                   <span className="text-gray-700 text-xs">·</span>
                   <span className="text-xs text-gray-600">Adds to your current balance</span>
                 </div>

@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const PACKAGES = [
-  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "One-time", color: "#2B7EC9" },
-  { id: "pro_150", label: "Pro", credits: 150, price: 999, tag: "Monthly", color: "#8B5CF6" },
-  { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "Monthly", color: "#F5A623" },
+  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#2B7EC9" },
+  { id: "pro_150", label: "Flex", credits: 150, price: 999, tag: "150 credits", color: "#8B5CF6" },
+  { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "500 credits", color: "#F5A623" },
 ];
 
 interface Props {
