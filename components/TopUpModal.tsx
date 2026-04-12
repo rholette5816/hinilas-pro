@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const PACKAGES = [
   { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "One-time", color: "#2B7EC9" },
@@ -15,11 +15,22 @@ interface Props {
 }
 
 export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
-  const [selected, setSelected] = useState(() => PACKAGES.find(p => p.id === defaultPackage) || PACKAGES[0]);
-  const [step, setStep] = useState<"select" | "confirm" | "done">(defaultPackage ? "confirm" : "select");
+  const [selected, setSelected] = useState(PACKAGES[0]);
+  const [step, setStep] = useState<"select" | "confirm" | "done">("select");
   const [refNumber, setRefNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      const pkg = PACKAGES.find(p => p.id === defaultPackage) || PACKAGES[0];
+      setSelected(pkg);
+      setStep(defaultPackage ? "confirm" : "select");
+      setRefNumber("");
+      setError("");
+      setSubmitting(false);
+    }
+  }, [isOpen, defaultPackage]);
 
   if (!isOpen) return null;
 
