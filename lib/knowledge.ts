@@ -391,6 +391,86 @@ Calculate and show only the numbers:
 Keep the entire response short. No explanations beyond what the format asks for. Be direct.
 `,
 
+  analyzeAdvanced: (userContext: string, extraData: string) => `
+${HILAS_KNOWLEDGE}
+
+# USER CONTEXT
+${userContext}
+
+${extraData ? `# BUSINESS DATA\n${extraData}` : ""}
+
+# TASK
+A Meta Ads exported CSV/document has been provided. Read all visible metrics and give a fast, scannable diagnosis for a Purchase/Traffic campaign. No long paragraphs. Use the format below exactly.
+
+---
+
+## OVERALL VERDICT
+One line. Use one of these:
+🟢 CONTINUE — [one sentence why]
+🟡 OPTIMIZE — [one sentence what to fix]
+🔴 TURN OFF — [one sentence why]
+⏳ WAIT — Not enough spend data yet. Let it run.
+
+---
+
+## METRICS
+One line per metric. Format: [indicator] [Metric Name] — [value] ([rating])
+
+🟢 = Good | 🟡 = Watch | 🔴 = Bad
+
+Rate using these benchmarks:
+- Amount Spent: 🟢 P1,000+ | 🟡 P500–1,000 | 🔴 below P500 (too early)
+- Cost per Purchase: 🟢 below 30% of selling price | 🟡 30–50% | 🔴 above 50%
+- Purchase ROAS: 🟢 3x+ | 🟡 2–3x | 🔴 below 2x
+- CTR (Link): 🟢 2%+ | 🟡 1–2% | 🔴 below 1%
+- Hook Rate (3-sec views ÷ Impressions): 🟢 30%+ | 🟡 20–30% | 🔴 below 20%
+- Hold Rate (ThruPlays ÷ 3-sec views): 🟢 25%+ | 🟡 15–25% | 🔴 below 15%
+- Landing Page Views ÷ Link Clicks (Landing Rate): 🟢 70%+ | 🟡 50–70% | 🔴 below 50%
+- Conversion Rate (Purchases ÷ Landing Page Views): 🟢 3%+ | 🟡 1–3% | 🔴 below 1%
+- CPM: 🟢 P120–180 | 🟡 P180–300 | 🔴 P300+
+- Frequency: 🟢 1–2.5 | 🟡 2.5–3 | 🔴 3.5+
+
+Only show metrics visible in the data. Skip what is not shown.
+
+---
+
+## FUNNEL BREAKDOWN
+Show the drop-off at each stage in one line each:
+- Impressions → 3-sec Views (Hook Rate): [value]%
+- 3-sec Views → ThruPlays (Hold Rate): [value]%
+- Clicks → Landing Page Views (Landing Rate): [value]%
+- Landing Page Views → Purchases (CVR): [value]%
+Identify where the biggest drop-off is.
+
+---
+
+## ROOT CAUSE
+Only if verdict is OPTIMIZE or TURN OFF.
+One line. Format: ⚠️ [Hook / Creative / Landing Page / Offer / Audience] — [specific reason]
+
+---
+
+## NEXT STEPS
+Exactly 3 actions. One line each.
+1.
+2.
+3.
+
+---
+
+${extraData ? `## PROFIT (COD/RTS Adjusted)
+Calculate using provided data:
+- Gross Profit per Order = Selling Price minus COGS minus Shipping Fee
+- Delivered Orders = Total Orders × (1 - RTS%)
+- Total Revenue = Selling Price × Delivered Orders
+- Total Cost = (COGS + Shipping) × Total Orders + Ad Spend
+- Net Profit = Total Revenue minus Total Cost
+- True ROAS = Total Revenue ÷ Ad Spend
+- Verdict: 🟢 Profitable / 🔴 Not Profitable` : ""}
+
+Keep the entire response short. No explanations beyond what the format asks for.
+`,
+
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
 You are creating a high-converting static Facebook/Instagram ad image for the Philippine market.
 
