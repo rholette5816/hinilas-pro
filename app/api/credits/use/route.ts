@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function POST() {
+export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -9,20 +9,24 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const body = await req.json().catch(() => ({}));
+  const amount = typeof body.amount === "number" && body.amount > 0 ? body.amount : 1;
+  const description = body.description || (amount === 1 ? "Image generation" : `Expert session (${amount} credits)`);
+
   const { data: userData } = await supabase
     .from("user_data")
     .select("credits_remaining")
     .eq("user_id", user.id)
     .single();
 
-  if (!userData || userData.credits_remaining <= 0) {
+  if (!userData || userData.credits_remaining < amount) {
     return NextResponse.json(
-      { error: "No credits remaining", code: "NO_CREDITS" },
+      { error: "Not enough credits", code: "NO_CREDITS" },
       { status: 402 }
     );
   }
 
-  const newCredits = userData.credits_remaining - 1;
+  const newCredits = userData.credits_remaining - amount;
 
   await supabase
     .from("user_data")
@@ -32,8 +36,8 @@ export async function POST() {
   await supabase.from("credit_transactions").insert({
     user_id: user.id,
     type: "use",
-    amount: -1,
-    description: "Image generation",
+    amount: -amount,
+    description,
   });
 
   return NextResponse.json({ credits: newCredits });

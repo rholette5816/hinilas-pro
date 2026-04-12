@@ -8,13 +8,14 @@ import HinilasLogo from "@/components/HinilasLogo";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
-const modules = [
+const modules: { href: string; label: string; icon: string; description: string; highlight?: boolean }[] = [
   { href: "/", label: "Setup", icon: "⚙", description: "Your business profile" },
   { href: "/research", label: "Research", icon: "🔍", description: "Know your customer" },
   { href: "/angles", label: "Angles", icon: "🎯", description: "Find winning angles" },
   { href: "/creative", label: "Creative", icon: "🖼", description: "Generate ad images" },
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
+  { href: "/expert", label: "Ask Expert", icon: "🎙", description: "10 credits per session", highlight: true },
   { href: "/learn", label: "Courses", icon: "📖", description: "Marketing & ads education" },
   { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
@@ -78,12 +79,18 @@ export default function Sidebar() {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
                 active ? "text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
               }`}
-              style={active ? { background: "#2B7EC9" } : {}}
+              style={
+                active
+                  ? { background: "#2B7EC9" }
+                  : mod.highlight && !active
+                  ? { background: "#1C1200", border: "1px solid #92400E" }
+                  : {}
+              }
             >
               <span className="text-base w-5 text-center">{mod.icon}</span>
-              <div className="min-w-0">
-                <p className={`text-sm font-medium ${active ? "text-white" : ""}`}>{mod.label}</p>
-                <p className={`text-xs truncate ${active ? "text-blue-100" : "text-gray-600 group-hover:text-gray-400"}`}>
+              <div className="min-w-0 flex-1">
+                <p className={`text-sm font-medium ${active ? "text-white" : mod.highlight ? "text-amber-400" : ""}`}>{mod.label}</p>
+                <p className={`text-xs truncate ${active ? "text-blue-100" : mod.highlight ? "text-amber-700" : "text-gray-600 group-hover:text-gray-400"}`}>
                   {mod.description}
                 </p>
               </div>

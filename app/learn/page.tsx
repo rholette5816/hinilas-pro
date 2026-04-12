@@ -113,11 +113,65 @@ const MODULES = [
 ];
 
 export default function LearnPage() {
-  const { setup } = useApp();
+  const { setup, plan } = useApp();
   const [topic, setTopic] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeModule, setActiveModule] = useState<number | null>(null);
+
+  if (plan !== "max") {
+    return (
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+          <div className="max-w-3xl mx-auto px-6 py-10">
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 rounded-full px-3 py-1 mb-4">
+                <span className="text-indigo-300 text-xs font-medium">📖 Courses</span>
+              </div>
+              <h1 className="text-2xl font-bold text-white mb-2">Meta Ads Course</h1>
+              <p className="text-gray-400 text-sm">Full Meta Ads roadmap from zero to profitable campaigns.</p>
+            </div>
+
+            {/* Locked state */}
+            <div className="rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+              {/* Preview modules blurred */}
+              <div className="relative">
+                <div className="px-6 py-8 opacity-20 pointer-events-none select-none space-y-3">
+                  {MODULES.slice(0, 3).map((mod, i) => (
+                    <div key={i} className="border border-gray-700 rounded-xl px-5 py-4 flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: mod.color }} />
+                      <span className="text-white font-semibold text-sm">{mod.title}</span>
+                      <span className="text-gray-600 text-xs">{mod.topics.length} topics</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute inset-0 backdrop-blur-sm" />
+              </div>
+
+              {/* Lock message */}
+              <div className="border-t border-gray-700 px-6 py-8 text-center">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1E293B" }}>
+                  <span className="text-2xl">🔒</span>
+                </div>
+                <h2 className="text-white font-bold text-lg mb-2">Hinilas Max Exclusive</h2>
+                <p className="text-gray-400 text-sm mb-1">The full Meta Ads course is only available on the <span className="text-white font-semibold">Hinilas Max</span> plan.</p>
+                <p className="text-gray-500 text-xs mb-6">7 phases · 61 topics · Video lessons · Downloadable PDFs</p>
+                <a
+                  href="/pricing"
+                  className="inline-block text-white text-sm font-semibold px-6 py-3 rounded-xl transition-opacity hover:opacity-90"
+                  style={{ background: "#2B7EC9" }}
+                >
+                  Upgrade to Max
+                </a>
+                <p className="text-gray-600 text-xs mt-3">₱2,499/month · 500 credits · Full course access</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   async function askQuestion(q: string) {
     const question = q || topic.trim();
