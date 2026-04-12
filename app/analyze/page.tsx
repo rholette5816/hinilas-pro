@@ -22,9 +22,10 @@ const BASIC_COLUMNS = [
 
 const ADVANCED_COLUMNS = [
   "Amount Spent",
-  "Purchases",
-  "Cost per Purchase",
-  "Purchase ROAS",
+  "Results",
+  "Cost per Result",
+  "Result ROAS",
+  "Result Value",
   "CTR (Link Click-Through Rate)",
   "3-Second Video Views",
   "ThruPlays",
