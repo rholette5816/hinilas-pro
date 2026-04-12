@@ -180,7 +180,40 @@ export default function LearnPage() {
 
           {/* Output */}
           {(output || loading) && (
-            <div className="mb-8">
+            <div className="mb-8 space-y-4">
+              {/* Video lesson slot */}
+              <div className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-700">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Video Lesson</span>
+                  <span className="text-xs text-gray-600">— coming soon</span>
+                </div>
+                <div className="flex items-center justify-center py-10 px-6">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full border-2 border-dashed border-gray-600 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-gray-600 text-lg">▶</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">Video for this topic will be available here.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* PDF download slot */}
+              <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A" }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg border border-dashed border-gray-600 flex items-center justify-center">
+                    <span className="text-gray-600 text-xs">PDF</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400 font-medium">Downloadable Notes</p>
+                    <p className="text-xs text-gray-600">PDF handout for this lesson — coming soon</p>
+                  </div>
+                </div>
+                <button disabled className="text-xs px-3 py-1.5 rounded-lg border border-gray-700 text-gray-600 cursor-not-allowed">
+                  Download
+                </button>
+              </div>
+
+              {/* AI lesson */}
               <AIOutput content={output} loading={loading} loadingText="Loading lesson..." />
             </div>
           )}
