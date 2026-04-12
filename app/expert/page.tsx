@@ -3,112 +3,141 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import AIOutput from "@/components/AIOutput";
-import { useApp, buildUserContext } from "@/lib/context";
-import { HILAS_KNOWLEDGE } from "@/lib/knowledge";
+import { useApp } from "@/lib/context";
 
-const EXPERT_CREDIT_COST = 10;
+const CONSULTATION_CREDIT_COST = 100;
 
-const QUICK_QUESTIONS = [
-  "My ads are spending but I'm getting zero messages. What's wrong?",
-  "Should I scale my budget or duplicate my ad set?",
-  "My Cost Per Message is P350+. What do I do?",
-  "How do I know if my creative is the problem?",
-  "I've been running ads for 3 days with no results. Turn off or wait?",
-  "What's the fastest way to find a winning ad?",
+const TOPICS = [
+  "Meta Ads strategy & scaling",
+  "Campaign structure & setup",
+  "Creative review & feedback",
+  "Low ROAS / poor results",
+  "Product launch planning",
+  "COD funnel optimization",
+  "Other",
 ];
 
-const EXPERT_SYSTEM_PROMPT = `${HILAS_KNOWLEDGE}
-
-# EXPERT MODE
-You are now acting as a senior Meta Ads strategist — the most experienced person in the room. The user is paying premium credits to get your best advice.
-
-Rules:
-- Be extremely direct. No padding, no filler.
-- Give a specific diagnosis, not generic tips.
-- Use numbers and benchmarks from PH context (pesos, CTR %, CPM).
-- If something is wrong, say it plainly.
-- End with exactly 3 next actions, numbered.
-- Max 300 words total. Quality over quantity.
-`;
+const TIME_SLOTS = [
+  "9:00 AM", "10:00 AM", "11:00 AM",
+  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+];
 
 export default function ExpertPage() {
-  const { setup, credits, plan, refreshCredits } = useApp();
+  const { credits, plan, refreshCredits } = useApp();
   const router = useRouter();
-  const [question, setQuestion] = useState("");
-  const [output, setOutput] = useState("");
+
+  const [topic, setTopic] = useState("");
+  const [customTopic, setCustomTopic] = useState("");
+  const [preferredDate, setPreferredDate] = useState("");
+  const [preferredTime, setPreferredTime] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionUsed, setSessionUsed] = useState(false);
+  const [error, setError] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [bookedDate, setBookedDate] = useState("");
+  const [bookedTime, setBookedTime] = useState("");
 
-  const canAsk = credits >= EXPERT_CREDIT_COST && (plan === "flex" || plan === "max");
+  const canBook = credits >= CONSULTATION_CREDIT_COST && (plan === "flex" || plan === "max");
+  const finalTopic = topic === "Other" ? customTopic : topic;
 
-  async function askExpert(q: string) {
-    const finalQ = q || question.trim();
-    if (!finalQ || loading || !canAsk) return;
-    setQuestion(finalQ);
+  const today = new Date().toISOString().split("T")[0];
+
+  async function handleBook() {
+    if (!finalTopic || !preferredDate || !preferredTime) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    setError("");
     setLoading(true);
-    setOutput("");
 
-    // Deduct credits first
     try {
-      const deductRes = await fetch("/api/credits/use", {
+      const res = await fetch("/api/consultations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: EXPERT_CREDIT_COST }),
+        body: JSON.stringify({
+          topic: finalTopic,
+          preferred_date: preferredDate,
+          preferred_time: preferredTime,
+        }),
       });
-      if (!deductRes.ok) {
-        setOutput("Not enough credits.");
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Something went wrong. Try again.");
         setLoading(false);
         return;
       }
+      setBookedDate(preferredDate);
+      setBookedTime(preferredTime);
+      await refreshCredits();
+      setConfirmed(true);
     } catch {
-      setOutput("Something went wrong. Try again.");
-      setLoading(false);
-      return;
-    }
-
-    await refreshCredits();
-    setSessionUsed(true);
-
-    const userCtx = setup ? buildUserContext(setup) : "No business profile set.";
-    const prompt = `
-# USER CONTEXT
-${userCtx}
-
-# QUESTION
-${finalQ}
-
-Give your best expert answer. Be direct, specific, and actionable.
-`;
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: EXPERT_SYSTEM_PROMPT }),
-      });
-      const data = await res.json();
-      setOutput(data.error ? `Error: ${data.error}` : data.content);
-    } catch {
-      setOutput("Something went wrong. Try again.");
+      setError("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (confirmed) {
+    return (
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+          <div className="max-w-xl mx-auto px-6 py-16 text-center">
+            <div className="text-5xl mb-6">✅</div>
+            <h1 className="text-2xl font-bold text-white mb-3">Booking Confirmed!</h1>
+            <p className="text-gray-400 text-sm mb-8">
+              Your consultation has been submitted. Ken will review your request and send a <strong className="text-white">Google Meet link to your email</strong> approximately <strong className="text-white">1 hour before</strong> your scheduled time.
+            </p>
+            <div className="rounded-xl border border-gray-700 px-6 py-5 mb-8 text-left" style={{ background: "#1E293B" }}>
+              <p className="text-xs text-gray-500 uppercase tracking-widest mb-4">Booking Details</p>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-sm">Topic</span>
+                  <span className="text-white text-sm font-medium">{finalTopic}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-sm">Date</span>
+                  <span className="text-white text-sm font-medium">{bookedDate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-sm">Time</span>
+                  <span className="text-white text-sm font-medium">{bookedTime}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-sm">Credits Used</span>
+                  <span className="text-white text-sm font-medium">100 credits</span>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-xl border border-amber-900 px-5 py-4 mb-8 text-left" style={{ background: "#1C1200" }}>
+              <p className="text-amber-300 text-sm font-semibold mb-1">Check your email</p>
+              <p className="text-amber-700 text-xs">The Google Meet link will be sent to your email about 1 hour before the session. If you don't see it, please check your spam or junk folder.</p>
+            </div>
+            <button
+              onClick={() => router.push("/creative")}
+              className="text-sm font-semibold px-6 py-3 rounded-lg text-white transition-opacity hover:opacity-90"
+              style={{ background: "#2B7EC9" }}
+            >
+              Back to Dashboard
+            </button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
-        <div className="max-w-3xl mx-auto px-6 py-10">
+        <div className="max-w-xl mx-auto px-6 py-10">
 
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-amber-950 border border-amber-800 rounded-full px-3 py-1 mb-4">
               <span className="text-amber-300 text-xs font-medium">🎙 Expert</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Ask an Expert</h1>
-            <p className="text-gray-400 text-sm">Direct, senior-level Meta Ads advice. No fluff — just what to do next.</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Book a Consultation</h1>
+            <p className="text-gray-400 text-sm">Get a 1-on-1 live session with Ken. Direct strategy, no fluff.</p>
           </div>
 
           {/* Credit cost notice */}
@@ -116,11 +145,11 @@ Give your best expert answer. Be direct, specific, and actionable.
             <div className="flex items-center gap-3">
               <span className="text-amber-400 text-lg">⚡</span>
               <div>
-                <p className="text-amber-300 text-sm font-semibold">10 credits per session</p>
-                <p className="text-amber-700 text-xs">Each question uses 10 credits. You have {credits} remaining.</p>
+                <p className="text-amber-300 text-sm font-semibold">100 credits per session</p>
+                <p className="text-amber-700 text-xs">You have {credits} credits remaining.</p>
               </div>
             </div>
-            {!canAsk && (plan === "lite" || credits < EXPERT_CREDIT_COST) && plan !== "flex" && plan !== "max" && (
+            {!canBook && plan === "lite" && (
               <button
                 onClick={() => router.push("/pricing")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
@@ -129,7 +158,7 @@ Give your best expert answer. Be direct, specific, and actionable.
                 Upgrade
               </button>
             )}
-            {!canAsk && plan !== "lite" && credits < EXPERT_CREDIT_COST && (
+            {!canBook && plan !== "lite" && credits < CONSULTATION_CREDIT_COST && (
               <button
                 onClick={() => router.push("/pricing#topup")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
@@ -140,70 +169,80 @@ Give your best expert answer. Be direct, specific, and actionable.
             )}
           </div>
 
-          {/* Quick questions */}
-          {!output && !loading && (
-            <div className="mb-6">
-              <p className="text-sm font-medium text-gray-400 mb-3">Common situations</p>
-              <div className="space-y-2">
-                {QUICK_QUESTIONS.map(q => (
+          {/* Form */}
+          <div className="space-y-5">
+
+            {/* Topic */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">What do you want to discuss?</label>
+              <div className="grid grid-cols-1 gap-2">
+                {TOPICS.map(t => (
                   <button
-                    key={q}
-                    onClick={() => askExpert(q)}
-                    disabled={!canAsk}
-                    className="w-full text-left text-sm px-4 py-3 rounded-xl border transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:border-amber-700 hover:text-white"
-                    style={{ background: "#0F172A", borderColor: "#374151", color: "#CBD5E1" }}
+                    key={t}
+                    onClick={() => setTopic(t)}
+                    disabled={!canBook}
+                    className={`text-left text-sm px-4 py-3 rounded-xl border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${topic === t ? "border-amber-500 text-white" : "border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white"}`}
+                    style={{ background: topic === t ? "#1C1200" : "#0F172A" }}
                   >
-                    {q}
+                    {t}
+                  </button>
+                ))}
+              </div>
+              {topic === "Other" && (
+                <input
+                  type="text"
+                  value={customTopic}
+                  onChange={e => setCustomTopic(e.target.value)}
+                  placeholder="Describe your topic..."
+                  className="mt-2 w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              )}
+            </div>
+
+            {/* Date */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Date</label>
+              <input
+                type="date"
+                value={preferredDate}
+                min={today}
+                onChange={e => setPreferredDate(e.target.value)}
+                disabled={!canBook}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-40"
+              />
+            </div>
+
+            {/* Time */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Time (GMT+8)</label>
+              <div className="grid grid-cols-4 gap-2">
+                {TIME_SLOTS.map(t => (
+                  <button
+                    key={t}
+                    onClick={() => setPreferredTime(t)}
+                    disabled={!canBook}
+                    className={`text-sm px-3 py-2 rounded-lg border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${preferredTime === t ? "border-amber-500 text-white" : "border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white"}`}
+                    style={{ background: preferredTime === t ? "#1C1200" : "#0F172A" }}
+                  >
+                    {t}
                   </button>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Custom question */}
-          <div className="flex gap-2 mb-8">
-            <input
-              type="text"
-              value={question}
-              onChange={e => setQuestion(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && askExpert("")}
-              placeholder="Describe your situation or problem..."
-              disabled={!canAsk}
-              className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-40"
-            />
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+
+            {/* Submit */}
             <button
-              onClick={() => askExpert("")}
-              disabled={!question.trim() || loading || !canAsk}
-              className="text-white px-5 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+              onClick={handleBook}
+              disabled={!canBook || loading || !finalTopic || !preferredDate || !preferredTime}
+              className="w-full py-3 rounded-xl text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: "#F5A623", color: "#000" }}
             >
-              Ask
+              {loading ? "Booking..." : "Confirm Booking — 100 Credits"}
             </button>
+
           </div>
-
-          {/* Output */}
-          {(output || loading) && (
-            <div>
-              {sessionUsed && !loading && (
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs" style={{ background: "#F5A623", color: "#000" }}>
-                    ✓
-                  </div>
-                  <p className="text-xs text-gray-500">10 credits used · {credits} remaining</p>
-                </div>
-              )}
-              <AIOutput content={output} loading={loading} loadingText="Getting expert answer..." />
-              {output && !loading && (
-                <button
-                  onClick={() => { setOutput(""); setQuestion(""); setSessionUsed(false); }}
-                  className="mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors"
-                >
-                  Ask another question
-                </button>
-              )}
-            </div>
-          )}
-
         </div>
       </main>
     </div>

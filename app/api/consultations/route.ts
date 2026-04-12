@@ -20,17 +20,17 @@ export async function POST(req: Request) {
     .eq("user_id", user.id)
     .single();
 
-  if (!userData || userData.credits_remaining < 20) {
+  if (!userData || userData.credits_remaining < 100) {
     return NextResponse.json({ error: "Not enough credits", code: "NO_CREDITS" }, { status: 402 });
   }
 
-  // Deduct 20 credits
-  const newCredits = userData.credits_remaining - 20;
+  // Deduct 100 credits
+  const newCredits = userData.credits_remaining - 100;
   await supabase.from("user_data").update({ credits_remaining: newCredits }).eq("user_id", user.id);
   await supabase.from("credit_transactions").insert({
     user_id: user.id,
     type: "use",
-    amount: -20,
+    amount: -100,
     description: "Live consultation booking",
   });
 
