@@ -86,6 +86,11 @@ export default function FloatingChat() {
     }
   }, [open]);
 
+  // Stop glowing once user has seen the messages
+  useEffect(() => {
+    if (open && glowing) setGlowing(false);
+  }, [open]);
+
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
