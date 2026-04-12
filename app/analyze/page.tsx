@@ -727,10 +727,7 @@ show(0);
               }}
             >
               <div className="text-2xl mb-2">📄</div>
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-white font-bold text-sm">Advanced Analysis</p>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "#F5A62320", color: "#F5A623", border: "1px solid #F5A62340" }}>1.5 credits</span>
-              </div>
+              <p className="text-white font-bold text-sm mb-1">Advanced Analysis</p>
               <p className="text-gray-500 text-xs">Purchase Ads — upload exported CSV</p>
             </button>
           </div>
@@ -907,7 +904,7 @@ show(0);
               className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6"
               style={{ background: mode === "advanced" ? "#F5A623" : "#2B7EC9", color: mode === "advanced" ? "#000" : "#fff" }}
             >
-              {loading ? "Analyzing..." : mode === "advanced" ? "Run Advanced Analysis" : "Analyze My Results"}
+              {loading ? "Analyzing..." : mode === "advanced" ? (<span className="flex items-center justify-center gap-2">Run Advanced Analysis <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)", letterSpacing: "0.04em" }}>1.5 credits</span></span>) : "Analyze My Results"}
             </button>
           )}
 
