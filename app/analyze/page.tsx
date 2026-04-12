@@ -114,6 +114,97 @@ export default function AnalyzePage() {
   const output = mode === "advanced" ? outputAdvanced : outputBasic;
   const savedAt = mode === "advanced" ? savedAtAdvanced : savedAtBasic;
 
+  async function downloadPPTX() {
+    if (!output) return;
+    const PptxGenJS = (await import("pptxgenjs")).default;
+    const prs = new PptxGenJS();
+
+    prs.layout = "LAYOUT_WIDE";
+    const BLUE = "2B7EC9";
+    const DARK = "0F172A";
+    const WHITE = "FFFFFF";
+    const GRAY = "94A3B8";
+    const LIGHT = "E2E8F0";
+
+    // Parse output into sections
+    const sections: { title: string; lines: string[] }[] = [];
+    let current: { title: string; lines: string[] } | null = null;
+    for (const rawLine of output.split("\n")) {
+      const line = rawLine.trim();
+      if (line.startsWith("## ")) {
+        if (current) sections.push(current);
+        current = { title: line.slice(3), lines: [] };
+      } else if (line && line !== "---" && line !== "***" && current) {
+        current.lines.push(line);
+      }
+    }
+    if (current) sections.push(current);
+
+    function cleanText(t: string) {
+      return t
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/🟢/g, "✓ ")
+        .replace(/🟡/g, "~ ")
+        .replace(/🔴/g, "✗ ")
+        .replace(/^[-*]\s+/, "")
+        .trim();
+    }
+
+    // Slide 1 — Cover
+    const cover = prs.addSlide();
+    cover.background = { color: DARK };
+    cover.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
+    cover.addText("Hinilas Pro", { x: 0.6, y: 1.6, w: 12, h: 1, fontSize: 48, bold: true, color: BLUE, fontFace: "Arial" });
+    cover.addText("Meta Ads AI Assistant", { x: 0.6, y: 2.7, w: 12, h: 0.5, fontSize: 20, color: GRAY, fontFace: "Arial" });
+    cover.addText(`Ad Analysis Report — ${mode === "advanced" ? "Advanced" : "Basic"} Analysis`, { x: 0.6, y: 3.2, w: 12, h: 0.4, fontSize: 16, color: LIGHT, fontFace: "Arial" });
+    cover.addShape(prs.ShapeType.line, { x: 0.6, y: 3.8, w: 5, h: 0, line: { color: BLUE, width: 1 } });
+    cover.addText(`Prepared by: ${userName}`, { x: 0.6, y: 4.1, w: 8, h: 0.35, fontSize: 13, color: GRAY, fontFace: "Arial" });
+    cover.addText(savedAt || new Date().toLocaleDateString(), { x: 0.6, y: 4.5, w: 8, h: 0.35, fontSize: 12, color: GRAY, fontFace: "Arial" });
+    cover.addText("hinilas.pro", { x: 0.6, y: 6.8, w: 12, h: 0.3, fontSize: 11, color: "475569", fontFace: "Arial" });
+
+    // Content slides — one per section
+    for (const section of sections) {
+      const slide = prs.addSlide();
+      slide.background = { color: DARK };
+      slide.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
+
+      // Section title
+      slide.addText(section.title.toUpperCase(), {
+        x: 0.6, y: 0.35, w: 12, h: 0.5,
+        fontSize: 14, bold: true, color: BLUE, fontFace: "Arial", charSpacing: 2,
+      });
+      slide.addShape(prs.ShapeType.line, { x: 0.6, y: 0.92, w: 12, h: 0, line: { color: "1E3A5F", width: 1 } });
+
+      // Bullets
+      const bulletRows = section.lines
+        .filter(l => l && l !== "---")
+        .slice(0, 10)
+        .map(l => ({
+          text: cleanText(l),
+          options: { fontSize: 14, color: "CBD5E1", fontFace: "Arial", bullet: { type: "bullet" as const }, paraSpaceAfter: 6 },
+        }));
+
+      if (bulletRows.length > 0) {
+        slide.addText(bulletRows, { x: 0.6, y: 1.1, w: 12.2, h: 5.4, valign: "top" });
+      }
+
+      // Footer
+      slide.addText(`Hinilas Pro · ${userName} · hinilas.pro`, {
+        x: 0.6, y: 7.1, w: 12, h: 0.25, fontSize: 9, color: "475569", fontFace: "Arial",
+      });
+    }
+
+    // Last slide — closing
+    const end = prs.addSlide();
+    end.background = { color: DARK };
+    end.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: "100%", h: 0.08, fill: { color: BLUE } });
+    end.addText("Scale What Works.", { x: 0.6, y: 2.4, w: 12, h: 1, fontSize: 40, bold: true, color: WHITE, fontFace: "Arial" });
+    end.addText("Pause What Doesn't.", { x: 0.6, y: 3.4, w: 12, h: 0.8, fontSize: 40, bold: true, color: BLUE, fontFace: "Arial" });
+    end.addText("hinilas.pro · Basta Mag Ads Hilas", { x: 0.6, y: 6.8, w: 12, h: 0.3, fontSize: 11, color: "475569", fontFace: "Arial" });
+
+    await prs.writeFile({ fileName: `hinilas-report-${new Date().toISOString().slice(0, 10)}.pptx` });
+  }
+
   async function downloadPDF() {
     if (!output || !reportRef.current) return;
     const html2pdf = (await import("html2pdf.js")).default;
@@ -491,6 +582,13 @@ export default function AnalyzePage() {
               <div className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-700" style={{ background: "#0A0F1A" }}>
                 <p className="text-white text-sm font-semibold">Report Preview</p>
                 <div className="flex gap-3 items-center">
+                  <button
+                    onClick={downloadPPTX}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-600 hover:border-gray-400 transition-colors"
+                    style={{ background: "#1E293B", color: "#fff" }}
+                  >
+                    Download Slides (.pptx)
+                  </button>
                   <button
                     onClick={downloadPDF}
                     className="px-4 py-2 rounded-lg text-sm font-semibold"
