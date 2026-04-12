@@ -66,8 +66,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={e => { if (e.target === e.currentTarget) { reset(); onClose(); } }}>
-      <div className="w-full max-w-md rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+    <div className="fixed inset-0 z-50 bg-black/70 flex items-end md:items-center justify-center md:p-4" onClick={e => { if (e.target === e.currentTarget) { reset(); onClose(); } }}>
+      <div className="w-full md:max-w-md rounded-t-2xl md:rounded-2xl border border-gray-700 overflow-y-auto max-h-[92vh]" style={{ background: "#0F172A" }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
@@ -125,8 +125,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 <img
                   src="/gcash-qr.jpg"
                   alt="GCash QR Code"
-                  width={160}
-                  height={160}
+                  width={140}
+                  height={140}
                   className="block"
                   onError={e => {
                     (e.target as HTMLImageElement).style.display = "none";

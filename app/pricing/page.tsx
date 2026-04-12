@@ -207,9 +207,10 @@ export default function PricingPage() {
             })}
           </div>
 
-          {/* Feature comparison table */}
+          {/* Feature comparison table — mobile: stacked cards, desktop: grid */}
           <div className="rounded-2xl border border-gray-700 overflow-hidden mb-8" style={{ background: "#0A0F1A" }}>
-            <div className="grid grid-cols-4 px-5 py-3 border-b border-gray-700" style={{ background: "#0F172A" }}>
+            {/* Desktop header */}
+            <div className="hidden md:grid grid-cols-4 px-5 py-3 border-b border-gray-700" style={{ background: "#0F172A" }}>
               <div className="col-span-1" />
               {plans.map(p => (
                 <div key={p.key} className="text-center">
@@ -218,24 +219,60 @@ export default function PricingPage() {
               ))}
             </div>
 
-            {FEATURES.map(group => (
-              <div key={group.category}>
-                <div className="px-5 py-2 border-b border-gray-800" style={{ background: "#0F172A" }}>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{group.category}</p>
-                </div>
-                {group.items.map((item, idx) => (
-                  <div
-                    key={item.label}
-                    className={`grid grid-cols-4 px-5 py-3 items-center ${idx < group.items.length - 1 ? "border-b border-gray-800" : ""}`}
-                  >
-                    <p className="text-gray-300 text-xs col-span-1 pr-4">{item.label}</p>
-                    <div className="text-center"><Check value={item.lite} color="#9CA3AF" /></div>
-                    <div className="text-center"><Check value={item.flex} color={BRAND_ORANGE} /></div>
-                    <div className="text-center"><Check value={item.max} color={BRAND_RED} /></div>
+            {/* Desktop rows */}
+            <div className="hidden md:block">
+              {FEATURES.map(group => (
+                <div key={group.category}>
+                  <div className="px-5 py-2 border-b border-gray-800" style={{ background: "#0F172A" }}>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{group.category}</p>
                   </div>
-                ))}
-              </div>
-            ))}
+                  {group.items.map((item, idx) => (
+                    <div
+                      key={item.label}
+                      className={`grid grid-cols-4 px-5 py-3 items-center ${idx < group.items.length - 1 ? "border-b border-gray-800" : ""}`}
+                    >
+                      <p className="text-gray-300 text-xs col-span-1 pr-4">{item.label}</p>
+                      <div className="text-center"><Check value={item.lite} color="#9CA3AF" /></div>
+                      <div className="text-center"><Check value={item.flex} color={BRAND_ORANGE} /></div>
+                      <div className="text-center"><Check value={item.max} color={BRAND_RED} /></div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: per-feature rows with tier badges */}
+            <div className="md:hidden">
+              {FEATURES.map(group => (
+                <div key={group.category}>
+                  <div className="px-4 py-2 border-b border-gray-800" style={{ background: "#0F172A" }}>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{group.category}</p>
+                  </div>
+                  {group.items.map((item, idx) => (
+                    <div
+                      key={item.label}
+                      className={`px-4 py-3 ${idx < group.items.length - 1 ? "border-b border-gray-800" : ""}`}
+                    >
+                      <p className="text-gray-200 text-sm mb-2">{item.label}</p>
+                      <div className="flex gap-3">
+                        {[
+                          { key: "lite", color: "#9CA3AF", value: item.lite },
+                          { key: "flex", color: BRAND_ORANGE, value: item.flex },
+                          { key: "max", color: BRAND_RED, value: item.max },
+                        ].map(tier => (
+                          <div key={tier.key} className="flex items-center gap-1">
+                            <span className="text-xs font-bold uppercase" style={{ color: tier.color }}>{tier.key}</span>
+                            <span className="text-xs" style={{ color: tier.color }}>
+                              {tier.value === false ? "—" : typeof tier.value === "string" ? tier.value : "✓"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Top-up */}
