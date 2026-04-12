@@ -77,7 +77,7 @@ export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "noreply@hinilas.pro",
+      from: "Hinilas Pro <onboarding@resend.dev>",
       to: request.user_email,
       subject: "Your credits have been added — Hinilas Pro",
       html: `

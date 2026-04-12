@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "noreply@hinilas.pro",
+      from: "Hinilas Pro <onboarding@resend.dev>",
       to: process.env.FEEDBACK_EMAIL || "admin@hinilas.pro",
       subject: `New Top-Up Request — ${pkg}`,
       html: `
