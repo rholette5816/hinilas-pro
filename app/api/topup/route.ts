@@ -1,13 +1,24 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+
+function adminClient() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 async function sendMessengerNotification(message: string) {
   const pageToken = process.env.FB_PAGE_ACCESS_TOKEN;
   const recipientId = process.env.FB_ADMIN_USER_ID;
-  if (!pageToken || !recipientId) return;
+  if (!pageToken || !recipientId) {
+    console.log("Messenger: missing FB_PAGE_ACCESS_TOKEN or FB_ADMIN_USER_ID");
+    return;
+  }
   try {
-    await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${pageToken}`, {
+    const res = await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${pageToken}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -15,8 +26,10 @@ async function sendMessengerNotification(message: string) {
         message: { text: message },
       }),
     });
-  } catch {
-    // Messenger failure doesn't block the request
+    const data = await res.json();
+    console.log("Messenger response:", JSON.stringify(data));
+  } catch (e) {
+    console.log("Messenger error:", e);
   }
 }
 
@@ -38,8 +51,8 @@ export async function POST(req: Request) {
     status: "pending",
   });
 
-  // Fetch the request ID we just inserted
-  const { data: insertedRequest } = await supabase
+  // Fetch the request ID using admin client to bypass RLS
+  const { data: insertedRequest } = await adminClient()
     .from("top_up_requests")
     .select("id")
     .eq("user_id", user.id)
