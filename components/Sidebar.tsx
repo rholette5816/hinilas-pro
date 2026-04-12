@@ -15,7 +15,6 @@ const modules: { href: string; label: string; icon: string; description: string;
   { href: "/creative", label: "Creative", icon: "🖼", description: "Generate ad images" },
   { href: "/copy", label: "Sales Copy", icon: "✍", description: "Write your captions" },
   { href: "/analyze", label: "Analyze", icon: "📊", description: "Read your results" },
-  { href: "/expert", label: "Ask Expert", icon: "🎙", description: "10 credits per session", highlight: true },
   { href: "/learn", label: "Courses", icon: "📖", description: "Marketing & ads education" },
   { href: "/pricing", label: "Pricing", icon: "⚡", description: "Credits & plans" },
 ];
