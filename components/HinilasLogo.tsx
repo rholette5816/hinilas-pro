@@ -9,7 +9,7 @@ interface Props {
 
 const TIER_COLORS = {
   lite: { accent: "#9CA3AF", label: "Lite" },      // silver
-  flex: { accent: "#F5A623", label: "Pro" },       // orange (current)
+  flex: { accent: "#F5A623", label: "Flex" },      // orange
   max:  { accent: "#EF4444", label: "Max" },       // red
 };
 

@@ -16,7 +16,7 @@ interface Props {
 
 export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   const [selected, setSelected] = useState(() => PACKAGES.find(p => p.id === defaultPackage) || PACKAGES[0]);
-  const [step, setStep] = useState<"select" | "confirm" | "done">("select");
+  const [step, setStep] = useState<"select" | "confirm" | "done">(defaultPackage ? "confirm" : "select");
   const [refNumber, setRefNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");

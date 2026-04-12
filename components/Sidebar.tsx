@@ -171,12 +171,24 @@ export default function Sidebar() {
             <span className="text-gray-700 text-xs">50</span>
             <span className="text-gray-700 text-xs">300</span>
           </div>
+          {credits <= 10 && credits > 0 && (
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-md mb-2" style={{ background: "#1C0A00", border: "1px solid #92400E" }}>
+              <span className="text-amber-400 text-xs">⚠</span>
+              <span className="text-amber-400 text-xs font-medium">Only {credits} credit{credits === 1 ? "" : "s"} left</span>
+            </div>
+          )}
+          {credits === 0 && (
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-md mb-2" style={{ background: "#1A0000", border: "1px solid #EF444450" }}>
+              <span className="text-red-400 text-xs">✕</span>
+              <span className="text-red-400 text-xs font-medium">Out of credits</span>
+            </div>
+          )}
           <button
             onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
             className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
             style={{ background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1E293B", color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF", border: `1px solid ${plan === "max" ? "#EF444430" : plan === "flex" ? "#F5A62330" : "#374151"}` }}
           >
-            {credits === 0 ? "Out of credits — Top Up" : "Top Up / Upgrade"}
+            {credits === 0 ? "Top Up Now" : "Top Up / Upgrade"}
           </button>
         </div>
 
