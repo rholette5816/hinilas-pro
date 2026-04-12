@@ -7,7 +7,7 @@ import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
-function CopyButton({ text }: { text: string }) {
+function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   function copy() {
     navigator.clipboard.writeText(text);
@@ -20,9 +20,33 @@ function CopyButton({ text }: { text: string }) {
       className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
       style={{ background: copied ? "#22c55e20" : "#1E293B", color: copied ? "#22c55e" : "#9CA3AF", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
     >
-      {copied ? "Copied!" : "Copy All"}
+      {copied ? "Copied!" : label}
     </button>
   );
+}
+
+interface CaptionVariation {
+  title: string;
+  caption: string;
+  headline: string;
+  cta: string;
+}
+
+function parseCaptionVariations(output: string): CaptionVariation[] {
+  const blocks = output.split(/(?=\*\*VARIATION\s+\d+)/i).filter(b => b.trim() && /\*\*VARIATION\s+\d+/i.test(b));
+  return blocks.map(block => {
+    const titleMatch = block.match(/\*\*VARIATION\s+\d+[^*]*\*\*/i);
+    const title = titleMatch ? titleMatch[0].replace(/\*\*/g, "").trim() : "Variation";
+    const captionMatch = block.match(/\*\*CAPTION:\*\*\s*([\s\S]*?)(?=\*\*HEADLINE:|$)/i);
+    const headlineMatch = block.match(/\*\*HEADLINE:\*\*\s*(.+)/i);
+    const ctaMatch = block.match(/\*\*CTA BUTTON:\*\*\s*(.+)/i);
+    return {
+      title,
+      caption: captionMatch?.[1]?.trim() || "",
+      headline: headlineMatch?.[1]?.trim() || "",
+      cta: ctaMatch?.[1]?.trim() || "",
+    };
+  });
 }
 
 const FORMULAS = [
@@ -264,12 +288,50 @@ export default function CopyPage() {
           </div>
 
           {/* Output */}
-          {output && !loading && (
-            <div className="flex justify-end mb-2">
-              <CopyButton text={output} />
-            </div>
-          )}
-          <AIOutput content={output} loading={loading} loadingText="Writing your captions..." />
+          {loading && <AIOutput content="" loading={true} loadingText="Writing your captions..." />}
+
+          {output && !loading && (() => {
+            const variations = parseCaptionVariations(output);
+            if (variations.length === 0) return <AIOutput content={output} loading={false} />;
+            return (
+              <div className="space-y-4">
+                {variations.map((v, idx) => (
+                  <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+                    {/* Card header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#0A0F1A" }}>
+                      <span className="text-blue-400 text-xs font-bold uppercase tracking-wide">{v.title}</span>
+                      <CopyButton text={`${v.caption}\n\nHeadline: ${v.headline}\nCTA: ${v.cta}`} label="Copy" />
+                    </div>
+                    {/* Caption */}
+                    <div className="px-4 py-3 border-b border-gray-800">
+                      <p className="text-xs font-semibold text-gray-500 mb-2">CAPTION</p>
+                      <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line">{v.caption}</p>
+                    </div>
+                    {/* Headline + CTA */}
+                    <div className="px-4 py-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {v.headline && (
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 mb-1">HEADLINE</p>
+                            <p className="text-white text-sm font-medium">{v.headline}</p>
+                          </div>
+                          <CopyButton text={v.headline} label="Copy" />
+                        </div>
+                      )}
+                      {v.cta && (
+                        <div>
+                          <p className="text-xs font-semibold text-gray-500 mb-1">CTA BUTTON</p>
+                          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#2B7EC920", color: "#2B7EC9", border: "1px solid #2B7EC940" }}>
+                            {v.cta}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
 
         </div>
       </main>
