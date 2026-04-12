@@ -114,6 +114,57 @@ export default function AnalyzePage() {
   const output = mode === "advanced" ? outputAdvanced : outputBasic;
   const savedAt = mode === "advanced" ? savedAtAdvanced : savedAtBasic;
 
+  function buildBudgetSummary() {
+    if (mode === "basic") {
+      const spent = parseFloat(amountSpent) || 0;
+      const sales = parseFloat(numSales) || 0;
+      const price = parseFloat(productPrice) || 0;
+      const cost = parseFloat(productCost) || 0;
+      if (!spent && !sales && !price && !cost) return null;
+      const revenue = price * sales;
+      const totalCost = cost * sales;
+      const profit = revenue - totalCost - spent;
+      const roas = spent > 0 ? (revenue / spent).toFixed(2) : null;
+      return {
+        stats: [
+          { label: "Amount Spent", value: spent > 0 ? `₱${spent.toLocaleString()}` : "—", sub: "Ad Budget Used" },
+          { label: "Sales / Orders", value: sales > 0 ? sales.toLocaleString() : "—", sub: "Conversions" },
+          { label: "Revenue", value: revenue > 0 ? `₱${revenue.toLocaleString()}` : "—", sub: `₱${price} × ${sales} orders` },
+          { label: "Net Profit", value: (profit !== 0 || spent > 0) ? `₱${profit.toLocaleString()}` : "—", sub: "After cost & ad spend", color: profit >= 0 ? "#22c55e" : "#ef4444" },
+        ],
+        roas,
+        verdict: roas ? (parseFloat(roas) >= 3 ? "Profitable" : parseFloat(roas) >= 1.5 ? "Break-even Zone" : "Losing Money") : null,
+        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#94A3B8",
+      };
+    } else {
+      const spent = parseFloat(amountSpent) || 0;
+      const price = parseFloat(sellingPrice) || 0;
+      const cost = parseFloat(cogs) || 0;
+      const ship = parseFloat(shippingFee) || 0;
+      const rts = parseFloat(rtsPercent) || 0;
+      if (!spent && !price && !cost) return null;
+      // Parse sales count from CSV if possible — use numSales as fallback
+      const sales = parseFloat(numSales) || 0;
+      const delivered = sales * (1 - rts / 100);
+      const revenue = price * delivered;
+      const totalCogs = cost * delivered;
+      const totalShip = ship * sales;
+      const profit = revenue - totalCogs - totalShip - spent;
+      const roas = spent > 0 ? (revenue / spent).toFixed(2) : null;
+      return {
+        stats: [
+          { label: "Amount Spent", value: spent > 0 ? `₱${spent.toLocaleString()}` : "—", sub: "Ad Budget Used" },
+          { label: "Est. Delivered", value: delivered > 0 ? Math.round(delivered).toLocaleString() : "—", sub: `${rts}% RTS rate` },
+          { label: "Revenue", value: revenue > 0 ? `₱${revenue.toLocaleString()}` : "—", sub: `₱${price} × ${Math.round(delivered)} delivered` },
+          { label: "Net Profit", value: profit !== 0 ? `₱${profit.toLocaleString()}` : "—", sub: "After COGS, shipping & ads", color: profit >= 0 ? "#22c55e" : "#ef4444" },
+        ],
+        roas,
+        verdict: roas ? (parseFloat(roas) >= 3 ? "Profitable" : parseFloat(roas) >= 1.5 ? "Break-even Zone" : "Losing Money") : null,
+        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#94A3B8",
+      };
+    }
+  }
+
   function downloadHTMLDeck() {
     if (!output) return;
 
@@ -248,12 +299,14 @@ export default function AnalyzePage() {
       return ICONS.DEFAULT;
     }
 
-    const totalSlides = sections.length + 2;
+    const budget = buildBudgetSummary();
+    const totalSlides = sections.length + 2 + (budget ? 1 : 0);
     let slidesHTML = "";
+    let slideIdx = 0;
 
     // Cover slide
     slidesHTML += `
-    <div class="slide active" id="slide-0">
+    <div class="slide active" id="slide-${slideIdx++}">
       <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g1)"/><defs><radialGradient id="g1"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.25"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g2)"/><defs><radialGradient id="g2"><stop offset="0%" stop-color="#7C3AED" stop-opacity="0.2"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-grid" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1E293B" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(#grid)"/></svg>
@@ -282,12 +335,53 @@ export default function AnalyzePage() {
       <div class="slide-num">1 / ${totalSlides}</div>
     </div>`;
 
+    // Budget Summary slide
+    if (budget) {
+      const si = slideIdx++;
+      const statCards = budget.stats.map(s => `
+        <div class="bstat-card">
+          <div class="bstat-value" style="color:${s.color || "#fff"}">${s.value}</div>
+          <div class="bstat-label">${s.label}</div>
+          <div class="bstat-sub">${s.sub}</div>
+        </div>`).join("");
+      slidesHTML += `
+      <div class="slide" id="slide-${si}">
+        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3b)"/><defs><radialGradient id="g3b"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.1"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+            <div>
+              <div class="slide-eyebrow">Budget Breakdown</div>
+              <h2 class="slide-title">Where The Money Went</h2>
+            </div>
+          </div>
+          <div class="slide-num-header">${si + 1} / ${totalSlides}</div>
+        </div>
+        <div class="slide-rule"></div>
+        <div class="slide-body" style="justify-content:flex-start;padding-top:12px">
+          <div class="bstat-grid">${statCards}</div>
+          ${budget.roas ? `
+          <div class="roas-bar">
+            <div class="roas-left">
+              <div class="roas-label">ROAS</div>
+              <div class="roas-value" style="color:${budget.verdictColor}">${budget.roas}x</div>
+            </div>
+            <div class="roas-divider"></div>
+            <div class="roas-verdict" style="color:${budget.verdictColor}">${budget.verdict}</div>
+            <div class="roas-track"><div class="roas-fill" style="width:${Math.min(parseFloat(budget.roas)/5*100,100)}%;background:${budget.verdictColor}"></div></div>
+          </div>` : ""}
+        </div>
+        <div class="slide-footer-bar"><span>${userName}</span></div>
+      </div>`;
+    }
+
     // Section slides
-    sections.forEach((s, i) => {
+    sections.forEach((s) => {
+      const si = slideIdx++;
       const content = renderSlideContent(s.title, s.lines);
       const icon = getIcon(s.title);
       slidesHTML += `
-      <div class="slide" id="slide-${i + 1}">
+      <div class="slide" id="slide-${si}">
         <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3)"/><defs><radialGradient id="g3"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.1"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
         <div class="slide-header">
           <div class="slide-header-left">
@@ -297,7 +391,7 @@ export default function AnalyzePage() {
               <h2 class="slide-title">${s.title}</h2>
             </div>
           </div>
-          <div class="slide-num-header">${i + 2} / ${totalSlides}</div>
+          <div class="slide-num-header">${si + 1} / ${totalSlides}</div>
         </div>
         <div class="slide-rule"></div>
         <div class="slide-body">${content}</div>
@@ -306,8 +400,9 @@ export default function AnalyzePage() {
     });
 
     // Closing slide
+    const closingIdx = slideIdx++;
     slidesHTML += `
-    <div class="slide" id="slide-${totalSlides - 1}">
+    <div class="slide" id="slide-${closingIdx}">
       <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g4)"/><defs><radialGradient id="g4"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.3"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g5)"/><defs><radialGradient id="g5"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></radialGradient></defs></svg>
       <div class="closing-layout">
@@ -318,7 +413,7 @@ export default function AnalyzePage() {
         <div class="closing-name">${userName}</div>
         <div class="closing-date">${savedAt || ""}</div>
       </div>
-      <div class="slide-num">${totalSlides} / ${totalSlides}</div>
+      <div class="slide-num">${closingIdx + 1} / ${totalSlides}</div>
     </div>`;
 
     const html = `<!DOCTYPE html>
@@ -402,6 +497,21 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .closing-divider{width:64px;height:3px;background:linear-gradient(90deg,#2B7EC9,#38BDF8);border-radius:2px;margin-bottom:24px}
 .closing-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
 .closing-date{font-size:12px;color:#475569}
+
+/* Budget stats */
+.bstat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.bstat-card{background:rgba(255,255,255,0.03);border:1px solid #1E293B;border-radius:14px;padding:20px 18px}
+.bstat-value{font-size:28px;font-weight:900;margin-bottom:6px;line-height:1}
+.bstat-label{font-size:12px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px}
+.bstat-sub{font-size:11px;color:#475569}
+.roas-bar{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,0.03);border:1px solid #1E293B;border-radius:14px;padding:18px 24px}
+.roas-left{flex-shrink:0}
+.roas-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#475569;margin-bottom:4px}
+.roas-value{font-size:36px;font-weight:900;line-height:1}
+.roas-divider{width:1px;height:40px;background:#1E293B;flex-shrink:0}
+.roas-verdict{font-size:18px;font-weight:800;flex-shrink:0}
+.roas-track{flex:1;height:8px;background:#1E293B;border-radius:4px;overflow:hidden}
+.roas-fill{height:100%;border-radius:4px;transition:width 0.6s ease}
 
 /* Nav */
 .nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(6,13,24,0.8);backdrop-filter:blur(12px);padding:8px;border-radius:16px;border:1px solid #1E293B}
@@ -870,6 +980,33 @@ show(0);
                       <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>{mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
                     </div>
                   </div>
+
+                  {/* Budget summary block */}
+                  {(() => {
+                    const b = buildBudgetSummary();
+                    if (!b) return null;
+                    return (
+                      <div style={{ marginBottom: "28px", padding: "20px 24px", background: "#F8FAFC", borderRadius: "10px", border: "1px solid #E2E8F0" }}>
+                        <div style={{ fontSize: "11px", fontWeight: "800", letterSpacing: "0.1em", textTransform: "uppercase", color: "#2B7EC9", marginBottom: "14px", fontFamily: "Arial, sans-serif" }}>Budget Breakdown</div>
+                        <div style={{ display: "flex", gap: "12px", marginBottom: b.roas ? "14px" : "0", flexWrap: "wrap" }}>
+                          {b.stats.map((s, i) => (
+                            <div key={i} style={{ flex: "1", minWidth: "100px", background: "#fff", border: "1px solid #E2E8F0", borderRadius: "8px", padding: "12px 14px" }}>
+                              <div style={{ fontSize: "20px", fontWeight: "900", color: s.color || "#111", fontFamily: "Arial, sans-serif", marginBottom: "3px" }}>{s.value}</div>
+                              <div style={{ fontSize: "10px", fontWeight: "700", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "Arial, sans-serif" }}>{s.label}</div>
+                              <div style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "Arial, sans-serif" }}>{s.sub}</div>
+                            </div>
+                          ))}
+                          {b.roas && (
+                            <div style={{ flex: "1", minWidth: "100px", background: "#fff", border: `1px solid ${b.verdictColor}40`, borderRadius: "8px", padding: "12px 14px" }}>
+                              <div style={{ fontSize: "20px", fontWeight: "900", color: b.verdictColor, fontFamily: "Arial, sans-serif", marginBottom: "3px" }}>{b.roas}x ROAS</div>
+                              <div style={{ fontSize: "10px", fontWeight: "700", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "Arial, sans-serif" }}>Return on Ad Spend</div>
+                              <div style={{ fontSize: "10px", color: b.verdictColor, fontFamily: "Arial, sans-serif", fontWeight: "600" }}>{b.verdict}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Structured content */}
                   <div style={{ fontFamily: "Arial, sans-serif" }}>
