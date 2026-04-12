@@ -117,7 +117,6 @@ export default function AnalyzePage() {
   function downloadHTMLDeck() {
     if (!output) return;
 
-    // Parse into sections
     const sections: { title: string; lines: string[] }[] = [];
     let current: { title: string; lines: string[] } | null = null;
     for (const rawLine of output.split("\n")) {
@@ -131,126 +130,307 @@ export default function AnalyzePage() {
     }
     if (current) sections.push(current);
 
-    function renderLine(line: string): string {
+    function rl(line: string): string {
       return line
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/🟢/g, '<span style="color:#22c55e">●</span>')
-        .replace(/🟡/g, '<span style="color:#eab308">●</span>')
-        .replace(/🔴/g, '<span style="color:#ef4444">●</span>');
+        .replace(/🟢/g, '<span class="dot-g">●</span>')
+        .replace(/🟡/g, '<span class="dot-y">●</span>')
+        .replace(/🔴/g, '<span class="dot-r">●</span>');
     }
 
-    function sectionToSlide(title: string, lines: string[], idx: number, total: number): string {
-      const bullets = lines.map(l => {
-        const t = l.replace(/^[-*]\s+/, "");
-        return `<div class="bullet"><span class="dot">—</span><span>${renderLine(t)}</span></div>`;
-      }).join("");
-      return `
-        <div class="slide" id="slide-${idx}">
-          <div class="slide-top-bar"></div>
-          <div class="slide-inner">
-            <div class="section-label">${title.toUpperCase()}</div>
-            <div class="divider"></div>
-            <div class="bullets">${bullets}</div>
-          </div>
-          <div class="slide-footer">
-            <span>${userName}</span>
-            <span>${idx + 1} / ${total}</span>
-          </div>
-        </div>`;
+    function statusBadge(line: string): string {
+      const upper = line.toUpperCase();
+      if (upper.includes("SCALE")) return '<span class="badge badge-scale">SCALE</span>';
+      if (upper.includes("PAUSE")) return '<span class="badge badge-pause">PAUSE</span>';
+      if (upper.includes("TEST")) return '<span class="badge badge-test">TEST</span>';
+      return "";
     }
 
-    const totalSlides = sections.length + 2; // cover + sections + closing
+    function isMetricLine(line: string): boolean {
+      return /🟢|🟡|🔴/.test(line) && /—|:/.test(line);
+    }
+
+    function isVerdictLine(line: string): boolean {
+      const u = line.toUpperCase();
+      return (u.includes("SCALE") || u.includes("PAUSE") || u.includes("TEST")) && line.includes(":");
+    }
+
+    function metricCard(line: string): string {
+      const clean = line.replace(/^[-*]\s+/, "");
+      const hasGreen = clean.includes("🟢");
+      const hasYellow = clean.includes("🟡");
+      const hasRed = clean.includes("🔴");
+      const color = hasGreen ? "#22c55e" : hasYellow ? "#eab308" : hasRed ? "#ef4444" : "#94A3B8";
+      const bg = hasGreen ? "rgba(34,197,94,0.08)" : hasYellow ? "rgba(234,179,8,0.08)" : hasRed ? "rgba(239,68,68,0.08)" : "rgba(148,163,184,0.06)";
+      const text = clean.replace(/🟢|🟡|🔴/g, "").replace(/^[-*]\s+/, "").replace(/\*\*(.*?)\*\*/g, "$1").trim();
+      return `<div class="metric-card" style="border-left:3px solid ${color};background:${bg}">
+        <span class="metric-dot" style="color:${color}">●</span>
+        <span class="metric-text">${text}</span>
+      </div>`;
+    }
+
+    function verdictCard(line: string): string {
+      const clean = line.replace(/^[-*]\s+/, "").replace(/\*\*(.*?)\*\*/g, "$1").trim();
+      const upper = clean.toUpperCase();
+      const isScale = upper.includes("SCALE");
+      const isPause = upper.includes("PAUSE");
+      const color = isScale ? "#22c55e" : isPause ? "#ef4444" : "#eab308";
+      const bg = isScale ? "rgba(34,197,94,0.07)" : isPause ? "rgba(239,68,68,0.07)" : "rgba(234,179,8,0.07)";
+      const label = isScale ? "SCALE" : isPause ? "PAUSE" : "TEST";
+      const name = clean.replace(/✓\s*SCALE|✗\s*PAUSE|~\s*TEST|SCALE|PAUSE|TEST/gi, "").replace(/:/g, "").trim();
+      return `<div class="verdict-card" style="border-left:4px solid ${color};background:${bg}">
+        <div class="verdict-name">${name || clean}</div>
+        <span class="badge" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>
+      </div>`;
+    }
+
+    function renderSlideContent(title: string, lines: string[]): string {
+      const t = title.toUpperCase();
+      const isMetrics = t.includes("METRIC") || t.includes("SCORECARD") || t.includes("KPI");
+      const isVerdict = t.includes("VERDICT") || t.includes("CAMPAIGN");
+      const isFunnel = t.includes("FUNNEL");
+
+      if (isMetrics) {
+        const cards = lines.map(l => isMetricLine(l) ? metricCard(l) : `<div class="plain-line">${rl(l.replace(/^[-*]\s+/, ""))}</div>`).join("");
+        return `<div class="cards-grid">${cards}</div>`;
+      }
+      if (isVerdict) {
+        const cards = lines.map(l => {
+          const clean = l.replace(/^[-*]\s+/, "");
+          return isVerdictLine(clean) || /SCALE|PAUSE|TEST/i.test(clean) ? verdictCard(l) : `<div class="plain-line">${rl(clean)}</div>`;
+        }).join("");
+        return `<div class="verdict-list">${cards}</div>`;
+      }
+      if (isFunnel) {
+        const funnelMatch = lines.find(l => /hook rate|hold rate|landing rate|cvr/i.test(l));
+        const funnelSteps: { label: string; val: string }[] = [];
+        if (funnelMatch) {
+          const parts = funnelMatch.split(/→|->/).map(s => s.trim());
+          parts.forEach(p => {
+            const m = p.match(/(.+?):\s*([\d.]+%|\[N\/A\]%?)/i);
+            if (m) funnelSteps.push({ label: m[1].trim(), val: m[2] });
+          });
+        }
+        const funnel = funnelSteps.length > 1
+          ? `<div class="funnel-row">${funnelSteps.map((s, i) => `
+              <div class="funnel-step">
+                <div class="funnel-val">${s.val}</div>
+                <div class="funnel-label">${s.label}</div>
+              </div>${i < funnelSteps.length - 1 ? '<div class="funnel-arrow">›</div>' : ""}
+            `).join("")}</div>`
+          : "";
+        const rest = lines.filter(l => !funnelMatch || l !== funnelMatch).map(l => `<div class="callout-line">${rl(l.replace(/^[-*]\s+/, ""))}</div>`).join("");
+        return funnel + `<div class="callout-block">${rest}</div>`;
+      }
+      // Default — callout cards
+      return `<div class="callout-block">${lines.map(l => {
+        const clean = l.replace(/^[-*]\s+/, "");
+        return `<div class="callout-line">${rl(clean)}</div>`;
+      }).join("")}</div>`;
+    }
+
+    const ICONS: Record<string, string> = {
+      VERDICT: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+      METRIC: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>`,
+      FUNNEL: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>`,
+      EXPERT: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`,
+      RECOMMEND: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`,
+      DEFAULT: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>`,
+    };
+
+    function getIcon(title: string): string {
+      const t = title.toUpperCase();
+      if (t.includes("VERDICT") || t.includes("CAMPAIGN")) return ICONS.VERDICT;
+      if (t.includes("METRIC") || t.includes("SCORECARD")) return ICONS.METRIC;
+      if (t.includes("FUNNEL")) return ICONS.FUNNEL;
+      if (t.includes("EXPERT") || t.includes("DIAGNOSIS")) return ICONS.EXPERT;
+      if (t.includes("RECOMMEND") || t.includes("ACTION")) return ICONS.RECOMMEND;
+      return ICONS.DEFAULT;
+    }
+
+    const totalSlides = sections.length + 2;
     let slidesHTML = "";
 
-    // Cover
+    // Cover slide
     slidesHTML += `
-      <div class="slide" id="slide-0">
-        <div class="slide-top-bar"></div>
-        <div class="slide-inner cover-inner">
-          <div class="cover-title">Meta Ads Analysis Report</div>
-          <div class="cover-sub">${mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
-          <div class="cover-line"></div>
-          <div class="cover-name">${userName}</div>
-          <div class="cover-date">${savedAt || new Date().toLocaleDateString()}</div>
+    <div class="slide active" id="slide-0">
+      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g1)"/><defs><radialGradient id="g1"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.25"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
+      <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g2)"/><defs><radialGradient id="g2"><stop offset="0%" stop-color="#7C3AED" stop-opacity="0.2"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/></radialGradient></defs></svg>
+      <svg class="bg-grid" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1E293B" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(#grid)"/></svg>
+      <div class="cover-layout">
+        <div class="cover-left">
+          <div class="cover-tag">${mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+          <h1 class="cover-h1">Meta Ads<br/>Analysis<br/><span class="cover-h1-accent">Report</span></h1>
+          <div class="cover-divider"></div>
+          <div class="cover-meta">
+            <div class="cover-meta-name">${userName}</div>
+            <div class="cover-meta-date">${savedAt || new Date().toLocaleDateString()}</div>
+          </div>
         </div>
-        <div class="slide-footer"><span></span><span>1 / ${totalSlides}</span></div>
-      </div>`;
+        <div class="cover-right">
+          <svg class="cover-chart-svg" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="90" fill="none" stroke="#1E293B" stroke-width="18"/>
+            <circle cx="110" cy="110" r="90" fill="none" stroke="url(#cg)" stroke-width="18" stroke-dasharray="377" stroke-dashoffset="94" stroke-linecap="round" transform="rotate(-90 110 110)"/>
+            <circle cx="110" cy="110" r="60" fill="none" stroke="#1E2940" stroke-width="12"/>
+            <circle cx="110" cy="110" r="60" fill="none" stroke="#7C3AED" stroke-width="12" stroke-dasharray="251" stroke-dashoffset="100" stroke-linecap="round" opacity="0.5" transform="rotate(-90 110 110)"/>
+            <text x="110" y="105" text-anchor="middle" fill="#fff" font-size="22" font-weight="800" font-family="Arial">ADS</text>
+            <text x="110" y="128" text-anchor="middle" fill="#64748B" font-size="11" font-family="Arial">ANALYSIS</text>
+            <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#2B7EC9"/><stop offset="100%" stop-color="#38BDF8"/></linearGradient></defs>
+          </svg>
+        </div>
+      </div>
+      <div class="slide-num">1 / ${totalSlides}</div>
+    </div>`;
 
     // Section slides
     sections.forEach((s, i) => {
-      slidesHTML += sectionToSlide(s.title, s.lines, i + 1, totalSlides);
+      const content = renderSlideContent(s.title, s.lines);
+      const icon = getIcon(s.title);
+      slidesHTML += `
+      <div class="slide" id="slide-${i + 1}">
+        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3)"/><defs><radialGradient id="g3"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.1"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
+        <div class="slide-header">
+          <div class="slide-header-left">
+            <div class="slide-icon">${icon}</div>
+            <div>
+              <div class="slide-eyebrow">Analysis</div>
+              <h2 class="slide-title">${s.title}</h2>
+            </div>
+          </div>
+          <div class="slide-num-header">${i + 2} / ${totalSlides}</div>
+        </div>
+        <div class="slide-rule"></div>
+        <div class="slide-body">${content}</div>
+        <div class="slide-footer-bar"><span>${userName}</span></div>
+      </div>`;
     });
 
-    // Closing
+    // Closing slide
     slidesHTML += `
-      <div class="slide" id="slide-${totalSlides - 1}">
-        <div class="slide-top-bar"></div>
-        <div class="slide-inner cover-inner">
-          <div class="closing-line1">Scale What Works.</div>
-          <div class="closing-line2">Pause What Doesn't.</div>
-          <div class="cover-line" style="margin-top:32px"></div>
-          <div class="cover-date">${userName}</div>
-        </div>
-        <div class="slide-footer"><span></span><span>${totalSlides} / ${totalSlides}</span></div>
-      </div>`;
+    <div class="slide" id="slide-${totalSlides - 1}">
+      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g4)"/><defs><radialGradient id="g4"><stop offset="0%" stop-color="#2B7EC9" stop-opacity="0.3"/><stop offset="100%" stop-color="#2B7EC9" stop-opacity="0"/></radialGradient></defs></svg>
+      <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g5)"/><defs><radialGradient id="g5"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></radialGradient></defs></svg>
+      <div class="closing-layout">
+        <div class="closing-label">CONCLUSION</div>
+        <div class="closing-l1">Scale What Works.</div>
+        <div class="closing-l2">Pause What Doesn't.</div>
+        <div class="closing-divider"></div>
+        <div class="closing-name">${userName}</div>
+        <div class="closing-date">${savedAt || ""}</div>
+      </div>
+      <div class="slide-num">${totalSlides} / ${totalSlides}</div>
+    </div>`;
 
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ad Analysis Report — ${userName}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ad Analysis — ${userName}</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #000; font-family: Arial, sans-serif; overflow: hidden; }
-  .deck { width: 100vw; height: 100vh; position: relative; }
-  .slide { display: none; width: 100vw; height: 100vh; background: #0F172A; flex-direction: column; position: absolute; top: 0; left: 0; }
-  .slide.active { display: flex; }
-  .slide-top-bar { height: 5px; background: #2B7EC9; flex-shrink: 0; }
-  .slide-inner { flex: 1; padding: 52px 72px 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
-  .section-label { font-size: 13px; font-weight: 800; color: #2B7EC9; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
-  .divider { height: 1px; background: #1E3A5F; margin-bottom: 24px; }
-  .bullets { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
-  .bullet { display: flex; gap: 14px; align-items: flex-start; font-size: 17px; color: #CBD5E1; line-height: 1.6; }
-  .dot { color: #2B7EC9; font-weight: bold; flex-shrink: 0; margin-top: 1px; }
-  .bullet strong { color: #fff; }
-  .cover-inner { justify-content: center; }
-  .cover-title { font-size: 48px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 16px; }
-  .cover-sub { font-size: 20px; color: #2B7EC9; margin-bottom: 32px; }
-  .cover-line { width: 80px; height: 3px; background: #2B7EC9; margin-bottom: 28px; }
-  .cover-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-  .cover-date { font-size: 13px; color: #64748B; }
-  .closing-line1 { font-size: 52px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 8px; }
-  .closing-line2 { font-size: 52px; font-weight: 800; color: #2B7EC9; line-height: 1.1; margin-bottom: 8px; }
-  .slide-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 72px; border-top: 1px solid #1E293B; font-size: 11px; color: #475569; flex-shrink: 0; }
-  .nav { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 100; }
-  .nav button { background: #1E293B; border: 1px solid #334155; color: #94A3B8; font-size: 18px; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-  .nav button:hover { background: #2B7EC9; color: #fff; border-color: #2B7EC9; }
-  .progress { position: fixed; top: 0; left: 0; height: 5px; background: #2B7EC9; transition: width 0.3s; z-index: 200; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;width:100vw;height:100vh}
+.slide{display:none;width:100vw;height:100vh;background:#060D18;flex-direction:column;position:absolute;top:0;left:0;animation:fadeIn 0.35s ease}
+.slide.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* BG decorations */
+.bg-orb{position:absolute;pointer-events:none}
+.orb1{width:600px;height:600px;top:-100px;right:-100px;opacity:0.8}
+.orb2{width:400px;height:400px;bottom:-80px;left:-80px;opacity:0.6}
+.orb3{width:700px;height:700px;top:-200px;right:-200px;opacity:1}
+.bg-grid{position:absolute;width:100%;height:100%;top:0;left:0;opacity:0.4;pointer-events:none}
+
+/* Cover */
+.cover-layout{flex:1;display:flex;align-items:center;padding:0 80px;gap:60px;position:relative;z-index:1}
+.cover-left{flex:1}
+.cover-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2B7EC9;background:rgba(43,126,201,0.12);border:1px solid rgba(43,126,201,0.3);padding:6px 14px;border-radius:20px;margin-bottom:28px}
+.cover-h1{font-size:64px;font-weight:900;color:#fff;line-height:1.0;margin-bottom:32px}
+.cover-h1-accent{background:linear-gradient(90deg,#2B7EC9,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cover-divider{width:64px;height:3px;background:linear-gradient(90deg,#2B7EC9,#38BDF8);border-radius:2px;margin-bottom:28px}
+.cover-meta-name{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
+.cover-meta-date{font-size:13px;color:#475569}
+.cover-right{flex:0 0 240px;display:flex;align-items:center;justify-content:center}
+.cover-chart-svg{width:220px;height:220px;filter:drop-shadow(0 0 32px rgba(43,126,201,0.35))}
+
+/* Slide header */
+.slide-header{display:flex;align-items:center;justify-content:space-between;padding:28px 60px 0;flex-shrink:0;position:relative;z-index:1}
+.slide-header-left{display:flex;align-items:center;gap:16px}
+.slide-icon{width:44px;height:44px;background:rgba(43,126,201,0.15);border:1px solid rgba(43,126,201,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#2B7EC9;flex-shrink:0}
+.slide-icon svg{width:22px;height:22px}
+.slide-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#475569;margin-bottom:3px}
+.slide-title{font-size:24px;font-weight:800;color:#fff}
+.slide-num-header{font-size:12px;color:#334155;font-weight:600}
+.slide-rule{height:1px;background:linear-gradient(90deg,#2B7EC9,transparent);margin:16px 60px;flex-shrink:0}
+.slide-body{flex:1;padding:0 60px 0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
+.slide-footer-bar{padding:14px 60px;font-size:11px;color:#334155;font-weight:500;flex-shrink:0;border-top:1px solid #0F1E2E}
+.slide-num{position:absolute;bottom:18px;right:60px;font-size:12px;color:#334155;font-weight:600;z-index:1}
+
+/* Metric cards */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric-card{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)}
+.metric-dot{font-size:10px;flex-shrink:0}
+.metric-text{font-size:14px;color:#CBD5E1;line-height:1.4}
+.metric-text strong{color:#fff}
+.dot-g{color:#22c55e}.dot-y{color:#eab308}.dot-r{color:#ef4444}
+
+/* Verdict cards */
+.verdict-list{display:flex;flex-direction:column;gap:10px}
+.verdict-card{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)}
+.verdict-name{font-size:15px;color:#E2E8F0;font-weight:600}
+.badge{font-size:11px;font-weight:800;letter-spacing:0.1em;padding:4px 12px;border-radius:20px;text-transform:uppercase;flex-shrink:0}
+
+/* Funnel */
+.funnel-row{display:flex;align-items:center;gap:8px;margin-bottom:24px;background:rgba(43,126,201,0.06);border:1px solid rgba(43,126,201,0.15);border-radius:14px;padding:20px 24px}
+.funnel-step{flex:1;text-align:center}
+.funnel-val{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
+.funnel-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475569}
+.funnel-arrow{font-size:28px;color:#2B7EC9;font-weight:300;flex-shrink:0}
+
+/* Callout */
+.callout-block{display:flex;flex-direction:column;gap:10px}
+.callout-line{font-size:15px;color:#CBD5E1;line-height:1.65;padding:10px 16px;background:rgba(255,255,255,0.025);border-radius:10px;border-left:3px solid #1E3A5F}
+.callout-line strong{color:#fff}
+.plain-line{font-size:14px;color:#94A3B8;line-height:1.6;padding:4px 0}
+
+/* Closing */
+.closing-layout{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 80px;position:relative;z-index:1}
+.closing-label{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#2B7EC9;margin-bottom:20px}
+.closing-l1{font-size:62px;font-weight:900;color:#fff;line-height:1.05;margin-bottom:4px}
+.closing-l2{font-size:62px;font-weight:900;background:linear-gradient(90deg,#2B7EC9,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.05;margin-bottom:36px}
+.closing-divider{width:64px;height:3px;background:linear-gradient(90deg,#2B7EC9,#38BDF8);border-radius:2px;margin-bottom:24px}
+.closing-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.closing-date{font-size:12px;color:#475569}
+
+/* Nav */
+.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(6,13,24,0.8);backdrop-filter:blur(12px);padding:8px;border-radius:16px;border:1px solid #1E293B}
+.nav button{background:transparent;border:none;color:#475569;font-size:16px;width:40px;height:40px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:600}
+.nav button:hover{background:#1E293B;color:#fff}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#2B7EC9,#38BDF8);transition:width 0.4s cubic-bezier(.4,0,.2,1);z-index:200}
 </style>
 </head>
 <body>
-<div id="progress" class="progress"></div>
-<div class="deck">${slidesHTML}</div>
+<div id="prog" class="progress-bar"></div>
+<div style="position:relative;width:100vw;height:100vh">${slidesHTML}</div>
 <div class="nav">
-  <button onclick="go(-1)">&#8592;</button>
-  <button onclick="go(1)">&#8594;</button>
+  <button onclick="go(-1)" title="Previous">&#8592;</button>
+  <button onclick="go(1)" title="Next">&#8594;</button>
 </div>
 <script>
-  let cur = 0;
-  const total = ${totalSlides};
-  function show(n) {
-    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-    cur = Math.max(0, Math.min(n, total - 1));
-    document.getElementById('slide-' + cur).classList.add('active');
-    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
-  }
-  function go(dir) { show(cur + dir); }
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
-  });
-  show(0);
+let cur=0;const total=${totalSlides};
+function show(n){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  cur=Math.max(0,Math.min(n,total-1));
+  document.getElementById('slide-'+cur).classList.add('active');
+  document.getElementById('prog').style.width=((cur+1)/total*100)+'%';
+}
+function go(d){show(cur+d);}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);
+});
+show(0);
 <\/script>
 </body>
 </html>`;
