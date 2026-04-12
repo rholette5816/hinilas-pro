@@ -24,7 +24,8 @@ async function sendMessengerNotification(message: string) {
 
   for (const recipientId of recipientIds) {
     try {
-      const res = await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${pageToken}`, {
+      const pageId = process.env.FB_PAGE_ID || "615811264570188";
+      const res = await fetch(`https://graph.facebook.com/v21.0/${pageId}/messages?access_token=${pageToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
