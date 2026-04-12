@@ -12,24 +12,31 @@ function adminClient() {
 
 async function sendMessengerNotification(message: string) {
   const pageToken = process.env.FB_PAGE_ACCESS_TOKEN;
-  const recipientId = process.env.FB_ADMIN_USER_ID;
-  if (!pageToken || !recipientId) {
-    console.log("Messenger: missing FB_PAGE_ACCESS_TOKEN or FB_ADMIN_USER_ID");
+  const recipientIds = [
+    process.env.FB_ADMIN_USER_ID,
+    process.env.FB_ADMIN_USER_ID_2,
+  ].filter(Boolean) as string[];
+
+  if (!pageToken || recipientIds.length === 0) {
+    console.log("Messenger: missing FB_PAGE_ACCESS_TOKEN or no recipient IDs configured");
     return;
   }
-  try {
-    const res = await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${pageToken}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        recipient: { id: recipientId },
-        message: { text: message },
-      }),
-    });
-    const data = await res.json();
-    console.log("Messenger response:", JSON.stringify(data));
-  } catch (e) {
-    console.log("Messenger error:", e);
+
+  for (const recipientId of recipientIds) {
+    try {
+      const res = await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${pageToken}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipient: { id: recipientId },
+          message: { text: message },
+        }),
+      });
+      const data = await res.json();
+      console.log(`Messenger response for ${recipientId}:`, JSON.stringify(data));
+    } catch (e) {
+      console.log(`Messenger error for ${recipientId}:`, e);
+    }
   }
 }
 
@@ -63,7 +70,8 @@ export async function POST(req: Request) {
 
   const requestId = insertedRequest?.id;
 
-  const approveUrl = `https://hinilas.pro/api/topup/approve-link?id=${requestId}&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas-pro.vercel.app";
+  const approveUrl = `${baseUrl}/api/topup/approve-link?id=${requestId}&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
