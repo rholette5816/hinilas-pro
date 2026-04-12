@@ -486,50 +486,71 @@ export default function AnalyzePage() {
 
           {/* Report Modal */}
           {showReport && (
-            <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-              <div className="w-full max-w-2xl">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-white text-sm font-semibold">Report Preview</p>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={downloadPDF}
-                      className="px-4 py-2 rounded-lg text-sm font-semibold"
-                      style={{ background: "#2B7EC9", color: "#fff" }}
-                    >
-                      Download PDF
-                    </button>
-                    <button onClick={() => setShowReport(false)} className="text-gray-400 hover:text-white text-lg px-2">✕</button>
-                  </div>
+            <div className="fixed inset-0 z-50 bg-black/80 flex flex-col" style={{ overflow: "hidden" }}>
+              {/* Sticky toolbar */}
+              <div className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-gray-700" style={{ background: "#0A0F1A" }}>
+                <p className="text-white text-sm font-semibold">Report Preview</p>
+                <div className="flex gap-3 items-center">
+                  <button
+                    onClick={downloadPDF}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold"
+                    style={{ background: "#2B7EC9", color: "#fff" }}
+                  >
+                    Download PDF
+                  </button>
+                  <button onClick={() => setShowReport(false)} className="text-gray-400 hover:text-white text-xl px-2 leading-none">✕</button>
                 </div>
+              </div>
 
-                {/* Report content — this is what gets captured as PDF */}
-                <div ref={reportRef} style={{ background: "#fff", padding: "40px", fontFamily: "Arial, sans-serif", color: "#111", borderRadius: "8px" }}>
+              {/* Scrollable report content */}
+              <div className="flex-1 overflow-y-auto p-6 flex justify-center">
+                <div ref={reportRef} style={{ background: "#fff", padding: "48px", fontFamily: "Georgia, serif", color: "#111", borderRadius: "8px", width: "100%", maxWidth: "720px" }}>
                   {/* Header */}
-                  <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "16px", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                  <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "20px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
-                      <div style={{ fontSize: "22px", fontWeight: "bold", color: "#2B7EC9" }}>Hinilas Pro</div>
-                      <div style={{ fontSize: "11px", color: "#6B7280" }}>Meta Ads AI Assistant — Ad Analysis Report</div>
+                      <div style={{ fontSize: "24px", fontWeight: "bold", color: "#2B7EC9", fontFamily: "Arial, sans-serif" }}>Hinilas Pro</div>
+                      <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Arial, sans-serif", marginTop: "2px" }}>Meta Ads AI Assistant — Ad Analysis Report</div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "12px", fontWeight: "bold", color: "#111" }}>{userName}</div>
-                      <div style={{ fontSize: "11px", color: "#6B7280" }}>{savedAt}</div>
-                      <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+                      <div style={{ fontSize: "13px", fontWeight: "bold", color: "#111", fontFamily: "Arial, sans-serif" }}>{userName}</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Arial, sans-serif" }}>{savedAt}</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.05em" }}>{mode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div style={{ fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-wrap", color: "#1F2937" }}>
-                    {output
-                      .replace(/🟢/g, "✅")
-                      .replace(/🟡/g, "⚠️")
-                      .replace(/🔴/g, "❌")
-                      .replace(/⏳/g, "⏳")
-                      .replace(/\*\*(.*?)\*\*/g, "$1")
-                    }
+                  {/* Structured content */}
+                  <div style={{ fontFamily: "Arial, sans-serif" }}>
+                    {output.split("\n").map((line, i) => {
+                      const t = line.trim();
+                      if (!t || t === "---" || t === "***") return <div key={i} style={{ height: "8px" }} />;
+                      if (t.startsWith("## ")) return (
+                        <div key={i} style={{ fontSize: "13px", fontWeight: "bold", color: "#2B7EC9", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "28px", marginBottom: "10px", borderBottom: "1px solid #E5E7EB", paddingBottom: "6px" }}>
+                          {t.slice(3)}
+                        </div>
+                      );
+                      if (t.startsWith("# ")) return (
+                        <div key={i} style={{ fontSize: "18px", fontWeight: "bold", color: "#111", marginTop: "16px", marginBottom: "8px" }}>
+                          {t.slice(2)}
+                        </div>
+                      );
+                      if (t.startsWith("- ") || t.startsWith("* ")) {
+                        const text = t.slice(2).replace(/\*\*(.*?)\*\*/g, "$1").replace(/🟢/g, "✓").replace(/🟡/g, "~").replace(/🔴/g, "✗");
+                        return (
+                          <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "6px", alignItems: "flex-start" }}>
+                            <span style={{ color: "#2B7EC9", fontWeight: "bold", fontSize: "14px", lineHeight: "1.6", flexShrink: 0 }}>•</span>
+                            <span style={{ fontSize: "13px", lineHeight: "1.7", color: "#1F2937" }}>{text}</span>
+                          </div>
+                        );
+                      }
+                      const plain = t.replace(/\*\*(.*?)\*\*/g, "$1").replace(/🟢/g, "✓").replace(/🟡/g, "~").replace(/🔴/g, "✗");
+                      return (
+                        <p key={i} style={{ fontSize: "13px", lineHeight: "1.8", color: "#374151", marginBottom: "6px" }}>{plain}</p>
+                      );
+                    })}
                   </div>
 
                   {/* Footer */}
-                  <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "32px", paddingTop: "12px", fontSize: "10px", color: "#9CA3AF", display: "flex", justifyContent: "space-between" }}>
+                  <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "40px", paddingTop: "14px", fontSize: "10px", color: "#9CA3AF", fontFamily: "Arial, sans-serif", display: "flex", justifyContent: "space-between" }}>
                     <span>Generated by {userName} via Hinilas Pro</span>
                     <span>hinilas.pro · By Basta Mag Ads Hilas</span>
                   </div>
