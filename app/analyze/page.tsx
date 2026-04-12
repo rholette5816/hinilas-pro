@@ -327,7 +327,7 @@ export default function AnalyzePage() {
               {/* CSV Upload */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-300 mb-2">Meta Ads Export File</label>
-                <input ref={csvRef} type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleCsvUpload} />
+                <input ref={csvRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
                 {csvText ? (
                   <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A" }}>
                     <div className="flex items-center gap-3">
@@ -343,7 +343,7 @@ export default function AnalyzePage() {
                   <button onClick={() => csvRef.current?.click()} className="w-full flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-orange-600 transition-colors">
                     <span className="text-3xl">📄</span>
                     <p className="text-gray-300 text-sm font-medium">Upload CSV Export</p>
-                    <p className="text-gray-600 text-xs">CSV or Excel from Meta Ads Manager</p>
+                    <p className="text-gray-600 text-xs">CSV only — Export → Export Table Data (CSV)</p>
                   </button>
                 )}
               </div>
