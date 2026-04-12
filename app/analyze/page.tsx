@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
+import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEY = "hinilas_last_analysis";
 
@@ -79,10 +80,20 @@ export default function AnalyzePage() {
   const [savedMode, setSavedMode] = useState<Mode | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [userName, setUserName] = useState("User");
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const csvRef = useRef<HTMLInputElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
+
+  // Load user name
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserName(user.user_metadata?.full_name || user.email || "User");
+    });
+  }, []);
 
   // Restore last analysis on load
   useEffect(() => {
@@ -100,10 +111,10 @@ export default function AnalyzePage() {
     const html2pdf = (await import("html2pdf.js")).default;
     html2pdf()
       .set({
-        margin: [10, 10, 10, 10],
+        margin: [12, 12, 12, 12],
         filename: `hinilas-analysis-${new Date().toISOString().slice(0, 10)}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
       .from(reportRef.current)
@@ -448,50 +459,69 @@ export default function AnalyzePage() {
           {/* Output */}
           <AIOutput content={output} loading={loading} loadingText="Analyzing your data..." />
 
-          {/* Download PDF button */}
+          {/* Generate Report button */}
           {output && !loading && (
-            <>
-              <button
-                onClick={downloadPDF}
-                className="w-full mt-4 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
-                style={{ background: "#0F172A", color: "#fff" }}
-              >
-                <span>📄</span> Download Report as PDF
-              </button>
+            <button
+              onClick={() => setShowReport(true)}
+              className="w-full mt-4 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 border border-gray-700 hover:border-gray-500 transition-colors"
+              style={{ background: "#0F172A", color: "#fff" }}
+            >
+              <span>📄</span> Generate Report
+            </button>
+          )}
 
-              {/* Hidden PDF report template */}
-              <div ref={reportRef} style={{ position: "absolute", left: "-9999px", top: 0, width: "800px", background: "#fff", padding: "40px", fontFamily: "Arial, sans-serif", color: "#111" }}>
-                {/* Header */}
-                <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "16px", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                  <div>
-                    <div style={{ fontSize: "22px", fontWeight: "bold", color: "#2B7EC9" }}>Hinilas Pro</div>
-                    <div style={{ fontSize: "11px", color: "#6B7280" }}>Meta Ads AI Assistant — Ad Analysis Report</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "11px", color: "#6B7280" }}>{savedAt}</div>
-                    <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{savedMode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+          {/* Report Modal */}
+          {showReport && (
+            <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
+              <div className="w-full max-w-2xl">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white text-sm font-semibold">Report Preview</p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={downloadPDF}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold"
+                      style={{ background: "#2B7EC9", color: "#fff" }}
+                    >
+                      Download PDF
+                    </button>
+                    <button onClick={() => setShowReport(false)} className="text-gray-400 hover:text-white text-lg px-2">✕</button>
                   </div>
                 </div>
 
-                {/* Content */}
-                <div style={{ fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#1F2937" }}>
-                  {output
-                    .replace(/🟢/g, "✓")
-                    .replace(/🟡/g, "⚠")
-                    .replace(/🔴/g, "✗")
-                    .replace(/⏳/g, "⏳")
-                    .replace(/⚠️/g, "⚠")
-                    .replace(/\*\*(.*?)\*\*/g, "$1")
-                  }
-                </div>
+                {/* Report content — this is what gets captured as PDF */}
+                <div ref={reportRef} style={{ background: "#fff", padding: "40px", fontFamily: "Arial, sans-serif", color: "#111", borderRadius: "8px" }}>
+                  {/* Header */}
+                  <div style={{ borderBottom: "3px solid #2B7EC9", paddingBottom: "16px", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                    <div>
+                      <div style={{ fontSize: "22px", fontWeight: "bold", color: "#2B7EC9" }}>Hinilas Pro</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280" }}>Meta Ads AI Assistant — Ad Analysis Report</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: "12px", fontWeight: "bold", color: "#111" }}>{userName}</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280" }}>{savedAt}</div>
+                      <div style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase" }}>{savedMode === "advanced" ? "Advanced Analysis" : "Basic Analysis"}</div>
+                    </div>
+                  </div>
 
-                {/* Footer */}
-                <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "32px", paddingTop: "12px", fontSize: "10px", color: "#9CA3AF", display: "flex", justifyContent: "space-between" }}>
-                  <span>Generated by Hinilas Pro — hinilas.pro</span>
-                  <span>By Basta Mag Ads Hilas</span>
+                  {/* Content */}
+                  <div style={{ fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-wrap", color: "#1F2937" }}>
+                    {output
+                      .replace(/🟢/g, "✅")
+                      .replace(/🟡/g, "⚠️")
+                      .replace(/🔴/g, "❌")
+                      .replace(/⏳/g, "⏳")
+                      .replace(/\*\*(.*?)\*\*/g, "$1")
+                    }
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{ borderTop: "1px solid #E5E7EB", marginTop: "32px", paddingTop: "12px", fontSize: "10px", color: "#9CA3AF", display: "flex", justifyContent: "space-between" }}>
+                    <span>Generated by {userName} via Hinilas Pro</span>
+                    <span>hinilas.pro · By Basta Mag Ads Hilas</span>
+                  </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
         </div>
