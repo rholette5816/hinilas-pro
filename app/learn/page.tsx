@@ -119,7 +119,7 @@ export default function LearnPage() {
   const [loading, setLoading] = useState(false);
   const [activeModule, setActiveModule] = useState<number | null>(null);
 
-  if (plan !== "max") {
+  if (plan !== "max") { // requires 300+ credits
     return (
       <div className="flex h-screen overflow-hidden">
         <Sidebar />

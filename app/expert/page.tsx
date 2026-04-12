@@ -40,7 +40,7 @@ export default function ExpertPage() {
   const [loading, setLoading] = useState(false);
   const [sessionUsed, setSessionUsed] = useState(false);
 
-  const canAsk = credits >= EXPERT_CREDIT_COST && plan !== "lite";
+  const canAsk = credits >= EXPERT_CREDIT_COST && (plan === "flex" || plan === "max");
 
   async function askExpert(q: string) {
     const finalQ = q || question.trim();
@@ -120,7 +120,7 @@ Give your best expert answer. Be direct, specific, and actionable.
                 <p className="text-amber-700 text-xs">Each question uses 10 credits. You have {credits} remaining.</p>
               </div>
             </div>
-            {!canAsk && plan === "lite" && (
+            {!canAsk && (plan === "lite" || credits < EXPERT_CREDIT_COST) && plan !== "flex" && plan !== "max" && (
               <button
                 onClick={() => router.push("/pricing")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"

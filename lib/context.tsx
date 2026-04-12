@@ -35,6 +35,12 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
+export function derivePlan(credits: number): string {
+  if (credits >= 300) return "max";
+  if (credits >= 50) return "flex";
+  return "lite";
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
   const [researchOutput, setResearchOutputState] = useState("");
@@ -44,7 +50,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [savedImages, setSavedImages] = useState<{ main: string | null; v1: string | null; v2: string | null }>({ main: null, v1: null, v2: null });
   const [credits, setCredits] = useState(0);
   const [creditsTotal, setCreditsTotal] = useState(5);
-  const [plan, setPlan] = useState("lite");
   const [userId, setUserId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
@@ -68,7 +73,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
         if (data.credits_remaining !== undefined) setCredits(data.credits_remaining);
         if (data.credits_total !== undefined) setCreditsTotal(data.credits_total);
-        if (data.plan) setPlan(data.plan);
         setSavedImages({
           main: data.main_image_url || null,
           v1: data.variation_1_url || null,
@@ -151,13 +155,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const { data } = await supabase
       .from("user_data")
-      .select("credits_remaining, credits_total, plan")
+      .select("credits_remaining, credits_total")
       .eq("user_id", user.id)
       .single();
     if (data) {
       setCredits(data.credits_remaining);
       setCreditsTotal(data.credits_total);
-      setPlan(data.plan);
     }
   }
 
@@ -171,7 +174,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       selectedAngle, setSelectedAngle,
       creativeImage, setCreativeImage,
       savedImages, saveAdImages,
-      credits, creditsTotal, plan, refreshCredits,
+      credits, creditsTotal, plan: derivePlan(credits), refreshCredits,
     }}>
       {children}
     </AppContext.Provider>

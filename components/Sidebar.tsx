@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useApp } from "@/lib/context";
+import { useApp, derivePlan } from "@/lib/context";
 import HinilasLogo from "@/components/HinilasLogo";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -104,24 +104,44 @@ export default function Sidebar() {
         {/* Credits display */}
         <Link href="/pricing" onClick={() => setMobileOpen(false)} className="block mb-3">
           <div className="rounded-lg px-3 py-2 border border-gray-700 hover:border-gray-600 transition-colors" style={{ background: "#0F172A" }}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-400">
-                {plan === "lite" ? "Lite" : plan === "pro" ? "Pro" : plan === "max" ? "Max" : "Lite"} Plan
-              </span>
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span
+                  className="text-xs font-bold px-1.5 py-0.5 rounded"
+                  style={{
+                    background: plan === "max" ? "#1C1A00" : plan === "flex" ? "#0F172A" : "#1A1A1A",
+                    color: plan === "max" ? "#F5A623" : plan === "flex" ? "#2B7EC9" : "#6B7280",
+                    border: `1px solid ${plan === "max" ? "#F5A62350" : plan === "flex" ? "#2B7EC950" : "#374151"}`,
+                  }}
+                >
+                  {plan === "max" ? "MAX" : plan === "flex" ? "FLEX" : "LITE"}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {plan === "lite" ? "0–49 cr" : plan === "flex" ? "50–299 cr" : "300+ cr"}
+                </span>
+              </div>
               <span className="text-xs font-semibold" style={{
-                color: credits === 0 ? "#EF4444" : credits / creditsTotal < 0.2 ? "#F59E0B" : "#22C55E"
+                color: credits === 0 ? "#EF4444" : credits < 50 ? "#F59E0B" : "#22C55E"
               }}>
-                {credits} credits
+                {credits} left
               </span>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-1">
+            {/* Threshold bar */}
+            <div className="relative w-full bg-gray-800 rounded-full h-1.5">
+              {/* Flex threshold marker at 50/300 */}
+              <div className="absolute top-0 bottom-0 w-px bg-gray-600" style={{ left: `${(50/300)*100}%` }} />
               <div
-                className="h-1 rounded-full transition-all"
+                className="h-1.5 rounded-full transition-all"
                 style={{
-                  width: `${creditsTotal > 0 ? Math.min((credits / creditsTotal) * 100, 100) : 0}%`,
-                  background: credits === 0 ? "#EF4444" : credits / creditsTotal < 0.2 ? "#F59E0B" : "#22C55E",
+                  width: `${Math.min((credits / 300) * 100, 100)}%`,
+                  background: plan === "max" ? "#F5A623" : plan === "flex" ? "#2B7EC9" : "#6B7280",
                 }}
               />
+            </div>
+            <div className="flex justify-between mt-1">
+              <span className="text-gray-700 text-xs">0</span>
+              <span className="text-gray-700 text-xs">50</span>
+              <span className="text-gray-700 text-xs">300</span>
             </div>
           </div>
         </Link>
