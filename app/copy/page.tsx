@@ -116,7 +116,7 @@ export default function CopyPage() {
         }),
       });
       const data = await res.json();
-      setOutput(data.error ? `Error: ${data.error}` : data.content);
+      setOutput(data.error ? data.error : data.content);
     } catch {
       setOutput("Something went wrong. Try again.");
     } finally {

@@ -27,7 +27,7 @@ export default function ResearchPage() {
         body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
       });
       const data = await res.json();
-      setResearchOutput(data.error ? `Error: ${data.error}` : data.content);
+      setResearchOutput(data.error ? data.error : data.content);
     } catch {
       setResearchOutput("Something went wrong. Try again.");
     } finally {

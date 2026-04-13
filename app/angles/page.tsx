@@ -80,7 +80,7 @@ export default function AnglesPage() {
         body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
       });
       const data = await res.json();
-      setAnglesOutput(data.error ? `Error: ${data.error}` : data.content);
+      setAnglesOutput(data.error ? data.error : data.content);
     } catch {
       setAnglesOutput("Something went wrong. Try again.");
     } finally {
