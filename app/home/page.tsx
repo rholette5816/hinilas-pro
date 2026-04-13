@@ -53,12 +53,6 @@ function LoginModal({ onClose }: { onClose: () => void }) {
       style={{ background: "rgba(7, 11, 20, 0.85)", backdropFilter: "blur(12px)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* Intensified orbs behind modal */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(80px)", opacity: 0.5, width: 500, height: 500, background: "#2B7EC9", top: -100, left: -100, animation: "orbDrift1 8s ease-in-out infinite alternate" }} />
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(80px)", opacity: 0.4, width: 400, height: 400, background: "#F5A623", bottom: -80, right: -80, animation: "orbDrift2 6s ease-in-out infinite alternate" }} />
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(100px)", opacity: 0.3, width: 350, height: 350, background: "#8B5CF6", top: "30%", left: "50%", animation: "orbDrift3 10s ease-in-out infinite alternate" }} />
-      </div>
 
       {/* Modal card */}
       <div
@@ -170,9 +164,6 @@ export default function LandingPage() {
     <div className="min-h-screen relative" style={{ background: "#0B1120", color: "#fff" }}>
 
       <style>{`
-        @keyframes orbDrift1 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,40px) scale(1.1); } 100% { transform: translate(-30px,70px) scale(0.95); } }
-        @keyframes orbDrift2 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px,-40px) scale(1.08); } 100% { transform: translate(40px,-60px) scale(0.92); } }
-        @keyframes orbDrift3 { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-50px) scale(1.12); } 100% { transform: translate(-60px,30px) scale(0.96); } }
         @keyframes modalIn { from { opacity: 0; transform: translateY(32px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .fade-up { animation: fadeUp 0.6s ease forwards; }
@@ -198,11 +189,8 @@ export default function LandingPage() {
         }
       `}</style>
 
-      {/* Background orbs */}
+      {/* Background — static dot grid only */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(120px)", opacity: 0.28, width: 700, height: 700, background: "#2B7EC9", top: -200, left: -200, animation: "orbDrift1 14s ease-in-out infinite alternate" }} />
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(120px)", opacity: 0.2, width: 600, height: 600, background: "#F5A623", bottom: -150, right: -150, animation: "orbDrift2 10s ease-in-out infinite alternate" }} />
-        <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(140px)", opacity: 0.15, width: 500, height: 500, background: "#8B5CF6", top: "40%", left: "40%", animation: "orbDrift3 16s ease-in-out infinite alternate" }} />
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, #1E3A5F 1px, transparent 1px)", backgroundSize: "36px 36px", opacity: 0.4 }} />
       </div>
 
@@ -296,7 +284,7 @@ export default function LandingPage() {
             {[
               { value: avgRating, suffix: "/5 ★", label: "Average Rating" },
               { value: "4", suffix: " Steps", label: "Core Modules" },
-              { value: "5", suffix: " Credits", label: "Free on Signup" },
+              { value: "20", suffix: " Credits", label: "Free on Signup" },
               { value: "∞", suffix: "", label: "Unlimited Text Generation" },
             ].map(stat => (
               <div key={stat.label}>

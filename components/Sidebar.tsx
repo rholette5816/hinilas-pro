@@ -78,7 +78,7 @@ export default function Sidebar() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
-  const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; credits: number }[]>([]);
+  const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; avatar_url: string | null; credits: number }[]>([]);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -308,7 +308,12 @@ export default function Sidebar() {
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-white text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
-                <p className="text-xs font-medium" style={{ color: planColor }}>{planLabel}</p>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="text-[9px] font-black tracking-widest uppercase px-1.5 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor, border: `1px solid ${planColor}40` }}>
+                    {plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite"}
+                  </span>
+                  <span className="text-[10px]" style={{ color: "#334155" }}>{credits} cr</span>
+                </div>
               </div>
             </div>
             <button
@@ -424,12 +429,18 @@ export default function Sidebar() {
                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-3 py-2" style={{ borderBottom: "1px solid #1E2D45" }}>Top Referrers</p>
                 <div className="divide-y" style={{ borderColor: "#1E2D45" }}>
                   {leaderboard.map((u) => (
-                    <div key={u.rank} className="flex items-center gap-3 px-3 py-2">
-                      <span className="text-xs font-bold w-4 shrink-0" style={{ color: u.rank === 1 ? "#F5A623" : u.rank === 2 ? "#94A3B8" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
+                    <div key={u.rank} className="flex items-center gap-2.5 px-3 py-2">
+                      <span className="text-[10px] font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#F5A623" : u.rank === 2 ? "#94A3B8" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
                         #{u.rank}
                       </span>
-                      <span className="text-xs text-gray-300 flex-1 truncate">{u.username}</span>
-                      <span className="text-xs font-bold text-emerald-400">+{u.credits} cr</span>
+                      {u.avatar_url ? (
+                        <img src={u.avatar_url} alt={u.username} className="w-6 h-6 rounded-full shrink-0 object-cover" />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "#2B7EC9" }}>
+                          {u.username.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="text-xs font-bold text-emerald-400 ml-auto">+{u.credits} cr</span>
                     </div>
                   ))}
                 </div>

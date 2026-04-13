@@ -100,7 +100,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           .from("credit_transactions")
           .select("id, amount, description, created_at")
           .eq("user_id", user.id)
-          .eq("type", "referral")
+          .in("type", ["referral", "topup", "grant"])
           .gt("created_at", lastNotifiedPlusBuffer.toISOString())
           .order("created_at", { ascending: false });
 

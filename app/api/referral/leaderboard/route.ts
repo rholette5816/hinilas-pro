@@ -32,21 +32,22 @@ export async function GET() {
     .slice(0, 5)
     .map(([user_id, credits]) => ({ user_id, credits }));
 
-  // Fetch usernames
+  // Fetch usernames + avatars
   const userIds = top5.map(u => u.user_id);
   const { data: users } = await supabase
     .from("user_data")
-    .select("user_id, username")
+    .select("user_id, username, avatar_url")
     .in("user_id", userIds);
 
-  const usernameMap: Record<string, string> = {};
+  const userMap: Record<string, { username: string; avatar_url: string | null }> = {};
   for (const u of users || []) {
-    usernameMap[u.user_id] = u.username || "User";
+    userMap[u.user_id] = { username: u.username || "User", avatar_url: u.avatar_url || null };
   }
 
   const leaderboard = top5.map((u, i) => ({
     rank: i + 1,
-    username: usernameMap[u.user_id] || "User",
+    username: userMap[u.user_id]?.username || "User",
+    avatar_url: userMap[u.user_id]?.avatar_url || null,
     credits: u.credits,
   }));
 
