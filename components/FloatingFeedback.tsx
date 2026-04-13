@@ -17,6 +17,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
   const [category, setCategory] = useState("General Feedback");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [creditsAwarded, setCreditsAwarded] = useState(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,13 +33,13 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
     if (!message.trim() || rating === 0) return;
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      await fetch("/api/feedback", {
+      const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating, category, message, userEmail: user?.email || "Unknown" }),
+        body: JSON.stringify({ rating, category, message }),
       });
+      const data = await res.json();
+      setCreditsAwarded(data.creditsAwarded || 0);
       setStep("success");
     } finally {
       setLoading(false);
@@ -123,7 +124,14 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
               <span className="text-2xl">✅</span>
             </div>
             <h3 className="text-white font-bold text-lg mb-2">Thanks for the feedback!</h3>
-            <p className="text-gray-400 text-sm mb-6">We read every message. This helps us build a better tool for you.</p>
+            {creditsAwarded > 0 ? (
+              <div className="rounded-xl border border-emerald-900 px-4 py-3 mb-4" style={{ background: "#0D2010" }}>
+                <p className="text-emerald-400 text-sm font-bold">+{creditsAwarded} credits added to your account!</p>
+                <p className="text-emerald-700 text-xs mt-0.5">Thank you for helping us improve.</p>
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm mb-4">We read every message. This helps us build a better tool for you.</p>
+            )}
             <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
               Done
             </button>

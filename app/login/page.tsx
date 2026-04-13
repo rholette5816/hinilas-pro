@@ -2,8 +2,24 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { HinilasIcon } from "@/components/HinilasLogo";
+import { useEffect, useState } from "react";
+
+interface Feedback {
+  id: string;
+  user_name: string;
+  rating: number;
+  message: string;
+}
 
 export default function LoginPage() {
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+
+  useEffect(() => {
+    fetch("/api/feedback")
+      .then(r => r.json())
+      .then(d => setFeedbacks(d.feedbacks || []));
+  }, []);
+
   async function handleGoogle() {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
@@ -16,7 +32,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-10"
       style={{ background: "#0B1120" }}
     >
       <div className="w-full max-w-sm">
@@ -37,7 +53,7 @@ export default function LoginPage() {
         </div>
 
         <div
-          className="rounded-2xl p-8"
+          className="rounded-2xl p-8 mb-6"
           style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
         >
           <h2 className="text-white text-xl font-semibold mb-1">Welcome to Hinilas Pro</h2>
@@ -60,6 +76,22 @@ export default function LoginPage() {
             Continue with Google
           </button>
         </div>
+
+        {/* Social proof */}
+        {feedbacks.length > 0 && (
+          <div className="space-y-3">
+            <p className="text-xs text-center text-gray-600 uppercase tracking-widest">What users say</p>
+            {feedbacks.slice(0, 4).map(f => (
+              <div key={f.id} className="rounded-xl px-4 py-3" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-white text-xs font-semibold">{f.user_name}</span>
+                  <span className="text-amber-400 text-xs">{"★".repeat(f.rating)}</span>
+                </div>
+                <p className="text-gray-400 text-xs leading-relaxed">"{f.message}"</p>
+              </div>
+            ))}
+          </div>
+        )}
 
         <p className="text-center text-xs mt-6" style={{ color: "#475569" }}>
           By Basta Mag Ads Hilas
