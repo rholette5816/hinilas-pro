@@ -45,6 +45,28 @@ const NAV_ITEMS = [
   },
 ];
 
+function LiveStats() {
+  const [online, setOnline] = useState(47);
+  const [total, setTotal] = useState(1243);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnline(prev => Math.max(10, prev + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3)));
+      setTotal(prev => Math.random() > 0.85 ? prev + 1 : prev);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  return (
+    <div className="flex items-center gap-3 px-4 py-2 mx-3 mt-2 mb-1 rounded-lg" style={{ background: "#0A0F1A" }}>
+      <div className="flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="text-emerald-400 text-xs font-medium">{online} online</span>
+      </div>
+      <span className="text-gray-600 text-xs">·</span>
+      <span className="text-gray-400 text-xs">{total.toLocaleString()} users</span>
+    </div>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -111,16 +133,19 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1E2D45" }}>
         <div className="flex items-center gap-3">
-          <HinilasIcon size="md" accentColor="#F5A623" />
+          <HinilasIcon size="md" accentColor={planColor} />
           <div>
             <div className="flex items-baseline gap-0">
               <span className="text-white font-bold text-base">Hinilas</span>
-              <span className="font-bold text-base" style={{ color: "#F5A623" }}>Pro</span>
+              <span className="font-bold text-base" style={{ color: planColor }}>Pro</span>
             </div>
             <p className="text-[9px] font-bold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>Marketing Intelligence</p>
           </div>
         </div>
       </div>
+
+      {/* Live stats */}
+      <LiveStats />
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
@@ -137,15 +162,12 @@ export default function Sidebar() {
                 : { borderLeft: "2px solid transparent" }
               }
             >
-              <span style={{ color: active ? "#2B7EC9" : "#475569" }} className="shrink-0 group-hover:text-white transition-colors">
+              <span style={{ color: active ? "#2B7EC9" : "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
                 {item.icon}
               </span>
               <div className="min-w-0">
-                <p className="text-sm font-medium transition-colors" style={{ color: active ? "#fff" : "#94A3B8" }}
-                  onMouseEnter={e => { if (!active) (e.target as HTMLElement).style.color = "#fff"; }}
-                  onMouseLeave={e => { if (!active) (e.target as HTMLElement).style.color = "#94A3B8"; }}
-                >{item.label}</p>
-                <p className="text-xs truncate" style={{ color: "#334155" }}>{item.desc}</p>
+                <p className="text-sm font-medium transition-colors" style={{ color: active ? "#fff" : "#CBD5E1" }}>{item.label}</p>
+                <p className="text-xs truncate" style={{ color: "#64748B" }}>{item.desc}</p>
               </div>
             </Link>
           );
@@ -164,8 +186,8 @@ export default function Sidebar() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 9.5-9.5z"/><path d="m15 5 3 3"/></svg>
           </span>
           <div className="min-w-0 text-left">
-            <p className="text-sm font-medium" style={{ color: "#94A3B8" }}>Book Expert</p>
-            <p className="text-xs" style={{ color: "#334155" }}>100 credits / session</p>
+            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Book Expert</p>
+            <p className="text-xs" style={{ color: "#64748B" }}>100 credits / session</p>
           </div>
         </button>
 
@@ -174,12 +196,12 @@ export default function Sidebar() {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
           style={{ borderLeft: "2px solid transparent" }}
         >
-          <span style={{ color: "#475569" }} className="shrink-0 group-hover:text-white transition-colors">
+          <span style={{ color: "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </span>
           <div className="min-w-0 text-left">
-            <p className="text-sm font-medium" style={{ color: "#94A3B8" }}>Feedback</p>
-            <p className="text-xs" style={{ color: "#334155" }}>Earn +5 credits</p>
+            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Feedback</p>
+            <p className="text-xs" style={{ color: "#64748B" }}>Earn +5 credits</p>
           </div>
         </button>
       </nav>

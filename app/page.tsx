@@ -109,7 +109,7 @@ export default function SetupPage() {
         </div>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto pt-14 md:pt-0 pb-24">
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-0 pb-32">
           <div className="max-w-2xl mx-auto px-6 py-8">
 
             {/* Step indicator */}
@@ -137,7 +137,7 @@ export default function SetupPage() {
 
               {/* Business Nature */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#475569" }}>Business Nature</label>
+                <label className="block text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#94A3B8" }}>Business Nature</label>
                 <div className="grid grid-cols-3 gap-3">
                   {BUSINESS_TYPES.map(opt => {
                     const active = form.businessType === opt.value as UserSetup["businessType"];
@@ -169,7 +169,7 @@ export default function SetupPage() {
               {/* Business Name + Market */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>Business / Brand Name</label>
+                  <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Business / Brand Name</label>
                   <input
                     type="text"
                     required
@@ -183,7 +183,7 @@ export default function SetupPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>Market / Location</label>
+                  <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Market / Location</label>
                   <input
                     type="text"
                     placeholder="e.g. Global, North America"
@@ -199,7 +199,7 @@ export default function SetupPage() {
 
               {/* Product */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>What Are You Selling?</label>
+                <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>What Are You Selling?</label>
                 <textarea
                   required
                   rows={2}
@@ -215,7 +215,7 @@ export default function SetupPage() {
 
               {/* Target Audience */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>Who Is Your Target Customer?</label>
+                <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Who Is Your Target Customer?</label>
                 <input
                   type="text"
                   required
@@ -245,12 +245,12 @@ export default function SetupPage() {
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#1E2D45"}
                 />
-                <p className="text-xs mt-1.5" style={{ color: "#334155" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
+                <p className="text-xs mt-1.5" style={{ color: "#64748B" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
               </div>
 
               {/* Stage */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#475569" }}>Where Are You Now?</label>
+                <label className="block text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#94A3B8" }}>Where Are You Now?</label>
                 <div className="space-y-2">
                   {STAGES.map(opt => {
                     const active = form.stage === opt.value as UserSetup["stage"];
@@ -281,7 +281,7 @@ export default function SetupPage() {
               {/* Language */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest uppercase mb-1.5" style={{ color: "#475569" }}>Language / Dialect</label>
-                <p className="text-xs mb-3" style={{ color: "#334155" }}>How the AI responds and how ad copy sounds to your target market.</p>
+                <p className="text-xs mb-3" style={{ color: "#64748B" }}>How the AI responds and how ad copy sounds to your target market.</p>
                 <div className="grid grid-cols-2 gap-2">
                   {LANGUAGES.map(opt => {
                     const active = form.language === opt.value;
