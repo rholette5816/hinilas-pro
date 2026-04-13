@@ -52,6 +52,9 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [earnOpen, setEarnOpen] = useState(false);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -65,6 +68,27 @@ export default function Sidebar() {
       }
     });
   }, []);
+
+  function openEarn() {
+    setEarnOpen(true);
+    setMobileOpen(false);
+    if (!referralCode) {
+      fetch("/api/referral").then(r => r.json()).then(d => {
+        if (d.referralCode) setReferralCode(d.referralCode);
+      });
+    }
+  }
+
+  function getReferralLink() {
+    if (!referralCode) return "";
+    return `${window.location.origin}/ref/${referralCode}`;
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(getReferralLink());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   async function handleLogout() {
     const supabase = createClient();
@@ -186,10 +210,17 @@ export default function Sidebar() {
           )}
           <button
             onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
-            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
+            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90 mb-1.5"
             style={{ background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1E293B", color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF", border: `1px solid ${plan === "max" ? "#EF444430" : plan === "flex" ? "#F5A62330" : "#374151"}` }}
           >
             {credits === 0 ? "Top Up Now" : "Top Up / Upgrade"}
+          </button>
+          <button
+            onClick={openEarn}
+            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
+            style={{ background: "#0D2010", color: "#22c55e", border: "1px solid #22c55e30" }}
+          >
+            Earn Credits
           </button>
         </div>
 
@@ -286,6 +317,71 @@ export default function Sidebar() {
 
       {/* Feedback modal */}
       <FloatingFeedback isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+
+      {/* Earn Credits modal */}
+      {earnOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setEarnOpen(false)}>
+          <div
+            className="w-full max-w-sm rounded-2xl border border-gray-700 p-6"
+            style={{ background: "#0F172A" }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-white font-bold text-base">Earn Credits</h2>
+              <button onClick={() => setEarnOpen(false)} className="text-gray-500 hover:text-white text-lg leading-none">✕</button>
+            </div>
+
+            <p className="text-gray-400 text-sm mb-4">
+              Share your referral link. When someone signs up and buys credits, you earn automatically.
+            </p>
+
+            <div className="rounded-xl border border-gray-700 p-4 mb-4" style={{ background: "#0A0F1A" }}>
+              <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide">Your rewards</p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs">Referral buys Flex (₱999)</span>
+                  <span className="text-emerald-400 text-xs font-bold">+30 credits</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs">Referral buys Max (₱2,499)</span>
+                  <span className="text-emerald-400 text-xs font-bold">+75 credits</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs">Referral buys Top-up (₱499)</span>
+                  <span className="text-emerald-400 text-xs font-bold">+10 credits</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-500 mb-2">Your referral link</p>
+            {referralCode ? (
+              <div className="flex gap-2">
+                <div
+                  className="flex-1 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300 truncate"
+                  style={{ background: "#0A0F1A" }}
+                >
+                  {getReferralLink()}
+                </div>
+                <button
+                  onClick={copyLink}
+                  className="shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+                  style={{
+                    background: copied ? "#22c55e20" : "#22c55e",
+                    color: copied ? "#22c55e" : "#000",
+                    border: copied ? "1px solid #22c55e40" : "none",
+                  }}
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-gray-500 py-2">Loading your link...</div>
+            )}
+
+            <p className="text-xs text-gray-600 mt-3">Credits are added automatically after your referral's first purchase.</p>
+          </div>
+        </div>
+      )}
 
     </>
   );

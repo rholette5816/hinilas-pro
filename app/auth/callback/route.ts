@@ -29,14 +29,79 @@ export async function GET(request: NextRequest) {
   // Handle OAuth code (Google login)
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return response;
+    if (!error) {
+      await handlePostAuth(supabase, request);
+      return response;
+    }
   }
 
   // Handle email confirmation link
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "email" | "signup" | "recovery" });
-    if (!error) return response;
+    if (!error) {
+      await handlePostAuth(supabase, request);
+      return response;
+    }
   }
 
   return NextResponse.redirect(`${origin}/login`);
+}
+
+async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr").createServerClient>, request: import("next/server").NextRequest) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const adminSupabase = (await import("@supabase/supabase-js")).createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // Check if user_data row exists
+  const { data: existing } = await adminSupabase
+    .from("user_data")
+    .select("referral_code, referred_by, credits_remaining")
+    .eq("user_id", user.id)
+    .single();
+
+  const referralCode = existing?.referral_code || generateCode(user.id);
+  const referredBy = existing?.referred_by || getCookie(request, "referral_code") || null;
+  const isNew = !existing;
+
+  if (isNew) {
+    // New user — grant 5 signup credits, save referral info
+    await adminSupabase.from("user_data").upsert({
+      user_id: user.id,
+      credits_remaining: 5,
+      credits_total: 5,
+      plan: "lite",
+      referral_code: referralCode,
+      referred_by: referredBy,
+      referral_rewarded: false,
+    }, { onConflict: "user_id" });
+
+    await adminSupabase.from("credit_transactions").insert({
+      user_id: user.id,
+      type: "grant",
+      amount: 5,
+      description: "Welcome credits — account verified",
+    });
+  } else if (!existing.referral_code) {
+    // Existing user missing referral code — backfill it
+    await adminSupabase.from("user_data").update({ referral_code: referralCode }).eq("user_id", user.id);
+  }
+}
+
+function generateCode(userId: string): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  const seed = userId.replace(/-/g, "");
+  for (let i = 0; i < 8; i++) {
+    const idx = parseInt(seed.slice(i * 2, i * 2 + 2), 16) % chars.length;
+    code += chars[idx];
+  }
+  return code;
+}
+
+function getCookie(request: import("next/server").NextRequest, name: string): string | null {
+  return request.cookies.get(name)?.value || null;
 }

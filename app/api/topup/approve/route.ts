@@ -1,6 +1,42 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+
+async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
+  const { data: buyer } = await supabase
+    .from("user_data")
+    .select("referred_by, referral_rewarded")
+    .eq("user_id", userId)
+    .single();
+
+  if (!buyer?.referred_by || buyer.referral_rewarded) return;
+
+  const { data: referrer } = await supabase
+    .from("user_data")
+    .select("user_id, credits_remaining, credits_total")
+    .eq("referral_code", buyer.referred_by)
+    .single();
+
+  if (!referrer) return;
+
+  let reward = 10;
+  if (creditsPurchased >= 500) reward = 75;
+  else if (creditsPurchased >= 150) reward = 30;
+
+  await supabase.from("user_data").update({
+    credits_remaining: referrer.credits_remaining + reward,
+    credits_total: referrer.credits_total + reward,
+  }).eq("user_id", referrer.user_id);
+
+  await supabase.from("credit_transactions").insert({
+    user_id: referrer.user_id,
+    type: "referral",
+    amount: reward,
+    description: `Referral reward — your referral made their first purchase`,
+  });
+
+  await supabase.from("user_data").update({ referral_rewarded: true }).eq("user_id", userId);
+}
 
 // Uses service role key — bypasses RLS to update any user's credits
 function adminClient() {
@@ -72,6 +108,9 @@ export async function POST(req: Request) {
     amount: request.credits_requested,
     description: `Top-up approved — ${request.package} (₱${amount})`,
   });
+
+  // Referral reward
+  await grantReferralReward(supabase, request.user_id, request.credits_requested);
 
   // Notify user via email
   try {
