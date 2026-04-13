@@ -35,8 +35,24 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
       setScreenshotPreview(null);
       setError("");
       setSubmitting(false);
+      // Push a hash so browser back closes the modal
+      window.history.pushState({ topup: true }, "", "#topup");
     }
   }, [isOpen, defaultPackage]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handlePop = () => onClose();
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [isOpen, onClose]);
+
+  // Clean up hash when modal closes
+  useEffect(() => {
+    if (!isOpen && window.location.hash === "#topup") {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

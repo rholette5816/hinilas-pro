@@ -53,22 +53,6 @@ export default function PricingPage() {
   const [topUpOpen, setTopUpOpen] = useState(false);
   const [topUpPackage, setTopUpPackage] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        setTopUpOpen(false);
-      }
-    };
-    const handlePopState = () => {
-      setTopUpOpen(false);
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
 
   function openTopUp(packageId: string) {
     setTopUpPackage(packageId);
