@@ -100,14 +100,14 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
 
       if (referrer) {
         await adminSupabase.from("user_data").update({
-          credits_remaining: referrer.credits_remaining + 5,
-          credits_total: referrer.credits_total + 5,
+          credits_remaining: referrer.credits_remaining + 12,
+          credits_total: referrer.credits_total + 12,
         }).eq("user_id", referrer.user_id);
 
         await adminSupabase.from("credit_transactions").insert({
           user_id: referrer.user_id,
           type: "referral",
-          amount: 5,
+          amount: 12,
           description: "Referral reward — new signup via your link",
         });
       }

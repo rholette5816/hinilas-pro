@@ -17,8 +17,8 @@ export async function GET() {
 
   if (!transactions) return NextResponse.json({ total: 0, credits: 0, history: [] });
 
-  // Count signup referrals (5 credit entries = signups)
-  const signups = transactions.filter(t => t.amount === 5 && t.description.includes("signup")).length;
+  // Count signup referrals
+  const signups = transactions.filter(t => t.description.includes("signup")).length;
   const totalCredits = transactions.reduce((sum, t) => sum + t.amount, 0);
 
   return NextResponse.json({

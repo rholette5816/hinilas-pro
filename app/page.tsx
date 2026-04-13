@@ -136,47 +136,6 @@ export default function SetupPage() {
         {/* Top bar */}
         <div className="hidden md:flex items-center justify-end gap-4 px-6 py-3 shrink-0" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
 
-          {/* Notification bell */}
-          <div className="relative" ref={notifRef}>
-            <button
-              onClick={handleOpenNotif}
-              className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all hover:opacity-80"
-              style={{ background: "#0B1120", border: "1px solid #1E2D45" }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              {unreadCount > 0 && !notifSeen && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ background: "#EF4444" }}>{unreadCount}</span>
-              )}
-            </button>
-
-            {notifOpen && (
-              <div className="absolute right-0 top-11 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
-                <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: "1px solid #1E2D45" }}>
-                  <span className="text-white text-sm font-bold">Notifications</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9" }}>{NOTIFICATIONS.length} total</span>
-                </div>
-                <div className="divide-y" style={{ borderColor: "#1E2D45" }}>
-                  {NOTIFICATIONS.map((n, i) => {
-                    const isUnread = i === 0 && !notifSeen;
-                    return (
-                      <div key={n.id} className="px-4 py-3 flex items-start gap-3" style={{ background: isUnread ? "rgba(43,126,201,0.05)" : "transparent" }}>
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: "#1E2D45" }}>{n.icon}</div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="text-white text-xs font-semibold">{n.title}</p>
-                            {isUnread && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#2B7EC9" }} />}
-                          </div>
-                          <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>{n.desc}</p>
-                          <p className="text-[10px] mt-1" style={{ color: "#334155" }}>{n.time}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Launch AI button */}
           <button
             onClick={() => router.push("/research")}

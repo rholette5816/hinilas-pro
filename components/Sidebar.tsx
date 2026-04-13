@@ -393,7 +393,7 @@ export default function Sidebar() {
               <p className="text-[10px] text-gray-500 mb-3 font-bold uppercase tracking-widest">Your rewards</p>
               <div className="space-y-2">
                 {[
-                  ["Referral signs up", "+5 credits"],
+                  ["Referral signs up", "+12 credits"],
                   ["Referral buys Flex (₱499)", "+30 credits"],
                   ["Referral buys Max (₱1,299)", "+75 credits"],
                   ["Referral buys Top-up (₱249)", "+10 credits"],
