@@ -130,6 +130,7 @@ export default function Sidebar() {
   const creditPct = Math.min((credits / Math.max(creditsTotal, 1)) * 100, 100);
   const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF";
   const planLabel = plan === "max" ? "Max Plan" : plan === "flex" ? "Flex Plan" : "Lite Plan";
+  const planSuffix = plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite";
 
   // Completion signals per nav item
   const completionMap: Record<string, boolean> = {
@@ -167,7 +168,7 @@ export default function Sidebar() {
           <div>
             <div className="flex items-baseline gap-0">
               <span className="text-white font-bold text-base">Hinilas</span>
-              <span className="font-bold text-base" style={{ color: planColor }}>Pro</span>
+              <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
             </div>
             <p className="text-[9px] font-bold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>Marketing Intelligence</p>
           </div>
@@ -336,7 +337,7 @@ export default function Sidebar() {
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
         <div className="flex items-center gap-2">
           <HinilasIcon size="sm" accentColor="#F5A623" />
-          <span className="text-white font-bold text-sm">Hinilas<span style={{ color: "#F5A623" }}>Pro</span></span>
+          <span className="text-white font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
         </div>
         <button onClick={() => setMobileOpen(true)} className="text-gray-400 hover:text-white p-1">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
