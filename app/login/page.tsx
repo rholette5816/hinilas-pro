@@ -194,8 +194,7 @@ export default function LoginPage() {
                         key={i}
                         src={f.user_avatar}
                         alt={f.user_name}
-                        className="w-7 h-7 rounded-full object-cover ring-2"
-                        style={{ ringColor: "#0B1120" }}
+                        className="w-7 h-7 rounded-full object-cover ring-2 ring-[#0B1120]"
                       />
                     ) : (
                       <div
