@@ -16,11 +16,14 @@ export default function CreativePage() {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [iterations, setIterations] = useState<(string | null)[]>([null, null]);
 
-  // Load saved images on mount
+  // Load saved images on mount — always restore from context on page visit
   useEffect(() => {
     if (savedImages.main) setMainImage(savedImages.main);
-    if (savedImages.v1 || savedImages.v2) setIterations([savedImages.v1, savedImages.v2]);
-  }, [savedImages.main, savedImages.v1, savedImages.v2]);
+    if (savedImages.v1 !== undefined || savedImages.v2 !== undefined) {
+      setIterations([savedImages.v1 ?? null, savedImages.v2 ?? null]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [loadingMain, setLoadingMain] = useState(false);
   const [loadingIter, setLoadingIter] = useState<boolean[]>([false, false]);
   const [error, setError] = useState("");

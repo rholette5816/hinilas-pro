@@ -187,8 +187,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       v1 && v1.startsWith("data:") ? uploadToStorage(v1, "variation_1") : Promise.resolve(v1),
       v2 && v2.startsWith("data:") ? uploadToStorage(v2, "variation_2") : Promise.resolve(v2),
     ]);
-    setSavedImages({ main: mainUrl, v1: v1Url, v2: v2Url });
-    await persist({ main_image_url: mainUrl, variation_1_url: v1Url, variation_2_url: v2Url });
+    // If upload failed (returned null) but a URL was passed in, keep the existing saved URL
+    setSavedImages(prev => ({
+      main: mainUrl ?? (main && !main.startsWith("data:") ? main : prev.main),
+      v1: v1Url ?? (v1 && !v1.startsWith("data:") ? v1 : prev.v1),
+      v2: v2Url ?? (v2 && !v2.startsWith("data:") ? v2 : prev.v2),
+    }));
+    const finalMain = mainUrl ?? (main && !main.startsWith("data:") ? main : null);
+    const finalV1 = v1Url ?? (v1 && !v1.startsWith("data:") ? v1 : null);
+    const finalV2 = v2Url ?? (v2 && !v2.startsWith("data:") ? v2 : null);
+    await persist({ main_image_url: finalMain, variation_1_url: finalV1, variation_2_url: finalV2 });
   }
 
   function dismissToast(id: number) {
