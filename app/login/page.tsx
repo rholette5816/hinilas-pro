@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 interface Feedback {
   id: string;
   user_name: string;
+  user_avatar: string | null;
   rating: number;
   message: string;
 }
@@ -83,8 +84,15 @@ export default function LoginPage() {
             <p className="text-xs text-center text-gray-600 uppercase tracking-widest">What users say</p>
             {feedbacks.slice(0, 4).map(f => (
               <div key={f.id} className="rounded-xl px-4 py-3" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white text-xs font-semibold">{f.user_name}</span>
+                <div className="flex items-center gap-2 mb-1.5">
+                  {f.user_avatar ? (
+                    <img src={f.user_avatar} alt={f.user_name} className="w-6 h-6 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
+                      {f.user_name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="text-white text-xs font-semibold flex-1">{f.user_name}</span>
                   <span className="text-amber-400 text-xs">{"★".repeat(f.rating)}</span>
                 </div>
                 <p className="text-gray-400 text-xs leading-relaxed">"{f.message}"</p>

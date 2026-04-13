@@ -125,9 +125,10 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
             </div>
             <h3 className="text-white font-bold text-lg mb-2">Thanks for the feedback!</h3>
             {creditsAwarded > 0 ? (
-              <div className="rounded-xl border border-emerald-900 px-4 py-3 mb-4" style={{ background: "#0D2010" }}>
-                <p className="text-emerald-400 text-sm font-bold">+{creditsAwarded} credits added to your account!</p>
-                <p className="text-emerald-700 text-xs mt-0.5">Thank you for helping us improve.</p>
+              <div className="rounded-xl border border-emerald-700 px-4 py-4 mb-4" style={{ background: "#052e16" }}>
+                <div className="text-3xl font-black text-emerald-400 mb-1">+{creditsAwarded} Credits</div>
+                <p className="text-emerald-300 text-sm font-semibold">Added to your account!</p>
+                <p className="text-emerald-700 text-xs mt-1">Thank you for helping us improve Hinilas Pro.</p>
               </div>
             ) : (
               <p className="text-gray-400 text-sm mb-4">We read every message. This helps us build a better tool for you.</p>

@@ -35,10 +35,12 @@ export async function POST(req: NextRequest) {
 
   // Save feedback
   const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
+  const userAvatar = user.user_metadata?.avatar_url || null;
   await admin.from("feedbacks").insert({
     user_id: user.id,
     user_email: user.email,
     user_name: userName,
+    user_avatar: userAvatar,
     rating,
     category,
     message: message.trim(),
@@ -110,7 +112,7 @@ export async function GET() {
   const admin = adminClient();
   const { data } = await admin
     .from("feedbacks")
-    .select("id, user_name, rating, message, created_at")
+    .select("id, user_name, user_avatar, rating, message, created_at")
     .gte("rating", 4)
     .order("created_at", { ascending: false })
     .limit(10);
