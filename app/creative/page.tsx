@@ -223,10 +223,10 @@ export default function CreativePage() {
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
                   <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>
-                    Upgrade to Flex — ₱999/mo
+                    Upgrade to Flex — ₱499
                   </a>
                   <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#2B7EC9" }}>
-                    Get 50 Credits — ₱499
+                    Get 50 Credits — ₱249
                   </a>
                   <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
                 </div>

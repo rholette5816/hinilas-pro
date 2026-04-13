@@ -58,7 +58,7 @@ export default function PricingPage() {
       name: "Lite",
       tagline: "Get started for free",
       price: "Free",
-      credits: "5 one-time credits",
+      credits: "20 one-time credits",
       threshold: "0 – 49 credits",
       color: "#9CA3AF",
       nextAt: `${49 - credits > 0 ? 49 - credits + " more credits" : ""}`,
@@ -67,7 +67,7 @@ export default function PricingPage() {
       key: "flex",
       name: "Flex",
       tagline: "The engine of your marketing",
-      price: "₱999",
+      price: "₱499",
       period: " / 150 credits",
       credits: "150 credits — never expires",
       threshold: "50 – 299 credits",
@@ -78,7 +78,7 @@ export default function PricingPage() {
       key: "max",
       name: "Max",
       tagline: "Unmatched power. Zero limits.",
-      price: "₱2,499",
+      price: "₱1,299",
       period: " / 500 credits",
       credits: "500 credits — never expires",
       threshold: "300+ credits",
@@ -182,7 +182,7 @@ export default function PricingPage() {
                   ) : p.key === "flex" ? (
                     <button
                       disabled={currentPlan === "max"}
-                      onClick={() => currentPlan !== "max" && setGcash({ label: "Flex", credits: 150, price: 999, color: BRAND_ORANGE })}
+                      onClick={() => currentPlan !== "max" && setGcash({ label: "Flex", credits: 150, price: 499, color: BRAND_ORANGE })}
                       className="mt-auto w-full py-2 rounded-xl text-sm font-bold transition-opacity"
                       style={{
                         background: currentPlan === "max" ? "#1F2937" : BRAND_ORANGE,
@@ -190,15 +190,15 @@ export default function PricingPage() {
                         cursor: currentPlan === "max" ? "not-allowed" : "pointer",
                       }}
                     >
-                      Get Flex — ₱999
+                      Get Flex — ₱499
                     </button>
                   ) : (
                     <button
-                      onClick={() => setGcash({ label: "Max", credits: 500, price: 2499, color: BRAND_RED })}
+                      onClick={() => setGcash({ label: "Max", credits: 500, price: 1299, color: BRAND_RED })}
                       className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
                       style={{ background: BRAND_RED }}
                     >
-                      Get Max — ₱2,499
+                      Get Max — ₱1,299
                     </button>
                   )}
                 </div>
@@ -284,17 +284,17 @@ export default function PricingPage() {
                 <h3 className="text-white font-bold text-lg mb-1">Need more credits?</h3>
                 <p className="text-gray-400 text-sm">Need a small top-up? Get 50 credits added to your balance instantly.</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs font-semibold" style={{ color: BRAND_BLUE }}>₱499 · 50 credits · Never expires</span>
+                  <span className="text-xs font-semibold" style={{ color: BRAND_BLUE }}>₱249 · 50 credits · Never expires</span>
                   <span className="text-gray-700 text-xs">·</span>
                   <span className="text-xs text-gray-600">Adds to your current balance</span>
                 </div>
               </div>
               <button
-                onClick={() => setGcash({ label: "Top-Up", credits: 50, price: 499, color: BRAND_BLUE })}
+                onClick={() => setGcash({ label: "Top-Up", credits: 50, price: 249, color: BRAND_BLUE })}
                 className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl transition-opacity hover:opacity-90"
                 style={{ background: BRAND_BLUE, color: "#fff" }}
               >
-                Get 50 Credits — ₱499
+                Get 50 Credits — ₱249
               </button>
             </div>
           </div>

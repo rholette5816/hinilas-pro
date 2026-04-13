@@ -57,7 +57,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Award 5 credits if first feedback
+  // Award credits based on star rating — one-time only
+  const STAR_REWARDS: Record<number, number> = { 1: 2, 2: 3, 3: 5, 4: 8, 5: 15 };
+  const creditReward = STAR_REWARDS[rating] ?? 5;
+
   if (isFirstFeedback) {
     const { data: userData } = await admin
       .from("user_data")
@@ -67,15 +70,15 @@ export async function POST(req: NextRequest) {
 
     if (userData) {
       await admin.from("user_data").update({
-        credits_remaining: userData.credits_remaining + 5,
-        credits_total: userData.credits_total + 5,
+        credits_remaining: userData.credits_remaining + creditReward,
+        credits_total: userData.credits_total + creditReward,
       }).eq("user_id", user.id);
 
       await admin.from("credit_transactions").insert({
         user_id: user.id,
         type: "grant",
-        amount: 5,
-        description: "Feedback reward",
+        amount: creditReward,
+        description: `Feedback reward — ${rating} star${rating !== 1 ? "s" : ""}`,
       });
     }
   }
@@ -105,7 +108,7 @@ export async function POST(req: NextRequest) {
     // Email failure doesn't block feedback
   }
 
-  return NextResponse.json({ success: true, creditsAwarded: isFirstFeedback ? 5 : 0 });
+  return NextResponse.json({ success: true, creditsAwarded: isFirstFeedback ? creditReward : 0 });
 }
 
 export async function GET() {

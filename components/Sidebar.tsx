@@ -78,6 +78,7 @@ export default function Sidebar() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
+  const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; credits: number }[]>([]);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -102,6 +103,9 @@ export default function Sidebar() {
     }
     fetch("/api/referral/stats").then(r => r.json()).then(d => {
       if (!d.error) setReferralStats(d);
+    });
+    fetch("/api/referral/leaderboard").then(r => r.json()).then(d => {
+      if (d.leaderboard) setLeaderboard(d.leaderboard);
     });
   }
 
@@ -251,7 +255,7 @@ export default function Sidebar() {
             <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Feedback</p>
             <p className="text-xs" style={{ color: "#64748B" }}>Share thoughts</p>
           </div>
-          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+5 cr</span>
+          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+2-15 cr</span>
         </button>
       </nav>
 
@@ -384,9 +388,9 @@ export default function Sidebar() {
               <div className="space-y-2">
                 {[
                   ["Referral signs up", "+5 credits"],
-                  ["Referral buys Flex (₱999)", "+30 credits"],
-                  ["Referral buys Max (₱2,499)", "+75 credits"],
-                  ["Referral buys Top-up (₱499)", "+10 credits"],
+                  ["Referral buys Flex (₱499)", "+30 credits"],
+                  ["Referral buys Max (₱1,299)", "+75 credits"],
+                  ["Referral buys Top-up (₱249)", "+10 credits"],
                 ].map(([label, val]) => (
                   <div key={label} className="flex justify-between items-center">
                     <span className="text-gray-400 text-xs">{label}</span>
@@ -413,6 +417,24 @@ export default function Sidebar() {
               <div className="text-xs text-gray-500 py-2">Loading your link...</div>
             )}
             <p className="text-xs text-gray-600 mt-3">Signup credits are added instantly. Purchase rewards are added after their first top-up.</p>
+
+            {/* Leaderboard */}
+            {leaderboard.length > 0 && (
+              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#0A0F1A", border: "1px solid #1E2D45" }}>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-3 py-2" style={{ borderBottom: "1px solid #1E2D45" }}>Top Referrers</p>
+                <div className="divide-y" style={{ borderColor: "#1E2D45" }}>
+                  {leaderboard.map((u) => (
+                    <div key={u.rank} className="flex items-center gap-3 px-3 py-2">
+                      <span className="text-xs font-bold w-4 shrink-0" style={{ color: u.rank === 1 ? "#F5A623" : u.rank === 2 ? "#94A3B8" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
+                        #{u.rank}
+                      </span>
+                      <span className="text-xs text-gray-300 flex-1 truncate">{u.username}</span>
+                      <span className="text-xs font-bold text-emerald-400">+{u.credits} cr</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {referralStats && (
               <div className="mt-4">
                 <div className="grid grid-cols-2 gap-2 mb-3">
