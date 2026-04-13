@@ -172,9 +172,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       for (let i = 0; i < byteString.length; i++) bytes[i] = byteString.charCodeAt(i);
       const blob = new Blob([bytes], { type: mimeType });
       const path = `${userId}/${filename}.${ext}`;
-      const { error } = await supabase.storage.from("ad-creatives").upload(path, blob, { upsert: true });
+      const { error } = await supabase.storage.from("ad-creative").upload(path, blob, { upsert: true });
       if (error) { console.error("[storage] upload error:", error.message); return null; }
-      const { data: { publicUrl } } = supabase.storage.from("ad-creatives").getPublicUrl(path);
+      const { data: { publicUrl } } = supabase.storage.from("ad-creative").getPublicUrl(path);
       return publicUrl;
     } catch {
       return null;
