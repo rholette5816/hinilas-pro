@@ -4,10 +4,9 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip auth routes, login, public landing page, and public pages
+  // Skip auth routes and public pages
   if (
     pathname.startsWith("/auth") ||
-    pathname === "/login" ||
     pathname === "/home" ||
     pathname === "/privacy" ||
     pathname === "/data-deletion"
@@ -41,9 +40,7 @@ export async function middleware(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    // Root path goes to landing page, everything else goes to login
-    const target = pathname === "/" ? "/home" : "/login";
-    return NextResponse.redirect(new URL(target, request.url));
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   supabaseResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
