@@ -85,6 +85,29 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
       amount: 5,
       description: "Welcome credits — account verified",
     });
+
+    // Grant 5 credits to referrer on signup
+    if (referredBy) {
+      const { data: referrer } = await adminSupabase
+        .from("user_data")
+        .select("user_id, credits_remaining, credits_total")
+        .eq("referral_code", referredBy)
+        .single();
+
+      if (referrer) {
+        await adminSupabase.from("user_data").update({
+          credits_remaining: referrer.credits_remaining + 5,
+          credits_total: referrer.credits_total + 5,
+        }).eq("user_id", referrer.user_id);
+
+        await adminSupabase.from("credit_transactions").insert({
+          user_id: referrer.user_id,
+          type: "referral",
+          amount: 5,
+          description: "Referral reward — new signup via your link",
+        });
+      }
+    }
   } else if (!existing.referral_code) {
     // Existing user missing referral code — backfill it
     await adminSupabase.from("user_data").update({ referral_code: referralCode }).eq("user_id", user.id);
