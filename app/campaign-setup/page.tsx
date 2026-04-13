@@ -18,6 +18,13 @@ const LEVEL_COLORS: Record<Level, string> = {
   "Ads": "#8B5CF6",
 };
 
+// Video URLs per level — update these when ready
+const LEVEL_VIDEOS: Record<Level, string> = {
+  "Campaign": "",
+  "Ad Set": "",
+  "Ads": "",
+};
+
 const STEPS: Step[] = [
   {
     label: "Access Ads Manager",
@@ -311,6 +318,38 @@ export default function CampaignSetupPage() {
                 </div>
                 <h2 className="text-white font-bold text-lg">{step.label}</h2>
               </div>
+
+              {/* Level video — shows once per level */}
+              {(() => {
+                const isFirstStepOfLevel = currentStep === 0 || STEPS[currentStep - 1].level !== step.level;
+                const videoUrl = LEVEL_VIDEOS[step.level];
+                if (!isFirstStepOfLevel) return null;
+                return (
+                  <div className="px-6 pt-5">
+                    <div className="rounded-xl overflow-hidden border border-gray-700" style={{ background: "#0F172A" }}>
+                      {videoUrl ? (
+                        <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                          <iframe
+                            src={videoUrl}
+                            className="absolute inset-0 w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-8 px-4 text-center" style={{ minHeight: 160 }}>
+                          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ background: `${step.color}20` }}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          </div>
+                          <p className="text-sm font-semibold" style={{ color: step.color }}>{step.level} Level — Video Tutorial</p>
+                          <p className="text-xs text-gray-600 mt-1">Video coming soon</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Instructions */}
               <div className="px-6 py-5 space-y-3">
