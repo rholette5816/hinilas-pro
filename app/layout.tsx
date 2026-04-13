@@ -17,11 +17,11 @@ export const metadata: Metadata = {
     siteName: "Hinilas Pro",
     images: [
       {
-        url: "https://hinilas-pro.vercel.app/og-image.jpg",
+        url: "https://hinilas-pro.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
-        type: "image/jpeg",
+        type: "image/png",
       },
     ],
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
     description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — built for serious sellers and ad operators.",
-    images: ["https://hinilas-pro.vercel.app/og-image.jpg"],
+    images: ["https://hinilas-pro.vercel.app/og-image.png"],
   },
 };
 
