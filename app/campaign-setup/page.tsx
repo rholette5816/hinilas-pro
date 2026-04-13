@@ -147,6 +147,7 @@ const STEPS: Step[] = [
 const TOTAL = STEPS.length;
 
 export default function CampaignSetupPage() {
+  const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
   const [currentStep, setCurrentStep] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -183,8 +184,48 @@ export default function CampaignSetupPage() {
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-white mb-1">Campaign Setup</h1>
-            <p className="text-gray-400 text-sm">Messenger Ads Setup Guide — Engagement Objective</p>
+            <p className="text-gray-400 text-sm">Step-by-step ad campaign guides</p>
           </div>
+
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setActiveTab("messenger")}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+              style={activeTab === "messenger"
+                ? { background: "#2B7EC9", color: "#fff" }
+                : { background: "#0F172A", color: "#6B7280", border: "1px solid #1F2937" }
+              }
+            >
+              Messenger Ads Setup
+            </button>
+            <button
+              disabled
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold cursor-not-allowed"
+              style={{ background: "#0F172A", color: "#374151", border: "1px solid #1F2937" }}
+            >
+              Conversion Setup 🔒
+            </button>
+          </div>
+
+          {/* Conversion Coming Soon */}
+          {activeTab === "conversion" && (
+            <div className="rounded-2xl border border-indigo-900 px-6 py-12 text-center" style={{ background: "#0D0B1F" }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1E1B4B" }}>
+                <span className="text-2xl">🎯</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-700 rounded-full px-3 py-1 mb-4">
+                <span className="text-indigo-300 text-xs font-semibold">Coming Soon</span>
+              </div>
+              <h2 className="text-white font-bold text-xl mb-2">Conversion Setup — Upcoming</h2>
+              <p className="text-gray-400 text-sm mb-1">This guide covers Facebook Pixel setup, website conversion campaigns, and purchase-optimized ad sets.</p>
+              <p className="text-gray-500 text-xs mb-6">Currently in production.</p>
+              <p className="text-indigo-400 text-xs">Stay tuned — we'll notify you when it drops.</p>
+            </div>
+          )}
+
+          {/* Messenger Ads content */}
+          {activeTab === "messenger" && <>
 
           {/* Progress bar */}
           {!done && (
@@ -327,6 +368,8 @@ export default function CampaignSetupPage() {
               </div>
             </div>
           )}
+
+          </>}
 
         </div>
       </main>
