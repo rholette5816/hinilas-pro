@@ -178,6 +178,24 @@ export default function LandingPage() {
         .fade-up { animation: fadeUp 0.6s ease forwards; }
         .fade-up-d1 { animation: fadeUp 0.6s ease 0.15s forwards; opacity: 0; }
         .fade-up-d2 { animation: fadeUp 0.6s ease 0.3s forwards; opacity: 0; }
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 16px 2px rgba(245,166,35,0.5), 0 0 32px 4px rgba(245,166,35,0.2); } 50% { box-shadow: 0 0 28px 6px rgba(245,166,35,0.7), 0 0 56px 10px rgba(245,166,35,0.3); } }
+        @keyframes glowPulseBlue { 0%, 100% { box-shadow: 0 0 16px 2px rgba(43,126,201,0.5), 0 0 32px 4px rgba(43,126,201,0.2); } 50% { box-shadow: 0 0 28px 6px rgba(43,126,201,0.7), 0 0 56px 10px rgba(43,126,201,0.3); } }
+        .cta-btn {
+          position: relative;
+          overflow: hidden;
+          animation: glowPulse 2.5s ease-in-out infinite;
+        }
+        .cta-btn::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.35) 50%, transparent 75%);
+          background-size: 200% 100%;
+          animation: shimmer 2.2s linear infinite;
+          border-radius: inherit;
+          pointer-events: none;
+        }
       `}</style>
 
       {/* Background orbs */}
@@ -207,7 +225,7 @@ export default function LandingPage() {
               <button onClick={openModal} className="text-sm font-medium px-4 py-2 rounded-lg transition-opacity hover:opacity-80" style={{ color: "#94A3B8" }}>
                 Sign In
               </button>
-              <button onClick={openModal} className="text-sm font-bold px-5 py-2 rounded-xl transition-all hover:brightness-110" style={{ background: "#2B7EC9", color: "#fff" }}>
+              <button onClick={openModal} className="cta-btn text-sm font-bold px-5 py-2 rounded-xl transition-all hover:brightness-110" style={{ background: "#2B7EC9", color: "#fff", animationName: "glowPulseBlue" }}>
                 Get Started Free
               </button>
             </div>
@@ -230,7 +248,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-3 flex-wrap">
               <button
                 onClick={openModal}
-                className="px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:brightness-110"
+                className="cta-btn px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:brightness-110"
                 style={{ background: "#F5A623", color: "#000" }}
               >
                 Get Started Free →
@@ -388,7 +406,7 @@ export default function LandingPage() {
               </p>
               <button
                 onClick={openModal}
-                className="px-10 py-4 rounded-xl text-base font-bold transition-all hover:brightness-110"
+                className="cta-btn px-10 py-4 rounded-xl text-base font-bold transition-all hover:brightness-110"
                 style={{ background: "#F5A623", color: "#000" }}
               >
                 Get Started Free →
