@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import TopUpModal from "@/components/TopUpModal";
 import { useApp } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -50,14 +48,6 @@ function Check({ value, color }: { value: FeatureValue; color: string }) {
 export default function PricingPage() {
   const { plan: currentPlan, credits } = useApp();
   const router = useRouter();
-  const [topUpOpen, setTopUpOpen] = useState(false);
-  const [topUpPackage, setTopUpPackage] = useState<string | undefined>(undefined);
-
-
-  function openTopUp(packageId: string) {
-    setTopUpPackage(packageId);
-    setTopUpOpen(true);
-  }
 
   const plans = [
     {
@@ -187,26 +177,22 @@ export default function PricingPage() {
                       Get Started Free
                     </button>
                   ) : p.key === "flex" ? (
-                    <button
-                      onClick={() => currentPlan !== "max" && openTopUp("pro_150")}
-                      disabled={currentPlan === "max"}
-                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold transition-opacity"
+                    <div
+                      className="mt-auto w-full py-2 rounded-xl text-center text-sm font-bold"
                       style={{
                         background: currentPlan === "max" ? "#1F2937" : BRAND_ORANGE,
                         color: currentPlan === "max" ? "#4B5563" : "#000",
-                        cursor: currentPlan === "max" ? "not-allowed" : "pointer",
                       }}
                     >
                       Get Flex — ₱999
-                    </button>
+                    </div>
                   ) : (
-                    <button
-                      onClick={() => openTopUp("max_500")}
-                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
+                    <div
+                      className="mt-auto w-full py-2 rounded-xl text-center text-sm font-bold text-white"
                       style={{ background: BRAND_RED }}
                     >
                       Get Max — ₱2,499
-                    </button>
+                    </div>
                   )}
                 </div>
               );
@@ -296,19 +282,17 @@ export default function PricingPage() {
                   <span className="text-xs text-gray-600">Adds to your current balance</span>
                 </div>
               </div>
-              <button
-                onClick={() => openTopUp("topup_50")}
-                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl transition-opacity hover:opacity-90"
+              <div
+                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl text-center"
                 style={{ background: BRAND_BLUE, color: "#fff" }}
               >
                 Get 50 Credits — ₱499
-              </button>
+              </div>
             </div>
           </div>
 
         </div>
       </main>
-      <TopUpModal isOpen={topUpOpen} onClose={() => setTopUpOpen(false)} defaultPackage={topUpPackage} />
     </div>
   );
 }
