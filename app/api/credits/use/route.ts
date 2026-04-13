@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const amount = typeof body.amount === "number" && body.amount > 0 ? body.amount : 1;
-  const description = body.description || (amount === 1 ? "Image generation" : amount === 1.5 ? "Advanced Analysis (1.5 credits)" : `Expert session (${amount} credits)`);
+  const description = body.description || `Credit usage (${amount} credits)`;
 
   const { data: userData } = await supabase
     .from("user_data")

@@ -52,20 +52,27 @@ function parseAngles(output: string): Angle[] {
 }
 
 export default function AnglesPage() {
-  const { setup, researchOutput, anglesOutput, setAnglesOutput, setSelectedAngle } = useApp();
+  const { setup, researchOutput, anglesOutput, setAnglesOutput, setSelectedAngle, credits, refreshCredits } = useApp();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [adjustNote, setAdjustNote] = useState("");
   const [showAdjust, setShowAdjust] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [noCredits, setNoCredits] = useState(false);
 
   const angles = anglesOutput ? parseAngles(anglesOutput).filter(a => a.number && a.coreMessage) : [];
 
   async function generateAngles(adjustment?: string) {
     if (!setup) return;
+    if (credits < 1) { setNoCredits(true); return; }
     setLoading(true);
     setShowAdjust(false);
     setSelectedCard(null);
+
+    // Deduct 1 credit
+    const deduct = await fetch("/api/credits/use", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: 1, description: "Angles generation" }) });
+    if (!deduct.ok) { setNoCredits(true); setLoading(false); return; }
+    await refreshCredits();
 
     const userCtx = buildUserContext(setup);
     let prompt = MODULE_PROMPTS.angles(userCtx, researchOutput);
@@ -113,6 +120,19 @@ export default function AnglesPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
+      {noCredits && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+            <div className="text-4xl mb-4">⚡</div>
+            <h2 className="text-white font-bold text-lg mb-2">Not enough credits</h2>
+            <p className="text-gray-400 text-sm mb-6">Angles costs 1 credit. Top up to continue.</p>
+            <div className="flex flex-col gap-3">
+              <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>View Plans</a>
+              <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-3xl mx-auto px-6 py-10">
 

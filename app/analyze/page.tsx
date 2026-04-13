@@ -611,6 +611,24 @@ show(0);
 
     try {
       if (mode === "basic") {
+        // Deduct 1 credit for basic analysis
+        if (credits < 1) {
+          setOutputBasic("Not enough credits. Basic Analysis costs 1 credit.");
+          setLoading(false);
+          return;
+        }
+        const deductBasic = await fetch("/api/credits/use", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: 1, description: "Basic Analysis" }),
+        });
+        if (!deductBasic.ok) {
+          setOutputBasic("Not enough credits. Basic Analysis costs 1 credit.");
+          setLoading(false);
+          return;
+        }
+        await refreshCredits();
+
         const hasProfit = productPrice || productCost || amountSpent || numSales;
         const profitInfo = hasProfit
           ? `\nProduct Selling Price: P${productPrice || "not provided"}\nProduct Cost: P${productCost || "not provided"}\nAmount Spent on Ads: P${amountSpent || "not provided"}\nNumber of Sales / Conversions: ${numSales || "not provided"}`
@@ -629,19 +647,19 @@ show(0);
         const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, basic: { output: result, savedAt: ts } }));
       } else {
-        // Deduct 1.5 credits for advanced analysis
-        if (credits < 1.5) {
-          setOutputAdvanced("Not enough credits. Advanced Analysis costs 1.5 credits.");
+        // Deduct 3 credits for advanced analysis
+        if (credits < 3) {
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 3 credits.");
           setLoading(false);
           return;
         }
         const deductRes = await fetch("/api/credits/use", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: 1.5 }),
+          body: JSON.stringify({ amount: 3, description: "Advanced Analysis" }),
         });
         if (!deductRes.ok) {
-          setOutputAdvanced("Not enough credits. Advanced Analysis costs 1.5 credits.");
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 3 credits.");
           setLoading(false);
           return;
         }
