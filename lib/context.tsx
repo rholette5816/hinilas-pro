@@ -14,6 +14,12 @@ export interface UserSetup {
   language: string;
 }
 
+export interface ReferralToast {
+  id: number;
+  message: string;
+  amount: number;
+}
+
 interface AppContextType {
   setup: UserSetup | null;
   setSetup: (s: UserSetup) => void;
@@ -33,6 +39,8 @@ interface AppContextType {
   creditsTotal: number;
   plan: string;
   refreshCredits: () => Promise<void>;
+  referralToasts: ReferralToast[];
+  dismissToast: (id: number) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -55,6 +63,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [creditsTotal, setCreditsTotal] = useState(5);
   const [userId, setUserId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [referralToasts, setReferralToasts] = useState<ReferralToast[]>([]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -82,6 +91,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
           v1: data.variation_1_url || null,
           v2: data.variation_2_url || null,
         });
+
+        // Check for unread referral credits
+        const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
+        const { data: newReferrals } = await supabase
+          .from("credit_transactions")
+          .select("id, amount, description, created_at")
+          .eq("user_id", user.id)
+          .eq("type", "referral")
+          .gt("created_at", lastNotified.toISOString())
+          .order("created_at", { ascending: false });
+
+        if (newReferrals && newReferrals.length > 0) {
+          const toasts = newReferrals.map((r, i) => ({
+            id: i,
+            amount: r.amount,
+            message: r.description,
+          }));
+          setReferralToasts(toasts);
+          // Update last_notified_at
+          await supabase.from("user_data").update({ last_notified_at: new Date().toISOString() }).eq("user_id", user.id);
+        }
       }
 
       setHydrated(true);
@@ -158,6 +188,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await persist({ main_image_url: mainUrl, variation_1_url: v1Url, variation_2_url: v2Url });
   }
 
+  function dismissToast(id: number) {
+    setReferralToasts(prev => prev.filter(t => t.id !== id));
+  }
+
   async function refreshCredits() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -185,6 +219,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       creativeImage, setCreativeImage,
       savedImages, saveAdImages,
       credits, creditsTotal, plan: derivePlan(credits), refreshCredits,
+      referralToasts, dismissToast,
     }}>
       {children}
     </AppContext.Provider>

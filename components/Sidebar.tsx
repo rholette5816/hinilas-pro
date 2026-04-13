@@ -55,6 +55,7 @@ export default function Sidebar() {
   const [earnOpen, setEarnOpen] = useState(false);
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
@@ -77,6 +78,9 @@ export default function Sidebar() {
         if (d.referralCode) setReferralCode(d.referralCode);
       });
     }
+    fetch("/api/referral/stats").then(r => r.json()).then(d => {
+      if (!d.error) setReferralStats(d);
+    });
   }
 
   function getReferralLink() {
@@ -385,6 +389,39 @@ export default function Sidebar() {
             )}
 
             <p className="text-xs text-gray-600 mt-3">Signup credits are added instantly. Purchase rewards are added after their first top-up.</p>
+
+            {/* Referral Stats */}
+            {referralStats && (
+              <div className="mt-4">
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#0A0F1A", border: "1px solid #1F2937" }}>
+                    <p className="text-lg font-bold text-white">{referralStats.total}</p>
+                    <p className="text-xs text-gray-500">Signups referred</p>
+                  </div>
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#0A0F1A", border: "1px solid #1F2937" }}>
+                    <p className="text-lg font-bold text-emerald-400">+{referralStats.credits}</p>
+                    <p className="text-xs text-gray-500">Credits earned</p>
+                  </div>
+                </div>
+
+                {referralStats.history.length > 0 && (
+                  <div className="rounded-xl border border-gray-800 overflow-hidden" style={{ background: "#0A0F1A" }}>
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide px-3 py-2 border-b border-gray-800">History</p>
+                    <div className="divide-y divide-gray-800 max-h-36 overflow-y-auto">
+                      {referralStats.history.map((h, i) => (
+                        <div key={i} className="flex items-center justify-between px-3 py-2">
+                          <div>
+                            <p className="text-xs text-gray-300">{h.description}</p>
+                            <p className="text-xs text-gray-600">{new Date(h.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</p>
+                          </div>
+                          <span className="text-xs font-bold text-emerald-400">+{h.amount}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

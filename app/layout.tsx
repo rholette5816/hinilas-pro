@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import FloatingChat from "@/components/FloatingChat";
+import ReferralToastWrapper from "@/components/ReferralToastWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
         <AppProvider>
           {children}
           <FloatingChat />
+          <ReferralToastWrapper />
         </AppProvider>
       </body>
     </html>
