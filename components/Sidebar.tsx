@@ -128,7 +128,7 @@ export default function Sidebar() {
   }
 
   const creditPct = Math.min((credits / Math.max(creditsTotal, 1)) * 100, 100);
-  const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#2B7EC9";
+  const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF";
   const planLabel = plan === "max" ? "Max Plan" : plan === "flex" ? "Flex Plan" : "Lite Plan";
 
   // Completion signals per nav item
