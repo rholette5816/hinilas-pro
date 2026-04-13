@@ -32,6 +32,11 @@ export default function CreativePage() {
   const logoRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<HTMLInputElement>(null);
 
+  function useForCopy(img: string) {
+    setCreativeImage(img);
+    router.push("/copy");
+  }
+
   function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setter: (v: string | null) => void) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -276,7 +281,14 @@ export default function CreativePage() {
             {mainImage && !loadingMain && (
               <div className="relative rounded-xl overflow-hidden border border-gray-700">
                 <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
-                <div className="absolute bottom-3 right-3">
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                  <button
+                    onClick={() => useForCopy(mainImage)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
+                    style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 12px #ff6a0080" }}
+                  >
+                    🔥 Use for Copy
+                  </button>
                   <a href={mainImage} download="hinilas-ad.png" className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100">
                     Download
                   </a>
@@ -319,7 +331,14 @@ export default function CreativePage() {
                     {iterations[i] && !loadingIter[i] && (
                       <div className="relative rounded-xl overflow-hidden border border-gray-700">
                         <img src={iterations[i]!} alt={`Variation ${i + 2}`} className="w-full object-cover" />
-                        <div className="absolute bottom-2 right-2">
+                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                          <button
+                            onClick={() => useForCopy(iterations[i]!)}
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
+                            style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 10px #ff6a0070" }}
+                          >
+                            🔥 Use
+                          </button>
                           <a href={iterations[i]!} download={`hinilas-ad-v${i + 2}.png`} className="bg-white text-black px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-gray-100">
                             Download
                           </a>
@@ -338,16 +357,6 @@ export default function CreativePage() {
             </div>
           )}
 
-          {/* Next step */}
-          {mainImage && !loadingMain && (
-            <button
-              onClick={() => router.push("/copy")}
-              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
-              style={{ background: "#F5A623" }}
-            >
-              Next: Write Ad Copy →
-            </button>
-          )}
 
         </div>
       </main>
