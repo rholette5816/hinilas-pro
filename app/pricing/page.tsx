@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import GCashModal from "@/components/GCashModal";
 import { useApp } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -48,6 +50,7 @@ function Check({ value, color }: { value: FeatureValue; color: string }) {
 export default function PricingPage() {
   const { plan: currentPlan, credits } = useApp();
   const router = useRouter();
+  const [gcash, setGcash] = useState<{ label: string; credits: number; price: number; color: string } | null>(null);
 
   const plans = [
     {
@@ -177,22 +180,26 @@ export default function PricingPage() {
                       Get Started Free
                     </button>
                   ) : p.key === "flex" ? (
-                    <div
-                      className="mt-auto w-full py-2 rounded-xl text-center text-sm font-bold"
+                    <button
+                      disabled={currentPlan === "max"}
+                      onClick={() => currentPlan !== "max" && setGcash({ label: "Flex", credits: 150, price: 999, color: BRAND_ORANGE })}
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold transition-opacity"
                       style={{
                         background: currentPlan === "max" ? "#1F2937" : BRAND_ORANGE,
                         color: currentPlan === "max" ? "#4B5563" : "#000",
+                        cursor: currentPlan === "max" ? "not-allowed" : "pointer",
                       }}
                     >
                       Get Flex — ₱999
-                    </div>
+                    </button>
                   ) : (
-                    <div
-                      className="mt-auto w-full py-2 rounded-xl text-center text-sm font-bold text-white"
+                    <button
+                      onClick={() => setGcash({ label: "Max", credits: 500, price: 2499, color: BRAND_RED })}
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
                       style={{ background: BRAND_RED }}
                     >
                       Get Max — ₱2,499
-                    </div>
+                    </button>
                   )}
                 </div>
               );
@@ -282,17 +289,28 @@ export default function PricingPage() {
                   <span className="text-xs text-gray-600">Adds to your current balance</span>
                 </div>
               </div>
-              <div
-                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl text-center"
+              <button
+                onClick={() => setGcash({ label: "Top-Up", credits: 50, price: 499, color: BRAND_BLUE })}
+                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl transition-opacity hover:opacity-90"
                 style={{ background: BRAND_BLUE, color: "#fff" }}
               >
                 Get 50 Credits — ₱499
-              </div>
+              </button>
             </div>
           </div>
 
         </div>
       </main>
+      {gcash && (
+        <GCashModal
+          isOpen={!!gcash}
+          onClose={() => setGcash(null)}
+          label={gcash.label}
+          credits={gcash.credits}
+          price={gcash.price}
+          color={gcash.color}
+        />
+      )}
     </div>
   );
 }
