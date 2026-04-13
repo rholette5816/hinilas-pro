@@ -55,6 +55,7 @@ export default function FloatingChat() {
     });
   }, []);
 
+
   async function fetchMessages() {
     const { data } = await supabase
       .from("community_messages")
@@ -118,6 +119,8 @@ export default function FloatingChat() {
       sendMessage();
     }
   }
+
+  if (!currentUser) return null;
 
   return (
     <>
