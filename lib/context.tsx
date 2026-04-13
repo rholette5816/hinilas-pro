@@ -109,8 +109,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
             message: r.description,
           }));
           setReferralToasts(toasts);
-          // Update last_notified_at
-          await supabase.from("user_data").update({ last_notified_at: new Date().toISOString() }).eq("user_id", user.id);
+          // Update last_notified_at — mark all as seen
+          const { error: notifyError } = await supabase.from("user_data").update({ last_notified_at: new Date().toISOString() }).eq("user_id", user.id);
+          if (notifyError) console.error("last_notified_at update failed:", notifyError);
         }
       }
 
