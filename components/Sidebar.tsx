@@ -208,20 +208,22 @@ export default function Sidebar() {
               <span className="text-red-400 text-xs font-medium">Out of credits</span>
             </div>
           )}
-          <button
-            onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
-            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90 mb-1.5"
-            style={{ background: plan === "max" ? "#1A0000" : plan === "flex" ? "#1C1200" : "#1E293B", color: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF", border: `1px solid ${plan === "max" ? "#EF444430" : plan === "flex" ? "#F5A62330" : "#374151"}` }}
-          >
-            {credits === 0 ? "Top Up Now" : "Top Up / Upgrade"}
-          </button>
-          <button
-            onClick={openEarn}
-            className="block w-full text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
-            style={{ background: "#0D2010", color: "#22c55e", border: "1px solid #22c55e30" }}
-          >
-            Earn Credits
-          </button>
+          <div className="flex gap-1.5">
+            <button
+              onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
+              className="flex-1 text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
+              style={{ background: plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#2B7EC9", color: "#000" }}
+            >
+              {credits === 0 ? "Top Up Now" : "Top Up"}
+            </button>
+            <button
+              onClick={openEarn}
+              className="flex-1 text-center text-xs font-semibold py-1.5 rounded-md transition-opacity hover:opacity-90"
+              style={{ background: "#0D2010", color: "#22c55e", border: "1px solid #22c55e30" }}
+            >
+              Earn Credits
+            </button>
+          </div>
         </div>
 
         {user && (
