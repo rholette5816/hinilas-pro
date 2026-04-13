@@ -71,18 +71,51 @@ export default function SetupPage() {
     setSetup(form);
   }
 
+  const { setResearchOutput, setAnglesOutput, setCopyOutput, setSelectedAngle } = useApp();
+  const [clearing, setClearing] = useState(false);
+
+  async function handleClearData() {
+    if (!confirm("Clear all your setup, research, angles, and copy data? This cannot be undone.")) return;
+    setClearing(true);
+    const blankSetup: UserSetup = {
+      businessName: "", product: "", targetAudience: "", uniqueSellingOffer: "",
+      market: "Philippines", businessType: "physical_product", stage: "just_starting", language: "Taglish",
+    };
+    setForm(blankSetup);
+    setSetup(blankSetup);
+    setResearchOutput("");
+    setAnglesOutput("");
+    setCopyOutput("");
+    setSelectedAngle("");
+    setClearing(false);
+  }
+
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifSeen, setNotifSeen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const setupDone = !!(setup?.businessName);
 
   const NOTIFICATIONS = [
-    { id: 1, type: "credit", icon: "⚡", title: "5 credits added", desc: "Welcome bonus applied to your account.", time: "Just now", unread: !notifSeen },
-    { id: 2, type: "news", icon: "📢", title: "New: Campaign Setup Guide", desc: "Step-by-step Messenger Ads module is now live.", time: "2 days ago", unread: false },
-    { id: 3, type: "news", icon: "🎨", title: "Creative Studio upgraded", desc: "Now supports 3 aspect ratios and variations.", time: "5 days ago", unread: false },
+    { id: 1, type: "credit", icon: "⚡", title: "5 credits added", desc: "Welcome bonus applied to your account.", time: "Just now" },
+    { id: 2, type: "news", icon: "📢", title: "New: Campaign Setup Guide", desc: "Step-by-step Messenger Ads module is now live.", time: "2 days ago" },
+    { id: 3, type: "news", icon: "🎨", title: "Creative Studio upgraded", desc: "Now supports 3 aspect ratios and variations.", time: "5 days ago" },
   ];
 
-  const unreadCount = NOTIFICATIONS.filter(n => n.unread).length;
+  // Persist notification seen state in localStorage so it survives logout/login
+  useEffect(() => {
+    const seen = localStorage.getItem("hinilas_notif_seen");
+    if (seen === "true") setNotifSeen(true);
+  }, []);
+
+  function handleOpenNotif() {
+    setNotifOpen(o => !o);
+    if (!notifSeen) {
+      setNotifSeen(true);
+      localStorage.setItem("hinilas_notif_seen", "true");
+    }
+  }
+
+  const unreadCount = notifSeen ? 0 : 1;
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -106,7 +139,7 @@ export default function SetupPage() {
           {/* Notification bell */}
           <div className="relative" ref={notifRef}>
             <button
-              onClick={() => { setNotifOpen(o => !o); setNotifSeen(true); }}
+              onClick={handleOpenNotif}
               className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all hover:opacity-80"
               style={{ background: "#0B1120", border: "1px solid #1E2D45" }}
             >
@@ -123,19 +156,22 @@ export default function SetupPage() {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9" }}>{NOTIFICATIONS.length} total</span>
                 </div>
                 <div className="divide-y" style={{ borderColor: "#1E2D45" }}>
-                  {NOTIFICATIONS.map(n => (
-                    <div key={n.id} className="px-4 py-3 flex items-start gap-3" style={{ background: n.unread && !notifSeen ? "rgba(43,126,201,0.05)" : "transparent" }}>
-                      <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: "#1E2D45" }}>{n.icon}</div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-white text-xs font-semibold">{n.title}</p>
-                          {n.unread && !notifSeen && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#2B7EC9" }} />}
+                  {NOTIFICATIONS.map((n, i) => {
+                    const isUnread = i === 0 && !notifSeen;
+                    return (
+                      <div key={n.id} className="px-4 py-3 flex items-start gap-3" style={{ background: isUnread ? "rgba(43,126,201,0.05)" : "transparent" }}>
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: "#1E2D45" }}>{n.icon}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-white text-xs font-semibold">{n.title}</p>
+                            {isUnread && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#2B7EC9" }} />}
+                          </div>
+                          <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>{n.desc}</p>
+                          <p className="text-[10px] mt-1" style={{ color: "#334155" }}>{n.time}</p>
                         </div>
-                        <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>{n.desc}</p>
-                        <p className="text-[10px] mt-1" style={{ color: "#334155" }}>{n.time}</p>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -371,6 +407,15 @@ export default function SetupPage() {
             <span>Your data is encrypted and used only for strategy generation.</span>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleClearData}
+              disabled={clearing}
+              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+              style={{ background: "#0F172A", border: "1px solid #EF444440", color: "#EF4444" }}
+            >
+              Clear Data
+            </button>
             <button
               type="button"
               onClick={handleSaveDraft}

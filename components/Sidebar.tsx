@@ -139,8 +139,8 @@ export default function Sidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full overflow-hidden">
 
-      {/* Logo */}
-      <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1E2D45" }}>
+      {/* Logo — desktop only */}
+      <div className="hidden md:block px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1E2D45" }}>
         <div className="flex items-center gap-3">
           <HinilasIcon size="md" accentColor={planColor} />
           <div>
@@ -191,20 +191,20 @@ export default function Sidebar() {
         {/* Divider */}
         <div className="my-2" style={{ borderTop: "1px solid #1E2D45" }} />
 
-        {/* Consultation button */}
-        <button
-          onClick={() => { setExpertOpen(true); setMobileOpen(false); }}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
+        {/* Consultation — Coming Soon */}
+        <div
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed opacity-50"
           style={{ borderLeft: "2px solid transparent" }}
         >
-          <span style={{ color: "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
+          <span style={{ color: "#64748B" }} className="shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </span>
           <div className="min-w-0 flex-1 text-left">
             <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Consultation</p>
             <p className="text-xs" style={{ color: "#64748B" }}>100 credits / session</p>
           </div>
-        </button>
+          <span className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "#1E2D45", color: "#475569" }}>Soon</span>
+        </div>
 
         {/* Feedback button */}
         <button
@@ -220,22 +220,6 @@ export default function Sidebar() {
             <p className="text-xs" style={{ color: "#64748B" }}>Share thoughts</p>
           </div>
           <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+5 cr</span>
-        </button>
-
-        {/* Earn Credits button */}
-        <button
-          onClick={openEarn}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
-          style={{ borderLeft: "2px solid transparent" }}
-        >
-          <span style={{ color: "#22c55e" }} className="shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </span>
-          <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Earn Credits</p>
-            <p className="text-xs" style={{ color: "#64748B" }}>Refer &amp; earn rewards</p>
-          </div>
-          <span className="shrink-0 w-2 h-2 rounded-full animate-pulse" style={{ background: "#22c55e" }} />
         </button>
       </nav>
 
@@ -269,7 +253,7 @@ export default function Sidebar() {
           <button
             onClick={openEarn}
             className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg transition-all hover:opacity-90"
-            style={{ background: "#0D2010", color: "#22c55e", border: "1px solid #22c55e30" }}
+            style={{ background: "#0D2010", color: "#22c55e", border: "1px solid #22c55e50", boxShadow: "0 0 8px rgba(34,197,94,0.25)" }}
           >
             Earn Credits
           </button>
@@ -328,14 +312,10 @@ export default function Sidebar() {
         className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 transform transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
         style={{ background: "#0F172A", borderRight: "1px solid #1E2D45" }}
       >
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #1E2D45" }}>
-          <div className="flex items-center gap-2">
-            <HinilasIcon size="sm" accentColor="#F5A623" />
-            <span className="text-white font-bold text-sm">Hinilas<span style={{ color: "#F5A623" }}>Pro</span></span>
-          </div>
-          <button onClick={() => setMobileOpen(false)} className="text-gray-500 hover:text-white">✕</button>
+        <div className="flex items-center justify-end px-4 py-3" style={{ borderBottom: "1px solid #1E2D45" }}>
+          <button onClick={() => setMobileOpen(false)} className="text-gray-500 hover:text-white p-1">✕</button>
         </div>
-        <div className="h-[calc(100%-60px)]">
+        <div className="h-[calc(100%-48px)]">
           <SidebarContent />
         </div>
       </aside>

@@ -50,11 +50,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} text-white antialiased`} style={{ background: "#0B1120" }}>
-        <AppProvider>
-          {children}
-          <FloatingChat />
-          <ReferralToastWrapper />
-        </AppProvider>
+        {/* Subtle background orbs — app-wide */}
+        <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+          <style>{`
+            @keyframes appOrb1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(50px,40px) scale(1.08); } }
+            @keyframes appOrb2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-40px,-30px) scale(1.06); } }
+            @keyframes appOrb3 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-40px) scale(1.05); } }
+          `}</style>
+          <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(140px)", opacity: 0.1, width: 600, height: 600, background: "#2B7EC9", top: -150, left: -150, animation: "appOrb1 18s ease-in-out infinite alternate" }} />
+          <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(140px)", opacity: 0.08, width: 500, height: 500, background: "#F5A623", bottom: -100, right: -100, animation: "appOrb2 14s ease-in-out infinite alternate" }} />
+          <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(160px)", opacity: 0.06, width: 400, height: 400, background: "#8B5CF6", top: "40%", left: "50%", animation: "appOrb3 20s ease-in-out infinite alternate" }} />
+          <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, #1E3A5F 1px, transparent 1px)", backgroundSize: "40px 40px", opacity: 0.15 }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <AppProvider>
+            {children}
+            <FloatingChat />
+            <ReferralToastWrapper />
+          </AppProvider>
+        </div>
       </body>
     </html>
   );

@@ -59,8 +59,15 @@ export default function PricingPage() {
         setTopUpOpen(false);
       }
     };
+    const handlePopState = () => {
+      setTopUpOpen(false);
+    };
     document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, []);
 
   function openTopUp(packageId: string) {
@@ -197,9 +204,14 @@ export default function PricingPage() {
                     </button>
                   ) : p.key === "flex" ? (
                     <button
-                      onClick={() => openTopUp("pro_150")}
-                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-black transition-opacity hover:opacity-90"
-                      style={{ background: BRAND_ORANGE }}
+                      onClick={() => currentPlan !== "max" && openTopUp("pro_150")}
+                      disabled={currentPlan === "max"}
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold transition-opacity"
+                      style={{
+                        background: currentPlan === "max" ? "#1F2937" : BRAND_ORANGE,
+                        color: currentPlan === "max" ? "#4B5563" : "#000",
+                        cursor: currentPlan === "max" ? "not-allowed" : "pointer",
+                      }}
                     >
                       Get Flex — ₱999
                     </button>
