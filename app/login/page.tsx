@@ -223,7 +223,7 @@ export default function LoginPage() {
                 Sign in to access your AI ads workspace.
               </p>
               <p className="text-xs font-semibold mb-7" style={{ color: "#F5A623" }}>
-                5 free credits on signup — no credit card required.
+                No credit card required.
               </p>
 
               <button
