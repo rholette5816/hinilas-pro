@@ -8,28 +8,29 @@ import ReferralToastWrapper from "@/components/ReferralToastWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Hinilas Pro — AI Driven. Results Focused.",
-  description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — powered by the Basta Mag Ads Hilas framework.",
+  title: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
+  description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — built for serious sellers and ad operators.",
   openGraph: {
-    title: "Hinilas Pro — AI Driven. Results Focused.",
-    description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — powered by the Basta Mag Ads Hilas framework.",
+    title: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
+    description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — built for serious sellers and ad operators.",
     url: "https://hinilas-pro.vercel.app",
     siteName: "Hinilas Pro",
     images: [
       {
-        url: "https://hinilas-pro.vercel.app/og-image.png",
+        url: "https://hinilas-pro.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Hinilas Pro — AI Driven. Results Focused.",
+        alt: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
+        type: "image/jpeg",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hinilas Pro — AI Driven. Results Focused.",
-    description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup.",
-    images: ["https://hinilas-pro.vercel.app/og-image.png"],
+    title: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
+    description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — built for serious sellers and ad operators.",
+    images: ["https://hinilas-pro.vercel.app/og-image.jpg"],
   },
 };
 
