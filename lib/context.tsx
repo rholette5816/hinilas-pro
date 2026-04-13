@@ -94,12 +94,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
         // Check for unread referral credits
         const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
+        // Add 1 second buffer to avoid showing same transactions again
+        const lastNotifiedPlusBuffer = new Date(lastNotified.getTime() + 1000);
         const { data: newReferrals } = await supabase
           .from("credit_transactions")
           .select("id, amount, description, created_at")
           .eq("user_id", user.id)
           .eq("type", "referral")
-          .gt("created_at", lastNotified.toISOString())
+          .gt("created_at", lastNotifiedPlusBuffer.toISOString())
           .order("created_at", { ascending: false });
 
         if (newReferrals && newReferrals.length > 0) {
