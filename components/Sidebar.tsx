@@ -378,7 +378,11 @@ export default function Sidebar() {
               <div className="text-xs text-gray-500 py-2">Loading your link...</div>
             )}
 
-            <p className="text-xs text-gray-600 mt-3">Credits are added automatically after your referral's first purchase.</p>
+            <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-lg" style={{ background: "#0A1A10", border: "1px solid #22c55e20" }}>
+              <span className="text-emerald-400 text-xs">🎁</span>
+              <p className="text-emerald-400 text-xs">Your friend gets <strong>5 free credits</strong> just for signing up.</p>
+            </div>
+            <p className="text-xs text-gray-600 mt-2">Your rewards are added automatically after their first purchase.</p>
           </div>
         </div>
       )}
