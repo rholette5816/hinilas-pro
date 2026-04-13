@@ -38,6 +38,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  supabaseResponse.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  supabaseResponse.headers.set("Pragma", "no-cache");
+
   return supabaseResponse;
 }
 
