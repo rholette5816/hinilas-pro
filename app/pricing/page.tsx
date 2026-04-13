@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import TopUpModal from "@/components/TopUpModal";
@@ -52,6 +52,16 @@ export default function PricingPage() {
   const router = useRouter();
   const [topUpOpen, setTopUpOpen] = useState(false);
   const [topUpPackage, setTopUpPackage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        setTopUpOpen(false);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   function openTopUp(packageId: string) {
     setTopUpPackage(packageId);
