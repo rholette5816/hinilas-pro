@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Hinilas Pro — The Meta Ads AI Tool for Filipino Sellers",
     description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup — built for serious sellers and ad operators.",
-    url: "https://hinilas-pro.vercel.app",
+    url: "https://hinilas.pro",
     siteName: "Hinilas Pro",
     images: [
       {

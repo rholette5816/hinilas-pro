@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
   const requestId = insertedRequest?.id;
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas-pro.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas.pro";
   const approveUrl = `${baseUrl}/api/topup/approve-link?id=${requestId}&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
 
   try {
