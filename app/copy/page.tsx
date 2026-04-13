@@ -295,6 +295,7 @@ export default function CopyPage() {
               style={{ background: "#2B7EC9" }}
             >
               {loading ? "Writing..." : output ? "Rewrite Captions" : "Generate Captions"}
+              {!loading && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>1 cr</span>}
             </button>
             {output && !loading && (
               <button

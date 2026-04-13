@@ -101,6 +101,7 @@ export default function ResearchPage() {
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40" style={{ background: "#2B7EC9" }}
             >
               {loading ? "Researching..." : researchOutput ? "Re-run Research" : "Run Market Research"}
+              {!loading && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>1 cr</span>}
             </button>
             {researchOutput && !loading && (
               <button

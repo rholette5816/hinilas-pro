@@ -922,7 +922,14 @@ show(0);
               className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6"
               style={{ background: mode === "advanced" ? "#F5A623" : "#2B7EC9", color: mode === "advanced" ? "#000" : "#fff" }}
             >
-              {loading ? "Analyzing..." : mode === "advanced" ? (<span className="flex items-center justify-center gap-2">Run Advanced Analysis <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)", letterSpacing: "0.04em" }}>1.5 credits</span></span>) : "Analyze My Results"}
+              {loading ? "Analyzing..." : (
+                <span className="flex items-center justify-center gap-2">
+                  {mode === "advanced" ? "Run Advanced Analysis" : "Analyze My Results"}
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>
+                    {mode === "advanced" ? "3 cr" : "1 cr"}
+                  </span>
+                </span>
+              )}
             </button>
           )}
 

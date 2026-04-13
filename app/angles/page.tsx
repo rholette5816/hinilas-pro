@@ -162,6 +162,7 @@ export default function AnglesPage() {
               style={{ background: "#F5A623", color: "#000" }}
             >
               {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles" : "Generate Angles"}
+              {!loading && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>1 cr</span>}
             </button>
 
             {angles.length > 0 && !loading && (
@@ -193,6 +194,7 @@ export default function AnglesPage() {
                 style={{ background: "#F5A623", color: "#000" }}
               >
                 Regenerate with Adjustment
+                <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>1 cr</span>
               </button>
             </div>
           )}

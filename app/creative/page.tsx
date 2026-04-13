@@ -263,6 +263,7 @@ export default function CreativePage() {
                 style={{ background: "#F5A623" }}
               >
                 {loadingMain ? "Generating..." : mainImage ? "Regenerate" : "Generate Image"}
+                {!loadingMain && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)" }}>3 cr</span>}
               </button>
             </div>
 
@@ -315,6 +316,7 @@ export default function CreativePage() {
                         style={{ background: "#2B7EC9" }}
                       >
                         {loadingIter[i] ? "..." : iterations[i] ? "Regenerate" : "Generate"}
+                        {!loadingIter[i] && <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>3 cr</span>}
                       </button>
                     </div>
 
