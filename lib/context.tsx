@@ -181,22 +181,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function resolveImageUrl(img: string | null, filename: string): Promise<string | null> {
+    if (!img) return null;
+    if (!img.startsWith("data:")) return img; // already a URL
+    const uploaded = await uploadToStorage(img, filename);
+    // If storage upload fails, store the base64 directly so it always persists
+    return uploaded ?? img;
+  }
+
   async function saveAdImages(main: string | null, v1: string | null, v2: string | null) {
     const [mainUrl, v1Url, v2Url] = await Promise.all([
-      main && main.startsWith("data:") ? uploadToStorage(main, "main") : Promise.resolve(main),
-      v1 && v1.startsWith("data:") ? uploadToStorage(v1, "variation_1") : Promise.resolve(v1),
-      v2 && v2.startsWith("data:") ? uploadToStorage(v2, "variation_2") : Promise.resolve(v2),
+      resolveImageUrl(main, "main"),
+      resolveImageUrl(v1, "variation_1"),
+      resolveImageUrl(v2, "variation_2"),
     ]);
-    // If upload failed (returned null) but a URL was passed in, keep the existing saved URL
-    setSavedImages(prev => ({
-      main: mainUrl ?? (main && !main.startsWith("data:") ? main : prev.main),
-      v1: v1Url ?? (v1 && !v1.startsWith("data:") ? v1 : prev.v1),
-      v2: v2Url ?? (v2 && !v2.startsWith("data:") ? v2 : prev.v2),
-    }));
-    const finalMain = mainUrl ?? (main && !main.startsWith("data:") ? main : null);
-    const finalV1 = v1Url ?? (v1 && !v1.startsWith("data:") ? v1 : null);
-    const finalV2 = v2Url ?? (v2 && !v2.startsWith("data:") ? v2 : null);
-    await persist({ main_image_url: finalMain, variation_1_url: finalV1, variation_2_url: finalV2 });
+    setSavedImages({ main: mainUrl, v1: v1Url, v2: v2Url });
+    await persist({ main_image_url: mainUrl, variation_1_url: v1Url, variation_2_url: v2Url });
   }
 
   function dismissToast(id: number) {
