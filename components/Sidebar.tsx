@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useApp } from "@/lib/context";
 import { HinilasIcon } from "@/components/HinilasLogo";
 import FloatingExpert from "@/components/FloatingExpert";
@@ -136,11 +136,28 @@ export default function Sidebar() {
     "/copy": !!(copyOutput),
   };
 
+  // Lock map — each route requires the previous step to be done
+  const lockMap: Record<string, { locked: boolean; message: string }> = {
+    "/research": { locked: !setup?.businessName, message: "Complete your Setup first." },
+    "/angles":   { locked: !researchOutput,       message: "Run Research first." },
+    "/creative": { locked: !anglesOutput,          message: "Generate Angles first." },
+    "/copy":     { locked: !savedImages?.main,     message: "Generate a Creative first." },
+    "/campaign-setup": { locked: false, message: "" },
+    "/analyze":  { locked: false, message: "" },
+    "/learn":    { locked: false, message: "" },
+  };
+
+  const [lockToast, setLockToast] = useState<string | null>(null);
+  const showLockToast = useCallback((msg: string) => {
+    setLockToast(msg);
+    setTimeout(() => setLockToast(null), 2500);
+  }, []);
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full overflow-hidden">
 
-      {/* Logo — desktop only */}
-      <div className="hidden md:block px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1E2D45" }}>
+      {/* Logo */}
+      <div className="px-5 py-4 shrink-0 pr-10" style={{ borderBottom: "1px solid #1E2D45" }}>
         <div className="flex items-center gap-3">
           <HinilasIcon size="md" accentColor={planColor} />
           <div>
@@ -161,14 +178,25 @@ export default function Sidebar() {
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           const done = completionMap[item.href] ?? false;
+          const lock = lockMap[item.href];
+          const isLocked = lock?.locked ?? false;
           return (
             <Link
               key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
+              href={isLocked ? "#" : item.href}
+              onClick={(e) => {
+                if (isLocked) {
+                  e.preventDefault();
+                  showLockToast(lock.message);
+                  return;
+                }
+                setMobileOpen(false);
+              }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
               style={active
                 ? { background: "rgba(43,126,201,0.15)", borderLeft: "2px solid #2B7EC9", paddingLeft: "10px" }
+                : isLocked
+                ? { borderLeft: "2px solid transparent", opacity: 0.45, cursor: "not-allowed" }
                 : { borderLeft: "2px solid transparent" }
               }
             >
@@ -179,11 +207,15 @@ export default function Sidebar() {
                 <p className="text-sm font-medium" style={{ color: active ? "#fff" : "#CBD5E1" }}>{item.label}</p>
                 <p className="text-xs truncate" style={{ color: "#64748B" }}>{item.desc}</p>
               </div>
-              {done && !active && (
+              {isLocked ? (
+                <div className="shrink-0">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+              ) : done && !active ? (
                 <div className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: "#052e16" }}>
                   <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-              )}
+              ) : null}
             </Link>
           );
         })}
@@ -310,23 +342,33 @@ export default function Sidebar() {
       {/* Mobile drawer */}
       <aside
         className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 transform transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{ background: "#0F172A", borderRight: "1px solid #1E2D45" }}
+        style={{ background: "rgba(15,23,42,0.92)", backdropFilter: "blur(12px)", borderRight: "1px solid #1E2D45" }}
       >
-        <div className="flex items-center justify-end px-4 py-3" style={{ borderBottom: "1px solid #1E2D45" }}>
-          <button onClick={() => setMobileOpen(false)} className="text-gray-500 hover:text-white p-1">✕</button>
-        </div>
-        <div className="h-[calc(100%-48px)]">
+        {/* Close button — absolute positioned so nav fills full height */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute top-3 right-4 z-10 text-gray-500 hover:text-white p-1"
+        >✕</button>
+        <div className="h-full">
           <SidebarContent />
         </div>
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-60 flex-col h-full shrink-0" style={{ background: "#0F172A", borderRight: "1px solid #1E2D45" }}>
+      <aside className="hidden md:flex w-60 flex-col h-full shrink-0" style={{ background: "rgba(15,23,42,0.85)", backdropFilter: "blur(12px)", borderRight: "1px solid #1E2D45" }}>
         <SidebarContent />
       </aside>
 
       <FloatingExpert isOpen={expertOpen} onClose={() => setExpertOpen(false)} />
       <FloatingFeedback isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+
+      {/* Lock toast */}
+      {lockToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg pointer-events-none"
+          style={{ background: "#1E293B", border: "1px solid #334155", whiteSpace: "nowrap" }}>
+          🔒 {lockToast}
+        </div>
+      )}
 
       {/* Earn Credits modal */}
       {earnOpen && (
