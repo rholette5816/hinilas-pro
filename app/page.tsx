@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { useApp, UserSetup } from "@/lib/context";
@@ -71,6 +71,29 @@ export default function SetupPage() {
     setSetup(form);
   }
 
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifSeen, setNotifSeen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const setupDone = !!(setup?.businessName);
+
+  const NOTIFICATIONS = [
+    { id: 1, type: "credit", icon: "⚡", title: "5 credits added", desc: "Welcome bonus applied to your account.", time: "Just now", unread: !notifSeen },
+    { id: 2, type: "news", icon: "📢", title: "New: Campaign Setup Guide", desc: "Step-by-step Messenger Ads module is now live.", time: "2 days ago", unread: false },
+    { id: 3, type: "news", icon: "🎨", title: "Creative Studio upgraded", desc: "Now supports 3 aspect ratios and variations.", time: "5 days ago", unread: false },
+  ];
+
+  const unreadCount = NOTIFICATIONS.filter(n => n.unread).length;
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#0B1120" }}>
       <Sidebar />
@@ -78,34 +101,67 @@ export default function SetupPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
-        <div className="hidden md:flex items-center justify-between px-6 py-3 shrink-0" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs" style={{ color: "#475569" }}>
-            <span>Workspace</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-            <span style={{ color: "#94A3B8" }}>Onboarding</span>
-          </div>
+        <div className="hidden md:flex items-center justify-end gap-4 px-6 py-3 shrink-0" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
 
-          {/* Search */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs" style={{ background: "#0B1120", border: "1px solid #1E2D45", color: "#334155", width: 200 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <span>Search insights...</span>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <button className="transition-colors hover:text-white" style={{ color: "#334155" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            </button>
+          {/* Notification bell */}
+          <div className="relative" ref={notifRef}>
             <button
-              onClick={() => router.push("/research")}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-              style={{ background: BRAND_BLUE, color: "#fff" }}
+              onClick={() => { setNotifOpen(o => !o); setNotifSeen(true); }}
+              className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all hover:opacity-80"
+              style={{ background: "#0B1120", border: "1px solid #1E2D45" }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Launch AI
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              {unreadCount > 0 && !notifSeen && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ background: "#EF4444" }}>{unreadCount}</span>
+              )}
             </button>
+
+            {notifOpen && (
+              <div className="absolute right-0 top-11 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+                <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: "1px solid #1E2D45" }}>
+                  <span className="text-white text-sm font-bold">Notifications</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9" }}>{NOTIFICATIONS.length} total</span>
+                </div>
+                <div className="divide-y" style={{ borderColor: "#1E2D45" }}>
+                  {NOTIFICATIONS.map(n => (
+                    <div key={n.id} className="px-4 py-3 flex items-start gap-3" style={{ background: n.unread && !notifSeen ? "rgba(43,126,201,0.05)" : "transparent" }}>
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: "#1E2D45" }}>{n.icon}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-white text-xs font-semibold">{n.title}</p>
+                          {n.unread && !notifSeen && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#2B7EC9" }} />}
+                        </div>
+                        <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>{n.desc}</p>
+                        <p className="text-[10px] mt-1" style={{ color: "#334155" }}>{n.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Launch AI button */}
+          <button
+            onClick={() => router.push("/research")}
+            className="relative flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+            style={{
+              background: BRAND_BLUE,
+              color: "#fff",
+              boxShadow: !setupDone ? "0 0 16px rgba(43,126,201,0.6), 0 0 32px rgba(43,126,201,0.3)" : "none",
+              animation: !setupDone ? "launchGlow 2s ease-in-out infinite alternate" : "none",
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Launch AI
+          </button>
+
+          <style>{`
+            @keyframes launchGlow {
+              0% { box-shadow: 0 0 12px rgba(43,126,201,0.5), 0 0 24px rgba(43,126,201,0.2); }
+              100% { box-shadow: 0 0 24px rgba(43,126,201,0.8), 0 0 48px rgba(43,126,201,0.4); }
+            }
+          `}</style>
         </div>
 
         {/* Main content */}
@@ -308,8 +364,8 @@ export default function SetupPage() {
           </div>
         </main>
 
-        {/* Sticky bottom bar */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-60 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(15,23,42,0.95)", borderTop: "1px solid #1E2D45", backdropFilter: "blur(12px)" }}>
+        {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
+        <div className="fixed bottom-0 left-0 right-0 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(15,23,42,0.95)", borderTop: "1px solid #1E2D45", backdropFilter: "blur(12px)", borderRadius: "0 0 0 0" }}>
           <div className="flex items-center gap-2 text-xs" style={{ color: "#334155" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Your data is encrypted and used only for strategy generation.</span>

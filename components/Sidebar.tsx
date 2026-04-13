@@ -70,7 +70,7 @@ function LiveStats() {
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { credits, creditsTotal, plan } = useApp();
+  const { credits, creditsTotal, plan, setup, researchOutput, anglesOutput, copyOutput, savedImages } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -127,6 +127,15 @@ export default function Sidebar() {
   const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#2B7EC9";
   const planLabel = plan === "max" ? "Max Plan" : plan === "flex" ? "Flex Plan" : "Lite Plan";
 
+  // Completion signals per nav item
+  const completionMap: Record<string, boolean> = {
+    "/": !!(setup?.businessName),
+    "/research": !!(researchOutput),
+    "/angles": !!(anglesOutput),
+    "/creative": !!(savedImages?.main),
+    "/copy": !!(copyOutput),
+  };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full overflow-hidden">
 
@@ -151,6 +160,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
+          const done = completionMap[item.href] ?? false;
           return (
             <Link
               key={item.href}
@@ -165,10 +175,15 @@ export default function Sidebar() {
               <span style={{ color: active ? "#2B7EC9" : "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
                 {item.icon}
               </span>
-              <div className="min-w-0">
-                <p className="text-sm font-medium transition-colors" style={{ color: active ? "#fff" : "#CBD5E1" }}>{item.label}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium" style={{ color: active ? "#fff" : "#CBD5E1" }}>{item.label}</p>
                 <p className="text-xs truncate" style={{ color: "#64748B" }}>{item.desc}</p>
               </div>
+              {done && !active && (
+                <div className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: "#052e16" }}>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              )}
             </Link>
           );
         })}
@@ -176,21 +191,22 @@ export default function Sidebar() {
         {/* Divider */}
         <div className="my-2" style={{ borderTop: "1px solid #1E2D45" }} />
 
-        {/* Expert button */}
+        {/* Consultation button */}
         <button
           onClick={() => { setExpertOpen(true); setMobileOpen(false); }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
           style={{ borderLeft: "2px solid transparent" }}
         >
-          <span style={{ color: "#475569" }} className="shrink-0 group-hover:text-white transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 9.5-9.5z"/><path d="m15 5 3 3"/></svg>
+          <span style={{ color: "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </span>
-          <div className="min-w-0 text-left">
-            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Book Expert</p>
+          <div className="min-w-0 flex-1 text-left">
+            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Consultation</p>
             <p className="text-xs" style={{ color: "#64748B" }}>100 credits / session</p>
           </div>
         </button>
 
+        {/* Feedback button */}
         <button
           onClick={() => setFeedbackOpen(true)}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
@@ -199,10 +215,27 @@ export default function Sidebar() {
           <span style={{ color: "#64748B" }} className="shrink-0 group-hover:text-white transition-colors">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </span>
-          <div className="min-w-0 text-left">
+          <div className="min-w-0 flex-1 text-left">
             <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Feedback</p>
-            <p className="text-xs" style={{ color: "#64748B" }}>Earn +5 credits</p>
+            <p className="text-xs" style={{ color: "#64748B" }}>Share thoughts</p>
           </div>
+          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+5 cr</span>
+        </button>
+
+        {/* Earn Credits button */}
+        <button
+          onClick={openEarn}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
+          style={{ borderLeft: "2px solid transparent" }}
+        >
+          <span style={{ color: "#22c55e" }} className="shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </span>
+          <div className="min-w-0 flex-1 text-left">
+            <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Earn Credits</p>
+            <p className="text-xs" style={{ color: "#64748B" }}>Refer &amp; earn rewards</p>
+          </div>
+          <span className="shrink-0 w-2 h-2 rounded-full animate-pulse" style={{ background: "#22c55e" }} />
         </button>
       </nav>
 
@@ -244,25 +277,27 @@ export default function Sidebar() {
 
         {/* User profile */}
         {user && (
-          <div className="flex items-center gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
-            {user.avatar ? (
-              <Image src={user.avatar} alt={user.name} width={32} height={32} className="rounded-full shrink-0" />
-            ) : (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
-                {user.name.charAt(0).toUpperCase()}
+          <div className="rounded-xl px-3 py-3" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+            <div className="flex items-center gap-2.5 mb-2.5">
+              {user.avatar ? (
+                <Image src={user.avatar} alt={user.name} width={34} height={34} className="rounded-full shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-white text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
+                <p className="text-xs font-medium" style={{ color: planColor }}>{planLabel}</p>
               </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-white text-xs font-semibold truncate">{user.name.split(" ")[0]}</p>
-              <p className="text-[10px] font-medium" style={{ color: planColor }}>{planLabel}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="shrink-0 transition-colors hover:text-white"
-              style={{ color: "#334155" }}
-              title="Log out"
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+              style={{ background: "#1E2D45", color: "#94A3B8" }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Log Out
             </button>
           </div>
         )}
