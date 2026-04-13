@@ -222,10 +222,10 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={openModal} className="text-sm font-medium px-4 py-2 rounded-lg transition-opacity hover:opacity-80" style={{ color: "#94A3B8" }}>
+              <button onClick={openModal} className="text-sm font-medium px-3 py-1.5 rounded-lg transition-opacity hover:opacity-80 whitespace-nowrap" style={{ color: "#94A3B8" }}>
                 Sign In
               </button>
-              <button onClick={openModal} className="cta-btn text-sm font-bold px-5 py-2 rounded-xl transition-all hover:brightness-110" style={{ background: "#2B7EC9", color: "#fff", animationName: "glowPulseBlue" }}>
+              <button onClick={openModal} className="cta-btn text-xs font-bold px-3 py-1.5 rounded-xl transition-all hover:brightness-110 whitespace-nowrap" style={{ background: "#2B7EC9", color: "#fff", animationName: "glowPulseBlue" }}>
                 Get Started Free
               </button>
             </div>
