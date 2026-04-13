@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: "Hinilas Pro",
     images: [
       {
-        url: "https://hinilas-pro.vercel.app/og-image.jpg",
+        url: "https://hinilas-pro.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Hinilas Pro — AI Driven. Results Focused.",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hinilas Pro — AI Driven. Results Focused.",
     description: "Your AI-powered Meta Ads assistant. Market research, ad angles, sales copy, creatives, and campaign setup.",
-    images: ["https://hinilas-pro.vercel.app/og-image.jpg"],
+    images: ["https://hinilas-pro.vercel.app/og-image.png"],
   },
 };
 
