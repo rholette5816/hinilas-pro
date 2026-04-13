@@ -37,6 +37,7 @@ export default function FloatingChat() {
   const [unread, setUnread] = useState(0);
   const [glowing, setGlowing] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; avatar: string | null } | null>(null);
+  const [authLoaded, setAuthLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const lastCountRef = useRef<number>(
     typeof window !== "undefined" ? parseInt(localStorage.getItem("hilason_last_count") || "0") : 0
@@ -52,6 +53,7 @@ export default function FloatingChat() {
           avatar: user.user_metadata?.avatar_url || null,
         });
       }
+      setAuthLoaded(true);
     });
   }, []);
 
@@ -120,7 +122,7 @@ export default function FloatingChat() {
     }
   }
 
-  if (!currentUser) return null;
+  if (!authLoaded || !currentUser) return null;
 
   return (
     <>
