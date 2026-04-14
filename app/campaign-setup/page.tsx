@@ -18,11 +18,11 @@ const LEVEL_COLORS: Record<Level, string> = {
   "Ads": "#8B5CF6",
 };
 
-// Video URLs per level — update these when ready
+// Video URLs per level
 const LEVEL_VIDEOS: Record<Level, string> = {
-  "Campaign": "",
-  "Ad Set": "",
-  "Ads": "",
+  "Campaign": "https://www.loom.com/embed/e594f91be4314832b75e295791f70ea0",
+  "Ad Set": "https://www.loom.com/embed/7f598578f67540f0a33c2ff45015e116",
+  "Ads": "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2",
 };
 
 const STEPS: Step[] = [
