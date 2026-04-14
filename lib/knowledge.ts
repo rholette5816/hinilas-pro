@@ -631,11 +631,13 @@ ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
 HEADLINE TREATMENT (LEFT ZONE):
 - Extract the core hook from the angle and render 3 lines in the left open zone
-- Line 1 (Hook — Context): white, medium weight, 4–5 words
-- Line 2 (Hook — Curiosity/Clarity): orange or gold, bold, slightly larger
-- Line 3 (Offer): white, smaller, 1 clean line — the specific promise or deal
-- Below Line 3: a pill-shaped CTA button, brand color fill, white bold text (e.g. "I-message na!")
+- All colors, font style, and weight must follow the BRAND REFERENCE above exactly
+- Line 1 (Hook — Context): use the primary brand font style, medium weight, 4–5 words, brand-appropriate light or white tone
+- Line 2 (Hook — Curiosity/Clarity): use the primary brand color from BRAND REFERENCE, bold, slightly larger than Line 1
+- Line 3 (Offer): use the secondary brand color or lightest brand tone from BRAND REFERENCE, smaller, 1 clean line — the specific promise or deal
+- Below Line 3: a pill-shaped CTA button, filled with the primary brand color from BRAND REFERENCE, white bold text
 - Text left-aligned, stacked vertically in the left third
+- Font style must match the brand identity from BRAND REFERENCE
 - ALL TEXT spelled correctly — zero typos, zero distortion
 
 NEGATIVE PROMPT (never render these):
@@ -646,7 +648,7 @@ DESIGN RULES:
 - No highlight bars, no geometric swooshes
 - No borders, no frames
 - One subject, one message, clean composition
-${logoDesc ? `- Colors and graphic style must follow the brand reference above` : `- Default palette: near-black background, white + orange/gold accent`}
+- All colors, typography, and graphic style must follow the BRAND REFERENCE above exactly
 - Final output must look like a real Facebook/Instagram ad — ready to upload
 `;
   },
