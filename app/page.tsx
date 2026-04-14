@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -396,6 +397,8 @@ export default function SetupPage() {
         </div>
 
       </div>
+
+      <TutorialOverlay show={!setup?.businessName} />
     </div>
   );
 }

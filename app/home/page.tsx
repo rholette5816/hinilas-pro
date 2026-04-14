@@ -28,6 +28,49 @@ const FEATURES = [
   { icon: "💬", title: "AI Chat Assistant", desc: "Ask anything about your ads, strategy, or product positioning." },
 ];
 
+const FAQS = [
+  {
+    q: "How does Hinilas Pro work?",
+    a: "You fill in your business profile, and the AI takes it from there. It runs market research, builds marketing angles, generates ad creatives, and writes sales copy — a complete campaign workflow in one session. No jumping between tools.",
+  },
+  {
+    q: "Who is Hinilas Pro for?",
+    a: "Beginners and operators who want a structured, guided process for running Meta Ads — without the guesswork. If you want to learn faster, execute smarter, and stop wasting ad spend, this tool is built for you.",
+  },
+  {
+    q: "Who is Hinilas Pro NOT for?",
+    a: "People looking for a magic button with zero effort. Hinilas Pro is a learning tool that amplifies your thinking — you still need to show up, follow the process, and apply what the AI gives you.",
+  },
+];
+
+function FAQSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className="space-y-3">
+      {FAQS.map((faq, i) => (
+        <div
+          key={i}
+          className="rounded-2xl border overflow-hidden transition-all"
+          style={{ background: "#0A0F1A", borderColor: open === i ? "#2B7EC9" : "#1E2D45" }}
+        >
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="w-full flex items-center justify-between px-6 py-4 text-left"
+          >
+            <span className="text-white font-semibold text-sm pr-4">{faq.q}</span>
+            <span className="shrink-0 text-gray-500 transition-transform" style={{ transform: open === i ? "rotate(45deg)" : "rotate(0deg)", fontSize: 20, lineHeight: 1 }}>+</span>
+          </button>
+          {open === i && (
+            <div className="px-6 pb-5">
+              <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>{faq.a}</p>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
 
@@ -379,6 +422,17 @@ export default function LandingPage() {
             </div>
           </section>
         )}
+
+        {/* FAQ */}
+        <section style={{ borderTop: "1px solid #1E2D45" }}>
+          <div className="max-w-3xl mx-auto px-6 py-20">
+            <div className="text-center mb-12">
+              <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#2B7EC9" }}>FAQ</p>
+              <h2 className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)" }}>Common Questions</h2>
+            </div>
+            <FAQSection />
+          </div>
+        </section>
 
         {/* FINAL CTA */}
         <section style={{ borderTop: "1px solid #1E2D45" }}>
