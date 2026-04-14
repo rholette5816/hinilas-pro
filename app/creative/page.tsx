@@ -65,8 +65,18 @@ export default function CreativePage() {
 
   async function describeImage(base64: string, type: "logo" | "product"): Promise<string> {
     const prompt = type === "logo"
-      ? "Describe this brand logo's visual identity in detail: exact brand colors (with names or hex values), font style (bold/thin/serif/sans-serif/script), logo shape and layout, overall brand tone (luxury/fun/clinical/bold/playful). Be specific — this will be used to recreate the brand's visual style in an ad."
-      : "Describe this product or subject image in detail: shape, size, color, material, packaging design, and any key visual features. Be specific and accurate — this will be featured prominently in an ad and must look exactly as shown.";
+      ? `Describe this brand logo with extreme precision for ad design use:
+- Exact colors (hex codes or very specific color names like 'deep crimson', 'electric blue', 'warm gold')
+- Font style: weight (thin/regular/bold/black), type (serif/sans-serif/script/display), character (modern/classic/playful/premium/aggressive)
+- Logo shape, icon elements, and layout structure
+- Brand personality: luxury / mass market / clinical / fun / bold / trustworthy / youthful
+- Any tagline or text present — spell it exactly as shown
+- Overall graphic style: minimal, detailed, illustrative, geometric, organic`
+      : `Describe this image for use as the hero element in a Meta ad:
+- If product: exact shape, color, size, material, packaging details, and any text on the packaging spelled exactly
+- If person or model: skin tone, expression, body language, outfit, and the mood or emotion they convey
+- Key visual details that make this subject unique and instantly recognizable
+- What emotion or feeling does this subject naturally communicate to a viewer?`;
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
