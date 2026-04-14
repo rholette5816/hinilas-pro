@@ -479,7 +479,119 @@ Use Results column as total orders. Calculate precisely:
 Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set before the overall summary. Think like you are getting paid to make this business money.
 `,
 
-  creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
+  getIndustryLayers: (industry: string) => {
+    const layers: Record<string, { person: string; environment: string; lighting: string }> = {
+      skincare_beauty: {
+        person: "young Filipino woman in her mid-20s, radiant glowing skin, warm confident smile, wearing a clean white or nude-toned outfit, hands gently touching her face or holding product, looking warmly toward camera",
+        environment: "inside a clean bright vanity or beauty studio, soft white shelves with skincare products softly visible in background, warm neutral tones throughout, fresh and premium atmosphere",
+        lighting: "soft warm ambient lighting, gentle even illumination on face, no harsh shadows, glowing and flattering atmosphere",
+      },
+      supplements_health: {
+        person: "fit Filipino man or woman in their late 20s, energetic healthy expression, wearing athletic or casual wear, holding product naturally or showing confident body language, looking directly at camera",
+        environment: "inside a clean modern kitchen or wellness space, fresh green accents and natural light visible in background, health-focused and vibrant atmosphere",
+        lighting: "bright clean natural lighting, crisp even illumination on subject, no harsh shadows, fresh and energetic atmosphere",
+      },
+      fashion_clothing: {
+        person: "stylish young Filipino woman or man in their mid-20s, confident fashionable expression, wearing the featured clothing or branded outfit, standing casually with natural pose, looking directly at camera",
+        environment: "inside a modern clothing boutique or minimalist studio, neatly arranged clothing racks or clean white walls visible in background, contemporary and aspirational atmosphere",
+        lighting: "bright clean studio lighting, crisp even illumination on subject, minimal shadows, fresh and stylish atmosphere",
+      },
+      jewelry_accessories: {
+        person: "elegant Filipino woman in her late 20s, sophisticated graceful expression, wearing the featured jewelry, hands or neck naturally showcasing the piece, looking warmly toward camera",
+        environment: "inside a clean luxury jewelry boutique or elegant studio, soft velvet displays and warm accent lighting softly visible in background, premium and aspirational atmosphere",
+        lighting: "soft warm directional lighting, gentle glow on jewelry and skin, elegant depth, sophisticated and premium atmosphere",
+      },
+      food_beverage: {
+        person: "young friendly Filipino in their mid-20s, warm inviting smile, wearing casual or branded attire, holding or presenting the featured product naturally, looking toward camera",
+        environment: "inside a warm modern kitchen or cozy dining setup, product ingredients or packaging softly visible in background, appetizing and inviting atmosphere",
+        lighting: "warm natural kitchen lighting, soft even illumination on subject and product, no harsh shadows, inviting and appetizing atmosphere",
+      },
+      dental_clinic: {
+        person: "professional Filipino woman in her early 30s, calm trustworthy smile showing healthy teeth, wearing clean white medical scrubs or lab coat, arms relaxed, looking toward camera with gentle confidence",
+        environment: "inside a clean modern dental clinic, clinical white walls and equipment softly blurred in background, organized and hygienic atmosphere",
+        lighting: "bright neutral overhead lighting, even flat illumination, professional and credible atmosphere",
+      },
+      spa_wellness: {
+        person: "young Filipino woman in her late 20s, calm serene expression, wearing a white spa therapist uniform or soft robe, hands gently folded, looking warmly toward camera",
+        environment: "inside a clean luxury spa treatment room, soft white linen treatment bed softly visible in background, warm candles and neutral beige tones throughout, calming and premium atmosphere",
+        lighting: "soft warm ambient lighting, gentle even illumination on face, no harsh shadows, calming and luxurious atmosphere",
+      },
+      salon_barbershop: {
+        person: "stylish young Filipino in their mid-20s, confident fresh expression showing clean hair or style, wearing salon uniform or casual branded wear, natural relaxed pose, looking directly at camera",
+        environment: "inside a clean modern salon or barbershop, styling chairs and mirrors softly visible in background, contemporary and professional atmosphere",
+        lighting: "bright clean salon lighting, crisp even illumination on hair and face, fresh and confident atmosphere",
+      },
+      fitness_gym: {
+        person: "fit energetic Filipino in their late 20s, confident motivated expression, wearing athletic wear, arms crossed or natural power pose, looking directly at camera",
+        environment: "inside a well-equipped modern gym, workout machines and weights softly visible in background, industrial lighting, high-energy and motivating atmosphere",
+        lighting: "bright dramatic gym lighting, strong directional light on subject, bold and energetic atmosphere",
+      },
+      restaurant: {
+        person: "young friendly Filipino in their mid-20s, warm confident smile, wearing a clean chef coat or branded uniform, holding a plate or food naturally, looking toward camera",
+        environment: "inside a warm restaurant kitchen or dining area, stainless counter or warm wooden interior softly visible in background, inviting and professional atmosphere",
+        lighting: "warm kitchen lighting, soft even illumination on face and food, no harsh shadows, inviting and appetizing atmosphere",
+      },
+      real_estate: {
+        person: "well-dressed Filipino man or woman in their 30s, professional confident smile, wearing business casual attire, standing naturally with arms relaxed, facing camera directly",
+        environment: "standing inside or in front of a modern residential property or condo, clean architecture and interior design softly visible in background, aspirational and trustworthy atmosphere",
+        lighting: "soft natural window light with warm fill, elegant even illumination, sophisticated and premium atmosphere",
+      },
+      lending_loans: {
+        person: "approachable Filipino adult in their 30s, relieved confident expression, wearing casual business attire, relaxed open body language, looking warmly toward camera",
+        environment: "inside a clean modern office or bright open space, neutral professional interior softly visible in background, trustworthy and approachable atmosphere",
+        lighting: "bright neutral lighting, even flat illumination, professional and credible atmosphere",
+      },
+      insurance: {
+        person: "professional Filipino man or woman in their 30s, warm trustworthy smile, wearing business casual attire, natural protective body language, looking directly at camera",
+        environment: "inside a clean professional office or warm home setting, family-oriented or professional interior softly visible in background, secure and trustworthy atmosphere",
+        lighting: "soft warm natural lighting, gentle even illumination, trustworthy and comforting atmosphere",
+      },
+      online_course: {
+        person: "confident Filipino entrepreneur or educator in their late 20s to mid-30s, authoritative inspiring expression, wearing smart casual attire, natural commanding pose, looking directly at camera",
+        environment: "inside a modern home office or clean studio setup, laptop, bookshelf, or course materials softly visible in background, professional and aspirational atmosphere",
+        lighting: "clean natural window light or studio lighting, crisp even illumination, professional and credible atmosphere",
+      },
+      recruitment: {
+        person: "professional Filipino HR or recruiter in their 30s, approachable confident smile, wearing business attire, open welcoming body language, looking warmly toward camera",
+        environment: "inside a clean modern office or professional workspace, team or office environment softly visible in background, credible and opportunity-forward atmosphere",
+        lighting: "bright neutral office lighting, even flat illumination, professional and trustworthy atmosphere",
+      },
+      printing_customized: {
+        person: "friendly Filipino in their mid-20s, satisfied proud expression, holding or presenting a finished printed product naturally, wearing casual or branded attire, looking toward camera",
+        environment: "inside a clean print shop or creative studio, finished products and equipment softly visible in background, creative and professional atmosphere",
+        lighting: "bright clean studio lighting, crisp even illumination on product and subject, fresh and creative atmosphere",
+      },
+      events_photo_video: {
+        person: "creative young Filipino in their mid-20s, passionate expressive smile, holding camera or creative equipment naturally, wearing smart casual attire, looking confidently toward camera",
+        environment: "inside a clean photography studio or elegant event backdrop, equipment or décor softly visible in background, creative and professional atmosphere",
+        lighting: "dramatic creative studio lighting, strong directional key light, bold and artistic atmosphere",
+      },
+      auto_accessories: {
+        person: "confident young Filipino man in his late 20s, proud enthusiastic expression, wearing casual or branded wear, standing beside or presenting a vehicle or product, looking directly at camera",
+        environment: "inside a clean auto shop or outdoor parking area, vehicle and accessories softly visible in background, bold and performance-driven atmosphere",
+        lighting: "bright dramatic outdoor or studio lighting, strong clean illumination, bold and energetic atmosphere",
+      },
+      repair_services: {
+        person: "skilled trustworthy Filipino technician in their 30s, confident reliable expression, wearing branded uniform or work wear, holding tools naturally or presenting repaired item, looking toward camera",
+        environment: "inside a clean organized repair shop or home service setting, tools and equipment softly visible in background, professional and reliable atmosphere",
+        lighting: "bright clean workshop lighting, even flat illumination, professional and trustworthy atmosphere",
+      },
+      digital_services: {
+        person: "confident young Filipino digital professional in their late 20s, sharp focused expression, wearing smart casual attire, sitting at a desk or standing with device naturally, looking directly at camera",
+        environment: "inside a modern home office or co-working space, screens and tech equipment softly visible in background, professional and innovative atmosphere",
+        lighting: "clean natural or studio lighting, crisp even illumination, modern and credible atmosphere",
+      },
+    };
+    return layers[industry] || {
+      person: "confident Filipino entrepreneur in their 30s, professional warm expression, wearing smart casual attire, natural relaxed pose, looking directly at camera",
+      environment: "inside a clean modern office or professional workspace, neutral professional interior softly visible in background, credible and trustworthy atmosphere",
+      lighting: "bright clean studio lighting, crisp even illumination, professional atmosphere",
+    };
+  },
+
+  creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
+    const layers = MODULE_PROMPTS.getIndustryLayers(industry || "");
+    return `
 Create a ready-to-run static Meta ad image. Cinematic. High-converting. Agency quality.
 
 BUSINESS: ${userContext}
@@ -490,34 +602,52 @@ ${angle}
 The image must visually communicate the emotion and core message of this angle. A viewer who does not read the headline should already feel it from the image alone.
 
 FORMAT: ${format} aspect ratio
-${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: small, clean, bottom corner only` : ""}
-${productDesc ? `HERO SUBJECT: ${productDesc}\n- Feature as the dominant focal point of the image` : ""}
+
+[LAYER 1] COMMERCIAL INTENT
+Commercial editorial photograph for a brand advertisement.
+
+[LAYER 2] PERSON
+${layers.person}
+Person positioned on the RIGHT side of the frame.
+
+[LAYER 3] ENVIRONMENT
+${layers.environment}
+Left half of the image is intentionally open with minimal detail for text overlay.
+Slight shallow depth of field blurring the background.
+
+[LAYER 4] COMPOSITION
+Person anchored right. Left zone open and clean for text.
+${format} composition.
+
+[LAYER 5] LIGHTING
+${layers.lighting}
+Natural skin tones.
+
+[LAYER 6] RENDER QUALITY
+Commercial advertising photography style, photorealistic, sharp focus on subject, ultra-high resolution.
+${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: small, clean, bottom left corner` : ""}
+${productDesc ? `HERO SUBJECT: ${productDesc}\n- Feature as the dominant focal point` : ""}
 ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
-HEADLINE TREATMENT:
-- Extract the core hook from the angle and split it into exactly 2 lines
-- Line 1: the setup — white, clean, medium weight, 4–6 words
-- Line 2: the emotional punch — orange or gold, bold, slightly larger than Line 1
-- No other text — no taglines, no subheadlines, no extra copy the AI invents
+HEADLINE TREATMENT (LEFT ZONE):
+- Extract the core hook from the angle and render 3 lines in the left open zone
+- Line 1 (Hook — Context): white, medium weight, 4–5 words
+- Line 2 (Hook — Curiosity/Clarity): orange or gold, bold, slightly larger
+- Line 3 (Offer): white, smaller, 1 clean line — the specific promise or deal
+- Below Line 3: a pill-shaped CTA button, brand color fill, white bold text (e.g. "I-message na!")
+- Text left-aligned, stacked vertically in the left third
 - ALL TEXT spelled correctly — zero typos, zero distortion
 
-TEXT PLACEMENT:
-- Lower third of the image only
-- Only over naturally dark or shadowed areas — never over the face or hero subject
-- If needed, apply a subtle dark gradient at the bottom to ensure contrast
-
-SUBJECT & LIGHTING:
-- Cinematic directional lighting — one strong key light, deep dramatic shadows
-- Subject feels powerful and larger than life
-- Dark background with depth: atmospheric glow, environmental blur, or bokeh
-- Hero subject is sharp and in focus — everything else falls into darkness
+NEGATIVE PROMPT (never render these):
+blurry, low quality, distorted face, extra limbs, bad anatomy, text errors, watermark, dark horror lighting, oversaturated, cluttered foreground, floating objects, AI artifacts, cartoon, illustration, 3D render, anime, extra text not specified above.
 
 DESIGN RULES:
 - No stat badges, no callout boxes, no icon accents, no infographic elements
-- No highlight bars, no color blocks behind text, no geometric swooshes
-- No watermarks, no borders, no frames
+- No highlight bars, no geometric swooshes
+- No borders, no frames
 - One subject, one message, clean composition
 ${logoDesc ? `- Colors and graphic style must follow the brand reference above` : `- Default palette: near-black background, white + orange/gold accent`}
 - Final output must look like a real Facebook/Instagram ad — ready to upload
-`,
+`;
+  },
 };

@@ -12,6 +12,7 @@ export interface UserSetup {
   businessType: "physical_product" | "service" | "digital";
   stage: "just_starting" | "have_page" | "running_ads";
   language: string;
+  industry?: string;
 }
 
 export interface ReferralToast {

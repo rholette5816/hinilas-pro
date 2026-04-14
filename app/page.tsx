@@ -30,6 +30,29 @@ const BUSINESS_TYPES = [
   },
 ];
 
+const PH_INDUSTRIES = [
+  { value: "skincare_beauty", label: "Skincare / Beauty" },
+  { value: "supplements_health", label: "Supplements / Health" },
+  { value: "fashion_clothing", label: "Fashion / Clothing / Shoes" },
+  { value: "jewelry_accessories", label: "Jewelry / Accessories" },
+  { value: "food_beverage", label: "Food / Beverage Products" },
+  { value: "dental_clinic", label: "Dental / Medical Clinic" },
+  { value: "spa_wellness", label: "Spa / Wellness / Massage" },
+  { value: "salon_barbershop", label: "Salon / Barbershop" },
+  { value: "fitness_gym", label: "Fitness / Gym" },
+  { value: "restaurant", label: "Restaurant / Food Business" },
+  { value: "real_estate", label: "Real Estate" },
+  { value: "lending_loans", label: "Lending / Cash Loans" },
+  { value: "insurance", label: "Insurance / Life Insurance" },
+  { value: "online_course", label: "Online Course / Coaching" },
+  { value: "recruitment", label: "Recruitment / Manpower" },
+  { value: "printing_customized", label: "Printing / Customized Products" },
+  { value: "events_photo_video", label: "Events / Photo / Video" },
+  { value: "auto_accessories", label: "Auto / Car Accessories" },
+  { value: "repair_services", label: "Repair / Appliance Services" },
+  { value: "digital_services", label: "Digital / Marketing Services" },
+];
+
 const STAGES = [
   { value: "just_starting", label: "Just Starting", sub: "No Facebook Page yet, never run ads" },
   { value: "have_page", label: "Have a Page", sub: "Set up but no campaigns yet" },
@@ -60,6 +83,7 @@ export default function SetupPage() {
     businessType: "physical_product",
     stage: "just_starting",
     language: "Taglish",
+    industry: "",
   });
 
   function handleSubmit(e: React.FormEvent) {
@@ -80,7 +104,7 @@ export default function SetupPage() {
     setClearing(true);
     const blankSetup: UserSetup = {
       businessName: "", product: "", targetAudience: "", uniqueSellingOffer: "",
-      market: "Philippines", businessType: "physical_product", stage: "just_starting", language: "Taglish",
+      market: "Philippines", businessType: "physical_product", stage: "just_starting", language: "Taglish", industry: "",
     };
     setForm(blankSetup);
     setSetup(blankSetup);
@@ -216,6 +240,25 @@ export default function SetupPage() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Industry */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Industry</label>
+                <p className="text-xs mb-3" style={{ color: "#64748B" }}>Helps the AI generate creatives that match your industry's visual style.</p>
+                <select
+                  value={form.industry || ""}
+                  onChange={e => setForm({ ...form, industry: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl text-sm text-white focus:outline-none transition-all appearance-none"
+                  style={{ background: "#0F172A", border: "1px solid #1E2D45", color: form.industry ? "#fff" : "#475569" }}
+                  onFocus={e => e.target.style.borderColor = BRAND_BLUE}
+                  onBlur={e => e.target.style.borderColor = "#1E2D45"}
+                >
+                  <option value="" style={{ background: "#0F172A", color: "#475569" }}>Select your industry...</option>
+                  {PH_INDUSTRIES.map(ind => (
+                    <option key={ind.value} value={ind.value} style={{ background: "#0F172A", color: "#fff" }}>{ind.label}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Business Name + Market */}

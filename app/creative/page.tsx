@@ -123,7 +123,7 @@ export default function CreativePage() {
       ]);
       const userCtx = buildUserContext(setup);
       const angle = selectedAngle || "General product promotion";
-      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, "1:1");
+      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, "1:1", setup.industry);
       const img = await callImageAPI(prompt);
       if (img) {
         setMainImage(img);
