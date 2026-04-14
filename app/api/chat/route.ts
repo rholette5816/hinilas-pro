@@ -1,57 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
-import { createClient } from "@/lib/supabase/server";
-
-const TEXT_LIMITS: Record<string, number> = {
-  lite: 10,
-  flex: 50,
-  max: 150,
-};
 
 export async function POST(req: NextRequest) {
   const { prompt, systemPrompt, images } = await req.json();
-
-  // --- Rate limit gate ---
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-    const { data: userData } = await supabase
-      .from("user_data")
-      .select("plan, text_calls_today, text_calls_reset_at")
-      .eq("user_id", user.id)
-      .single();
-
-    if (userData) {
-      const now = new Date();
-      const resetAt = userData.text_calls_reset_at ? new Date(userData.text_calls_reset_at) : null;
-      const isExpired = !resetAt || (now.getTime() - resetAt.getTime()) > 12 * 60 * 60 * 1000;
-
-      let callsToday = isExpired ? 0 : (userData.text_calls_today ?? 0);
-
-      if (isExpired) {
-        await supabase
-          .from("user_data")
-          .update({ text_calls_today: 0, text_calls_reset_at: now.toISOString() })
-          .eq("user_id", user.id);
-      }
-
-      const plan = userData.plan ?? "lite";
-      const limit = TEXT_LIMITS[plan] ?? TEXT_LIMITS.lite;
-
-      if (callsToday >= limit) {
-        return NextResponse.json({ error: "You've reached your daily limit. Your generations will refresh in 12 hours." }, { status: 429 });
-      }
-
-      // Increment after check — fire and forget
-      supabase
-        .from("user_data")
-        .update({ text_calls_today: callsToday + 1 })
-        .eq("user_id", user.id)
-        .then(() => {});
-    }
-  }
-  // --- End rate limit gate ---
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
