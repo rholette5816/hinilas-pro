@@ -71,8 +71,8 @@ export async function POST(req: NextRequest) {
 
         if (isVariation) {
           const variationText = variationIndex === 0
-            ? `This is the original ad creative. Create Variation 1 — same brand and product, but redesign the layout and color treatment completely. Flip the composition (if product was right, move it left), swap the background tone (dark to light or vice versa), change the typography placement and size hierarchy. Same brand identity, totally different structure. Same ${ratioLabel} format.`
-            : `This is the original ad creative. Create Variation 2 — same brand and product, but place it in a completely different scene or context. If the original is a studio shot, go lifestyle or environmental. If it was dark and dramatic, go bright and clean. Change the visual story being told — this should look like a separate creative concept, not a remix. Same ${ratioLabel} format.`;
+            ? `This is the original ad creative. Create Variation 1 — Story / Reels format (${ratioLabel}). Keep the same brand and product, but reimagine the creative from a human and lifestyle perspective. Show a real person using, wearing, or experiencing the product. Shoot it like a candid moment — natural light, authentic emotion, real environment. The framing should feel like a phone video, not a studio ad. Lead with emotion and human connection, not the product itself. Make the viewer feel something in the first half second.`
+            : `This is the original ad creative. Create Variation 2 — Banner Ad format (${ratioLabel}). Keep the same brand and product, but design it as a horizontal billboard-style ad. Use a completely different scene or visual context from the original. Bold, high-contrast composition with the product or brand element anchored on one side and the headline on the other. Think digital billboard — striking, fast-reading, commanding. If the original was warm, go cool. If it was minimal, go dramatic. This should look like a separate campaign concept entirely.`;
           parts.push({ text: variationText });
         } else {
           parts.push({

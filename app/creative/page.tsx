@@ -94,7 +94,14 @@ export default function CreativePage() {
     const res = await fetch("/api/image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, count: 1, aspectRatio: "1:1", referenceImage, isVariation, variationIndex }),
+      body: JSON.stringify({
+        prompt,
+        count: 1,
+        aspectRatio: isVariation ? (variationIndex === 0 ? "9:16" : "1.91:1") : "1:1",
+        referenceImage,
+        isVariation,
+        variationIndex,
+      }),
     });
     const data = await res.json();
     if (data.code === "NO_CREDITS") { setNoCredits(true); return null; }
@@ -285,7 +292,7 @@ export default function CreativePage() {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-white font-semibold text-sm">Ad Creative</p>
-                <p className="text-gray-500 text-xs">1:1 — Feed ads</p>
+                <p className="text-gray-500 text-xs">1:1 — Feed</p>
               </div>
               <button
                 onClick={generateMain}
@@ -333,13 +340,16 @@ export default function CreativePage() {
           {mainImage && !loadingMain && (
             <div className="border-t border-gray-700 pt-6 mb-8">
               <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
-              <p className="text-gray-500 text-xs mb-5">2 more iterations of the same concept. Each uses 1 credit.</p>
+              <p className="text-gray-500 text-xs mb-5">Different placements, different formats. Each uses 3 credits.</p>
 
               <div className="grid grid-cols-2 gap-4">
                 {[0, 1].map(i => (
                   <div key={i}>
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-gray-300 text-xs font-medium">Variation {i + 2}</p>
+                    <div className="flex items-center justify-between mb-1">
+                      <div>
+                        <p className="text-gray-300 text-xs font-medium">{i === 0 ? "Story / Reels" : "Banner Ad"}</p>
+                        <p className="text-gray-600 text-[10px]">{i === 0 ? "9:16 — Stories & Reels" : "1.91:1 — Link & Banner"}</p>
+                      </div>
                       <button
                         onClick={() => generateIteration(i)}
                         disabled={loadingIter[i]}
@@ -352,7 +362,7 @@ export default function CreativePage() {
                     </div>
 
                     {loadingIter[i] && (
-                      <div className="bg-gray-800 border border-gray-700 rounded-xl aspect-square flex items-center justify-center">
+                      <div className={`bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center ${i === 0 ? "aspect-[9/16]" : "aspect-[1.91/1]"}`}>
                         <div className="flex gap-1">
                           <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                           <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -380,7 +390,7 @@ export default function CreativePage() {
                     )}
 
                     {!iterations[i] && !loadingIter[i] && (
-                      <div className="bg-gray-800 border border-dashed border-gray-700 rounded-xl aspect-square flex items-center justify-center">
+                      <div className={`bg-gray-800 border border-dashed border-gray-700 rounded-xl flex items-center justify-center ${i === 0 ? "aspect-[9/16]" : "aspect-[1.91/1]"}`}>
                         <p className="text-gray-600 text-xs">Not generated</p>
                       </div>
                     )}
