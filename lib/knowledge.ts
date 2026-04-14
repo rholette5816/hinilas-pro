@@ -480,37 +480,24 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
 `,
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string) => `
-You are creating a high-converting static Facebook/Instagram ad image for the Philippine market.
+Create a ready-to-run static Meta ad image. Philippine market. High-converting. Agency quality.
 
-PRODUCT/BUSINESS:
-${userContext}
+BUSINESS: ${userContext}
+MARKETING ANGLE: ${angle}
+FORMAT: ${format} aspect ratio
+${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Extract and follow: brand colors, font style, logo placement, visual identity` : ""}
+${productDesc ? `PRODUCT REFERENCE: ${productDesc}\n- Feature this product accurately and prominently` : ""}
+${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
-MARKETING ANGLE TO VISUALIZE:
-${angle}
-
-AD FORMAT: ${format} aspect ratio
-
-${logoDesc ? `BRAND LOGO (match these brand colors, fonts, and visual style exactly):\n${logoDesc}\n` : ""}
-${productDesc ? `PRODUCT (feature this product prominently and accurately):\n${productDesc}\n` : ""}
-${extraDetails ? `ADDITIONAL DIRECTION:\n${extraDetails}\n` : ""}
-
-VISUAL STYLE GUIDE:
-${logoDesc ? `- Brand logo provided: follow the brand colors, fonts, and visual identity from the logo above. Let the brand guide the palette and style.` : `- No brand logo provided. Use a dark, cinematic background (deep navy or near-black gradient) as the default.`}
-${extraDetails ? `- User's creative direction takes full priority over any defaults below.` : ``}
-
-Default style framework (apply only where the user has not specified otherwise):
-- Background: deep dark gradient — near-black with dark navy or charcoal tones, cinematic feel
-- Layout: bold headline top-left or top-center, subject or product center-right, brand badge bottom-center
-- Typography: large uppercase white headline (2 to 5 words), key word highlighted in bright orange or accent color, subheadline in smaller white text with key metric in orange
-- Subject: dramatic rim lighting with glowing edges, energy or light effects around focal point
-- Effects: depth from floating icons, particles, or light streaks relevant to the product or message
-- Default color palette: black + dark navy + bright orange + white — only if brand colors are not provided
-- Mood: bold, high-energy, aspirational — Filipino digital marketing aesthetic, agency-quality output
-
-RULES (always apply):
-- All text must be crisp, sharp, and fully legible — no blur, no distortion
-- One clear message — do not clutter the image
-- The headline must directly reflect the marketing angle
-- No watermarks, no borders, no frames
+DESIGN RULES:
+- Headline: 3–6 words max, bold, directly tied to the marketing angle
+- ALL TEXT must be spelled correctly — zero typos, zero distortion
+- Product is the visual hero — sharp, dramatic lighting, focal point
+- One clear message — no clutter
+- Composition: headline top or center, product prominent, optional CTA or brand mark bottom
+- Mood: bold, aspirational, scroll-stopping
+${logoDesc ? `- Color palette, typography, and layout must match the brand reference above` : `- Default palette: dark navy / near-black background, white headline, bright orange accent`}
+- No watermarks, no frames, no borders
+- Final output must look like a real Facebook/Instagram ad — ready to upload
 `,
 };

@@ -37,6 +37,24 @@ export default function CreativePage() {
     router.push("/copy");
   }
 
+  async function downloadImage(img: string, filename: string) {
+    let blobUrl: string;
+    if (img.startsWith("data:")) {
+      const res = await fetch(img);
+      const blob = await res.blob();
+      blobUrl = URL.createObjectURL(blob);
+    } else {
+      const res = await fetch(`/api/proxy-image?url=${encodeURIComponent(img)}`);
+      const blob = await res.blob();
+      blobUrl = URL.createObjectURL(blob);
+    }
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }
+
   function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, setter: (v: string | null) => void) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -45,15 +63,15 @@ export default function CreativePage() {
     reader.readAsDataURL(file);
   }
 
-  async function describeImage(base64: string, label: string): Promise<string> {
+  async function describeImage(base64: string, type: "logo" | "product"): Promise<string> {
+    const prompt = type === "logo"
+      ? "Describe this brand logo's visual identity in detail: exact brand colors (with names or hex values), font style (bold/thin/serif/sans-serif/script), logo shape and layout, overall brand tone (luxury/fun/clinical/bold/playful). Be specific — this will be used to recreate the brand's visual style in an ad."
+      : "Describe this product or subject image in detail: shape, size, color, material, packaging design, and any key visual features. Be specific and accurate — this will be featured prominently in an ad and must look exactly as shown.";
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `Describe this ${label} image in detail for use as a reference in generating an ad creative. Include: dominant colors, visual style, any text or typography present, mood, and key visual elements. Be specific and concise — 3 to 5 sentences.`,
-          images: [base64],
-        }),
+        body: JSON.stringify({ prompt, images: [base64] }),
       });
       const data = await res.json();
       return data.content || "";
@@ -77,12 +95,13 @@ export default function CreativePage() {
 
   async function generateMain() {
     if (!setup) return;
+    if (!logoFile) { setError("Please upload your brand logo before generating."); return; }
     setLoadingMain(true);
     setError("");
     setNoCredits(false);
     try {
       const [logoDesc, productDesc] = await Promise.all([
-        logoFile ? describeImage(logoFile, "brand logo") : Promise.resolve(""),
+        logoFile ? describeImage(logoFile, "logo") : Promise.resolve(""),
         productFile ? describeImage(productFile, "product") : Promise.resolve(""),
       ]);
       const userCtx = buildUserContext(setup);
@@ -167,33 +186,35 @@ export default function CreativePage() {
           {/* Brand assets */}
           <div className="grid grid-cols-2 gap-4 mb-5">
             <div>
-              <p className="text-sm font-medium text-gray-300 mb-1.5">Brand Logo <span className="text-gray-500 font-normal">(optional)</span></p>
+              <p className="text-sm font-medium text-gray-300 mb-1">Brand Logo <span className="text-red-400 font-normal text-xs">Required</span></p>
+              <p className="text-gray-500 text-xs mb-1.5">Clean logo on white or transparent background. Sets your brand colors, fonts, and style.</p>
               <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setLogoFile)} />
               {logoFile ? (
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
+                <div className="bg-gray-800 border border-green-700 rounded-lg p-3 flex items-center gap-3">
                   <img src={logoFile} alt="Logo" className="w-10 h-10 object-contain rounded" />
                   <p className="text-gray-300 text-xs flex-1">Logo uploaded</p>
                   <button onClick={() => setLogoFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
-                <button onClick={() => logoRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
+                <button onClick={() => logoRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-red-800 rounded-lg p-4 text-center hover:border-red-600 transition-colors">
                   <p className="text-gray-400 text-sm">Upload logo</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
               )}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-300 mb-1.5">Product Image <span className="text-gray-500 font-normal">(optional)</span></p>
+              <p className="text-sm font-medium text-gray-300 mb-1">Product / Model <span className="text-gray-500 font-normal text-xs">(optional)</span></p>
+              <p className="text-gray-500 text-xs mb-1.5">Upload your product photo or a photo of yourself / a model. The AI will feature it in the ad.</p>
               <input ref={productRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setProductFile)} />
               {productFile ? (
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
                   <img src={productFile} alt="Product" className="w-10 h-10 object-contain rounded" />
-                  <p className="text-gray-300 text-xs flex-1">Product uploaded</p>
+                  <p className="text-gray-300 text-xs flex-1">Photo uploaded</p>
                   <button onClick={() => setProductFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
                 <button onClick={() => productRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
-                  <p className="text-gray-400 text-sm">Upload product photo</p>
+                  <p className="text-gray-400 text-sm">Upload product or model</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
               )}
@@ -290,9 +311,9 @@ export default function CreativePage() {
                   >
                     🔥 Use for Copy
                   </button>
-                  <a href={mainImage} download="hinilas-ad.png" className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100">
+                  <button onClick={() => downloadImage(mainImage, "hinilas-ad.png")} className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100">
                     Download
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
@@ -341,9 +362,9 @@ export default function CreativePage() {
                           >
                             🔥 Use
                           </button>
-                          <a href={iterations[i]!} download={`hinilas-ad-v${i + 2}.png`} className="bg-white text-black px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-gray-100">
+                          <button onClick={() => downloadImage(iterations[i]!, `hinilas-ad-v${i + 2}.png`)} className="bg-white text-black px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-gray-100">
                             Download
-                          </a>
+                          </button>
                         </div>
                       </div>
                     )}
