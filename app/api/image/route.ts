@@ -9,7 +9,7 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  const { prompt, count = 1, aspectRatio = "1:1", referenceImage, isVariation = false } = await req.json();
+  const { prompt, count = 1, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0 } = await req.json();
 
   // --- Credit gate ---
   const supabase = await createClient();
@@ -70,9 +70,10 @@ export async function POST(req: NextRequest) {
         parts.push({ inlineData: { mimeType, data } });
 
         if (isVariation) {
-          parts.push({
-            text: `This is the original ad creative. Generate a NEW variation of this ad — keep the same product, brand, and core message, but use a completely different visual composition, layout, background, color treatment, or creative angle. It should feel like a fresh creative option, not a copy. Same ${ratioLabel} format.`,
-          });
+          const variationText = variationIndex === 0
+            ? `This is the original ad creative. Create Variation 1 — same brand and product, but redesign the layout and color treatment completely. Flip the composition (if product was right, move it left), swap the background tone (dark to light or vice versa), change the typography placement and size hierarchy. Same brand identity, totally different structure. Same ${ratioLabel} format.`
+            : `This is the original ad creative. Create Variation 2 — same brand and product, but place it in a completely different scene or context. If the original is a studio shot, go lifestyle or environmental. If it was dark and dramatic, go bright and clean. Change the visual story being told — this should look like a separate creative concept, not a remix. Same ${ratioLabel} format.`;
+          parts.push({ text: variationText });
         } else {
           parts.push({
             text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,

@@ -80,11 +80,11 @@ export default function CreativePage() {
     }
   }
 
-  async function callImageAPI(prompt: string, referenceImage?: string, isVariation = false): Promise<string | null> {
+  async function callImageAPI(prompt: string, referenceImage?: string, isVariation = false, variationIndex = 0): Promise<string | null> {
     const res = await fetch("/api/image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, count: 1, aspectRatio: "1:1", referenceImage, isVariation }),
+      body: JSON.stringify({ prompt, count: 1, aspectRatio: "1:1", referenceImage, isVariation, variationIndex }),
     });
     const data = await res.json();
     if (data.code === "NO_CREDITS") { setNoCredits(true); return null; }
@@ -127,7 +127,7 @@ export default function CreativePage() {
     setError("");
     setNoCredits(false);
     try {
-      const img = await callImageAPI("", mainImage, true);
+      const img = await callImageAPI("", mainImage, true, index);
       if (img) {
         setIterations(prev => {
           const n = [...prev];
