@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-preview-image-generation" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
 
     const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
@@ -51,8 +51,22 @@ export async function POST(req: NextRequest) {
       const parts: any[] = [];
 
       if (referenceImage) {
-        const [header, data] = (referenceImage as string).split(",");
-        const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+        let mimeType = "image/png";
+        let data: string;
+
+        if ((referenceImage as string).startsWith("data:")) {
+          // base64 data URL
+          const [header, b64] = (referenceImage as string).split(",");
+          mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+          data = b64;
+        } else {
+          // Storage URL — fetch and convert to base64
+          const fetchRes = await fetch(referenceImage as string);
+          const buffer = await fetchRes.arrayBuffer();
+          mimeType = fetchRes.headers.get("content-type") || "image/png";
+          data = Buffer.from(buffer).toString("base64");
+        }
+
         parts.push({ inlineData: { mimeType, data } });
 
         if (isVariation) {
