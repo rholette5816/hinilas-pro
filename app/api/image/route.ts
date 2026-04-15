@@ -10,6 +10,12 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1.91:1": "horizontal landscape banner (1.91:1 aspect ratio, wider than tall)",
 };
 
+const IMAGEN_ASPECT_RATIOS: Record<string, string> = {
+  "1:1": "1:1",
+  "9:16": "9:16",
+  "1.91:1": "16:9",
+};
+
 export async function POST(req: NextRequest) {
   const { prompt, count = 1, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0 } = await req.json();
 
@@ -40,52 +46,64 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "GEMINI_IMAGE_API_KEY not configured." }, { status: 500 });
   }
 
+  const images: string[] = [];
+
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-    const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
+    if (!referenceImage) {
+      // --- Main generation: use Imagen 3 ---
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const imagenModel = genAI.getGenerativeModel({ model: "imagen-3.0-generate-001" }) as any;
+      const imagenAspectRatio = IMAGEN_ASPECT_RATIOS[aspectRatio] || "1:1";
 
-    const images: string[] = [];
+      const result = await imagenModel.generateImages({
+        prompt: `${prompt}`,
+        numberOfImages: 1,
+        aspectRatio: imagenAspectRatio,
+        safetyFilterLevel: "block_only_high",
+      });
 
-    for (let i = 0; i < count; i++) {
+      if (result.images && result.images.length > 0) {
+        const imageData = result.images[0].imageData;
+        images.push(`data:image/png;base64,${imageData}`);
+      }
+    } else {
+      // --- Variations: use Gemini (supports reference image input) ---
+      const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parts: any[] = [];
 
-      if (referenceImage) {
-        let mimeType = "image/png";
-        let data: string;
+      let mimeType = "image/png";
+      let data: string;
 
-        if ((referenceImage as string).startsWith("data:")) {
-          // base64 data URL
-          const [header, b64] = (referenceImage as string).split(",");
-          mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
-          data = b64;
-        } else {
-          // Storage URL — fetch and convert to base64
-          const fetchRes = await fetch(referenceImage as string);
-          const buffer = await fetchRes.arrayBuffer();
-          mimeType = fetchRes.headers.get("content-type") || "image/png";
-          data = Buffer.from(buffer).toString("base64");
-        }
-
-        parts.push({ inlineData: { mimeType, data } });
-
-        if (isVariation) {
-          const variationText = variationIndex === 0
-            ? `This is the original ad creative. Create Variation 1 — Story / Reels format (${ratioLabel}). Keep the same brand and product, but reimagine the creative from a human and lifestyle perspective. Show a real person using, wearing, or experiencing the product. Shoot it like a candid moment — natural light, authentic emotion, real environment. The framing should feel like a phone video, not a studio ad. Lead with emotion and human connection, not the product itself. Make the viewer feel something in the first half second.`
-            : `This is the original ad creative. Create Variation 2 — Banner Ad format (${ratioLabel}). Keep the same brand and product, but design it as a horizontal billboard-style ad. Use a completely different scene or visual context from the original. Bold, high-contrast composition with the product or brand element anchored on one side and the headline on the other. Think digital billboard — striking, fast-reading, commanding. If the original was warm, go cool. If it was minimal, go dramatic. This should look like a separate campaign concept entirely.`;
-          parts.push({ text: variationText });
-        } else {
-          parts.push({
-            text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
-          });
-        }
+      if ((referenceImage as string).startsWith("data:")) {
+        const [header, b64] = (referenceImage as string).split(",");
+        mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+        data = b64;
       } else {
-        parts.push({ text: `${prompt}\n\nGenerate this as a ${ratioLabel} image.` });
+        const fetchRes = await fetch(referenceImage as string);
+        const buffer = await fetchRes.arrayBuffer();
+        mimeType = fetchRes.headers.get("content-type") || "image/png";
+        data = Buffer.from(buffer).toString("base64");
       }
 
-      const result = await model.generateContent({
+      parts.push({ inlineData: { mimeType, data } });
+
+      if (isVariation) {
+        const variationText = variationIndex === 0
+          ? `This is the original ad creative. Create Variation 1 — Story / Reels format (${ratioLabel}). Keep the same brand and product, but reimagine the creative from a human and lifestyle perspective. Show a real person using, wearing, or experiencing the product. Shoot it like a candid moment — natural light, authentic emotion, real environment. The framing should feel like a phone video, not a studio ad. Lead with emotion and human connection, not the product itself. Make the viewer feel something in the first half second.`
+          : `This is the original ad creative. Create Variation 2 — Banner Ad format (${ratioLabel}). Keep the same brand and product, but design it as a horizontal billboard-style ad. Use a completely different scene or visual context from the original. Bold, high-contrast composition with the product or brand element anchored on one side and the headline on the other. Think digital billboard — striking, fast-reading, commanding. If the original was warm, go cool. If it was minimal, go dramatic. This should look like a separate campaign concept entirely.`;
+        parts.push({ text: variationText });
+      } else {
+        parts.push({
+          text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message — adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
+        });
+      }
+
+      const result = await geminiModel.generateContent({
         contents: [{ role: "user", parts }],
         generationConfig: {
           // @ts-expect-error responseModalities is valid but not yet in type definitions
@@ -96,8 +114,8 @@ export async function POST(req: NextRequest) {
       const responseParts = result.response.candidates?.[0]?.content?.parts ?? [];
       for (const part of responseParts) {
         if (part.inlineData?.data) {
-          const mimeType = part.inlineData.mimeType || "image/png";
-          images.push(`data:${mimeType};base64,${part.inlineData.data}`);
+          const mime = part.inlineData.mimeType || "image/png";
+          images.push(`data:${mime};base64,${part.inlineData.data}`);
           break;
         }
       }
