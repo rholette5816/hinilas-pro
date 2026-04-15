@@ -211,37 +211,6 @@ export default function SetupPage() {
 
             <form onSubmit={handleSubmit} className="space-y-8">
 
-              {/* Business Nature */}
-              <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase mb-3" style={{ color: "#94A3B8" }}>Business Nature</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {BUSINESS_TYPES.map(opt => {
-                    const active = form.businessType === opt.value as UserSetup["businessType"];
-                    return (
-                      <button
-                        type="button"
-                        key={opt.value}
-                        onClick={() => setForm({ ...form, businessType: opt.value as UserSetup["businessType"] })}
-                        className="relative p-4 rounded-xl text-left transition-all"
-                        style={active
-                          ? { background: "rgba(43,126,201,0.12)", border: `1px solid ${BRAND_BLUE}`, color: "#fff" }
-                          : { background: "#0F172A", border: "1px solid #1E2D45", color: "#64748B" }
-                        }
-                      >
-                        {active && (
-                          <div className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: BRAND_BLUE }}>
-                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-                          </div>
-                        )}
-                        <div className="mb-2" style={{ color: active ? BRAND_BLUE : "#475569" }}>{opt.icon}</div>
-                        <p className="text-xs font-bold mb-0.5" style={{ color: active ? "#fff" : "#94A3B8" }}>{opt.label}</p>
-                        <p className="text-[10px] leading-relaxed" style={{ color: active ? "#64A4D8" : "#334155" }}>{opt.sub}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
               {/* Industry */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Industry</label>
