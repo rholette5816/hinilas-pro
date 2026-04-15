@@ -53,25 +53,25 @@ export async function POST(req: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey); // used for variations (Gemini)
 
     if (!referenceImage) {
-      // --- Main generation: use Imagen 3 via new @google/genai SDK ---
-      const imagenClient = new GoogleGenAI({ apiKey });
-      const imagenAspectRatio = IMAGEN_ASPECT_RATIOS[aspectRatio] || "1:1";
+      // --- Main generation: use Gemini 2.0 Flash ---
+      const geminiMain = new GoogleGenerativeAI(apiKey);
+      const mainModel = geminiMain.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const ratioLabelMain = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
-      const result = await imagenClient.models.generateImages({
-        model: "imagen-3.0-generate-001",
-        prompt,
-        config: {
-          numberOfImages: 1,
-          aspectRatio: imagenAspectRatio,
-          outputMimeType: "image/png",
+      const result = await mainModel.generateContent({
+        contents: [{ role: "user", parts: [{ text: `${prompt}\n\nGenerate this as a ${ratioLabelMain} image.` }] }],
+        generationConfig: {
+          // @ts-expect-error responseModalities is valid but not yet in type definitions
+          responseModalities: ["IMAGE", "TEXT"],
         },
       });
 
-      if (result.generatedImages && result.generatedImages.length > 0) {
-        const imageData = result.generatedImages[0].image?.imageBytes;
-        if (imageData) {
-          const base64 = Buffer.from(imageData).toString("base64");
-          images.push(`data:image/png;base64,${base64}`);
+      const responseParts = result.response.candidates?.[0]?.content?.parts ?? [];
+      for (const part of responseParts) {
+        if (part.inlineData?.data) {
+          const mime = part.inlineData.mimeType || "image/png";
+          images.push(`data:${mime};base64,${part.inlineData.data}`);
+          break;
         }
       }
     } else {
