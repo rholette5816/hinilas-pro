@@ -359,7 +359,7 @@ export default function CreativePage() {
                     </div>
 
                     {loadingIter[i] && (
-                      <div className={`bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center ${i === 0 ? "aspect-[9/16]" : "aspect-[1.91/1]"}`}>
+                      <div className="bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center aspect-square">
                         <div className="flex gap-1">
                           <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                           <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -387,7 +387,7 @@ export default function CreativePage() {
                     )}
 
                     {!iterations[i] && !loadingIter[i] && (
-                      <div className={`bg-gray-800 border border-dashed border-gray-700 rounded-xl flex items-center justify-center ${i === 0 ? "aspect-[9/16]" : "aspect-[1.91/1]"}`}>
+                      <div className="bg-gray-800 border border-dashed border-gray-700 rounded-xl flex items-center justify-center aspect-square">
                         <p className="text-gray-600 text-xs">Not generated</p>
                       </div>
                     )}
