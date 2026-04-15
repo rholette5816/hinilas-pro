@@ -163,10 +163,10 @@ export default function CampaignSetupPage() {
   const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
   const [currentStep, setCurrentStep] = useState(0);
   const [done, setDone] = useState(false);
-  const [unlockedVideos, setUnlockedVideos] = useState<Record<VideoKey, boolean>>({
-    campaign: false,
-    adset: false,
-    ads: false,
+  const [unlockedVideos, setUnlockedVideos] = useState<Record<VideoKey, { unlocked: boolean; expiresAt: string | null }>>({
+    campaign: { unlocked: false, expiresAt: null },
+    adset: { unlocked: false, expiresAt: null },
+    ads: { unlocked: false, expiresAt: null },
   });
   const [unlockingVideo, setUnlockingVideo] = useState<VideoKey | null>(null);
   const [noCredits, setNoCredits] = useState(false);
@@ -180,8 +180,13 @@ export default function CampaignSetupPage() {
       try {
         const res = await fetch("/api/video-rewards");
         const data = await res.json();
-        if (res.ok && data.claimed) {
-          setUnlockedVideos(data.claimed);
+        if (res.ok && data.videos) {
+          setUnlockedVideos(prev => ({
+            ...prev,
+            campaign: data.videos.campaign,
+            adset: data.videos.adset,
+            ads: data.videos.ads,
+          }));
         }
       } catch {
         // Keep default locked state if loading fails
@@ -213,7 +218,7 @@ export default function CampaignSetupPage() {
   }
 
   async function unlockVideo(videoKey: VideoKey) {
-    if (unlockedVideos[videoKey] || unlockingVideo) return;
+    if (unlockedVideos[videoKey].unlocked || unlockingVideo) return;
 
     setUnlockingVideo(videoKey);
     setNoCredits(false);
@@ -231,7 +236,7 @@ export default function CampaignSetupPage() {
       }
 
       if (res.ok) {
-        setUnlockedVideos(prev => ({ ...prev, [videoKey]: true }));
+        setUnlockedVideos(prev => ({ ...prev, [videoKey]: { unlocked: true, expiresAt: data.expiresAt } }));
         await refreshCredits();
       }
     } finally {
@@ -319,7 +324,7 @@ export default function CampaignSetupPage() {
 
               {!done && (() => {
                 const videoUrl = LEVEL_VIDEOS[step.level];
-                const isUnlocked = unlockedVideos[currentVideoKey];
+                const { unlocked: isUnlocked, expiresAt } = unlockedVideos[currentVideoKey];
                 const isLoadingReward = unlockingVideo === currentVideoKey;
 
                 return (
@@ -331,22 +336,29 @@ export default function CampaignSetupPage() {
                     </div>
                     {videoUrl ? (
                       isUnlocked ? (
-                        <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                          <iframe
-                            src={videoUrl}
-                            className="absolute inset-0 w-full h-full"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          />
-                        </div>
+                        <>
+                          <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                            <iframe
+                              src={videoUrl}
+                              className="absolute inset-0 w-full h-full"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </div>
+                          {expiresAt && (
+                            <p className="text-center text-gray-600 text-xs py-2">
+                              Access expires {new Date(expiresAt).toLocaleString()}
+                            </p>
+                          )}
+                        </>
                       ) : (
                         <div className="px-6 py-10 text-center">
                           <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${step.color}20` }}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                           </div>
                           <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
-                          <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit. One-time unlock per video.</p>
+                          <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                           {noCredits && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                           {!noCredits && <div className="mb-3" />}
                           <button

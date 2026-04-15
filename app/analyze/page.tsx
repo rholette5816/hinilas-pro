@@ -57,6 +57,8 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
   );
 }
 
+type AnalyzeVideoKey = "analyze_basic" | "analyze_advanced";
+
 export default function AnalyzePage() {
   const { setup, credits, refreshCredits } = useApp();
   const router = useRouter();
@@ -89,6 +91,48 @@ export default function AnalyzePage() {
   const cameraRef = useRef<HTMLInputElement>(null);
   const csvRef = useRef<HTMLInputElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
+
+  const [videos, setVideos] = useState<Record<AnalyzeVideoKey, { unlocked: boolean; expiresAt: string | null }>>({
+    analyze_basic: { unlocked: false, expiresAt: null },
+    analyze_advanced: { unlocked: false, expiresAt: null },
+  });
+  const [unlockingVideo, setUnlockingVideo] = useState<AnalyzeVideoKey | null>(null);
+  const [videoNoCredits, setVideoNoCredits] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/video-rewards").then(r => r.json()).then(data => {
+      if (data.videos) {
+        setVideos({
+          analyze_basic: data.videos.analyze_basic,
+          analyze_advanced: data.videos.analyze_advanced,
+        });
+      }
+    }).catch(() => {});
+  }, []);
+
+  async function unlockVideo(videoKey: AnalyzeVideoKey) {
+    if (videos[videoKey].unlocked || unlockingVideo) return;
+    setUnlockingVideo(videoKey);
+    setVideoNoCredits(false);
+    try {
+      const res = await fetch("/api/video-rewards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoKey }),
+      });
+      const data = await res.json();
+      if (res.status === 402 || data.code === "NO_CREDITS") {
+        setVideoNoCredits(true);
+        return;
+      }
+      if (res.ok) {
+        setVideos(prev => ({ ...prev, [videoKey]: { unlocked: true, expiresAt: data.expiresAt } }));
+        await refreshCredits();
+      }
+    } finally {
+      setUnlockingVideo(null);
+    }
+  }
 
   // Load user name
   useEffect(() => {
@@ -763,14 +807,34 @@ show(0);
                   <p className="text-white text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
-                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                  <iframe
-                    src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                    style={{ border: "none" }}
-                  />
-                </div>
+                {videos.analyze_basic.unlocked ? (
+                  <>
+                    <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                      <iframe src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                    </div>
+                    {videos.analyze_basic.expiresAt && (
+                      <p className="text-center text-gray-600 text-xs py-2">Access expires {new Date(videos.analyze_basic.expiresAt).toLocaleString()}</p>
+                    )}
+                  </>
+                ) : (
+                  <div className="px-6 py-10 text-center">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#2B7EC920" }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B7EC9" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
+                    {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
+                    {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
+                    <button
+                      onClick={() => unlockVideo("analyze_basic")}
+                      disabled={unlockingVideo === "analyze_basic"}
+                      className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
+                      style={{ background: "#2B7EC9" }}
+                    >
+                      {unlockingVideo === "analyze_basic" ? "Unlocking..." : "Unlock — 1 credit"}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Column instructions */}
@@ -847,14 +911,34 @@ show(0);
                   <p className="text-white text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
-                <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                  <iframe
-                    src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                    style={{ border: "none" }}
-                  />
-                </div>
+                {videos.analyze_advanced.unlocked ? (
+                  <>
+                    <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                      <iframe src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                    </div>
+                    {videos.analyze_advanced.expiresAt && (
+                      <p className="text-center text-gray-600 text-xs py-2">Access expires {new Date(videos.analyze_advanced.expiresAt).toLocaleString()}</p>
+                    )}
+                  </>
+                ) : (
+                  <div className="px-6 py-10 text-center">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#F5A62320" }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5A623" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
+                    {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
+                    {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
+                    <button
+                      onClick={() => unlockVideo("analyze_advanced")}
+                      disabled={unlockingVideo === "analyze_advanced"}
+                      className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
+                      style={{ background: "#F5A623", color: "#000" }}
+                    >
+                      {unlockingVideo === "analyze_advanced" ? "Unlocking..." : "Unlock — 1 credit"}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Column instructions */}
