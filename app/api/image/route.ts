@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     if (!referenceImage) {
       // --- Main generation: use Imagen 3 ---
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const imagenModel = genAI.getGenerativeModel({ model: "imagen-3.0-generate-001" }) as any;
+      const imagenModel = (genAI as any).getImagenModel({ model: "imagen-3.0-generate-001" });
       const imagenAspectRatio = IMAGEN_ASPECT_RATIOS[aspectRatio] || "1:1";
 
       const result = await imagenModel.generateImages({
