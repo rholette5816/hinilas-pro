@@ -612,8 +612,11 @@ Person positioned on the RIGHT side of the frame.
 
 [LAYER 3] ENVIRONMENT
 ${layers.environment}
-Left half of the image is intentionally open with minimal detail for text overlay.
-Slight shallow depth of field blurring the background.
+Left half of the image is (not fixed, naturally composed) contains a **low-detail, soft-focus, low-contrast area** that acts as a visual rest zone.  
+This area should have smooth gradients, minimal texture, and subtle lighting—never completely empty, but visually quiet.  
+The primary subject occupies the opposite side with strong clarity, contrast, and detail to create natural visual hierarchy.  
+Use depth of field, lighting falloff, and atmospheric blur to guide attention—NOT artificial empty space.  
+Ensure the entire image still feels complete, immersive, and balanced.
 
 [LAYER 4] COMPOSITION
 Person anchored right. Left zone open and clean for text.
@@ -645,7 +648,7 @@ blurry, low quality, distorted face, extra limbs, bad anatomy, text errors, wate
 
 DESIGN RULES:
 - No stat badges, no callout boxes, no icon accents, no infographic elements
-- No highlight bars, no geometric swooshes
+- No highlight bars, can use geometric swooshes
 - No borders, no frames
 - One subject, one message, clean composition
 - All colors, typography, and graphic style must follow the BRAND REFERENCE above exactly
