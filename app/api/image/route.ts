@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-preview-image-generation" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
