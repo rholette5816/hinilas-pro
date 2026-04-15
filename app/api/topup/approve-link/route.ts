@@ -2,11 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
-const REFERRAL_REWARDS: Record<string, number> = {
-  pro_150: 30,
-  max_500: 75,
-  topup_50: 10,
-};
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
   // Check if this user was referred and reward hasn't been granted yet

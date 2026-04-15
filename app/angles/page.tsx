@@ -96,7 +96,7 @@ export default function AnglesPage() {
     }
   }
 
-  function useAngle(angle: Angle, idx: number) {
+  function selectAngle(angle: Angle, idx: number) {
     setSelectedCard(idx);
     const formatted = `ANGLE ${angle.number}: ${angle.name} (${angle.type})\n\nCore Message: ${angle.coreMessage}\nHook: ${angle.hookLine}\nFormula: ${angle.formula}\nUSO: ${angle.uso}`;
     setSelectedAngle(formatted);
@@ -179,7 +179,7 @@ export default function AnglesPage() {
           {showAdjust && (
             <div className="rounded-xl border border-gray-700 p-4 mb-6" style={{ background: "#0F172A" }}>
               <p className="text-sm font-medium text-white mb-2">Tell me what to change</p>
-              <p className="text-gray-500 text-xs mb-3">e.g. "More aggressive tone", "Focus on testimonial", "Target moms aged 25–35"</p>
+              <p className="text-gray-500 text-xs mb-3">e.g. &quot;More aggressive tone&quot;, &quot;Focus on testimonial&quot;, &quot;Target moms aged 25&ndash;35&quot;</p>
               <textarea
                 rows={2}
                 value={adjustNote}
@@ -254,7 +254,7 @@ export default function AnglesPage() {
                       </div>
 
                       <button
-                        onClick={() => useAngle(angle, idx)}
+                        onClick={() => selectAngle(angle, idx)}
                         className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
                         style={{ background: color, color: "#000" }}
                       >
@@ -266,7 +266,7 @@ export default function AnglesPage() {
                     {angle.hookLine && (
                       <div className="mx-5 mb-4 rounded-lg px-4 py-3 border" style={{ background: "#0A0F1A", borderColor: color + "30" }}>
                         <p className="text-xs font-semibold mb-1" style={{ color }}>Hook Line</p>
-                        <p className="text-gray-300 text-sm italic">"{angle.hookLine}"</p>
+                        <p className="text-gray-300 text-sm italic">&quot;{angle.hookLine}&quot;</p>
                       </div>
                     )}
 

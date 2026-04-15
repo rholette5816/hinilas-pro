@@ -77,24 +77,31 @@ export default function FloatingChat() {
   }
 
   useEffect(() => {
+     
     fetchMessages();
     const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {
     if (open) {
+       
       setUnread(0);
+       
       setGlowing(false);
       lastCountRef.current = messages.length;
       localStorage.setItem("hilason_last_count", String(messages.length));
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   // Stop glowing once user has seen the messages
   useEffect(() => {
+     
     if (open && glowing) setGlowing(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {

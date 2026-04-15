@@ -65,9 +65,11 @@ export default function CommunityPage() {
   }
 
   useEffect(() => {
+     
     fetchMessages();
     const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

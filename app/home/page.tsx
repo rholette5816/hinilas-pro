@@ -314,7 +314,7 @@ export default function LandingPage() {
                 ))}
                 <div className="rounded-xl p-4 mt-2" style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.2)" }}>
                   <p className="text-xs font-semibold mb-1" style={{ color: "#F5A623" }}>AI Generated Angle</p>
-                  <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>"Most sellers run ads and hope. You'll know exactly why your customer buys — before the first peso is spent."</p>
+                  <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>&quot;Most sellers run ads and hope. You&apos;ll know exactly why your customer buys — before the first peso is spent.&quot;</p>
                 </div>
               </div>
             </div>
@@ -414,7 +414,7 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <p className="text-xs leading-relaxed italic" style={{ color: "#94A3B8" }}>
-                      "{f.message.length > 150 ? f.message.slice(0, 150) + "..." : f.message}"
+                      &quot;{f.message.length > 150 ? f.message.slice(0, 150) + "..." : f.message}&quot;
                     </p>
                   </div>
                 ))}

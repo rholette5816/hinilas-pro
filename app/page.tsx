@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
@@ -9,26 +9,6 @@ import { useApp, UserSetup } from "@/lib/context";
 const BRAND_BLUE = "#2B7EC9";
 const BRAND_ORANGE = "#F5A623";
 
-const BUSINESS_TYPES = [
-  {
-    value: "physical_product",
-    label: "Physical Product",
-    sub: "Tangible goods, shipping, or retail inventory.",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
-  },
-  {
-    value: "service",
-    label: "Service",
-    sub: "Professional expertise, labor, or consulting.",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-  },
-  {
-    value: "digital",
-    label: "Digital",
-    sub: "SaaS, online courses, software, or digital assets.",
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
-  },
-];
 
 const PH_INDUSTRIES = [
   { value: "skincare_beauty", label: "Skincare / Beauty" },
@@ -115,42 +95,7 @@ export default function SetupPage() {
     setClearing(false);
   }
 
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [notifSeen, setNotifSeen] = useState(false);
-  const notifRef = useRef<HTMLDivElement>(null);
   const setupDone = !!(setup?.businessName);
-
-  const NOTIFICATIONS = [
-    { id: 1, type: "credit", icon: "⚡", title: "30 credits added", desc: "Welcome bonus applied to your account.", time: "Just now" },
-    { id: 2, type: "news", icon: "📢", title: "New: Campaign Setup Guide", desc: "Step-by-step Messenger Ads module is now live.", time: "2 days ago" },
-    { id: 3, type: "news", icon: "🎨", title: "Creative Studio upgraded", desc: "Now supports 3 aspect ratios and variations.", time: "5 days ago" },
-  ];
-
-  // Persist notification seen state in localStorage so it survives logout/login
-  useEffect(() => {
-    const seen = localStorage.getItem("hinilas_notif_seen");
-    if (seen === "true") setNotifSeen(true);
-  }, []);
-
-  function handleOpenNotif() {
-    setNotifOpen(o => !o);
-    if (!notifSeen) {
-      setNotifSeen(true);
-      localStorage.setItem("hinilas_notif_seen", "true");
-    }
-  }
-
-  const unreadCount = notifSeen ? 0 : 1;
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotifOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#0B1120" }}>
@@ -214,7 +159,7 @@ export default function SetupPage() {
               {/* Industry */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Industry</label>
-                <p className="text-xs mb-3" style={{ color: "#64748B" }}>Helps the AI generate creatives that match your industry's visual style.</p>
+                <p className="text-xs mb-3" style={{ color: "#64748B" }}>Helps the AI generate creatives that match your industry&apos;s visual style.</p>
                 <select
                   value={form.industry || ""}
                   onChange={e => setForm({ ...form, industry: e.target.value })}

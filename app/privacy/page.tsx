@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-white font-semibold text-base mb-2">1. Introduction</h2>
-            <p>Hinilas Pro ("we", "our", or "us") operates hinilas.pro. This Privacy Policy explains how we collect, use, and protect your personal information when you use our platform.</p>
+            <p>Hinilas Pro (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates hinilas.pro. This Privacy Policy explains how we collect, use, and protect your personal information when you use our platform.</p>
           </section>
 
           <section>
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold text-base mb-2">9. Children's Privacy</h2>
+            <h2 className="text-white font-semibold text-base mb-2">9. Children&apos;s Privacy</h2>
             <p>Hinilas Pro is not intended for users under the age of 13. We do not knowingly collect data from children.</p>
           </section>
 

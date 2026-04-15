@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const STEPS = [
   {
@@ -37,16 +36,18 @@ interface Props {
 }
 
 export default function TutorialOverlay({ show }: Props) {
-  const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (show) {
       localStorage.removeItem(STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrent(0);
+       
       setVisible(true);
     } else {
+       
       setVisible(false);
     }
   }, [show]);

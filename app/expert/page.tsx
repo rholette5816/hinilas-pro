@@ -110,7 +110,7 @@ export default function ExpertPage() {
             </div>
             <div className="rounded-xl border border-amber-900 px-5 py-4 mb-8 text-left" style={{ background: "#1C1200" }}>
               <p className="text-amber-300 text-sm font-semibold mb-1">Check your email</p>
-              <p className="text-amber-700 text-xs">The Google Meet link will be sent to your email about 1 hour before the session. If you don't see it, please check your spam or junk folder.</p>
+              <p className="text-amber-700 text-xs">The Google Meet link will be sent to your email about 1 hour before the session. If you don&apos;t see it, please check your spam or junk folder.</p>
             </div>
             <button
               onClick={() => router.push("/creative")}

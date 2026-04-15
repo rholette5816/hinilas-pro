@@ -129,6 +129,7 @@ export default function Sidebar() {
 
   const creditPct = Math.min((credits / Math.max(creditsTotal, 1)) * 100, 100);
   const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const planLabel = plan === "max" ? "Max Plan" : plan === "flex" ? "Flex Plan" : "Lite Plan";
   const planSuffix = plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite";
 
@@ -360,12 +361,14 @@ export default function Sidebar() {
           className="absolute top-3 right-4 z-10 text-gray-500 hover:text-white p-1"
         >✕</button>
         <div className="h-full">
+          {/* eslint-disable-next-line react-hooks/static-components */}
           <SidebarContent />
         </div>
       </aside>
 
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-60 flex-col h-full shrink-0" style={{ background: "rgba(15,23,42,0.85)", backdropFilter: "blur(12px)", borderRight: "1px solid #1E2D45" }}>
+        {/* eslint-disable-next-line react-hooks/static-components */}
         <SidebarContent />
       </aside>
 

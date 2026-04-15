@@ -82,6 +82,7 @@ export default function AnalyzePage() {
   const [savedAtBasic, setSavedAtBasic] = useState<string | null>(null);
   const [savedAtAdvanced, setSavedAtAdvanced] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showReport, setShowReport] = useState(false);
   const [userName, setUserName] = useState("User");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -190,6 +191,7 @@ export default function AnalyzePage() {
         .replace(/🔴/g, '<span class="dot-r">●</span>');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function statusBadge(line: string): string {
       const upper = line.toUpperCase();
       if (upper.includes("SCALE")) return '<span class="badge badge-scale">SCALE</span>';
@@ -555,6 +557,7 @@ show(0);
     URL.revokeObjectURL(url);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function downloadPDF() {
     if (!output || !reportRef.current) return;
     const html2pdf = (await import("html2pdf.js")).default;

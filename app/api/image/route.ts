@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleGenAI } from "@google/genai";
 import { createClient } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
@@ -11,14 +10,9 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1.91:1": "horizontal landscape banner (1.91:1 aspect ratio, wider than tall)",
 };
 
-const IMAGEN_ASPECT_RATIOS: Record<string, string> = {
-  "1:1": "1:1",
-  "9:16": "9:16",
-  "1.91:1": "16:9",
-};
 
 export async function POST(req: NextRequest) {
-  const { prompt, count = 1, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0 } = await req.json();
+  const { prompt, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0 } = await req.json();
 
   // --- Credit gate ---
   const supabase = await createClient();

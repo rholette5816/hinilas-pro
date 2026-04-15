@@ -223,7 +223,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
             <p className="text-gray-400 text-sm mb-1">Ref: <span className="text-white font-mono font-semibold">#{bookingRef}</span></p>
             <p className="text-gray-500 text-xs mb-1">{date} · {time} GMT+8</p>
             <p className="text-gray-400 text-xs mb-2">A <strong className="text-white">Google Meet link</strong> will be sent to your email approximately <strong className="text-white">1 hour before</strong> your session.</p>
-            <p className="text-amber-600 text-xs mb-6">If you don't see it, please check your spam or junk folder.</p>
+            <p className="text-amber-600 text-xs mb-6">If you don&apos;t see it, please check your spam or junk folder.</p>
             <button onClick={close} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
               Done
             </button>

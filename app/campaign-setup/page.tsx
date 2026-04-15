@@ -227,7 +227,7 @@ export default function CampaignSetupPage() {
               <h2 className="text-white font-bold text-xl mb-2">Conversion Setup — Upcoming</h2>
               <p className="text-gray-400 text-sm mb-1">This guide covers Facebook Pixel setup, website conversion campaigns, and purchase-optimized ad sets.</p>
               <p className="text-gray-500 text-xs mb-6">Currently in production.</p>
-              <p className="text-indigo-400 text-xs">Stay tuned — we'll notify you when it drops.</p>
+              <p className="text-indigo-400 text-xs">Stay tuned — we&apos;ll notify you when it drops.</p>
             </div>
           )}
 
@@ -308,7 +308,7 @@ export default function CampaignSetupPage() {
                 <span className="text-4xl">✓</span>
               </div>
               <h2 className="text-white font-bold text-xl mb-2">Campaign Ready to Publish!</h2>
-              <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here's your final structure:</p>
+              <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
               <div className="space-y-3 mb-8">
                 {[
                   { icon: "🎯", label: "1 Campaign", sub: "Engagement objective", color: "#2B7EC9" },

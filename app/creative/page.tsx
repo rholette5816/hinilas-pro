@@ -32,7 +32,7 @@ export default function CreativePage() {
   const logoRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<HTMLInputElement>(null);
 
-  function useForCopy(img: string) {
+  function applyForCopy(img: string) {
     setCreativeImage(img);
     router.push("/copy");
   }
@@ -322,7 +322,7 @@ export default function CreativePage() {
                 <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
                   <button
-                    onClick={() => useForCopy(mainImage)}
+                    onClick={() => applyForCopy(mainImage)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
                     style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 12px #ff6a0080" }}
                   >
@@ -373,7 +373,7 @@ export default function CreativePage() {
                         <img src={iterations[i]!} alt={`Variation ${i + 2}`} className="w-full object-cover" />
                         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
                           <button
-                            onClick={() => useForCopy(iterations[i]!)}
+                            onClick={() => applyForCopy(iterations[i]!)}
                             className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
                             style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 10px #ff6a0070" }}
                           >

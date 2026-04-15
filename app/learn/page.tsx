@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/Sidebar";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _MODULES = [
   {
     title: "Phase 1 — Foundation",
@@ -133,7 +134,7 @@ export default function LearnPage() {
               <h2 className="text-white font-bold text-xl mb-2">Full Course — Upcoming</h2>
               <p className="text-gray-400 text-sm mb-1">The Hinilas Pro full course is currently in production.</p>
               <p className="text-gray-500 text-xs mb-6">7 phases · 61 topics · Video lessons · Downloadable PDFs</p>
-              <p className="text-indigo-400 text-xs">Stay tuned — we'll notify you when it drops.</p>
+              <p className="text-indigo-400 text-xs">Stay tuned — we&apos;ll notify you when it drops.</p>
             </div>
           </div>
         </main>
