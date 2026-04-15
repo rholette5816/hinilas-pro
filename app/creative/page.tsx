@@ -346,10 +346,7 @@ export default function CreativePage() {
                 {[0, 1].map(i => (
                   <div key={i}>
                     <div className="flex items-center justify-between mb-1">
-                      <div>
-                        <p className="text-gray-300 text-xs font-medium">{i === 0 ? "Story / Reels" : "Banner Ad"}</p>
-                        <p className="text-gray-600 text-[10px]">{i === 0 ? "9:16 — Stories & Reels" : "1.91:1 — Link & Banner"}</p>
-                      </div>
+                      <p className="text-gray-300 text-xs font-medium">Variation {i + 1}</p>
                       <button
                         onClick={() => generateIteration(i)}
                         disabled={loadingIter[i]}
