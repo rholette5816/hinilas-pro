@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     if (!referenceImage) {
       // --- Main generation: use Gemini 2.0 Flash ---
       const geminiMain = new GoogleGenerativeAI(apiKey);
-      const mainModel = geminiMain.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" });
+      const mainModel = geminiMain.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const ratioLabelMain = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
       const result = await mainModel.generateContent({
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       }
     } else {
       // --- Variations: use Gemini (supports reference image input) ---
-      const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" });
+      const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
