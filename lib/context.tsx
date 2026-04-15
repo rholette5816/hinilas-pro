@@ -93,29 +93,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
           v2: data.variation_2_url || null,
         });
 
-        // Check for unread referral credits
+        // Check for unread referral credits — run in background, don't block hydration
         const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
-        // Add 1 second buffer to avoid showing same transactions again
         const lastNotifiedPlusBuffer = new Date(lastNotified.getTime() + 1000);
-        const { data: newReferrals } = await supabase
+
+        supabase
           .from("credit_transactions")
           .select("id, amount, description, created_at")
           .eq("user_id", user.id)
           .in("type", ["referral", "topup", "grant"])
           .gt("created_at", lastNotifiedPlusBuffer.toISOString())
-          .order("created_at", { ascending: false });
-
-        if (newReferrals && newReferrals.length > 0) {
-          const toasts = newReferrals.map((r, i) => ({
-            id: i,
-            amount: r.amount,
-            message: r.description,
-          }));
-          setReferralToasts(toasts);
-          // Update last_notified_at — mark all as seen
-          const { error: notifyError } = await supabase.from("user_data").update({ last_notified_at: new Date().toISOString() }).eq("user_id", user.id);
-          if (notifyError) console.error("last_notified_at update failed:", notifyError);
-        }
+          .order("created_at", { ascending: false })
+          .then(({ data: newReferrals }) => {
+            if (newReferrals && newReferrals.length > 0) {
+              setReferralToasts(newReferrals.map((r, i) => ({
+                id: i,
+                amount: r.amount,
+                message: r.description,
+              })));
+              // Fire and forget — don't await
+              supabase.from("user_data").update({ last_notified_at: new Date().toISOString() }).eq("user_id", user.id);
+            }
+          });
       }
 
       setHydrated(true);

@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -51,7 +52,7 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
-  const adminSupabase = (await import("@supabase/supabase-js")).createClient(
+  const adminSupabase = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
