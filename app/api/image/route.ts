@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { createClient } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
@@ -49,24 +50,29 @@ export async function POST(req: NextRequest) {
   const images: string[] = [];
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(apiKey); // used for variations (Gemini)
 
     if (!referenceImage) {
-      // --- Main generation: use Imagen 3 ---
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const imagenModel = (genAI as any).getImagenModel({ model: "imagen-3.0-generate-001" });
+      // --- Main generation: use Imagen 3 via new @google/genai SDK ---
+      const imagenClient = new GoogleGenAI({ apiKey });
       const imagenAspectRatio = IMAGEN_ASPECT_RATIOS[aspectRatio] || "1:1";
 
-      const result = await imagenModel.generateImages({
-        prompt: `${prompt}`,
-        numberOfImages: 1,
-        aspectRatio: imagenAspectRatio,
-        safetyFilterLevel: "block_only_high",
+      const result = await imagenClient.models.generateImages({
+        model: "imagen-3.0-generate-001",
+        prompt,
+        config: {
+          numberOfImages: 1,
+          aspectRatio: imagenAspectRatio,
+          outputMimeType: "image/png",
+        },
       });
 
-      if (result.images && result.images.length > 0) {
-        const imageData = result.images[0].imageData;
-        images.push(`data:image/png;base64,${imageData}`);
+      if (result.generatedImages && result.generatedImages.length > 0) {
+        const imageData = result.generatedImages[0].image?.imageBytes;
+        if (imageData) {
+          const base64 = Buffer.from(imageData).toString("base64");
+          images.push(`data:image/png;base64,${base64}`);
+        }
       }
     } else {
       // --- Variations: use Gemini (supports reference image input) ---
