@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 
+export const maxDuration = 60;
+
 const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1:1": "square (1:1 aspect ratio)",
   "9:16": "vertical portrait (9:16 aspect ratio, taller than wide)",
@@ -40,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-preview-image-generation" });
 
     const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
