@@ -232,11 +232,14 @@ Rules:
 - Always use Philippine context: pesos, Messenger, COD, Filipino buyers.
 `,
 
-  research: (userContext: string) => `
+  research: (userContext: string, language?: string) => `
 ${HILAS_KNOWLEDGE}
 
 # USER CONTEXT
 ${userContext}
+
+# LANGUAGE
+Write your entire response in ${language || "Taglish"}. This applies to all sections, headings, and content.
 
 # TASK
 Do a deep market research for this business/product. Use the Unique Selling Offer from the USER CONTEXT to shape the pains, desires, and targeting — the offer must feel like the answer to what this customer is already looking for. Return a structured output:
@@ -269,13 +272,16 @@ What are they using now? Why doesn't it fully solve the problem?
 Keep everything specific to the Philippine market.
 `,
 
-  angles: (userContext: string, researchContext?: string) => `
+  angles: (userContext: string, researchContext?: string, language?: string) => `
 ${HILAS_KNOWLEDGE}
 
 # USER CONTEXT
 ${userContext}
 
 ${researchContext ? `# RESEARCH INSIGHTS\n${researchContext}` : ''}
+
+# LANGUAGE
+Write your entire response in ${language || "Taglish"}. This applies to all sections, headings, and content.
 
 # TASK
 Generate 5 marketing angles for this product/business. For each angle output exactly this structure:

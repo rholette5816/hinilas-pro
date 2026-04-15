@@ -75,7 +75,7 @@ export default function AnglesPage() {
     await refreshCredits();
 
     const userCtx = buildUserContext(setup);
-    let prompt = MODULE_PROMPTS.angles(userCtx, researchOutput);
+    let prompt = MODULE_PROMPTS.angles(userCtx, researchOutput, setup.language);
     if (adjustment?.trim()) {
       prompt += `\n\n# ADJUSTMENT REQUEST\nThe user was not satisfied with the previous angles. Their direction: "${adjustment.trim()}"\nGenerate 5 new angles based on this feedback.`;
     }

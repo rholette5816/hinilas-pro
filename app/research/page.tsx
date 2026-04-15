@@ -25,7 +25,7 @@ export default function ResearchPage() {
     await refreshCredits();
 
     const userCtx = buildUserContext(setup);
-    const prompt = MODULE_PROMPTS.research(userCtx);
+    const prompt = MODULE_PROMPTS.research(userCtx, setup.language);
 
     try {
       const res = await fetch("/api/chat", {
