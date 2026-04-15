@@ -592,76 +592,46 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
     const layers = MODULE_PROMPTS.getIndustryLayers(industry || "");
     return `
-Create a ready-to-run static Meta ad image. Cinematic. High-converting. Agency quality.
+Commercial editorial photograph for a brand advertisement. Cinematic. High-converting. Agency quality.
 
 BUSINESS: ${userContext}
+MARKETING ANGLE: ${angle}
+FORMAT: ${format}
 
-MARKETING ANGLE:
-${angle}
-
-The image must visually communicate the emotion and core message of this angle. A viewer who does not read the headline should already feel it from the image alone.
-
-FORMAT: ${format} aspect ratio
-
-[LAYER 1] COMMERCIAL INTENT
-Commercial editorial photograph for a brand advertisement.
-
-[LAYER 2] PERSON
+[PERSON]
 ${layers.person}
-Person positioned on the RIGHT side of the frame.
+Positioned on the RIGHT side of the frame.
 
-[LAYER 3] ENVIRONMENT
+[ENVIRONMENT]
 ${layers.environment}
-Left half of the image is (not fixed, naturally composed) contains a **low-detail, soft-focus, low-contrast area** that acts as a visual rest zone.  
-This area should have smooth gradients, minimal texture, and subtle lighting—never completely empty, but visually quiet.  
-The primary subject occupies the opposite side with strong clarity, contrast, and detail to create natural visual hierarchy.  
-Use depth of field, lighting falloff, and atmospheric blur to guide attention—NOT artificial empty space.  
-Ensure the entire image still feels complete, immersive, and balanced.
+Left side: low-detail, soft-focus, low-contrast visual rest zone — smooth gradients, minimal texture, subtle lighting. Never empty but visually quiet. Use depth of field and lighting falloff to create natural hierarchy.
 
-[LAYER 4] COMPOSITION
-Person anchored right. Left zone open and clean for text.
-${format} composition.
+[LIGHTING]
+${layers.lighting} Natural skin tones.
 
-[LAYER 5] LIGHTING
-${layers.lighting}
-Natural skin tones.
-
-[LAYER 6] RENDER QUALITY
-Commercial advertising photography style, photorealistic, sharp focus on subject, ultra-high resolution.
-${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: medium size, bottom left corner, clean — add a subtle drop shadow or soft outer glow to lift it from the background and make it feel intentional, not stamped` : ""}
-${productDesc ? `HERO SUBJECT: ${productDesc}\n- Feature as the dominant focal point` : ""}
+[RENDER]
+Photorealistic, sharp focus on subject, ultra-high resolution.
+${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: medium size, bottom left corner — subtle drop shadow or soft outer glow` : ""}
+${productDesc ? `HERO SUBJECT: ${productDesc} — dominant focal point` : ""}
 ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
-GRAPHIC ELEMENT:
-Pick ONE from this list that best matches the emotion and goal of the marketing angle:
-- Gradient blur wash behind the text zone with oversized typography (best for: scroll stop, bold hooks)
-- Frosted glass panel behind the text block, semi-transparent with thin border (best for: authority, premium, trust)
-- Solid bold color block behind the text, high contrast (best for: hard sell, urgency, COD offers)
-- Directional swoosh or arc sweeping across the background behind the text (best for: energy, youth, excitement)
-- Corner tag or angled banner in one corner carrying the CTA (best for: subtle offers, clean layouts)
-Match the choice to the angle's emotion — aggressive angle = bold block, premium angle = glass panel, youth/energy angle = swoosh, authority angle = glass panel, subtle angle = corner tag.
+GRAPHIC ELEMENT — pick ONE based on angle emotion:
+- Gradient blur wash + oversized text (scroll stop / bold hooks)
+- Frosted glass panel, semi-transparent, thin border (authority / premium)
+- Solid bold color block, high contrast (hard sell / urgency)
+- Directional swoosh or arc behind text (energy / youth)
+- Corner tag or angled banner with CTA (subtle / clean)
 
-HEADLINE TREATMENT (LEFT ZONE):
-- Extract the core hook from the angle and render 3 lines in the left open zone
-- All colors, font style, and weight must follow the BRAND REFERENCE above exactly
-- Line 1 (Hook — Context): use the primary brand font style, medium weight, 4–5 words, brand-appropriate light or white tone
-- Line 2 (Hook — Curiosity/Clarity): use the primary brand color from BRAND REFERENCE, bold, slightly larger than Line 1
-- Line 3 (Offer): use the secondary brand color or lightest brand tone from BRAND REFERENCE, smaller, 1 clean line — the specific promise or deal
-- Below Line 3: a pill-shaped CTA button, filled with the primary brand color from BRAND REFERENCE, white bold text
-- Text left-aligned, stacked vertically in the left third
-- Font style must match the brand identity from BRAND REFERENCE
-- ALL TEXT spelled correctly — zero typos, zero distortion
+HEADLINE (LEFT ZONE) — all colors and fonts follow BRAND REFERENCE:
+- Line 1: brand font, medium weight, 4–5 words, light brand tone
+- Line 2: primary brand color, bold, slightly larger
+- Line 3: secondary brand color, smaller — 1 line offer/promise
+- Below: pill CTA button, primary brand color fill, white bold text
+- Left-aligned, stacked. Zero typos. Zero distortion.
 
-NEGATIVE PROMPT (never render these):
-blurry, low quality, distorted face, extra limbs, bad anatomy, text errors, watermark, dark horror lighting, oversaturated, cluttered foreground, floating objects, AI artifacts, cartoon, illustration, 3D render, anime, extra text not specified above.
-
-DESIGN RULES:
-- No stat badges, no callout boxes, no icon accents, no infographic elements
-- No highlight bars
-- No borders, no frames
-- One subject, one message, clean composition
-- All colors, typography, and graphic style must follow the BRAND REFERENCE above exactly
-- Final output must look like a real Facebook/Instagram ad — ready to upload
+NEGATIVE: blurry, distorted face, extra limbs, text errors, watermark, horror lighting, oversaturated, AI artifacts, cartoon, 3D render, anime.
+No badges, callouts, borders, frames. One subject, one message.
+Final output: ready-to-upload Facebook/Instagram ad.
 `;
   },
 };
