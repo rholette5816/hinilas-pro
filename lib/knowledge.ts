@@ -628,9 +628,18 @@ Natural skin tones.
 
 [LAYER 6] RENDER QUALITY
 Commercial advertising photography style, photorealistic, sharp focus on subject, ultra-high resolution.
-${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: small, clean, bottom left corner` : ""}
+${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: medium size, bottom left corner, clean — add a subtle drop shadow or soft outer glow to lift it from the background and make it feel intentional, not stamped` : ""}
 ${productDesc ? `HERO SUBJECT: ${productDesc}\n- Feature as the dominant focal point` : ""}
 ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
+
+GRAPHIC ELEMENT:
+Pick ONE from this list that best matches the emotion and goal of the marketing angle:
+- Gradient blur wash behind the text zone with oversized typography (best for: scroll stop, bold hooks)
+- Frosted glass panel behind the text block, semi-transparent with thin border (best for: authority, premium, trust)
+- Solid bold color block behind the text, high contrast (best for: hard sell, urgency, COD offers)
+- Directional swoosh or arc sweeping across the background behind the text (best for: energy, youth, excitement)
+- Corner tag or angled banner in one corner carrying the CTA (best for: subtle offers, clean layouts)
+Match the choice to the angle's emotion — aggressive angle = bold block, premium angle = glass panel, youth/energy angle = swoosh, authority angle = glass panel, subtle angle = corner tag.
 
 HEADLINE TREATMENT (LEFT ZONE):
 - Extract the core hook from the angle and render 3 lines in the left open zone
@@ -648,7 +657,7 @@ blurry, low quality, distorted face, extra limbs, bad anatomy, text errors, wate
 
 DESIGN RULES:
 - No stat badges, no callout boxes, no icon accents, no infographic elements
-- No highlight bars, can use geometric swooshes
+- No highlight bars
 - No borders, no frames
 - One subject, one message, clean composition
 - All colors, typography, and graphic style must follow the BRAND REFERENCE above exactly
