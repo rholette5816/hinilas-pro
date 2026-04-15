@@ -327,7 +327,7 @@ export default function LandingPage() {
             {[
               { value: avgRating, suffix: "/5 ★", label: "Average Rating" },
               { value: "4", suffix: " Steps", label: "Core Modules" },
-              { value: "20", suffix: " Credits", label: "Free on Signup" },
+              { value: "30", suffix: " Credits", label: "Free on Signup" },
               { value: "∞", suffix: "", label: "Unlimited Text Generation" },
             ].map(stat => (
               <div key={stat.label}>

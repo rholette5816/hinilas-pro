@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     .eq("user_id", user.id)
     .single();
 
-  if (!userData || userData.credits_remaining < 3) {
+  if (!userData || userData.credits_remaining < 2) {
     return NextResponse.json(
       { error: "No credits remaining", code: "NO_CREDITS" },
       { status: 402 }
@@ -131,8 +131,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
 
-    // Deduct 3 credits after successful generation
-    const newCredits = userData.credits_remaining - 3;
+    // Deduct 2 credits after successful generation
+    const newCredits = userData.credits_remaining - 2;
     await supabase
       .from("user_data")
       .update({ credits_remaining: newCredits })
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
     await supabase.from("credit_transactions").insert({
       user_id: user.id,
       type: "use",
-      amount: -3,
+      amount: -2,
       description: "Image generation",
     });
 

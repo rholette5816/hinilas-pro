@@ -121,7 +121,7 @@ export default function SetupPage() {
   const setupDone = !!(setup?.businessName);
 
   const NOTIFICATIONS = [
-    { id: 1, type: "credit", icon: "⚡", title: "5 credits added", desc: "Welcome bonus applied to your account.", time: "Just now" },
+    { id: 1, type: "credit", icon: "⚡", title: "30 credits added", desc: "Welcome bonus applied to your account.", time: "Just now" },
     { id: 2, type: "news", icon: "📢", title: "New: Campaign Setup Guide", desc: "Step-by-step Messenger Ads module is now live.", time: "2 days ago" },
     { id: 3, type: "news", icon: "🎨", title: "Creative Studio upgraded", desc: "Now supports 3 aspect ratios and variations.", time: "5 days ago" },
   ];

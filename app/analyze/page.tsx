@@ -647,19 +647,19 @@ show(0);
         const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, basic: { output: result, savedAt: ts } }));
       } else {
-        // Deduct 3 credits for advanced analysis
-        if (credits < 3) {
-          setOutputAdvanced("Not enough credits. Advanced Analysis costs 3 credits.");
+        // Deduct 2 credits for advanced analysis
+        if (credits < 2) {
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 2 credits.");
           setLoading(false);
           return;
         }
         const deductRes = await fetch("/api/credits/use", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: 3, description: "Advanced Analysis" }),
+          body: JSON.stringify({ amount: 2, description: "Advanced Analysis" }),
         });
         if (!deductRes.ok) {
-          setOutputAdvanced("Not enough credits. Advanced Analysis costs 3 credits.");
+          setOutputAdvanced("Not enough credits. Advanced Analysis costs 2 credits.");
           setLoading(false);
           return;
         }
@@ -926,7 +926,7 @@ show(0);
                 <span className="flex items-center justify-center gap-2">
                   {mode === "advanced" ? "Run Advanced Analysis" : "Analyze My Results"}
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>
-                    {mode === "advanced" ? "3 cr" : "1 cr"}
+                    {mode === "advanced" ? "2 cr" : "1 cr"}
                   </span>
                 </span>
               )}

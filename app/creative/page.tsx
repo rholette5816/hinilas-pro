@@ -301,7 +301,7 @@ export default function CreativePage() {
                 style={{ background: "#F5A623" }}
               >
                 {loadingMain ? "Generating..." : mainImage ? "Regenerate" : "Generate Image"}
-                {!loadingMain && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)" }}>3 cr</span>}
+                {!loadingMain && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)" }}>2 cr</span>}
               </button>
             </div>
 
@@ -340,7 +340,7 @@ export default function CreativePage() {
           {mainImage && !loadingMain && (
             <div className="border-t border-gray-700 pt-6 mb-8">
               <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
-              <p className="text-gray-500 text-xs mb-5">Different placements, different formats. Each uses 3 credits.</p>
+              <p className="text-gray-500 text-xs mb-5">Different placements, different formats. Each uses 2 credits.</p>
 
               <div className="grid grid-cols-2 gap-4">
                 {[0, 1].map(i => (
@@ -354,7 +354,7 @@ export default function CreativePage() {
                         style={{ background: "#2B7EC9" }}
                       >
                         {loadingIter[i] ? "..." : iterations[i] ? "Regenerate" : "Generate"}
-                        {!loadingIter[i] && <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>3 cr</span>}
+                        {!loadingIter[i] && <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>2 cr</span>}
                       </button>
                     </div>
 

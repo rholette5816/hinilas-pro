@@ -68,13 +68,13 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
   const isNew = !existing;
 
   if (isNew) {
-    // New user — grant 20 signup credits, save referral info + username
+    // New user — grant 30 signup credits, save referral info + username
     const username = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User";
     const avatar_url = user.user_metadata?.avatar_url || null;
     await adminSupabase.from("user_data").upsert({
       user_id: user.id,
-      credits_remaining: 20,
-      credits_total: 20,
+      credits_remaining: 30,
+      credits_total: 30,
       plan: "lite",
       referral_code: referralCode,
       referred_by: referredBy,
@@ -86,8 +86,8 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
     await adminSupabase.from("credit_transactions").insert({
       user_id: user.id,
       type: "grant",
-      amount: 20,
-      description: "Welcome credits — account verified",
+      amount: 30,
+      description: "Welcome credits — 30 free credits on signup",
     });
 
     // Grant 5 credits to referrer on signup
