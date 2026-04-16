@@ -161,8 +161,7 @@ export default function AnglesPage() {
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
               style={{ background: "#F5A623", color: "#000" }}
             >
-              {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles" : "Generate Angles"}
-              {!loading && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>1 cr</span>}
+              {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles — 1 credit" : "Generate Angles — 1 credit"}
             </button>
 
             {angles.length > 0 && !loading && (
@@ -193,8 +192,7 @@ export default function AnglesPage() {
                 className="text-sm font-semibold px-5 py-2.5 rounded-lg disabled:opacity-40 transition-opacity hover:opacity-90"
                 style={{ background: "#F5A623", color: "#000" }}
               >
-                Regenerate with Adjustment
-                <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.15)" }}>1 cr</span>
+                Regenerate with Adjustment — 1 credit
               </button>
             </div>
           )}

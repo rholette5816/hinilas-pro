@@ -300,8 +300,7 @@ export default function CreativePage() {
                 className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: "#F5A623" }}
               >
-                {loadingMain ? "Generating..." : mainImage ? "Regenerate" : "Generate Image"}
-                {!loadingMain && <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.2)" }}>2 cr</span>}
+                {loadingMain ? "Generating..." : mainImage ? "Regenerate — 2 credits" : "Generate Image — 2 credits"}
               </button>
             </div>
 
@@ -353,8 +352,7 @@ export default function CreativePage() {
                         className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                         style={{ background: "#2B7EC9" }}
                       >
-                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate" : "Generate"}
-                        {!loadingIter[i] && <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.15)" }}>2 cr</span>}
+                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate — 2 credits" : "Generate — 2 credits"}
                       </button>
                     </div>
 
