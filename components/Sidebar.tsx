@@ -7,6 +7,7 @@ import { useApp } from "@/lib/context";
 import { HinilasIcon } from "@/components/HinilasLogo";
 import FloatingExpert from "@/components/FloatingExpert";
 import FloatingFeedback from "@/components/FloatingFeedback";
+import { OWNER_EMAILS } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
@@ -76,6 +77,7 @@ export default function Sidebar() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [earnOpen, setEarnOpen] = useState(false);
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
   const [copied, setCopied] = useState(false);
   const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
   const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; avatar_url: string | null; credits: number }[]>([]);
@@ -90,6 +92,9 @@ export default function Sidebar() {
           name: user.user_metadata?.full_name || user.email || "User",
           avatar: user.user_metadata?.avatar_url || "",
         });
+        if (user.email && OWNER_EMAILS.includes(user.email.toLowerCase().trim())) {
+          setIsOwner(true);
+        }
       }
     });
   }, []);
@@ -322,12 +327,14 @@ export default function Sidebar() {
         {canEarnFromFeedback && (
           <button
             onClick={() => setFeedbackOpen(true)}
-            className="w-full mb-3 rounded-xl px-3 py-3 text-left transition-all hover:opacity-90"
+            className="w-full mb-3 rounded-lg px-3 py-2 text-left flex items-center gap-2 transition-all hover:opacity-90"
             style={{ background: "#1C1200", border: "1px solid #92400E40" }}
           >
-            <p className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">Low credits</p>
-            <p className="text-white text-sm font-semibold">Leave feedback and earn credits</p>
-            <p className="text-amber-700 text-xs mt-1">One-time reward. Add a video for +50 credits.</p>
+            <span className="text-amber-400 text-base shrink-0">⚡</span>
+            <div className="min-w-0">
+              <p className="text-white text-xs font-semibold">Leave feedback and earn credits</p>
+              <p className="text-amber-700 text-[10px]">One-time reward. +50 for video.</p>
+            </div>
           </button>
         )}
 
@@ -352,6 +359,16 @@ export default function Sidebar() {
                 </div>
               </div>
             </div>
+            {isOwner && (
+              <button
+                onClick={() => { setMobileOpen(false); router.push("/admin"); }}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 mb-1.5"
+                style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Admin Dashboard
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"

@@ -25,6 +25,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
   const [videoName, setVideoName] = useState("");
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -113,10 +114,10 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/70 flex items-end md:items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/70 flex items-end md:items-center justify-center p-3"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="w-full max-w-md rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+      <div className="w-full max-w-sm rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
         {checking && (
           <div className="px-6 py-8 text-center text-gray-500 text-sm">Loading...</div>
         )}
@@ -134,33 +135,32 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
 
         {!checking && step === "form" && (
           <>
-            <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
+            <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
               <div>
-                <h3 className="text-white font-bold text-base">Send Feedback</h3>
-                <p className="text-gray-500 text-xs mt-0.5">One-time reward. Add a video for +50 credits.</p>
+                <h3 className="text-white font-bold text-sm">Send Feedback</h3>
+                <p className="text-gray-500 text-xs">One-time reward. +50 for video.</p>
               </div>
-              <button onClick={onClose} className="text-gray-500 hover:text-white text-lg px-1">✕</button>
+              <button onClick={onClose} className="text-gray-500 hover:text-white text-base px-1">✕</button>
             </div>
 
-            <div className="px-5 py-5 space-y-4">
-              <div className="rounded-xl p-3" style={{ background: "#0A0F1A", border: "1px solid #1E2D45" }}>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-2">Credits per rating - one-time reward</p>
-                <div className="flex justify-between">
+            <div className="px-4 py-4 space-y-3">
+              {/* Reward info — compact inline */}
+              <div className="rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: "#0A0F1A", border: "1px solid #1E2D45" }}>
+                <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(s => (
                     <div key={s} className="text-center">
-                      <p className="text-base" style={{ color: s <= (hovered || rating) ? "#F5A623" : "#374151" }}>★</p>
-                      <p className="text-[10px] font-bold" style={{ color: s <= (hovered || rating) ? "#22c55e" : "#334155" }}>+{STAR_REWARDS[s]}</p>
+                      <p className="text-sm leading-none" style={{ color: s <= (hovered || rating) ? "#F5A623" : "#374151" }}>★</p>
+                      <p className="text-[10px] font-bold mt-0.5" style={{ color: s <= (hovered || rating) ? "#22c55e" : "#334155" }}>+{STAR_REWARDS[s]}</p>
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 rounded-lg px-3 py-2 text-center" style={{ background: "#052e16", border: "1px solid #14532d" }}>
-                  <p className="text-emerald-300 text-xs font-semibold">Video bonus: +50 credits</p>
-                </div>
+                <span className="text-[10px] font-semibold px-2 py-1 rounded-full" style={{ background: "#052e16", color: "#22c55e", border: "1px solid #14532d" }}>+50 video</span>
               </div>
 
+              {/* Stars */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-2">How satisfied are you?</label>
-                <div className="flex gap-2">
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">How satisfied are you?</label>
+                <div className="flex gap-1.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -168,76 +168,71 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHovered(star)}
                       onMouseLeave={() => setHovered(0)}
-                      className="text-2xl transition-transform hover:scale-110"
+                      className="text-xl transition-transform hover:scale-110"
                     >
                       <span style={{ color: star <= (hovered || rating) ? "#F5A623" : "#374151" }}>★</span>
                     </button>
                   ))}
+                  {rating > 0 && (
+                    <span className="text-xs font-semibold ml-1 self-center" style={{ color: "#22c55e" }}>+{totalReward} credits</span>
+                  )}
                 </div>
-                {rating > 0 && (
-                  <p className="text-xs mt-1.5 font-semibold" style={{ color: "#22c55e" }}>
-                    You&apos;ll earn +{totalReward} credits
-                  </p>
-                )}
               </div>
 
+              {/* Category */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Category</label>
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
 
+              {/* Message */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Your feedback</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Your feedback</label>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder="What&apos;s working well? What can we improve?"
-                  rows={4}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                  placeholder="What's working well? What can we improve?"
+                  rows={3}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-600 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                 />
               </div>
 
+              {/* Video upload */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Optional video testimonial</label>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="video/*"
-                  onChange={handleVideoChange}
-                  className="hidden"
-                />
+                <label className="block text-xs font-medium text-gray-400 mb-1">Optional video testimonial (+50 credits)</label>
+                <input ref={fileRef} type="file" accept="video/*" onChange={handleVideoChange} className="hidden" />
+                <input ref={cameraRef} type="file" accept="video/*" capture="user" onChange={handleVideoChange} className="hidden" />
                 {video ? (
-                  <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#0A0F1A" }}>
-                    <div>
-                      <p className="text-white text-sm font-medium">{videoName}</p>
-                      <p className="text-emerald-400 text-xs">+50 credits bonus included</p>
+                  <div className="rounded-lg border border-gray-700 px-3 py-2 flex items-center justify-between" style={{ background: "#0A0F1A" }}>
+                    <div className="min-w-0 mr-2">
+                      <p className="text-white text-xs font-medium truncate">{videoName}</p>
+                      <p className="text-emerald-400 text-[10px]">+50 credits included</p>
                     </div>
-                    <button
-                      onClick={() => {
-                        setVideo(null);
-                        setVideoName("");
-                        if (fileRef.current) fileRef.current.value = "";
-                      }}
-                      className="text-xs text-red-400 hover:text-red-300"
-                    >
-                      Remove
-                    </button>
+                    <button onClick={() => { setVideo(null); setVideoName(""); if (fileRef.current) fileRef.current.value = ""; }} className="text-xs text-red-400 hover:text-red-300 shrink-0">Remove</button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    className="w-full py-4 rounded-xl border border-dashed border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200 text-sm transition-colors flex flex-col items-center gap-1"
-                    style={{ background: "#0A0F1A" }}
-                  >
-                    <span className="text-2xl">📹</span>
-                    <span>Upload video for +50 credits</span>
-                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => fileRef.current?.click()}
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200 text-xs transition-colors"
+                      style={{ background: "#0A0F1A" }}
+                    >
+                      <span>📁</span> Upload
+                    </button>
+                    <button
+                      onClick={() => cameraRef.current?.click()}
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200 text-xs transition-colors"
+                      style={{ background: "#0A0F1A" }}
+                    >
+                      <span>📷</span> Camera
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -246,7 +241,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
               <button
                 onClick={submit}
                 disabled={!message.trim() || rating === 0 || loading}
-                className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-40 transition-opacity hover:opacity-90"
+                className="w-full py-2.5 rounded-lg text-sm font-bold disabled:opacity-40 transition-opacity hover:opacity-90"
                 style={{ background: "#F5A623", color: "#000" }}
               >
                 {loading ? "Sending..." : "Send Feedback"}
