@@ -11,7 +11,7 @@ export default function ReferralRedirect() {
     if (code) {
       document.cookie = `referral_code=${code}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
     }
-    router.replace("/login");
+    router.replace("/home");
   }, [code, router]);
 
   return (

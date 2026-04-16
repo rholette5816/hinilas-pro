@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login`);
+  return NextResponse.redirect(`${origin}/home`);
 }
 
 async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr").createServerClient>, request: import("next/server").NextRequest) {
