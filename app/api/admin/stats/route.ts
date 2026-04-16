@@ -8,7 +8,6 @@ type UserDataRow = {
   username?: string | null;
   credits_remaining?: number | null;
   credits_total?: number | null;
-  created_at?: string | null;
   updated_at?: string | null;
 };
 
@@ -28,7 +27,7 @@ function adminClient() {
 }
 
 function getPrimaryDate(row: UserDataRow) {
-  return row.created_at || row.updated_at || null;
+  return row.updated_at || null;
 }
 
 function getTodayKeyInManila() {
@@ -87,8 +86,8 @@ export async function GET() {
   const [{ data: userDataRows, error: userDataError }, { data: transactionRows, error: transactionError }, authUsers] = await Promise.all([
     admin
       .from("user_data")
-      .select("user_id, username, credits_remaining, credits_total, created_at, updated_at")
-      .order("created_at", { ascending: false }),
+      .select("user_id, username, credits_remaining, credits_total, updated_at")
+      .order("updated_at", { ascending: false }),
     admin
       .from("credit_transactions")
       .select("user_id, type, amount, description, created_at")
