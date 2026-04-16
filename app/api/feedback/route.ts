@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { rating, category, message } = await req.json();
+  const { rating, category, message, videoUrl } = await req.json();
 
   if (!message?.trim() || !rating) {
     return NextResponse.json({ error: "Message and rating are required" }, { status: 400 });
@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
 
   const admin = adminClient();
 
-  // Check if user already submitted feedback (one-time credit reward)
   const { data: existing } = await admin
     .from("feedbacks")
     .select("id")
@@ -33,9 +32,9 @@ export async function POST(req: NextRequest) {
 
   const isFirstFeedback = !existing;
 
-  // Save feedback
   const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
   const userAvatar = user.user_metadata?.avatar_url || null;
+
   await admin.from("feedbacks").insert({
     user_id: user.id,
     user_email: user.email,
@@ -46,20 +45,23 @@ export async function POST(req: NextRequest) {
     message: message.trim(),
   });
 
-  // Post to community as a system message (4+ stars only)
   if (rating >= 4) {
     const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
+    const communityMessage = videoUrl
+      ? `${stars}\n"${message.trim()}"\nVideo testimonial submitted`
+      : `${stars}\n"${message.trim()}"`;
+
     await admin.from("community_messages").insert({
       user_id: user.id,
       user_name: userName,
       user_avatar: user.user_metadata?.avatar_url || null,
-      message: `${stars}\n"${message.trim()}"`,
+      message: communityMessage,
     });
   }
 
-  // Award credits based on star rating — one-time only
   const STAR_REWARDS: Record<number, number> = { 1: 2, 2: 3, 3: 5, 4: 8, 5: 15 };
-  const creditReward = STAR_REWARDS[rating] ?? 5;
+  const videoBonus = videoUrl ? 50 : 0;
+  const creditReward = (STAR_REWARDS[rating] ?? 5) + videoBonus;
 
   if (isFirstFeedback) {
     const { data: userData } = await admin
@@ -78,25 +80,27 @@ export async function POST(req: NextRequest) {
         user_id: user.id,
         type: "grant",
         amount: creditReward,
-        description: `Feedback reward — ${rating} star${rating !== 1 ? "s" : ""}`,
+        description: videoUrl
+          ? `Feedback reward - ${rating} star${rating !== 1 ? "s" : ""} + video bonus`
+          : `Feedback reward - ${rating} star${rating !== 1 ? "s" : ""}`,
       });
     }
   }
 
-  // Send email notification
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "Hinilas Feedback <onboarding@resend.dev>",
       to: process.env.FEEDBACK_EMAIL || "kenallego@gmail.com",
-      subject: `[Hinilas Feedback] ${category} — ${rating} star${rating !== 1 ? "s" : ""}`,
+      subject: `[Hinilas Feedback] ${category} - ${rating} star${rating !== 1 ? "s" : ""}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #F5A623;">New Feedback — Hinilas Pro</h2>
+          <h2 style="color: #F5A623;">New Feedback - Hinilas Pro</h2>
           <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0; color: #666; width: 120px;">Rating</td><td style="padding: 8px 0; font-weight: bold;">${"★".repeat(rating)}${"☆".repeat(5 - rating)} (${rating}/5)</td></tr>
             <tr><td style="padding: 8px 0; color: #666;">Category</td><td style="padding: 8px 0; font-weight: bold;">${category}</td></tr>
             <tr><td style="padding: 8px 0; color: #666;">From</td><td style="padding: 8px 0;">${user.email}</td></tr>
+            ${videoUrl ? `<tr><td style="padding: 8px 0; color: #666;">Video</td><td style="padding: 8px 0;"><a href="${videoUrl}">${videoUrl}</a></td></tr>` : ""}
           </table>
           <div style="margin-top: 16px; padding: 16px; background: #f5f5f5; border-radius: 8px;">
             <p style="margin: 0; color: #333; white-space: pre-wrap;">${message}</p>

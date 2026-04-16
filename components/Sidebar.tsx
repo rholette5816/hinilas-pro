@@ -80,6 +80,7 @@ export default function Sidebar() {
   const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
   const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; avatar_url: string | null; credits: number }[]>([]);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
+  const [canEarnFromFeedback, setCanEarnFromFeedback] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -92,6 +93,27 @@ export default function Sidebar() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (credits > 5) return;
+
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        setCanEarnFromFeedback(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("feedbacks")
+        .select("id")
+        .eq("user_id", user.id)
+        .limit(1)
+        .single();
+
+      setCanEarnFromFeedback(!data);
+    });
+  }, [credits]);
 
   function openEarn() {
     setEarnOpen(true);
@@ -257,7 +279,7 @@ export default function Sidebar() {
             <p className="text-sm font-medium" style={{ color: "#CBD5E1" }}>Feedback</p>
             <p className="text-xs" style={{ color: "#64748B" }}>Share thoughts</p>
           </div>
-          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+2-15 cr</span>
+          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>+2-65 cr</span>
         </button>
       </nav>
 
@@ -296,6 +318,18 @@ export default function Sidebar() {
             Earn Credits
           </button>
         </div>
+
+        {canEarnFromFeedback && (
+          <button
+            onClick={() => setFeedbackOpen(true)}
+            className="w-full mb-3 rounded-xl px-3 py-3 text-left transition-all hover:opacity-90"
+            style={{ background: "#1C1200", border: "1px solid #92400E40" }}
+          >
+            <p className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">Low credits</p>
+            <p className="text-white text-sm font-semibold">Leave feedback and earn credits</p>
+            <p className="text-amber-700 text-xs mt-1">One-time reward. Add a video for +50 credits.</p>
+          </button>
+        )}
 
         {/* User profile */}
         {user && (
