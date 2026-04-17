@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
 
@@ -163,6 +163,42 @@ export default function CampaignSetupPage() {
   const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
   const [currentStep, setCurrentStep] = useState(0);
   const [done, setDone] = useState(false);
+
+  // Launch proof submission
+  const [showLaunchModal, setShowLaunchModal] = useState(false);
+  const [launchFile, setLaunchFile] = useState<File | null>(null);
+  const [launchSubmitting, setLaunchSubmitting] = useState(false);
+  const [launchDone, setLaunchDone] = useState(false);
+  const [launchError, setLaunchError] = useState("");
+  const launchInputRef = useRef<HTMLInputElement>(null);
+
+  async function submitLaunchProof() {
+    if (!launchFile) return;
+    setLaunchSubmitting(true);
+    setLaunchError("");
+    try {
+      const formData = new FormData();
+      formData.append("screenshot", launchFile);
+      const res = await fetch("/api/launch/submit", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.rejected) {
+        setLaunchError(data.error);
+        setLaunchSubmitting(false);
+        return;
+      }
+      if (!res.ok) {
+        setLaunchError(data.error || "Something went wrong. Try again.");
+        setLaunchSubmitting(false);
+        return;
+      }
+      setLaunchDone(true);
+      await refreshCredits();
+    } catch {
+      setLaunchError("Something went wrong. Try again.");
+    } finally {
+      setLaunchSubmitting(false);
+    }
+  }
   const [unlockedVideos, setUnlockedVideos] = useState<Record<VideoKey, { unlocked: boolean; expiresAt: string | null }>>({
     campaign: { unlocked: false, expiresAt: null },
     adset: { unlocked: false, expiresAt: null },
@@ -407,6 +443,19 @@ export default function CampaignSetupPage() {
                       </div>
                     ))}
                   </div>
+                  {/* Launch proof CTA */}
+                  <div className="mb-6 p-4 rounded-xl" style={{ background: "#0F172A", border: "1px solid #F5A62330" }}>
+                    <p className="text-yellow-400 font-bold text-sm mb-1">🚀 Claim Your Launch Reward</p>
+                    <p className="text-gray-400 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-white font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
+                    <button
+                      onClick={() => { setShowLaunchModal(true); setLaunchDone(false); setLaunchFile(null); setLaunchError(""); }}
+                      className="w-full py-2.5 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
+                      style={{ background: "linear-gradient(135deg, #F5A623, #ee6b0e)" }}
+                    >
+                      Submit Campaign Proof
+                    </button>
+                  </div>
+
                   <div className="flex gap-3 justify-center">
                     <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white transition-colors">
                       Back
@@ -415,6 +464,75 @@ export default function CampaignSetupPage() {
                       Start Over
                     </button>
                   </div>
+
+                  {/* Launch proof modal */}
+                  {showLaunchModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(7,11,20,0.85)", backdropFilter: "blur(12px)" }}>
+                      <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#0F172A", border: "1px solid #F5A62340" }}>
+                        {launchDone ? (
+                          <div className="text-center py-4">
+                            <div className="text-5xl mb-4">🎉</div>
+                            <h3 className="text-white font-bold text-lg mb-2">Proof Submitted!</h3>
+                            <p className="text-gray-400 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
+                            <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#2B7EC9" }}>Done</button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-white font-bold text-base">Submit Campaign Proof</h3>
+                              <button onClick={() => setShowLaunchModal(false)} className="text-gray-500 hover:text-white text-sm">✕</button>
+                            </div>
+                            <div className="bg-yellow-950 border border-yellow-800 rounded-lg px-4 py-3 mb-4">
+                              <p className="text-yellow-300 text-xs font-medium mb-1">Screenshot requirements:</p>
+                              <ul className="text-yellow-200 text-xs space-y-1 list-disc list-inside">
+                                <li>Must show Meta Ads Manager interface</li>
+                                <li>Campaign status must be visible (Active)</li>
+                                <li>Screenshot must be clear, not cropped or blurry</li>
+                                <li>One-time reward per verified launch</li>
+                              </ul>
+                            </div>
+
+                            <input
+                              ref={launchInputRef}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={e => setLaunchFile(e.target.files?.[0] || null)}
+                            />
+
+                            {launchFile ? (
+                              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3 mb-4">
+                                <span className="text-green-400 text-lg">✓</span>
+                                <p className="text-gray-300 text-xs flex-1 truncate">{launchFile.name}</p>
+                                <button onClick={() => setLaunchFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => launchInputRef.current?.click()}
+                                className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors mb-4"
+                              >
+                                <p className="text-gray-400 text-sm">Upload screenshot</p>
+                                <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
+                              </button>
+                            )}
+
+                            {launchError && (
+                              <p className="text-red-400 text-xs mb-4 text-center">{launchError}</p>
+                            )}
+
+                            <button
+                              onClick={submitLaunchProof}
+                              disabled={!launchFile || launchSubmitting}
+                              className="w-full py-3 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                              style={{ background: "linear-gradient(135deg, #F5A623, #ee6b0e)" }}
+                            >
+                              {launchSubmitting ? "Submitting..." : "Submit for Review — +20 cr"}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0A0F1A" }}>
