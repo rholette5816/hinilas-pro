@@ -128,14 +128,15 @@ export async function POST(req: NextRequest) {
     .upload(filename, Buffer.from(arrayBuffer), { contentType: mimeType, upsert: false });
 
   if (uploadError) {
-    return NextResponse.json({ error: "Upload failed. Try again." }, { status: 500 });
+    console.error("Storage upload error:", uploadError);
+    return NextResponse.json({ error: `Upload failed: ${uploadError.message}` }, { status: 500 });
   }
 
   const { data: urlData } = adminClient().storage.from("screenshots").getPublicUrl(filename);
   const screenshotUrl = urlData.publicUrl;
 
   // Insert launch record
-  const { data: launch } = await adminClient()
+  const { data: launch, error: insertError } = await adminClient()
     .from("campaign_launches")
     .insert({
       user_id: user.id,
@@ -146,7 +147,10 @@ export async function POST(req: NextRequest) {
     .select("id")
     .single();
 
-  if (!launch) return NextResponse.json({ error: "Failed to save submission." }, { status: 500 });
+  if (insertError || !launch) {
+    console.error("DB insert error:", insertError);
+    return NextResponse.json({ error: `Failed to save submission: ${insertError?.message || "unknown error"}` }, { status: 500 });
+  }
 
   // Send to Telegram
   await sendTelegramLaunch(username, user.email || "", launch.id, screenshotUrl);
