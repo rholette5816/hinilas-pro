@@ -71,8 +71,25 @@ function FAQSection() {
   );
 }
 
+const LOGIN_MESSAGES = [
+  "Cooking your workspace...",
+  "Firing up the AI engine...",
+  "Preparing your ad arsenal...",
+  "Loading market intelligence...",
+  "Almost ready, Sir...",
+];
+
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    if (!loading) return;
+    const interval = setInterval(() => {
+      setMsgIndex(prev => (prev + 1) % LOGIN_MESSAGES.length);
+    }, 900);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   async function handleGoogle() {
     setLoading(true);
@@ -154,7 +171,15 @@ function LoginModal({ onClose }: { onClose: () => void }) {
               <path fill="#34A853" d="M24 47c5.5 0 10.2-1.8 13.6-4.9l-7.4-5.7c-1.8 1.2-4.1 1.9-6.2 1.9-6.3 0-11.6-4.2-13.5-9.9l-7.5 6.1C7 42.3 14.8 47 24 47z"/>
             </svg>
           )}
-          {loading ? "Redirecting..." : "Continue with Google"}
+          <span key={msgIndex} style={{ animation: loading ? "fadeUp 0.4s ease forwards" : "none" }}>
+            {loading ? LOGIN_MESSAGES[msgIndex] : "Continue with Google"}
+          </span>
+          <style>{`
+            @keyframes fadeUp {
+              from { opacity: 0; transform: translateY(4px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
         </button>
 
         <div

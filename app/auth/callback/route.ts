@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
 
-  const response = NextResponse.redirect(`${origin}/`);
+  const response = NextResponse.redirect(`${origin}/loading-screen`);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
