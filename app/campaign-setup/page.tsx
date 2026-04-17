@@ -429,12 +429,14 @@ export default function CampaignSetupPage() {
                   <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
                   <div className="space-y-3 mb-8">
                     {[
-                      { icon: "Target", label: "1 Campaign", sub: "Engagement objective", color: "#2B7EC9" },
-                      { icon: "Set", label: "1 Ad Set", sub: "Angle-based targeting", color: "#F5A623" },
-                      { icon: "Ads", label: "3 Ads", sub: "Different creatives", color: "#8B5CF6" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#2B7EC9" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>, label: "1 Ad Set", sub: "Angle-based targeting", color: "#F5A623" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>, label: "3 Ads", sub: "Different creatives", color: "#8B5CF6" },
                     ].map(item => (
                       <div key={item.label} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: "#0F172A", border: `1px solid ${item.color}30` }}>
-                        <span className="text-xl">{item.icon}</span>
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${item.color}20`, color: item.color }}>
+                          {item.icon}
+                        </div>
                         <div className="text-left">
                           <p className="text-white font-semibold text-sm">{item.label}</p>
                           <p className="text-gray-500 text-xs">{item.sub}</p>
