@@ -7,6 +7,7 @@ import { useApp } from "@/lib/context";
 import { HinilasIcon } from "@/components/HinilasLogo";
 import FloatingExpert from "@/components/FloatingExpert";
 import FloatingFeedback from "@/components/FloatingFeedback";
+import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 import { OWNER_EMAILS } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -44,10 +45,6 @@ const NAV_ITEMS = [
     href: "/learn", label: "Courses", desc: "Marketing education",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
   },
-  {
-    href: "/leaderboard", label: "Leaderboard", desc: "Top ad launchers",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>,
-  },
 ];
 
 function LiveStats() {
@@ -77,6 +74,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { credits, creditsTotal, plan, setup, researchOutput, anglesOutput, copyOutput, savedImages } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [earnOpen, setEarnOpen] = useState(false);
@@ -395,9 +393,18 @@ export default function Sidebar() {
           <HinilasIcon size="sm" accentColor="#F5A623" />
           <span className="text-white font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
         </div>
-        <button onClick={() => setMobileOpen(true)} className="text-gray-400 hover:text-white p-1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowLeaderboard(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
+            style={{ background: "#1E293B", color: "#F5A623", border: "1px solid #F5A62330" }}
+          >
+            🏆 <span>Leaderboard</span>
+          </button>
+          <button onClick={() => setMobileOpen(true)} className="text-gray-400 hover:text-white p-1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
       </div>
 
       {/* Mobile overlay */}
@@ -429,6 +436,7 @@ export default function Sidebar() {
 
       <FloatingExpert isOpen={expertOpen} onClose={() => setExpertOpen(false)} />
       <FloatingFeedback isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+      <LeaderboardDrawer open={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
 
       {/* Lock toast */}
       {lockToast && (

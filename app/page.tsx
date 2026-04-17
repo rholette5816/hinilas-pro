@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
+import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 import { useApp, UserSetup } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -96,6 +97,7 @@ export default function SetupPage() {
   }
 
   const setupDone = !!(setup?.businessName);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#0B1120" }}>
@@ -105,6 +107,15 @@ export default function SetupPage() {
 
         {/* Top bar */}
         <div className="hidden md:flex items-center justify-end gap-4 px-6 py-3 shrink-0" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
+
+          {/* Leaderboard button */}
+          <button
+            onClick={() => setShowLeaderboard(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+            style={{ background: "#1E293B", color: "#F5A623", border: "1px solid #F5A62330" }}
+          >
+            🏆 Leaderboard
+          </button>
 
           {/* Launch AI button */}
           <button
@@ -356,6 +367,7 @@ export default function SetupPage() {
       </div>
 
       <TutorialOverlay show={!setup?.businessName} />
+      <LeaderboardDrawer open={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
     </div>
   );
 }
