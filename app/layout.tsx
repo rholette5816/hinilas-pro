@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import FloatingChat from "@/components/FloatingChat";
 import ReferralToastWrapper from "@/components/ReferralToastWrapper";
+import TopBar from "@/components/TopBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,6 +65,7 @@ export default function RootLayout({
         </div>
         <div style={{ position: "relative", zIndex: 1 }}>
           <AppProvider>
+            <TopBar />
             {children}
             <FloatingChat />
             <ReferralToastWrapper />

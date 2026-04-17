@@ -33,3 +33,12 @@ html, body {
   scrollbar-width: thin;
   scrollbar-color: #374151 transparent;
 }
+
+@keyframes btnGlowBlue {
+  0%   { box-shadow: 0 0 12px rgba(43,126,201,0.5), 0 0 24px rgba(43,126,201,0.2); }
+  100% { box-shadow: 0 0 20px rgba(43,126,201,0.75), 0 0 40px rgba(43,126,201,0.35); }
+}
+@keyframes btnGlowOrange {
+  0%   { box-shadow: 0 0 12px rgba(245,166,35,0.5), 0 0 24px rgba(245,166,35,0.2); }
+  100% { box-shadow: 0 0 20px rgba(245,166,35,0.75), 0 0 40px rgba(245,166,35,0.35); }
+}

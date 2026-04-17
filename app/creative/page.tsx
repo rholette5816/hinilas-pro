@@ -177,7 +177,7 @@ export default function CreativePage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
 
           {/* Header */}
@@ -298,7 +298,7 @@ export default function CreativePage() {
                 onClick={generateMain}
                 disabled={loadingMain}
                 className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-                style={{ background: "#F5A623" }}
+                style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 {loadingMain ? "Generating..." : mainImage ? "Regenerate — 2 credits" : "Generate Image — 2 credits"}
               </button>
@@ -350,7 +350,7 @@ export default function CreativePage() {
                         onClick={() => generateIteration(i)}
                         disabled={loadingIter[i]}
                         className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-                        style={{ background: "#2B7EC9" }}
+                        style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
                       >
                         {loadingIter[i] ? "..." : iterations[i] ? "Regenerate — 2 credits" : "Generate — 2 credits"}
                       </button>

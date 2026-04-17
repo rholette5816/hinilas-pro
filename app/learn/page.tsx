@@ -114,7 +114,7 @@ export default function LearnPage() {
   return (
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
           <div className="max-w-3xl mx-auto px-6 py-10">
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 rounded-full px-3 py-1 mb-4">

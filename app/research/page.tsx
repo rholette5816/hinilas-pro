@@ -74,7 +74,7 @@ export default function ResearchPage() {
           </div>
         </div>
       )}
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
           {/* Header */}
           <div className="mb-8">
@@ -98,14 +98,14 @@ export default function ResearchPage() {
             <button
               onClick={runResearch}
               disabled={loading}
-              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40" style={{ background: "#2B7EC9" }}
+              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40" style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Researching..." : researchOutput ? "Re-run Research — 1 credit" : "Run Market Research — 1 credit"}
             </button>
             {researchOutput && !loading && (
               <button
                 onClick={() => router.push("/angles")}
-                className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90" style={{ background: "#F5A623" }}
+                className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90" style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 Next: Find Angles →
               </button>

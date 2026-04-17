@@ -161,7 +161,7 @@ export default function CopyPage() {
           </div>
         </div>
       )}
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
 
           {/* Header */}
@@ -292,15 +292,15 @@ export default function CopyPage() {
               onClick={generateCopy}
               disabled={loading || !activeImage}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#2B7EC9" }}
+              style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Writing..." : output ? "Rewrite Captions — 1 credit" : "Generate Captions — 1 credit"}
             </button>
             {output && !loading && (
               <button
                 onClick={() => router.push("/campaign-setup")}
-                className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
-                style={{ background: "#22c55e20", color: "#22c55e", border: "1px solid #22c55e40" }}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 text-white"
+                style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 Proceed to Campaign Setup →
               </button>

@@ -283,7 +283,7 @@ export default function CampaignSetupPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-2xl mx-auto px-4 py-8">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-white mb-1">Campaign Setup</h1>

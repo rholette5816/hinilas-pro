@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
-import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 import { useApp, UserSetup } from "@/lib/context";
 
 const BRAND_BLUE = "#2B7EC9";
@@ -97,7 +96,6 @@ export default function SetupPage() {
   }
 
   const setupDone = !!(setup?.businessName);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#0B1120" }}>
@@ -105,43 +103,8 @@ export default function SetupPage() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* Top bar */}
-        <div className="hidden md:flex items-center justify-end gap-4 px-6 py-3 shrink-0" style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45" }}>
-
-          {/* Leaderboard button */}
-          <button
-            onClick={() => setShowLeaderboard(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#1E293B", color: "#F5A623", border: "1px solid #F5A62330" }}
-          >
-            🏆 Leaderboard
-          </button>
-
-          {/* Launch AI button */}
-          <button
-            onClick={() => router.push("/research")}
-            className="relative flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{
-              background: BRAND_BLUE,
-              color: "#fff",
-              boxShadow: !setupDone ? "0 0 16px rgba(43,126,201,0.6), 0 0 32px rgba(43,126,201,0.3)" : "none",
-              animation: !setupDone ? "launchGlow 2s ease-in-out infinite alternate" : "none",
-            }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Launch AI
-          </button>
-
-          <style>{`
-            @keyframes launchGlow {
-              0% { box-shadow: 0 0 12px rgba(43,126,201,0.5), 0 0 24px rgba(43,126,201,0.2); }
-              100% { box-shadow: 0 0 24px rgba(43,126,201,0.8), 0 0 48px rgba(43,126,201,0.4); }
-            }
-          `}</style>
-        </div>
-
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto pt-14 md:pt-0 pb-32">
+        <main className="flex-1 overflow-y-auto pt-14 md:pt-12 pb-32">
           <div className="max-w-2xl mx-auto px-6 py-8">
 
             {/* Step indicator */}
@@ -367,7 +330,6 @@ export default function SetupPage() {
       </div>
 
       <TutorialOverlay show={!setup?.businessName} />
-      <LeaderboardDrawer open={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
     </div>
   );
 }

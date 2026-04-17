@@ -133,7 +133,7 @@ export default function AnglesPage() {
           </div>
         </div>
       )}
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
 
           {/* Header */}
@@ -159,7 +159,7 @@ export default function AnglesPage() {
               onClick={() => generateAngles()}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#F5A623", color: "#000" }}
+              style={{ background: "#2B7EC9", color: "#fff", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles — 1 credit" : "Generate Angles — 1 credit"}
             </button>
@@ -254,7 +254,7 @@ export default function AnglesPage() {
                       <button
                         onClick={() => selectAngle(angle, idx)}
                         className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
-                        style={{ background: color, color: "#000" }}
+                        style={{ background: color, color: "#000", boxShadow: `0 0 12px ${color}50, 0 0 24px ${color}25` }}
                       >
                         {isSelected ? "Going..." : "Use This →"}
                       </button>

@@ -755,7 +755,7 @@ show(0);
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
 
           {/* Header */}
@@ -1007,7 +1007,7 @@ show(0);
               onClick={analyze}
               disabled={loading || (mode === "basic" ? !screenshot : !csvText)}
               className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6"
-              style={{ background: mode === "advanced" ? "#F5A623" : "#2B7EC9", color: mode === "advanced" ? "#000" : "#fff" }}
+              style={{ background: mode === "advanced" ? "#F5A623" : "#2B7EC9", color: mode === "advanced" ? "#000" : "#fff", animation: mode === "advanced" ? "btnGlowOrange 2s ease-in-out infinite alternate" : "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Analyzing..." : mode === "advanced" ? "Run Advanced Analysis — 2 credits" : "Analyze My Results — 1 credit"}
             </button>

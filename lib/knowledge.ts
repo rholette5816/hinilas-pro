@@ -623,10 +623,25 @@ ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
 GRAPHIC ELEMENT — pick ONE based on angle emotion:
 - Gradient blur wash + oversized text (scroll stop / bold hooks)
-- Frosted glass panel, semi-transparent, thin border (authority / premium)
+- Frosted glass panel, thin border (authority / premium)
 - Solid bold color block, high contrast (hard sell / urgency)
 - Directional swoosh or arc behind text (energy / youth)
 - Corner tag or angled banner with CTA (subtle / clean)
+- Radial glow burst behind focal point (attention / highlight)
+- Soft shadowed card stack (depth / modern UI feel)
+- Neon outline or stroke glow around subject/text (tech / high energy)
+- Grain texture overlay (raw / authentic / anti-polished)
+- Light leak or lens flare accent (cinematic / aspirational)
+- Cutout collage layering (chaotic / high scroll-stop)
+- Floating particles or dust (premium / atmospheric depth)
+- Bold underline / highlight marker stroke (emphasis / clarity)
+- Frame-in-frame border (focus / guided attention)
+- Split background (contrast storytelling: before vs after)
+- Halftone dots or comic texture (edgy / disruptive)
+- 3D extrusion text or object (impact / depth illusion)
+- Sticker-style elements (playful / native social feel)
+- Scribble / hand-drawn accents (raw / human / unfiltered)
+- Grid overlay / blueprint lines (structured / systemized feel)
 
 HEADLINE (LEFT ZONE) — all colors and fonts follow BRAND REFERENCE:
 - Line 1: brand font, medium weight, 4–5 words, light brand tone
