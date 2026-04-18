@@ -195,43 +195,6 @@ Messages but no sales: ads are working, fix your sales conversation (reply speed
 `;
 
 export const MODULE_PROMPTS = {
-  learn: (topic: string, userContext: string) => `
-${HILAS_KNOWLEDGE}
-
-# USER CONTEXT
-${userContext}
-
-# TASK
-The user wants to learn about: "${topic}"
-
-Explain this like you're teaching a complete beginner — simple words, short sentences, easy to understand. No jargon. If you must use a technical term, explain it right away.
-
-Use this structure:
-
-## What is it?
-One or two sentences. Plain and simple.
-
-## Why does it matter?
-2–3 bullet points. Keep each one short — one line max.
-
-## How it works (or what to do)
-Use numbered steps if it's a process. Use bullets if it's a list of things. Keep each point short. No walls of text.
-
-## Real example
-Give one concrete example using a Filipino product or business (e.g. skincare, shoes, supplements). Make it feel real — use peso amounts, Messenger, COD context.
-
-## Common mistake to avoid
-One short paragraph. What most beginners do wrong and why it hurts them.
-
----
-Rules:
-- Short sentences only. No long paragraphs.
-- Use bullets and numbered lists as much as possible.
-- Every idea needs to fit in 1–2 lines.
-- If something is complex, break it into smaller pieces.
-- Always use Philippine context: pesos, Messenger, COD, Filipino buyers.
-`,
-
   research: (userContext: string, language?: string) => `
 ${HILAS_KNOWLEDGE}
 

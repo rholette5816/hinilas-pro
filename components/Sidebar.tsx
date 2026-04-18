@@ -41,10 +41,6 @@ const NAV_ITEMS = [
     href: "/analyze", label: "Audit Department", desc: "Read your results",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
   },
-  {
-    href: "/learn", label: "Courses", desc: "Marketing education",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
-  },
 ];
 
 function LiveStats() {
@@ -179,7 +175,6 @@ export default function Sidebar() {
     "/copy":     { locked: !savedImages?.main,     message: "Generate a Creative first." },
     "/campaign-setup": { locked: false, message: "" },
     "/analyze":  { locked: false, message: "" },
-    "/learn":    { locked: false, message: "" },
   };
 
   const [lockToast, setLockToast] = useState<string | null>(null);
