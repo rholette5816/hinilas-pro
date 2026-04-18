@@ -24,6 +24,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
   const [video, setVideo] = useState<File | null>(null);
   const [videoName, setVideoName] = useState("");
   const [error, setError] = useState("");
+  const [improving, setImproving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +39,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
       setVideo(null);
       setVideoName("");
       setError("");
+      setImproving(false);
       setChecking(true);
       const supabase = createClient();
       supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -76,6 +78,24 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
 
     const { data } = supabase.storage.from("topup-receipts").getPublicUrl(fileName);
     return data.publicUrl;
+  }
+
+  async function improveFeedback() {
+    if (!message.trim() || improving) return;
+    setImproving(true);
+    try {
+      const res = await fetch("/api/improve-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+      const data = await res.json();
+      if (data.improved) setMessage(data.improved);
+    } catch {
+      // silently fail
+    } finally {
+      setImproving(false);
+    }
   }
 
   async function submit() {
@@ -193,7 +213,20 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">Your feedback</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-gray-400">Your feedback</label>
+                  {message.trim() && (
+                    <button
+                      type="button"
+                      onClick={improveFeedback}
+                      disabled={improving}
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                      style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
+                    >
+                      {improving ? "Improving..." : "✦ Improve"}
+                    </button>
+                  )}
+                </div>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
