@@ -238,9 +238,15 @@ export default function AdminDashboardClient() {
             <h1 className="text-3xl font-black text-white">Command Center</h1>
             <p className="text-sm mt-1" style={{ color: "#64748B" }}>Decision metrics — refreshes every 30s</p>
           </div>
+          <div className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid #1E2D45" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+              Back to App
+            </a>
           <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
             <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>Last Refresh</p>
             <p className="text-sm text-white mt-1">{timeAgo(stats.fetchedAt)}</p>
+          </div>
           </div>
         </div>
 
