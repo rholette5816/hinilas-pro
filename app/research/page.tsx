@@ -31,7 +31,7 @@ export default function ResearchPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
+        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "research" }),
       });
       const data = await res.json();
       setResearchOutput(data.error ? data.error : data.content);

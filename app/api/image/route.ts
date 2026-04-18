@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+
+function adminClient() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export const maxDuration = 60;
 
@@ -124,6 +132,18 @@ export async function POST(req: NextRequest) {
     if (images.length === 0) {
       return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
+
+    // Log token usage (fire and forget)
+    try {
+      const admin = adminClient();
+      admin.from("token_logs").insert({
+        user_id: user.id,
+        module: "creative",
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0,
+      }).then(() => {}).catch(() => {});
+    } catch { /* ignore */ }
 
     // Deduct 2 credits after successful generation
     const newCredits = userData.credits_remaining - 2;

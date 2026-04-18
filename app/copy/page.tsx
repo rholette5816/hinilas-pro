@@ -120,6 +120,7 @@ export default function CopyPage() {
           prompt,
           systemPrompt: HILAS_KNOWLEDGE,
           images: [activeImage],
+          module: "copy",
         }),
       });
       const data = await res.json();

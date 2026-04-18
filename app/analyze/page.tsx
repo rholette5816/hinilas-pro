@@ -684,7 +684,7 @@ show(0);
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, images: [screenshot] }),
+          body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, images: [screenshot], module: "analyze" }),
         });
         const d = await res.json();
         const result = d.error ? `Error: ${d.error}` : d.content;
@@ -720,7 +720,7 @@ show(0);
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
+          body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "analyze" }),
         });
         const d = await res.json();
         const result = d.error ? `Error: ${d.error}` : d.content;

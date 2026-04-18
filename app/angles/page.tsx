@@ -84,7 +84,7 @@ export default function AnglesPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE }),
+        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "angles" }),
       });
       const data = await res.json();
       setAnglesOutput(data.error ? data.error : data.content);
