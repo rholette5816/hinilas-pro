@@ -248,7 +248,7 @@ export default function TestimonialPage() {
             </div>
 
             <input ref={fileRef} type="file" accept="video/*,image/*" onChange={handleMediaChange} className="hidden" />
-            <input ref={cameraRef} type="file" accept="video/*,image/*" capture="user" onChange={handleMediaChange} className="hidden" />
+            <input ref={cameraRef} type="file" accept="video/*,image/*" capture="environment" onChange={handleMediaChange} className="hidden" />
 
             {media ? (
               <div className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
