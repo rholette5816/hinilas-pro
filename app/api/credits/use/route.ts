@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isOwnerUser } from "@/lib/admin";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -7,6 +8,12 @@ export async function POST(req: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Owner gets unlimited free access — skip all credit checks and logging
+  if (isOwnerUser(user)) {
+    const { data: userData } = await supabase.from("user_data").select("credits_remaining").eq("user_id", user.id).single();
+    return NextResponse.json({ credits: userData?.credits_remaining ?? 0 });
   }
 
   const body = await req.json().catch(() => ({}));

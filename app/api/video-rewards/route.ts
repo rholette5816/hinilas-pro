@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { isOwnerUser } from "@/lib/admin";
 
 const VIDEO_COST = 1;
 const UNLOCK_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -84,6 +85,12 @@ export async function POST(req: NextRequest) {
 
   if (!isVideoKey(videoKey)) {
     return NextResponse.json({ error: "Invalid video key" }, { status: 400 });
+  }
+
+  // Owner gets free unlimited video unlocks
+  if (isOwnerUser(user)) {
+    const expiresAt = new Date(Date.now() + UNLOCK_DURATION_MS).toISOString();
+    return NextResponse.json({ unlocked: true, alreadyUnlocked: false, expiresAt, creditsRemaining: 9999 });
   }
 
   const admin = adminClient();

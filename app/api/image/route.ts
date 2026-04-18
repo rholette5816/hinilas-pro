@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { isOwnerUser } from "@/lib/admin";
 
 function adminClient() {
   return createAdminClient(
@@ -30,13 +31,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Owner gets unlimited free access — skip credit check and deduction
+  const ownerMode = isOwnerUser(user);
+
   const { data: userData } = await supabase
     .from("user_data")
     .select("credits_remaining")
     .eq("user_id", user.id)
     .single();
 
-  if (!userData || userData.credits_remaining < 2) {
+  if (!ownerMode && (!userData || userData.credits_remaining < 2)) {
     return NextResponse.json(
       { error: "No credits remaining", code: "NO_CREDITS" },
       { status: 402 }
@@ -145,21 +149,21 @@ export async function POST(req: NextRequest) {
       });
     } catch { /* ignore */ }
 
-    // Deduct 2 credits after successful generation
-    const newCredits = userData.credits_remaining - 2;
-    await supabase
-      .from("user_data")
-      .update({ credits_remaining: newCredits })
-      .eq("user_id", user.id);
+    // Deduct 2 credits after successful generation (skip for owner)
+    const currentCredits = userData?.credits_remaining ?? 0;
+    if (!ownerMode) {
+      const newCredits = currentCredits - 2;
+      await supabase.from("user_data").update({ credits_remaining: newCredits }).eq("user_id", user.id);
+      await supabase.from("credit_transactions").insert({
+        user_id: user.id,
+        type: "use",
+        amount: -2,
+        description: "Image generation",
+      });
+      return NextResponse.json({ images, creditsRemaining: newCredits });
+    }
 
-    await supabase.from("credit_transactions").insert({
-      user_id: user.id,
-      type: "use",
-      amount: -2,
-      description: "Image generation",
-    });
-
-    return NextResponse.json({ images, creditsRemaining: newCredits });
+    return NextResponse.json({ images, creditsRemaining: currentCredits });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Image generation error";
     return NextResponse.json({ error: message }, { status: 500 });
