@@ -25,6 +25,9 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
   const [videoName, setVideoName] = useState("");
   const [error, setError] = useState("");
   const [improving, setImproving] = useState(false);
+  const [improved, setImproved] = useState(false);
+  const [pulsing, setPulsing] = useState(false);
+  const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
 
@@ -40,6 +43,9 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
       setVideoName("");
       setError("");
       setImproving(false);
+      setImproved(false);
+      setPulsing(false);
+      if (pulseTimerRef.current) clearTimeout(pulseTimerRef.current);
       setChecking(true);
       const supabase = createClient();
       supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -80,9 +86,20 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
     return data.publicUrl;
   }
 
+  function handleMessageChange(val: string) {
+    setMessage(val);
+    if (improved) return;
+    if (pulseTimerRef.current) clearTimeout(pulseTimerRef.current);
+    setPulsing(false);
+    if (val.trim()) {
+      pulseTimerRef.current = setTimeout(() => setPulsing(true), 1000);
+    }
+  }
+
   async function improveFeedback() {
-    if (!message.trim() || improving) return;
+    if (!message.trim() || improving || improved) return;
     setImproving(true);
+    setPulsing(false);
     try {
       const res = await fetch("/api/improve-feedback", {
         method: "POST",
@@ -90,7 +107,10 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
         body: JSON.stringify({ message }),
       });
       const data = await res.json();
-      if (data.improved) setMessage(data.improved);
+      if (data.improved) {
+        setMessage(data.improved);
+        setImproved(true);
+      }
     } catch {
       // silently fail
     } finally {
@@ -215,21 +235,37 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-medium text-gray-400">Your feedback</label>
-                  {message.trim() && (
-                    <button
-                      type="button"
-                      onClick={improveFeedback}
-                      disabled={improving}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                      style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
-                    >
-                      {improving ? "Improving..." : "✦ Improve"}
-                    </button>
+                  {message.trim() && !improved && (
+                    <>
+                      <style>{`
+                        @keyframes polishPulse {
+                          0%, 100% { box-shadow: 0 0 0 0 rgba(43,126,201,0.5); }
+                          50% { box-shadow: 0 0 0 6px rgba(43,126,201,0); }
+                        }
+                      `}</style>
+                      <button
+                        type="button"
+                        onClick={improveFeedback}
+                        disabled={improving}
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                        style={{
+                          background: "rgba(43,126,201,0.15)",
+                          color: "#2B7EC9",
+                          border: "1px solid rgba(43,126,201,0.3)",
+                          animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
+                        }}
+                      >
+                        {improving ? "Polishing..." : "✦ Polish with AI"}
+                      </button>
+                    </>
+                  )}
+                  {improved && (
+                    <span className="text-[10px] font-semibold" style={{ color: "#22c55e" }}>✓ Polished</span>
                   )}
                 </div>
                 <textarea
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={e => handleMessageChange(e.target.value)}
                   placeholder="What's working well? What can we improve?"
                   rows={3}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-600 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"

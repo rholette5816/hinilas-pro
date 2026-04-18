@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { HinilasIcon } from "@/components/HinilasLogo";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const BRAND_BLUE = "#2B7EC9";
 const BRAND_ORANGE = "#F5A623";
@@ -27,6 +26,9 @@ export default function TestimonialPage() {
   const [isVideo, setIsVideo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [improving, setImproving] = useState(false);
+  const [improved, setImproved] = useState(false);
+  const [pulsing, setPulsing] = useState(false);
+  const pulseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
 
@@ -57,9 +59,20 @@ export default function TestimonialPage() {
     return data.publicUrl;
   }
 
+  function handleMessageChange(val: string) {
+    setMessage(val);
+    if (improved) return;
+    if (pulseTimerRef.current) clearTimeout(pulseTimerRef.current);
+    setPulsing(false);
+    if (val.trim()) {
+      pulseTimerRef.current = setTimeout(() => setPulsing(true), 1000);
+    }
+  }
+
   async function improveFeedback() {
-    if (!message.trim() || improving) return;
+    if (!message.trim() || improving || improved) return;
     setImproving(true);
+    setPulsing(false);
     try {
       const res = await fetch("/api/improve-feedback", {
         method: "POST",
@@ -67,7 +80,10 @@ export default function TestimonialPage() {
         body: JSON.stringify({ message }),
       });
       const data = await res.json();
-      if (data.improved) setMessage(data.improved);
+      if (data.improved) {
+        setMessage(data.improved);
+        setImproved(true);
+      }
     } catch {
       // silently fail
     } finally {
@@ -171,23 +187,39 @@ export default function TestimonialPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Your Message</label>
-              {message.trim() && (
-                <button
-                  type="button"
-                  onClick={improveFeedback}
-                  disabled={improving}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                  style={{ background: "rgba(43,126,201,0.15)", color: BRAND_BLUE, border: "1px solid rgba(43,126,201,0.3)" }}
-                >
-                  {improving ? "Improving..." : "✦ Improve"}
-                </button>
+              {message.trim() && !improved && (
+                <>
+                  <style>{`
+                    @keyframes polishPulse {
+                      0%, 100% { box-shadow: 0 0 0 0 rgba(43,126,201,0.5); }
+                      50% { box-shadow: 0 0 0 6px rgba(43,126,201,0); }
+                    }
+                  `}</style>
+                  <button
+                    type="button"
+                    onClick={improveFeedback}
+                    disabled={improving}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                    style={{
+                      background: "rgba(43,126,201,0.15)",
+                      color: BRAND_BLUE,
+                      border: "1px solid rgba(43,126,201,0.3)",
+                      animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
+                    }}
+                  >
+                    {improving ? "Polishing..." : "✦ Polish with AI"}
+                  </button>
+                </>
+              )}
+              {improved && (
+                <span className="text-[10px] font-semibold" style={{ color: "#22c55e" }}>✓ Polished</span>
               )}
             </div>
             <textarea
               rows={4}
               placeholder="Tell us about your experience with Hinilas Pro..."
               value={message}
-              onChange={e => setMessage(e.target.value)}
+              onChange={e => handleMessageChange(e.target.value)}
               className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none resize-none transition-all"
               style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
               onFocus={e => e.target.style.borderColor = BRAND_BLUE}
