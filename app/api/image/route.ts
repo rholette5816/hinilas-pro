@@ -136,13 +136,13 @@ export async function POST(req: NextRequest) {
     // Log token usage (fire and forget)
     try {
       const admin = adminClient();
-      admin.from("token_logs").insert({
+      void admin.from("token_logs").insert({
         user_id: user.id,
         module: "creative",
         prompt_tokens: 0,
         completion_tokens: 0,
         total_tokens: 0,
-      }).then(() => {}).catch(() => {});
+      });
     } catch { /* ignore */ }
 
     // Deduct 2 credits after successful generation

@@ -58,13 +58,13 @@ export async function POST(req: NextRequest) {
       const usage = result.response.usageMetadata;
       if (usage) {
         const admin = adminClient();
-        admin.from("token_logs").insert({
+        void admin.from("token_logs").insert({
           user_id: userId,
           module,
           prompt_tokens: usage.promptTokenCount ?? 0,
           completion_tokens: usage.candidatesTokenCount ?? 0,
           total_tokens: usage.totalTokenCount ?? 0,
-        }).then(() => {}).catch(() => {});
+        });
       }
     }
 
