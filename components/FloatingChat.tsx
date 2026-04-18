@@ -55,6 +55,21 @@ export default function FloatingChat() {
       }
       setAuthLoaded(true);
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        setCurrentUser(null);
+      } else {
+        setCurrentUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.email || "User",
+          avatar: session.user.user_metadata?.avatar_url || null,
+        });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
