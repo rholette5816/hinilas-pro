@@ -79,10 +79,10 @@ export default function ResearchPage() {
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-emerald-300 text-xs font-medium">🔍 Research</span>
+              <span className="text-emerald-300 text-xs font-medium">🔍 Research Department</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">AI Market Research</h1>
-            <p className="text-gray-400 text-sm">Know your customer before you run a single ad. This research powers your angles and copy.</p>
+            <p className="text-gray-400 text-sm">Understand your market before you run a single ad. This research powers your strategy and copy.</p>
           </div>
 
           {/* Business summary */}

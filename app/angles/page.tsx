@@ -139,10 +139,10 @@ export default function AnglesPage() {
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-orange-950 border border-orange-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-orange-300 text-xs font-medium">🎯 Angles</span>
+              <span className="text-orange-300 text-xs font-medium">🎯 Strategy Department</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Find Winning Marketing Angles</h1>
-            <p className="text-gray-400 text-sm">Your angle is the reason people buy. Pick one and go straight to Creative.</p>
+            <p className="text-gray-400 text-sm">Your angle is the reason people buy. Pick one and go straight to Creative Department.</p>
           </div>
 
           {/* Research indicator */}

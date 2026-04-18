@@ -183,7 +183,7 @@ export default function CreativePage() {
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-pink-300 text-xs font-medium">🖼 Creative</span>
+              <span className="text-pink-300 text-xs font-medium">🖼 Creative Department</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Generate Ad Images</h1>
             <p className="text-gray-400 text-sm">AI generates static ad creatives based on your angle and brand assets.</p>

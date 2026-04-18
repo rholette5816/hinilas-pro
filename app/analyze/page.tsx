@@ -761,9 +761,9 @@ show(0);
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-yellow-950 border border-yellow-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-yellow-300 text-xs font-medium">📊 Analyze</span>
+              <span className="text-yellow-300 text-xs font-medium">📊 Audit Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Analyze Your Ad Results</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Audit Your Ad Results</h1>
             <p className="text-gray-400 text-sm">Choose your analysis type below.</p>
           </div>
 

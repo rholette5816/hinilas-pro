@@ -167,7 +167,7 @@ export default function CopyPage() {
           {/* Header */}
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-full px-3 py-1 mb-4">
-              <span className="text-purple-300 text-xs font-medium">✍ Sales Copy</span>
+              <span className="text-purple-300 text-xs font-medium">✍ Caption Department</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Write Your Captions</h1>
             <p className="text-gray-400 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
