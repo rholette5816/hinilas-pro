@@ -20,6 +20,8 @@ type AdminStats = {
     totalCreditsConsumed: number;
     topupEventCount: number;
     topupCreditsIssued: number;
+    grantBreakdown: { signup: number; feedback: number; referral: number; campaignLaunch: number; topup: number; other: number };
+    usageBreakdown: { research: number; angles: number; copy: number; creative: number; analyzeBasic: number; analyzeAdvanced: number; videoUnlocks: number; other: number };
   };
   tokenStats: {
     byModule: Record<string, ModuleStats>;
@@ -318,6 +320,41 @@ export default function AdminDashboardClient() {
                 <SectionHeader title="Credit Flow" sub="Issued vs consumed all time" />
                 <CreditFlowChart issued={creditActivity.totalCreditsIssued} consumed={creditActivity.totalCreditsConsumed} />
               </div>
+            </div>
+
+            {/* Where credits come from vs where they go */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-2xl p-5" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+                <SectionHeader title="Where Credits Come From" sub="All-time grant sources" />
+                {[
+                  { label: "Top-up (paid)", value: creditActivity.grantBreakdown.topup, color: "#22C55E" },
+                  { label: "Signup bonus", value: creditActivity.grantBreakdown.signup, color: "#2B7EC9" },
+                  { label: "Referral rewards", value: creditActivity.grantBreakdown.referral, color: "#8B5CF6" },
+                  { label: "Feedback rewards", value: creditActivity.grantBreakdown.feedback, color: "#F5A623" },
+                  { label: "Campaign launch", value: creditActivity.grantBreakdown.campaignLaunch, color: "#EC4899" },
+                  { label: "Other", value: creditActivity.grantBreakdown.other, color: "#64748B" },
+                ].map(row => (
+                  <HorizontalBar key={row.label} label={row.label} value={row.value} max={creditActivity.totalCreditsIssued} color={row.color} />
+                ))}
+              </div>
+              <div className="rounded-2xl p-5" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+                <SectionHeader title="Where Credits Are Spent" sub="All-time usage by feature" />
+                {[
+                  { label: "Creative (images)", value: creditActivity.usageBreakdown.creative, color: "#EC4899" },
+                  { label: "Audit — Advanced", value: creditActivity.usageBreakdown.analyzeAdvanced, color: "#FBBF24" },
+                  { label: "Research Dept", value: creditActivity.usageBreakdown.research, color: "#10B981" },
+                  { label: "Strategy Dept", value: creditActivity.usageBreakdown.angles, color: "#F5A623" },
+                  { label: "Caption Dept", value: creditActivity.usageBreakdown.copy, color: "#8B5CF6" },
+                  { label: "Audit — Basic", value: creditActivity.usageBreakdown.analyzeBasic, color: "#FBBF24" },
+                  { label: "Video unlocks", value: creditActivity.usageBreakdown.videoUnlocks, color: "#2B7EC9" },
+                  { label: "Other", value: creditActivity.usageBreakdown.other, color: "#64748B" },
+                ].map(row => (
+                  <HorizontalBar key={row.label} label={row.label} value={row.value} max={creditActivity.totalCreditsConsumed} color={row.color} />
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-2xl p-5" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
                 <SectionHeader title="API Cost Estimate" sub="Based on Gemini 2.5 Flash pricing" />
                 <p className="text-4xl font-black text-white mt-4">${tokenStats.estCostUSD.toFixed(4)}</p>

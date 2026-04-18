@@ -112,6 +112,15 @@ export async function GET() {
     authUsers.map(u => [u.id, { email: u.email || "", fullName: u.user_metadata?.full_name || "" }])
   );
 
+  // --- True signup date: first welcome credit transaction per user ---
+  // updated_at changes whenever credits are touched — unreliable for signup date
+  const trueSignupDate = new Map<string, string>();
+  for (const tx of [...transactions].reverse()) {
+    if (tx.created_at && (tx.description || "").toLowerCase().includes("welcome credits")) {
+      trueSignupDate.set(tx.user_id, tx.created_at);
+    }
+  }
+
   const todayKey = getTodayKeyInManila();
   const now = Date.now();
   const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
@@ -123,7 +132,8 @@ export async function GET() {
   const planBreakdown = { Lite: 0, Flex: 0, Max: 0 };
 
   const userTable = users.map(row => {
-    const signupDate = row.updated_at || null;
+    // Use true signup date from welcome credit transaction, fall back to updated_at
+    const signupDate = trueSignupDate.get(row.user_id) || row.updated_at || null;
     const creditsRemaining = row.credits_remaining ?? 0;
     const plan = derivePlanFromCredits(creditsRemaining);
     const authUser = authUserMap.get(row.user_id);
@@ -148,6 +158,35 @@ export async function GET() {
   const totalCreditsConsumed = Math.abs(transactions.filter(tx => tx.amount < 0).reduce((s, tx) => s + tx.amount, 0));
   const topupEvents = transactions.filter(tx => tx.type === "topup");
   const topupCreditsIssued = topupEvents.reduce((s, tx) => s + Math.max(tx.amount, 0), 0);
+
+  // --- Grants breakdown (where credits come from) ---
+  const grantBreakdown = { signup: 0, feedback: 0, referral: 0, campaignLaunch: 0, topup: 0, other: 0 };
+  for (const tx of transactions) {
+    if (tx.amount <= 0) continue;
+    const desc = (tx.description || "").toLowerCase();
+    if (tx.type === "topup") grantBreakdown.topup += tx.amount;
+    else if (desc.includes("welcome credits")) grantBreakdown.signup += tx.amount;
+    else if (desc.includes("feedback")) grantBreakdown.feedback += tx.amount;
+    else if (desc.includes("referral")) grantBreakdown.referral += tx.amount;
+    else if (desc.includes("campaign launch") || desc.includes("launch verified")) grantBreakdown.campaignLaunch += tx.amount;
+    else grantBreakdown.other += tx.amount;
+  }
+
+  // --- Usage breakdown (where credits go) ---
+  const usageBreakdown = { research: 0, angles: 0, copy: 0, creative: 0, analyzeBasic: 0, analyzeAdvanced: 0, videoUnlocks: 0, other: 0 };
+  for (const tx of transactions) {
+    if (tx.amount >= 0) continue;
+    const desc = (tx.description || "").toLowerCase();
+    const amt = Math.abs(tx.amount);
+    if (desc.includes("research generation")) usageBreakdown.research += amt;
+    else if (desc.includes("angles generation")) usageBreakdown.angles += amt;
+    else if (desc.includes("copy generation")) usageBreakdown.copy += amt;
+    else if (desc.includes("image generation")) usageBreakdown.creative += amt;
+    else if (desc.includes("basic analysis")) usageBreakdown.analyzeBasic += amt;
+    else if (desc.includes("advanced analysis")) usageBreakdown.analyzeAdvanced += amt;
+    else if (desc.includes("video unlock") || desc.includes("video reward")) usageBreakdown.videoUnlocks += amt;
+    else usageBreakdown.other += amt;
+  }
 
   // --- Department funnel: count usage transactions per module ---
   const DEPT_KEYS: Record<string, string[]> = {
@@ -206,13 +245,13 @@ export async function GET() {
       return { userId, username: u?.username || "User", email: u?.email || "", consumed, creditsRemaining: u?.creditsRemaining ?? 0, plan: u?.plan || "Lite" };
     });
 
-  // --- Signups per day (last 14 days) ---
+  // --- Signups per day (last 14 days) — using true signup date ---
   const last14Days = getLast14Days();
   const signupsByDay: Record<string, number> = {};
   for (const day of last14Days) signupsByDay[day] = 0;
-  for (const u of users) {
-    if (u.updated_at) {
-      const day = getDateKeyInManila(u.updated_at);
+  for (const u of userTable) {
+    if (u.signupDate) {
+      const day = getDateKeyInManila(u.signupDate);
       if (day in signupsByDay) signupsByDay[day]++;
     }
   }
@@ -267,7 +306,7 @@ export async function GET() {
 
   return NextResponse.json({
     userStats: { totalSignups: users.length, newToday, new7d, new30d, planBreakdown, thisWeekSignups, lastWeekSignups, returnUsers, usersAtZero },
-    creditActivity: { totalCreditsIssued, totalCreditsConsumed, topupEventCount: topupEvents.length, topupCreditsIssued },
+    creditActivity: { totalCreditsIssued, totalCreditsConsumed, topupEventCount: topupEvents.length, topupCreditsIssued, grantBreakdown, usageBreakdown },
     tokenStats: { byModule: tokensByModule, grandTotalTokens, estCostUSD },
     departmentFunnel,
     signupTrend,
