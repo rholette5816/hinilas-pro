@@ -346,7 +346,7 @@ export default function AdminDashboardClient() {
               <div className="px-5 py-4 border-b" style={{ borderColor: "#1E2D45" }}>
                 <SectionHeader title="Live Activity" sub="Last 20 credit transactions — auto-refreshes every 30s" />
               </div>
-              <div className="max-h-80 overflow-auto divide-y" style={{ divideColor: "#1E2D45" }}>
+              <div className="max-h-80 overflow-auto">
                 {recentActivity.map((a, i) => (
                   <div key={`${a.userId}-${a.createdAt}-${i}`} className="px-5 py-3 flex items-center justify-between gap-3" style={{ borderTop: i === 0 ? "none" : "1px solid #1E2D45" }}>
                     <div>
