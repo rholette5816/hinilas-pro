@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
-import FloatingChat from "@/components/FloatingChat";
+import FloatingChatWrapper from "@/components/FloatingChatWrapper";
 import ReferralToastWrapper from "@/components/ReferralToastWrapper";
 import TopBar from "@/components/TopBar";
 
@@ -67,7 +67,7 @@ export default function RootLayout({
           <AppProvider>
             <TopBar />
             {children}
-            <FloatingChat />
+            <FloatingChatWrapper />
             <ReferralToastWrapper />
           </AppProvider>
         </div>
