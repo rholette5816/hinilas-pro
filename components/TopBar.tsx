@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 
 const HIDDEN_PATHS = ["/home", "/loading-screen"];
@@ -15,9 +16,16 @@ export default function TopBar() {
   return (
     <>
       <div
-        className="hidden md:flex items-center justify-end px-6 py-3 fixed top-0 right-0 z-20"
+        className="hidden md:flex items-center justify-end gap-2 px-6 py-3 fixed top-0 right-0 z-20"
         style={{ background: "#0F172A", borderBottom: "1px solid #1E2D45", left: "240px" }}
       >
+        <Link
+          href="/blog"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+          style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid #1E2D45" }}
+        >
+          📝 Blog
+        </Link>
         <button
           onClick={() => setShowLeaderboard(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
