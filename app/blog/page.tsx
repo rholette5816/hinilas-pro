@@ -11,16 +11,20 @@ export const metadata: Metadata = {
 };
 
 async function getPosts() {
-  const admin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-  const { data } = await admin
-    .from("blog_posts")
-    .select("slug, title, meta_description, published_at")
-    .eq("status", "published")
-    .order("published_at", { ascending: false });
-  return data || [];
+  try {
+    const admin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const { data } = await admin
+      .from("blog_posts")
+      .select("slug, title, meta_description, published_at")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+    return data || [];
+  } catch {
+    return [];
+  }
 }
 
 export default async function BlogPage() {
