@@ -53,8 +53,8 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
           setChecking(false);
           return;
         }
-        const { data } = await supabase.from("feedbacks").select("id").eq("user_id", user.id).limit(1).single();
-        if (data) setStep("already_submitted");
+        const { data } = await supabase.from("feedbacks").select("id").eq("user_id", user.id).limit(1);
+        if (data && data.length > 0) setStep("already_submitted");
         setChecking(false);
       });
     }
