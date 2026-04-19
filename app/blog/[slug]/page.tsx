@@ -2,7 +2,6 @@ import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import { HinilasIcon } from "@/components/HinilasLogo";
 
 async function getPost(slug: string) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -98,7 +97,16 @@ export default async function BlogPostPage({
       <div className="border-b" style={{ borderColor: "#1E2D45" }}>
         <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <HinilasIcon size="sm" />
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="10" fill="#0F172A" />
+              <line x1="14" y1="10" x2="14" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
+              <line x1="34" y1="10" x2="34" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
+              <line x1="14" y1="24" x2="34" y2="24" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
+              <circle cx="14" cy="10" r="3" fill="#F5A623" />
+              <circle cx="14" cy="38" r="3" fill="#2B7EC9" />
+              <circle cx="34" cy="10" r="3" fill="#2B7EC9" />
+              <circle cx="34" cy="38" r="3" fill="#F5A623" />
+            </svg>
             <span className="text-white font-semibold text-sm">Hinilas Pro</span>
           </Link>
           <Link href="/blog" className="text-xs hover:text-white transition-colors" style={{ color: "#64748B" }}>
@@ -115,6 +123,7 @@ export default async function BlogPostPage({
               year: "numeric",
               month: "long",
               day: "numeric",
+              timeZone: "Asia/Manila",
             })}
           </p>
           <h1 className="text-3xl font-bold text-white leading-snug mb-4">

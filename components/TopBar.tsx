@@ -6,12 +6,31 @@ import Link from "next/link";
 import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 
 const HIDDEN_PATHS = ["/home", "/loading-screen"];
+const BLOG_PATHS = ["/blog"];
 
 export default function TopBar() {
   const pathname = usePathname();
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   if (HIDDEN_PATHS.includes(pathname)) return null;
+
+  const isBlog = pathname.startsWith("/blog");
+
+  if (isBlog) {
+    return (
+      <div className="hidden md:flex items-center justify-end gap-2 px-6 py-3 fixed top-0 right-0 z-20"
+        style={{ background: "transparent", left: 0 }}
+      >
+        <Link
+          href="/home"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+          style={{ background: "#2B7EC9", color: "#fff" }}
+        >
+          Get Started Free
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
