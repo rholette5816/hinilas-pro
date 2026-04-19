@@ -73,13 +73,11 @@ export default async function BlogPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group block rounded-2xl p-6 transition-all"
+                className="group block rounded-2xl p-6 transition-all blog-card"
                 style={{
                   background: "#0A0F1A",
                   border: "1px solid #1E2D45",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2B7EC9")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E2D45")}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
