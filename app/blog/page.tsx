@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Blog | Kuya Ken",
   description: "Meta Ads strategy, eCommerce tips, and business insights from Kuya Ken — operator, strategist, Filipino entrepreneur.",
