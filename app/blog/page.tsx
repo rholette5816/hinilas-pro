@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Blog | Kuya Ken",
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 };
 
 async function getPosts() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return [];
   try {
-    const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const admin = createClient(url, key);
     const { data } = await admin
       .from("blog_posts")
       .select("slug, title, meta_description, published_at")

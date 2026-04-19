@@ -5,11 +5,11 @@ import Link from "next/link";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
 async function getPost(slug: string) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
   try {
-    const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const admin = createClient(url, key);
     const { data } = await admin
       .from("blog_posts")
       .select("*")
