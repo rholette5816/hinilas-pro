@@ -44,26 +44,40 @@ export async function generateMetadata({
   };
 }
 
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) =>
+    urlRegex.test(part) ? (
+      <a key={i} href={part} target="_blank" rel="noopener noreferrer"
+        className="underline hover:opacity-80 transition-opacity"
+        style={{ color: "#2B7EC9" }}>
+        {part}
+      </a>
+    ) : part
+  );
+}
+
 function renderArticle(text: string) {
   return text.split("\n").map((line, i) => {
     if (line.startsWith("# "))
-      return <h1 key={i} className="text-3xl font-bold text-white mt-10 mb-4">{line.slice(2)}</h1>;
+      return <h1 key={i} className="text-3xl font-bold text-white mt-10 mb-4">{linkify(line.slice(2))}</h1>;
     if (line.startsWith("## "))
-      return <h2 key={i} className="text-2xl font-bold text-white mt-8 mb-3">{line.slice(3)}</h2>;
+      return <h2 key={i} className="text-2xl font-bold text-white mt-8 mb-3">{linkify(line.slice(3))}</h2>;
     if (line.startsWith("### "))
-      return <h3 key={i} className="text-lg font-semibold text-white mt-6 mb-2">{line.slice(4)}</h3>;
+      return <h3 key={i} className="text-lg font-semibold text-white mt-6 mb-2">{linkify(line.slice(4))}</h3>;
     if (line.startsWith("- ") || line.startsWith("* "))
       return (
         <li key={i} className="ml-5 text-sm leading-relaxed" style={{ color: "#94A3B8", listStyleType: "disc" }}>
-          {line.slice(2)}
+          {linkify(line.slice(2))}
         </li>
       );
     if (line.startsWith("**") && line.endsWith("**"))
-      return <p key={i} className="font-semibold text-white mt-4">{line.slice(2, -2)}</p>;
+      return <p key={i} className="font-semibold text-white mt-4">{linkify(line.slice(2, -2))}</p>;
     if (line.trim() === "") return <div key={i} className="h-3" />;
     return (
       <p key={i} className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
-        {line}
+        {linkify(line)}
       </p>
     );
   });
