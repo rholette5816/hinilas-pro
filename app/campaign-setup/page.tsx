@@ -167,23 +167,39 @@ export default function CampaignSetupPage() {
     const lines = research.split("\n");
     const interests: string[] = [];
     let inTargeting = false;
+    const skipWords = ["age", "gender", "advantage", "10–15", "10-15", "facebook interest", "location", "targeting suggestion", "suggestion"];
+
     for (const line of lines) {
       const lower = line.toLowerCase();
-      if (lower.includes("targeting suggestion") || lower.includes("facebook interest") || lower.includes("detailed targeting")) {
+
+      // Enter targeting section — must be a heading line
+      if (
+        (lower.includes("targeting suggestion") || lower.includes("targeting suggestions")) ||
+        (lower.includes("targeting") && (line.startsWith("#") || line.startsWith("**"))) ||
+        lower.includes("facebook interest suggestion")
+      ) {
         inTargeting = true;
         continue;
       }
-      if (inTargeting && line.startsWith("#")) break;
+
       if (!inTargeting) continue;
-      // skip meta lines
-      const skipLine = ["age", "gender", "advantage", "10–15", "10-15", "facebook interest", "location"];
-      if (skipLine.some(s => lower.includes(s))) continue;
-      // match numbered items: "1. Skincare" or "1. Skincare (description)"
-      const numbered = line.match(/^\d+[.)]\s+(.+)/);
-      if (numbered) {
-        // strip parenthetical explanation
-        const clean = numbered[1].replace(/\s*\(.*?\)/, "").replace(/[*_]/g, "").trim();
-        if (clean.length > 1 && clean.length < 50) interests.push(clean);
+
+      // Exit on next major heading
+      if (/^#{1,3}\s/.test(line) || /^\*\*[A-Z]/.test(line)) {
+        if (interests.length > 0) break;
+        continue;
+      }
+
+      if (skipWords.some(s => lower.includes(s))) continue;
+
+      // Match: "1. Word", "1) Word", "- Word", "* Word"
+      const match = line.match(/^(?:\d+[.)]\s+|[-*•]\s+)(.+)/);
+      if (match) {
+        const clean = match[1]
+          .replace(/\s*\(.*?\)/g, "")
+          .replace(/[*_:#]/g, "")
+          .trim();
+        if (clean.length > 1 && clean.length < 60) interests.push(clean);
       }
     }
     return interests.slice(0, 15);
