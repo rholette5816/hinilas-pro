@@ -159,8 +159,32 @@ const STEPS: Step[] = [
 const TOTAL = STEPS.length;
 
 export default function CampaignSetupPage() {
-  const { refreshCredits } = useApp();
+  const { refreshCredits, researchOutput } = useApp();
   const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
+  const [copiedInterest, setCopiedInterest] = useState<string | null>(null);
+
+  function parseInterests(research: string): string[] {
+    const lines = research.split("\n");
+    const interests: string[] = [];
+    let inTargeting = false;
+    for (const line of lines) {
+      if (/targeting/i.test(line) && /interest/i.test(line)) { inTargeting = true; continue; }
+      if (inTargeting && line.startsWith("#")) break;
+      if (inTargeting) {
+        const clean = line.replace(/^[-*•\d.)\s]+/, "").trim();
+        if (clean.length > 1 && clean.length < 60 && !clean.toLowerCase().includes("advantage") && !clean.toLowerCase().includes("age") && !clean.toLowerCase().includes("gender")) {
+          interests.push(clean);
+        }
+      }
+    }
+    return interests.slice(0, 15);
+  }
+
+  function copyInterest(text: string) {
+    navigator.clipboard.writeText(text);
+    setCopiedInterest(text);
+    setTimeout(() => setCopiedInterest(null), 1500);
+  }
   const [currentStep, setCurrentStep] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -419,6 +443,55 @@ export default function CampaignSetupPage() {
                   </div>
                 );
               })()}
+
+              {/* Targeting suggestions — only on Audience Targeting step */}
+              {!done && step.label === "Audience Targeting" && (
+                <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#0A0F1A" }}>
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#0F172A" }}>
+                    <span className="text-base">🎯</span>
+                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#F5A623" }}>Targeting Suggestions</span>
+                    <span className="text-xs text-gray-600 ml-1">from your research</span>
+                  </div>
+                  <div className="px-4 py-4">
+                    {researchOutput ? (() => {
+                      const interests = parseInterests(researchOutput);
+                      return interests.length > 0 ? (
+                        <>
+                          <p className="text-xs text-gray-500 mb-3">Tap any interest to copy — paste directly into Detailed Targeting in Meta Ads Manager.</p>
+                          <div className="flex flex-wrap gap-2">
+                            {interests.map((interest, i) => (
+                              <button
+                                key={i}
+                                onClick={() => copyInterest(interest)}
+                                className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 active:scale-95"
+                                style={copiedInterest === interest
+                                  ? { background: "#052e16", color: "#22c55e", border: "1px solid #22c55e60" }
+                                  : { background: "rgba(245,166,35,0.1)", color: "#F5A623", border: "1px solid rgba(245,166,35,0.3)" }
+                                }
+                              >
+                                {copiedInterest === interest ? "✓ Copied" : interest}
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-xs text-gray-500">No interest suggestions found in your research. Try re-running research for more detailed targeting ideas.</p>
+                      );
+                    })() : (
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-xs text-gray-500">Run market research first to get interest targeting suggestions specific to your product.</p>
+                        <a
+                          href="/research"
+                          className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-90"
+                          style={{ background: "rgba(245,166,35,0.15)", color: "#F5A623", border: "1px solid rgba(245,166,35,0.3)" }}
+                        >
+                          Run Research →
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {done ? (
                 <div className="rounded-2xl border border-gray-700 p-8 text-center" style={{ background: "#0A0F1A" }}>
