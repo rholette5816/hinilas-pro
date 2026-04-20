@@ -168,11 +168,21 @@ export default function CampaignSetupPage() {
     const interests: string[] = [];
     let inTargeting = false;
     for (const line of lines) {
-      if (/targeting/i.test(line) && /interest/i.test(line)) { inTargeting = true; continue; }
+      const lower = line.toLowerCase();
+      if (
+        lower.includes("targeting") ||
+        lower.includes("interest suggestion") ||
+        lower.includes("facebook interest") ||
+        lower.includes("detailed targeting")
+      ) {
+        inTargeting = true;
+        continue;
+      }
       if (inTargeting && line.startsWith("#")) break;
       if (inTargeting) {
-        const clean = line.replace(/^[-*•\d.)\s]+/, "").trim();
-        if (clean.length > 1 && clean.length < 60 && !clean.toLowerCase().includes("advantage") && !clean.toLowerCase().includes("age") && !clean.toLowerCase().includes("gender")) {
+        const clean = line.replace(/^[-*•\d.)]\s*/, "").trim();
+        const skip = ["age", "gender", "advantage", "location", "recommendation", "broad", "targeting", "interest", "facebook", "philippine", "philippines"];
+        if (clean.length > 2 && clean.length < 60 && !skip.some(s => clean.toLowerCase().startsWith(s))) {
           interests.push(clean);
         }
       }
