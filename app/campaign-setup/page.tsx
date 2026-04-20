@@ -202,6 +202,7 @@ export default function CampaignSetupPage() {
         if (clean.length > 1 && clean.length < 60) interests.push(clean);
       }
     }
+    console.log("[parseInterests] found:", interests);
     return interests.slice(0, 15);
   }
 
@@ -479,6 +480,7 @@ export default function CampaignSetupPage() {
                   </div>
                   <div className="px-4 py-4">
                     {researchOutput ? (() => {
+                      console.log("[researchOutput raw]", JSON.stringify(researchOutput.slice(0, 500)));
                       const interests = parseInterests(researchOutput);
                       return interests.length > 0 ? (
                         <>
