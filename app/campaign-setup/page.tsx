@@ -169,22 +169,21 @@ export default function CampaignSetupPage() {
     let inTargeting = false;
     for (const line of lines) {
       const lower = line.toLowerCase();
-      if (
-        lower.includes("targeting") ||
-        lower.includes("interest suggestion") ||
-        lower.includes("facebook interest") ||
-        lower.includes("detailed targeting")
-      ) {
+      if (lower.includes("targeting suggestion") || lower.includes("facebook interest") || lower.includes("detailed targeting")) {
         inTargeting = true;
         continue;
       }
       if (inTargeting && line.startsWith("#")) break;
-      if (inTargeting) {
-        const clean = line.replace(/^[-*•\d.)]\s*/, "").trim();
-        const skip = ["age", "gender", "advantage", "location", "recommendation", "broad", "targeting", "interest", "facebook", "philippine", "philippines"];
-        if (clean.length > 2 && clean.length < 60 && !skip.some(s => clean.toLowerCase().startsWith(s))) {
-          interests.push(clean);
-        }
+      if (!inTargeting) continue;
+      // skip meta lines
+      const skipLine = ["age", "gender", "advantage", "10–15", "10-15", "facebook interest", "location"];
+      if (skipLine.some(s => lower.includes(s))) continue;
+      // match numbered items: "1. Skincare" or "1. Skincare (description)"
+      const numbered = line.match(/^\d+[.)]\s+(.+)/);
+      if (numbered) {
+        // strip parenthetical explanation
+        const clean = numbered[1].replace(/\s*\(.*?\)/, "").replace(/[*_]/g, "").trim();
+        if (clean.length > 1 && clean.length < 50) interests.push(clean);
       }
     }
     return interests.slice(0, 15);
