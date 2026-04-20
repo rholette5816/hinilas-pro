@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
+import { createClient } from "@/lib/supabase/client";
 
 type Level = "Campaign" | "Ad Set" | "Ads";
 type VideoKey = "campaign" | "adset" | "ads";
@@ -159,9 +160,23 @@ const STEPS: Step[] = [
 const TOTAL = STEPS.length;
 
 export default function CampaignSetupPage() {
-  const { refreshCredits, researchOutput } = useApp();
+  const { refreshCredits } = useApp();
+  const [researchOutput, setResearchOutput] = useState("");
   const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
   const [copiedInterest, setCopiedInterest] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("user_data")
+        .select("research_output")
+        .eq("user_id", user.id)
+        .single();
+      if (data?.research_output) setResearchOutput(data.research_output);
+    });
+  }, []);
 
   function parseInterests(research: string): string[] {
     const lines = research.split("\n");
@@ -202,7 +217,6 @@ export default function CampaignSetupPage() {
         if (clean.length > 1 && clean.length < 60) interests.push(clean);
       }
     }
-    console.log("[parseInterests] found:", interests);
     return interests.slice(0, 15);
   }
 
@@ -480,7 +494,6 @@ export default function CampaignSetupPage() {
                   </div>
                   <div className="px-4 py-4">
                     {researchOutput ? (() => {
-                      console.log("[researchOutput raw]", JSON.stringify(researchOutput.slice(0, 500)));
                       const interests = parseInterests(researchOutput);
                       return interests.length > 0 ? (
                         <>
