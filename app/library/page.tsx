@@ -57,11 +57,17 @@ export default function LibraryPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/home"); return; }
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("media_library")
       .select("id, type, url, label, angle, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("[library] fetch error:", error.message, error.code);
+    } else {
+      console.log("[library] fetched items:", data?.length ?? 0);
+    }
 
     setItems((data as MediaItem[]) || []);
     setLoading(false);
