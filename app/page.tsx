@@ -98,7 +98,7 @@ export default function SetupPage() {
   const setupDone = !!(setup?.businessName);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#0B1120" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#0F172A" }}>
       <Sidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
