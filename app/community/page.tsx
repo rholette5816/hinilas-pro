@@ -1,17 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/client";
-
-interface Message {
-  id: string;
-  user_id: string;
-  user_name: string;
-  user_avatar: string | null;
-  message: string;
-  created_at: string;
-}
+import { useCommunityMessages } from "@/lib/use-community-messages";
 
 function Avatar({ name, avatar, size = 8 }: { name: string; avatar?: string | null; size?: number }) {
   if (avatar) return <img src={avatar} alt={name} className={`w-${size} h-${size} rounded-full object-cover shrink-0`} />;
@@ -36,12 +28,12 @@ function formatTime(ts: string) {
 }
 
 export default function CommunityPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [supabase] = useState(createClient);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; avatar: string | null } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const supabase = createClient();
+  const { messages } = useCommunityMessages();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -53,24 +45,7 @@ export default function CommunityPage() {
         });
       }
     });
-  }, []);
-
-  async function fetchMessages() {
-    const { data } = await supabase
-      .from("community_messages")
-      .select("*")
-      .order("created_at", { ascending: true })
-      .limit(100);
-    if (data) setMessages(data as Message[]);
-  }
-
-  useEffect(() => {
-     
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 3000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,8 +76,6 @@ export default function CommunityPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <main className="flex-1 flex flex-col pt-14 md:pt-0 overflow-hidden">
-
-        {/* Header */}
         <div className="px-6 py-4 border-b border-gray-800 shrink-0" style={{ background: "#0B1120" }}>
           <div className="flex items-center gap-3">
             <div className="inline-flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-full px-3 py-1">
@@ -114,7 +87,6 @@ export default function CommunityPage() {
           <p className="text-gray-500 text-xs">Share wins, ask questions, help each other grow.</p>
         </div>
 
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
           {messages.length === 0 && (
             <div className="text-center py-16">
@@ -157,7 +129,6 @@ export default function CommunityPage() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
         <div className="px-4 py-4 border-t border-gray-800 shrink-0" style={{ background: "#0B1120" }}>
           {currentUser ? (
             <div className="flex items-end gap-3 max-w-3xl mx-auto">
@@ -165,7 +136,7 @@ export default function CommunityPage() {
               <div className="flex-1 relative">
                 <textarea
                   value={input}
-                  onChange={e => setInput(e.target.value)}
+                  onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Write a message... (Enter to send)"
                   rows={1}
@@ -179,8 +150,8 @@ export default function CommunityPage() {
                   style={{ background: "#2B7EC9" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
               </div>
@@ -189,7 +160,6 @@ export default function CommunityPage() {
             <p className="text-center text-gray-600 text-sm">Log in to send messages.</p>
           )}
         </div>
-
       </main>
     </div>
   );

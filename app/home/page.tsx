@@ -35,11 +35,11 @@ const FAQS = [
   },
   {
     q: "Who is Hinilas Pro for?",
-    a: "Beginners and operators who want a structured, guided process for running Meta Ads — without the guesswork. If you want to learn faster, execute smarter, and stop wasting ad spend, this tool is built for you.",
+    a: "Beginners and operators who want faster ad decisions and a guided process for running Meta Ads without the guesswork. If you want better angles, better ads, and a faster path to launch, this tool is built for you.",
   },
   {
     q: "Who is Hinilas Pro NOT for?",
-    a: "People looking for a magic button with zero effort. Hinilas Pro is a learning tool that amplifies your thinking — you still need to show up, follow the process, and apply what the AI gives you.",
+    a: "People looking for a magic button with zero effort. Hinilas Pro helps you move faster with better research, angles, creatives, and copy, but you still need to review the output and run the campaign.",
   },
 ];
 
@@ -146,9 +146,9 @@ function LoginModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <h2 className="text-white text-xl font-bold mb-1">Get Started Free</h2>
+        <h2 className="text-white text-xl font-bold mb-1">Start Free with 30 Credits</h2>
         <p className="text-sm mb-7" style={{ color: "#64748B" }}>
-          Sign in to access your AI marketing workspace.
+          Guided market research in 1 click. Get the best angle that sells, then use it to generate ads in about 5 minutes.
         </p>
 
         <button
@@ -219,6 +219,29 @@ export default function LandingPage() {
     fetch("/api/feedback")
       .then(r => r.json())
       .then(d => setFeedbacks(d.feedbacks || []));
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.sessionStorage.getItem("meta_viewcontent_home_sent")) return;
+
+    window.sessionStorage.setItem("meta_viewcontent_home_sent", "1");
+
+    void fetch("/api/meta/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName: "ViewContent",
+        eventId: `viewcontent-home-${Date.now()}`,
+        eventSourceUrl: window.location.href,
+        customData: {
+          content_name: "Hinilas Pro Home",
+          content_category: "Landing Page",
+        },
+      }),
+    }).catch(() => {
+      window.sessionStorage.removeItem("meta_viewcontent_home_sent");
+    });
   }, []);
 
   const openModal = useCallback(() => setShowModal(true), []);
@@ -299,7 +322,7 @@ export default function LandingPage() {
               <span style={{ color: "#F5A623" }}>Blindly.</span>
             </h1>
             <p className="text-lg mb-8" style={{ color: "#94A3B8", lineHeight: 1.7, maxWidth: 520 }}>
-              The complete marketing intelligence platform. Research your market, build your strategy, generate your assets, and launch — all in one place.
+              Stop guessing. Gumawa ng ads na talagang gumagana - in 5 minutes, free.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
               <button

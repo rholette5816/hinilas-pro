@@ -1,16 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-
-interface Message {
-  id: string;
-  user_id: string;
-  user_name: string;
-  user_avatar: string | null;
-  message: string;
-  created_at: string;
-}
+import { useCommunityMessages } from "@/lib/use-community-messages";
 
 function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
   if (avatar) return <img src={avatar} alt={name} className="w-7 h-7 rounded-full object-cover shrink-0" />;
@@ -30,8 +22,8 @@ function formatTime(ts: string) {
 }
 
 export default function FloatingChat() {
+  const [supabase] = useState(createClient);
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [unread, setUnread] = useState(0);
@@ -39,10 +31,10 @@ export default function FloatingChat() {
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; avatar: string | null } | null>(null);
   const [authLoaded, setAuthLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { messages } = useCommunityMessages();
   const lastCountRef = useRef<number>(
     typeof window !== "undefined" ? parseInt(localStorage.getItem("hilason_last_count") || "0") : 0
   );
-  const supabase = createClient();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -69,55 +61,22 @@ export default function FloatingChat() {
     });
 
     return () => subscription.unsubscribe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
-  async function fetchMessages() {
-    const { data } = await supabase
-      .from("community_messages")
-      .select("*")
-      .order("created_at", { ascending: true })
-      .limit(100);
-    if (!data) return;
-    const msgs = data as Message[];
-    setMessages(msgs);
-
-    if (!open && msgs.length > lastCountRef.current) {
-      const newCount = msgs.length - lastCountRef.current;
-      setUnread(prev => prev + newCount);
-      setGlowing(true);
-    }
-    lastCountRef.current = open ? msgs.length : lastCountRef.current;
-  }
+  }, [supabase]);
 
   useEffect(() => {
-     
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 3000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    if (open) return;
+    if (messages.length <= lastCountRef.current) return;
+
+    setUnread((prev) => prev + (messages.length - lastCountRef.current));
+    setGlowing(true);
+  }, [messages, open]);
 
   useEffect(() => {
-    if (open) {
-       
-      setUnread(0);
-       
-      setGlowing(false);
-      lastCountRef.current = messages.length;
-      localStorage.setItem("hilason_last_count", String(messages.length));
-      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  // Stop glowing once user has seen the messages
-  useEffect(() => {
-     
-    if (open && glowing) setGlowing(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    if (!open) return;
+    lastCountRef.current = messages.length;
+    localStorage.setItem("hilason_last_count", String(messages.length));
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  }, [messages.length, open]);
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -144,11 +103,22 @@ export default function FloatingChat() {
     }
   }
 
+  function openChat() {
+    setUnread(0);
+    setGlowing(false);
+    lastCountRef.current = messages.length;
+    localStorage.setItem("hilason_last_count", String(messages.length));
+    setOpen(true);
+  }
+
+  function closeChat() {
+    setOpen(false);
+  }
+
   if (!authLoaded || !currentUser) return null;
 
   return (
     <>
-      {/* Chat window */}
       {open && (
         <div
           className="fixed bottom-12 right-3 z-50 w-72 md:w-80 rounded-t-2xl rounded-bl-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden"
@@ -158,17 +128,15 @@ export default function FloatingChat() {
             animation: "slideUp 0.2s ease-out",
           }}
         >
-          {/* Header */}
           <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between shrink-0" style={{ background: "#0A0F1A" }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-white text-sm font-bold">Mga Hilason</span>
               <span className="text-gray-600 text-xs">{messages.length} messages</span>
             </div>
-            <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-white text-base">✕</button>
+            <button onClick={closeChat} className="text-gray-500 hover:text-white text-base">×</button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
             {messages.length === 0 && (
               <p className="text-center text-gray-600 text-xs pt-8">No messages yet. Say something!</p>
@@ -203,42 +171,36 @@ export default function FloatingChat() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Input */}
           <div className="px-3 py-3 border-t border-gray-800 shrink-0">
-            {currentUser ? (
-              <div className="flex items-end gap-2">
-                <textarea
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Message everyone..."
-                  rows={1}
-                  className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white placeholder-gray-600 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  style={{ maxHeight: "80px" }}
-                />
-                <button
-                  onClick={sendMessage}
-                  disabled={!input.trim() || sending}
-                  className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 shrink-0 transition-opacity hover:opacity-90"
-                  style={{ background: "#2B7EC9" }}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path d="M22 2L11 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            ) : (
-              <p className="text-center text-gray-600 text-xs">Log in to send messages.</p>
-            )}
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Message everyone..."
+                rows={1}
+                className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white placeholder-gray-600 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                style={{ maxHeight: "80px" }}
+              />
+              <button
+                onClick={sendMessage}
+                disabled={!input.trim() || sending}
+                className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 shrink-0 transition-opacity hover:opacity-90"
+                style={{ background: "#2B7EC9" }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Floating button */}
       <div className="fixed bottom-0 right-3 z-50 flex flex-col items-center" style={{ width: "48px" }}>
         <button
-          onClick={() => setOpen(prev => !prev)}
+          onClick={() => (open ? closeChat() : openChat())}
           className="relative flex flex-col items-center justify-center transition-transform hover:scale-105 active:scale-95"
           style={{
             width: "48px",

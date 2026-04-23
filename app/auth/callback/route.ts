@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { sendMetaEvent } from "@/lib/meta-capi";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -89,6 +90,20 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
       type: "grant",
       amount: 30,
       description: "Welcome credits — 30 free credits on signup",
+    });
+
+    await sendMetaEvent({
+      request,
+      eventName: "CompleteRegistration",
+      eventId: `complete-registration-${user.id}`,
+      eventSourceUrl: `${new URL(request.url).origin}/home`,
+      userData: {
+        email: user.email || null,
+        externalId: user.id,
+      },
+      customData: {
+        status: "completed",
+      },
     });
 
     // Grant 5 credits to referrer on signup

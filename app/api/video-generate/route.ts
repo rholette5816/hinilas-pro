@@ -6,7 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 
 export const maxDuration = 60;
 
-const CREDIT_COST = 10;
+const CREDIT_COST = 70;
 
 function adminClient() {
   return createAdminClient(
@@ -45,7 +45,7 @@ STEP 3 — Write 3 prompts using this structure:
 RULES:
 - Copy the FULL character description word-for-word into all 3 prompts — do not summarize or shorten it. Veo needs the exact same description to render the same person.
 - Dialogue must feel natural and native to the detected dialect — not translated, not formal
-- Dialogue must be SHORT — maximum 8-10 words spoken. Veo 3 Fast generates exactly 8 seconds. No long sentences.
+- Dialogue must fill the 8 seconds — write 15-20 words of natural spoken dialogue per clip. Not too short, not too long. Think of it as one full sentence delivered at a calm, natural Filipino speaking pace.
 - ONE scene, ONE action, ONE line per clip. No scene transitions. No cuts.
 - Include: shot type, character action, spoken dialogue (in detected dialect), background music mood
 - Each clip is exactly 8 seconds, vertical 9:16, photorealistic
@@ -74,6 +74,7 @@ async function generateVideo(prompt: string): Promise<string | null> {
     config: {
       aspectRatio: "9:16",
       numberOfVideos: 1,
+      resolution: "1080p",
     },
   });
 

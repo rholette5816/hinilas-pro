@@ -268,12 +268,39 @@ export default function CreativePage() {
 
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
                     <p className="text-white text-sm font-semibold mb-1">3 Locked Video Clips</p>
-                    <p className="text-gray-400 text-xs leading-relaxed">AI generates 3 short video prompts from your angle — all locked together in character, setting, and style. Clip 1 = hook, Clip 2 = solution, Clip 3 = CTA. Powered by Google Veo 2, 9:16 vertical format for Reels/Stories.</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">AI generates 3 short video prompts from your angle — all locked together in character, setting, and style. Clip 1 = hook, Clip 2 = solution, Clip 3 = CTA. Powered by Google Veo 3 Fast, 1080p 9:16 vertical format for Reels/Stories.</p>
+                  </div>
+
+                  {/* Sample previews */}
+                  <div className="mb-6">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Sample Output</p>
+                    <div className="flex gap-3 justify-center">
+                      {[
+                        { label: "Clip 1 — Hook", src: "/samples/clip-hook.mp4" },
+                        { label: "Clip 2 — Solution", src: "/samples/clip-solution.mp4" },
+                        { label: "Clip 3 — CTA", src: "/samples/clip-cta.mp4" },
+                      ].map((s) => (
+                        <div key={s.label} className="flex flex-col items-center gap-1.5">
+                          <div className="rounded-lg overflow-hidden border border-gray-700 bg-gray-900" style={{ width: "90px", height: "160px" }}>
+                            <video
+                              src={s.src}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <p className="text-gray-500 text-xs">{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-gray-600 text-xs mt-3 text-center">Real outputs from the same AI. Your clips will match your angle and dialect.</p>
                   </div>
 
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs text-gray-500">{credits} credits remaining</span>
-                    {credits <= 10 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
+                    {credits <= 70 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
                   </div>
 
                   {videoError && (
@@ -282,11 +309,11 @@ export default function CreativePage() {
 
                   <button
                     onClick={generateVideos}
-                    disabled={videoLoading || credits < 10}
+                    disabled={videoLoading || credits < 70}
                     className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-8 transition-opacity hover:opacity-90 disabled:opacity-40"
                     style={{ background: videoLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                   >
-                    {videoLoading ? "Generating videos... this takes up to 3 minutes" : "Generate 3 Video Clips — 10 credits"}
+                    {videoLoading ? "Generating videos... this takes up to 3 minutes" : "Generate 3 Video Clips — 70 credits"}
                   </button>
 
                   {videoLoading && !videoUrls.some(v => v !== null) && (

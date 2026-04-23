@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isOwnerUser } from "@/lib/admin";
+import { deductCreditsAtomic } from "@/lib/credits";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -10,9 +11,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Owner gets unlimited free access — skip all credit checks and logging
   if (isOwnerUser(user)) {
-    const { data: userData } = await supabase.from("user_data").select("credits_remaining").eq("user_id", user.id).single();
+    const { data: userData } = await supabase
+      .from("user_data")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .single();
+
     return NextResponse.json({ credits: userData?.credits_remaining ?? 0 });
   }
 
@@ -20,32 +25,18 @@ export async function POST(req: Request) {
   const amount = typeof body.amount === "number" && body.amount > 0 ? body.amount : 1;
   const description = body.description || `Credit usage (${amount} credits)`;
 
-  const { data: userData } = await supabase
-    .from("user_data")
-    .select("credits_remaining")
-    .eq("user_id", user.id)
-    .single();
-
-  if (!userData || userData.credits_remaining < amount) {
-    return NextResponse.json(
-      { error: "Not enough credits", code: "NO_CREDITS" },
-      { status: 402 }
-    );
-  }
-
-  const newCredits = userData.credits_remaining - amount;
-
-  await supabase
-    .from("user_data")
-    .update({ credits_remaining: newCredits })
-    .eq("user_id", user.id);
-
-  await supabase.from("credit_transactions").insert({
-    user_id: user.id,
-    type: "use",
-    amount: -amount,
+  const result = await deductCreditsAtomic({
+    userId: user.id,
+    amount,
     description,
   });
 
-  return NextResponse.json({ credits: newCredits });
+  if (!result.ok) {
+    if (result.code === "NO_CREDITS") {
+      return NextResponse.json({ error: "Not enough credits", code: "NO_CREDITS" }, { status: 402 });
+    }
+    return NextResponse.json({ error: "Credit update failed", code: result.code }, { status: 409 });
+  }
+
+  return NextResponse.json({ credits: result.creditsRemaining });
 }

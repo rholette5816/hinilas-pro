@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { sendMetaEvent } from "@/lib/meta-capi";
 
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
@@ -112,6 +113,23 @@ export async function GET(req: NextRequest) {
     type: "topup",
     amount: request.credits_requested,
     description: `Top-up approved — ${request.package} (₱${request.amount_paid})`,
+  });
+
+  await sendMetaEvent({
+    request: req,
+    eventName: "Purchase",
+    eventId: `purchase-topup-${request.id}`,
+    eventSourceUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas.pro"}/pricing`,
+    userData: {
+      email: request.user_email,
+      externalId: request.user_id,
+    },
+    customData: {
+      currency: "PHP",
+      value: Number(request.amount_paid) || 0,
+      content_name: request.package,
+      content_category: "Top Up",
+    },
   });
 
   // Referral reward — only fires once per referred user
