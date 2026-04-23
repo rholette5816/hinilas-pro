@@ -36,10 +36,14 @@ async function uploadBase64ToStorage(
       contentType: mimeType,
       upsert: true,
     });
-    if (error) return null;
+    if (error) {
+      console.error("[image-upload] storage error:", error.message, "| path:", path);
+      return null;
+    }
     const { data: { publicUrl } } = admin.storage.from("ad-creative").getPublicUrl(path);
     return publicUrl;
-  } catch {
+  } catch (e) {
+    console.error("[image-upload] unexpected error:", e);
     return null;
   }
 }
@@ -166,16 +170,19 @@ export async function POST(req: NextRequest) {
     const slugLabel = label.toLowerCase().replace(/\s/g, "-");
     const publicUrl = await uploadBase64ToStorage(images[0], user.id, `${ts}-${slugLabel}`);
 
-    // Insert into media_library (fire and forget — don't block response)
+    // Insert into media_library
     if (publicUrl) {
       const admin = adminClient();
-      void admin.from("media_library").insert({
+      const { error: libError } = await admin.from("media_library").insert({
         user_id: user.id,
         type: "image",
         url: publicUrl,
         label,
         angle: angle || null,
       });
+      if (libError) console.error("[image-upload] media_library insert error:", libError.message);
+    } else {
+      console.error("[image-upload] skipping media_library insert — no public URL (storage upload failed)");
     }
 
     try {
