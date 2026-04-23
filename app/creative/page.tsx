@@ -41,6 +41,22 @@ export default function CreativePage() {
   const [error, setError] = useState("");
   const [noCredits, setNoCredits] = useState(false);
 
+  const [playingsample, setPlayingSample] = useState<number | null>(null);
+  const sampleRefs = useRef<(HTMLVideoElement | null)[]>([null, null, null]);
+
+  function toggleSample(index: number) {
+    const video = sampleRefs.current[index];
+    if (!video) return;
+    if (playingsample === index) {
+      video.pause();
+      setPlayingSample(null);
+    } else {
+      sampleRefs.current.forEach((v, i) => { if (i !== index && v) { v.pause(); v.currentTime = 0; } });
+      video.play();
+      setPlayingSample(index);
+    }
+  }
+
   const logoRef = useRef<HTMLInputElement>(null);
   const productRef = useRef<HTMLInputElement>(null);
 
@@ -274,22 +290,43 @@ export default function CreativePage() {
                   {/* Sample previews */}
                   <div className="mb-6">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Sample Output</p>
-                    <div className="flex gap-3 justify-center">
+                    <div className="flex gap-4 justify-center">
                       {[
                         { label: "Clip 1 — Hook", src: "/samples/clip-hook.mp4" },
                         { label: "Clip 2 — Solution", src: "/samples/clip-solution.mp4" },
                         { label: "Clip 3 — CTA", src: "/samples/clip-cta.mp4" },
-                      ].map((s) => (
-                        <div key={s.label} className="flex flex-col items-center gap-1.5">
-                          <div className="rounded-lg overflow-hidden border border-gray-700 bg-gray-900" style={{ width: "90px", height: "160px" }}>
+                      ].map((s, i) => (
+                        <div key={s.label} className="flex flex-col items-center gap-2">
+                          <div
+                            className="relative rounded-xl overflow-hidden border border-gray-700 bg-gray-900 cursor-pointer"
+                            style={{ width: "140px", height: "250px" }}
+                            onClick={() => toggleSample(i)}
+                          >
                             <video
+                              ref={el => { sampleRefs.current[i] = el; }}
                               src={s.src}
-                              autoPlay
-                              muted
                               loop
                               playsInline
                               className="w-full h-full object-cover"
+                              onEnded={() => setPlayingSample(null)}
                             />
+                            {/* Play/pause overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/20 transition-colors">
+                              {playingsample === i ? (
+                                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+                                    <rect x="3" y="2" width="4" height="12" rx="1" />
+                                    <rect x="9" y="2" width="4" height="12" rx="1" />
+                                  </svg>
+                                </div>
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+                                    <path d="M4 2l10 6-10 6V2z" />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <p className="text-gray-500 text-xs">{s.label}</p>
                         </div>
