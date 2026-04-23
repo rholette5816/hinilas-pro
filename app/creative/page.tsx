@@ -494,7 +494,7 @@ export default function CreativePage() {
                         <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                         <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </div>
-                      <p className="text-gray-300 text-sm font-medium">Veo 2 is rendering your clips</p>
+                      <p className="text-gray-300 text-sm font-medium">Veo 3 Fast is rendering your clips</p>
                       <p className="text-gray-500 text-xs mt-1">Video generation takes 1 to 3 minutes. Don&apos;t close this page.</p>
                     </div>
                   )}
