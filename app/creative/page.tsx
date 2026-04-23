@@ -176,8 +176,6 @@ export default function CreativePage() {
     if (!setup || !selectedAngle) return;
     setVideoLoading(true);
     setVideoError("");
-    setVideoPrompts([]);
-    setVideoUrls([null, null, null]);
     try {
       const userCtx = buildUserContext(setup);
       const res = await fetch("/api/video-generate", {
@@ -290,7 +288,7 @@ export default function CreativePage() {
                     {videoLoading ? "Generating videos... this takes up to 3 minutes" : "Generate 3 Video Clips — 10 credits"}
                   </button>
 
-                  {videoLoading && (
+                  {videoLoading && !videoUrls.some(v => v !== null) && (
                     <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center mb-8">
                       <div className="flex justify-center gap-1 mb-3">
                         <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -302,7 +300,18 @@ export default function CreativePage() {
                     </div>
                   )}
 
-                  {videoUrls.some(v => v !== null) && !videoLoading && (
+                  {videoLoading && videoUrls.some(v => v !== null) && (
+                    <div className="flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-lg px-4 py-3 mb-5">
+                      <div className="flex gap-1">
+                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                      <p className="text-purple-300 text-xs">Regenerating new clips — old ones shown below until ready. Don&apos;t close this page.</p>
+                    </div>
+                  )}
+
+                  {videoUrls.some(v => v !== null) && (
                     <div className="flex flex-col gap-6">
                       {videoUrls.map((url, i) => (
                         <div key={i} className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
@@ -466,7 +475,7 @@ export default function CreativePage() {
               </button>
             </div>
 
-            {loadingMain && (
+            {loadingMain && !mainImage && (
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
                 <div className="flex justify-center gap-1 mb-3">
                   <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -478,7 +487,18 @@ export default function CreativePage() {
               </div>
             )}
 
-            {mainImage && !loadingMain && (
+            {loadingMain && mainImage && (
+              <div className="flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-lg px-4 py-3 mb-3">
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+                <p className="text-pink-300 text-xs">Regenerating — current image shown below until ready.</p>
+              </div>
+            )}
+
+            {mainImage && (
               <div className="relative rounded-xl overflow-hidden border border-gray-700">
                 <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
@@ -498,7 +518,7 @@ export default function CreativePage() {
           </div>
 
           {/* Iterations — only show after main is generated */}
-          {mainImage && !loadingMain && (
+          {mainImage && (
             <div className="border-t border-gray-700 pt-6 mb-8">
               <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
               <p className="text-gray-500 text-xs mb-5">Different placements, different formats. Each uses 2 credits.</p>
