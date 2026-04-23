@@ -216,18 +216,18 @@ export default function CreativePage() {
       // Step 2 — poll for status every 5 seconds until all 3 clips are ready
       const resolvedUrls: (string | null)[] = [null, null, null];
       let attempts = 0;
-      const maxAttempts = 36; // 3 minutes max
+      const maxAttempts = 72; // 6 minutes max (72 × 5s)
 
       const poll = async () => {
         if (attempts >= maxAttempts) {
-          setVideoError("Video generation timed out. Please try again.");
+          setVideoError("Video generation timed out. Veo took too long — please try again.");
           setVideoLoading(false);
           return;
         }
         attempts++;
 
         // Send null for already-resolved indices so server skips them
-        const pendingNames = operationNames.map((name, i) => resolvedUrls[i] ? null : name);
+        const pendingNames = operationNames.map((name: string, i: number) => resolvedUrls[i] ? null : name);
 
         try {
           const statusRes = await fetch("/api/video-status", {
@@ -235,17 +235,25 @@ export default function CreativePage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ operationNames: pendingNames, prompts, sessionTs, angle: selectedAngle }),
           });
+
+          if (!statusRes.ok) {
+            // Server error — retry
+            setTimeout(poll, 5000);
+            return;
+          }
+
           const statusData = await statusRes.json();
 
           // Merge newly resolved URLs into state
           (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
             if (result && result !== "pending" && !resolvedUrls[i]) {
-              resolvedUrls[i] = result;
+              resolvedUrls[i] = result as string;
             }
           });
           setVideoUrls([...resolvedUrls]);
 
-          if (statusData.allDone) {
+          const allResolved = resolvedUrls.every(u => u !== null);
+          if (statusData.allDone || allResolved) {
             await saveVideos(resolvedUrls, prompts);
             setVideoLoading(false);
           } else {
@@ -256,7 +264,7 @@ export default function CreativePage() {
         }
       };
 
-      setTimeout(poll, 5000);
+      setTimeout(poll, 8000); // give Veo a head start before first check
     } catch {
       setVideoError("Something went wrong. Try again.");
       setVideoLoading(false);

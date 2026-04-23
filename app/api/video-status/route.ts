@@ -57,12 +57,12 @@ export async function POST(req: NextRequest) {
         if (!operation.done) return "pending";
 
         const uri = operation.response?.generatedVideos?.[0]?.video?.uri;
-        if (!uri) return null;
+        if (!uri) return null; // truly failed — no video produced
 
         const url = await uploadVideoToStorage(uri, user.id, i, sessionTs);
-        return url;
+        return url ?? null;
       } catch {
-        return null;
+        return "pending"; // treat errors as still in progress — retry on next poll
       }
     })
   );
