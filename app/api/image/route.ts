@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
+import { deductCreditsAtomic } from "@/lib/credits";
 
 function adminClient() {
   return createAdminClient(
@@ -19,11 +20,33 @@ const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1.91:1": "horizontal landscape banner (1.91:1 aspect ratio, wider than tall)",
 };
 
+async function uploadBase64ToStorage(
+  base64DataUri: string,
+  userId: string,
+  filename: string
+): Promise<string | null> {
+  try {
+    const admin = adminClient();
+    const [header, data] = base64DataUri.split(",");
+    const mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
+    const ext = mimeType.split("/")[1] || "png";
+    const buffer = Buffer.from(data, "base64");
+    const path = `${userId}/images/${filename}.${ext}`;
+    const { error } = await admin.storage.from("ad-creative").upload(path, buffer, {
+      contentType: mimeType,
+      upsert: true,
+    });
+    if (error) return null;
+    const { data: { publicUrl } } = admin.storage.from("ad-creative").getPublicUrl(path);
+    return publicUrl;
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(req: NextRequest) {
-  const { prompt, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0 } = await req.json();
+  const { prompt, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0, angle = "" } = await req.json();
 
-  // --- Credit gate ---
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -31,7 +54,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Owner gets unlimited free access — skip credit check and deduction
   const ownerMode = isOwnerUser(user);
 
   const { data: userData } = await supabase
@@ -46,7 +68,6 @@ export async function POST(req: NextRequest) {
       { status: 402 }
     );
   }
-  // --- End credit gate ---
 
   const apiKey = process.env.GEMINI_IMAGE_API_KEY;
   if (!apiKey) {
@@ -56,10 +77,9 @@ export async function POST(req: NextRequest) {
   const images: string[] = [];
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey); // used for variations (Gemini)
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     if (!referenceImage) {
-      // --- Main generation: use Gemini 2.0 Flash ---
       const geminiMain = new GoogleGenerativeAI(apiKey);
       const mainModel = geminiMain.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const ratioLabelMain = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
@@ -81,7 +101,6 @@ export async function POST(req: NextRequest) {
         }
       }
     } else {
-      // --- Variations: use Gemini (supports reference image input) ---
       const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
@@ -137,7 +156,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
 
-    // Log token usage (fire and forget)
+    // Upload to storage with timestamped path
+    const ts = Date.now();
+    const label = !referenceImage
+      ? "Main Ad"
+      : isVariation
+        ? `Variation ${variationIndex + 1}`
+        : "Resized";
+    const slugLabel = label.toLowerCase().replace(/\s/g, "-");
+    const publicUrl = await uploadBase64ToStorage(images[0], user.id, `${ts}-${slugLabel}`);
+
+    // Insert into media_library (fire and forget — don't block response)
+    if (publicUrl) {
+      const admin = adminClient();
+      void admin.from("media_library").insert({
+        user_id: user.id,
+        type: "image",
+        url: publicUrl,
+        label,
+        angle: angle || null,
+      });
+    }
+
     try {
       const admin = adminClient();
       void admin.from("token_logs").insert({
@@ -147,23 +187,29 @@ export async function POST(req: NextRequest) {
         completion_tokens: 0,
         total_tokens: 0,
       });
-    } catch { /* ignore */ }
-
-    // Deduct 2 credits after successful generation (skip for owner)
-    const currentCredits = userData?.credits_remaining ?? 0;
-    if (!ownerMode) {
-      const newCredits = currentCredits - 2;
-      await supabase.from("user_data").update({ credits_remaining: newCredits }).eq("user_id", user.id);
-      await supabase.from("credit_transactions").insert({
-        user_id: user.id,
-        type: "use",
-        amount: -2,
-        description: "Image generation",
-      });
-      return NextResponse.json({ images, creditsRemaining: newCredits });
+    } catch {
+      // ignore
     }
 
-    return NextResponse.json({ images, creditsRemaining: currentCredits });
+    if (!ownerMode) {
+      const deduction = await deductCreditsAtomic({
+        userId: user.id,
+        amount: 2,
+        description: "Image generation",
+      });
+
+      if (!deduction.ok) {
+        if (deduction.code === "NO_CREDITS") {
+          return NextResponse.json({ error: "No credits remaining", code: "NO_CREDITS" }, { status: 402 });
+        }
+        return NextResponse.json({ error: "Credit update failed", code: deduction.code }, { status: 409 });
+      }
+
+      // Return public URL (falls back to base64 if upload failed)
+      return NextResponse.json({ images: [publicUrl ?? images[0]], creditsRemaining: deduction.creditsRemaining });
+    }
+
+    return NextResponse.json({ images: [publicUrl ?? images[0]], creditsRemaining: userData?.credits_remaining ?? 0 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Image generation error";
     return NextResponse.json({ error: message }, { status: 500 });

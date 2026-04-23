@@ -84,7 +84,8 @@ async function uploadVideoToStorage(veoUri: string, userId: string, index: numbe
     const buffer = await response.arrayBuffer();
 
     const admin = adminClient();
-    const path = `${userId}/videos/clip-${index + 1}.mp4`;
+    const ts = Date.now();
+    const path = `${userId}/videos/${ts}-clip-${index + 1}.mp4`;
     const { error } = await admin.storage.from("ad-creative").upload(path, buffer, {
       contentType: "video/mp4",
       upsert: true,
@@ -129,7 +130,22 @@ export async function POST(req: NextRequest) {
       veoUris.map((uri, i) => uri ? uploadVideoToStorage(uri, user.id, i) : Promise.resolve(null))
     );
 
-    // Step 4 — deduct credits and persist URLs to user_data
+    // Step 4 — insert into media_library
+    const CLIP_LABELS = ["Clip 1 — Hook", "Clip 2 — Solution", "Clip 3 — CTA"];
+    const mediaRows = storedUrls
+      .map((url, i) => url ? {
+        user_id: user.id,
+        type: "video",
+        url,
+        label: CLIP_LABELS[i],
+        angle: angle || null,
+      } : null)
+      .filter(Boolean);
+    if (mediaRows.length > 0) {
+      void admin.from("media_library").insert(mediaRows);
+    }
+
+    // Step 5 — deduct credits and persist URLs to user_data
     const newCredits = userData.credits_remaining - CREDIT_COST;
     const admin = adminClient();
     await admin.from("user_data").update({

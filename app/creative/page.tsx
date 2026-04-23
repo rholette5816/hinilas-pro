@@ -113,6 +113,7 @@ export default function CreativePage() {
         referenceImage,
         isVariation,
         variationIndex,
+        angle: selectedAngle || "",
       }),
     });
     const data = await res.json();
