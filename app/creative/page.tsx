@@ -484,29 +484,32 @@ export default function CreativePage() {
                     className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-8 transition-opacity hover:opacity-90 disabled:opacity-40"
                     style={{ background: videoLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                   >
-                    {videoLoading ? "Generating videos... this takes up to 3 minutes" : "Generate 3 Video Clips — 70 credits"}
+                    {videoLoading ? "Generating videos... this takes up to 6 minutes" : "Generate 3 Video Clips — 70 credits"}
                   </button>
 
-                  {videoLoading && !videoUrls.some(v => v !== null) && (
-                    <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center mb-8">
-                      <div className="flex justify-center gap-1 mb-3">
-                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  {videoLoading && (
+                    <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="flex gap-1">
+                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </div>
+                        <p className="text-gray-300 text-xs font-semibold">Veo 3 Fast is rendering — up to 6 minutes</p>
                       </div>
-                      <p className="text-gray-300 text-sm font-medium">Veo 3 Fast is rendering your clips</p>
-                      <p className="text-gray-500 text-xs mt-1">Video generation takes 1 to 3 minutes. Don&apos;t close this page.</p>
-                    </div>
-                  )}
-
-                  {videoLoading && videoUrls.some(v => v !== null) && (
-                    <div className="flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-lg px-4 py-3 mb-5">
-                      <div className="flex gap-1">
-                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <div className="flex flex-col gap-2">
+                        {["Clip 1 — Hook", "Clip 2 — Solution", "Clip 3 — CTA"].map((label, i) => (
+                          <div key={i} className="flex items-center justify-between bg-gray-900 rounded-lg px-3 py-2">
+                            <span className="text-gray-400 text-xs">{label}</span>
+                            {videoUrls[i] ? (
+                              <span className="text-green-400 text-xs font-semibold">Done</span>
+                            ) : (
+                              <span className="text-purple-400 text-xs">Rendering...</span>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                      <p className="text-purple-300 text-xs">Regenerating new clips — old ones shown below until ready. Don&apos;t close this page.</p>
+                      <p className="text-gray-600 text-xs mt-3">You can leave this page — it will resume when you come back.</p>
                     </div>
                   )}
 

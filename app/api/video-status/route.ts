@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { GoogleGenAI } from "@google/genai";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 function adminClient() {
   return createAdminClient(
