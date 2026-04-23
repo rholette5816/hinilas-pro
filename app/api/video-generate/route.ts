@@ -65,55 +65,6 @@ Example format:
   return JSON.parse(match[0]) as string[];
 }
 
-async function generateVideo(prompt: string): Promise<string | null> {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
-
-  let operation = await ai.models.generateVideos({
-    model: "veo-3.0-fast-generate-001",
-    prompt,
-    config: {
-      aspectRatio: "9:16",
-      numberOfVideos: 1,
-      resolution: "1080p",
-    },
-  });
-
-  // Poll until done (max 55s)
-  const deadline = Date.now() + 55000;
-  while (!operation.done) {
-    if (Date.now() > deadline) throw new Error("Video generation timed out");
-    await new Promise(r => setTimeout(r, 5000));
-    operation = await ai.operations.getVideosOperation({ operation });
-  }
-
-  const video = operation.response?.generatedVideos?.[0];
-  if (!video?.video?.uri) return null;
-  return video.video.uri;
-}
-
-async function uploadVideoToStorage(veoUri: string, userId: string, index: number): Promise<string | null> {
-  try {
-    // Download from Google (requires API key)
-    const response = await fetch(`${veoUri}?key=${process.env.GEMINI_IMAGE_API_KEY}`);
-    if (!response.ok) return null;
-    const buffer = await response.arrayBuffer();
-
-    const admin = adminClient();
-    const ts = Date.now();
-    const path = `${userId}/videos/${ts}-clip-${index + 1}.mp4`;
-    const { error } = await admin.storage.from("ad-creative").upload(path, buffer, {
-      contentType: "video/mp4",
-      upsert: true,
-    });
-    if (error) return null;
-
-    const { data: { publicUrl } } = admin.storage.from("ad-creative").getPublicUrl(path);
-    return publicUrl;
-  } catch {
-    return null;
-  }
-}
-
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -134,39 +85,27 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1 — generate 3 locked prompts
+    // Step 1 — generate 3 locked prompts via Gemini
     const prompts = await buildVideoPrompts(angle, userContext, industry || "");
 
-    // Step 2 — generate videos in parallel (returns Veo URIs)
-    const veoUris = await Promise.all(prompts.map(p => generateVideo(p).catch(() => null)));
-
-    // Step 3 — upload each to Supabase Storage
-    const storedUrls = await Promise.all(
-      veoUris.map((uri, i) => uri ? uploadVideoToStorage(uri, user.id, i) : Promise.resolve(null))
+    // Step 2 — kick off 3 Veo jobs in parallel, return immediately without waiting
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
+    const operations = await Promise.all(
+      prompts.map(p =>
+        ai.models.generateVideos({
+          model: "veo-3.0-fast-generate-001",
+          prompt: p,
+          config: { aspectRatio: "9:16", numberOfVideos: 1, resolution: "1080p" },
+        })
+      )
     );
+    const operationNames = operations.map(op => op.name as string);
 
+    // Step 3 — deduct credits immediately (generation was triggered)
     const admin = adminClient();
     const newCredits = userData.credits_remaining - CREDIT_COST;
-
-    // Insert into media_library
-    const CLIP_LABELS = ["Clip 1 — Hook", "Clip 2 — Solution", "Clip 3 — CTA"];
-    const mediaRows = storedUrls
-      .map((url, i) => url ? {
-        user_id: user.id,
-        type: "video",
-        url,
-        label: CLIP_LABELS[i],
-        angle: angle || null,
-      } : null)
-      .filter(Boolean);
-    if (mediaRows.length > 0) {
-      void admin.from("media_library").insert(mediaRows);
-    }
     await admin.from("user_data").update({
       credits_remaining: newCredits,
-      video_1_url: storedUrls[0] ?? null,
-      video_2_url: storedUrls[1] ?? null,
-      video_3_url: storedUrls[2] ?? null,
       video_prompts: prompts,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
@@ -175,14 +114,11 @@ export async function POST(req: NextRequest) {
       user_id: user.id,
       type: "use",
       amount: -CREDIT_COST,
-      description: "Video ad generation — 3 clips via Veo",
+      description: "Video ad generation — 3 clips via Veo 3 Fast",
     });
 
-    return NextResponse.json({
-      prompts,
-      videos: storedUrls,
-      creditsRemaining: newCredits,
-    });
+    // Return operation names so client can poll for status
+    return NextResponse.json({ prompts, operationNames, creditsRemaining: newCredits });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Video generation failed";
     return NextResponse.json({ error: message }, { status: 500 });

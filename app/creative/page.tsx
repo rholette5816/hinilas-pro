@@ -193,8 +193,11 @@ export default function CreativePage() {
     if (!setup || !selectedAngle) return;
     setVideoLoading(true);
     setVideoError("");
+    setVideoUrls([null, null, null]);
     try {
       const userCtx = buildUserContext(setup);
+
+      // Step 1 — kick off generation, get operation names back immediately
       const res = await fetch("/api/video-generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -203,15 +206,59 @@ export default function CreativePage() {
       const data = await res.json();
       if (data.code === "NO_CREDITS") { setNoCredits(true); setVideoLoading(false); return; }
       if (data.error) { setVideoError(data.error); setVideoLoading(false); return; }
-      const prompts = data.prompts || [];
-      const urls = data.videos || [null, null, null];
+
+      const prompts: string[] = data.prompts || [];
+      const operationNames: string[] = data.operationNames || [];
+      const sessionTs = Date.now();
       setVideoPrompts(prompts);
-      setVideoUrls(urls);
-      await saveVideos(urls, prompts);
       await refreshCredits();
+
+      // Step 2 — poll for status every 5 seconds until all 3 clips are ready
+      const resolvedUrls: (string | null)[] = [null, null, null];
+      let attempts = 0;
+      const maxAttempts = 36; // 3 minutes max
+
+      const poll = async () => {
+        if (attempts >= maxAttempts) {
+          setVideoError("Video generation timed out. Please try again.");
+          setVideoLoading(false);
+          return;
+        }
+        attempts++;
+
+        // Send null for already-resolved indices so server skips them
+        const pendingNames = operationNames.map((name, i) => resolvedUrls[i] ? null : name);
+
+        try {
+          const statusRes = await fetch("/api/video-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ operationNames: pendingNames, prompts, sessionTs, angle: selectedAngle }),
+          });
+          const statusData = await statusRes.json();
+
+          // Merge newly resolved URLs into state
+          (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
+            if (result && result !== "pending" && !resolvedUrls[i]) {
+              resolvedUrls[i] = result;
+            }
+          });
+          setVideoUrls([...resolvedUrls]);
+
+          if (statusData.allDone) {
+            await saveVideos(resolvedUrls, prompts);
+            setVideoLoading(false);
+          } else {
+            setTimeout(poll, 5000);
+          }
+        } catch {
+          setTimeout(poll, 5000); // retry on network error
+        }
+      };
+
+      setTimeout(poll, 5000);
     } catch {
       setVideoError("Something went wrong. Try again.");
-    } finally {
       setVideoLoading(false);
     }
   }
