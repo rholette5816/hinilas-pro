@@ -30,10 +30,6 @@ const NAV_ITEMS = [
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
   },
   {
-    href: "/library", label: "Media Library", desc: "Your saved creatives",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
-  },
-  {
     href: "/copy", label: "Caption Department", desc: "Write your captions",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
   },
@@ -191,16 +187,28 @@ export default function Sidebar() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Logo */}
-      <div className="px-5 py-4 shrink-0 pr-10" style={{ borderBottom: "1px solid #1E2D45" }}>
-        <div className="flex items-center gap-3">
-          <HinilasIcon size="md" accentColor={planColor} />
-          <div>
-            <div className="flex items-baseline gap-0">
-              <span className="text-white font-bold text-base">Hinilas</span>
-              <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
+      <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1E2D45" }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <HinilasIcon size="md" accentColor={planColor} />
+            <div>
+              <div className="flex items-baseline gap-0">
+                <span className="text-white font-bold text-base">Hinilas</span>
+                <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
+              </div>
+              <p className="text-[9px] font-bold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>Marketing Intelligence</p>
             </div>
-            <p className="text-[9px] font-bold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>Marketing Intelligence</p>
           </div>
+          <Link
+            href="/library"
+            onClick={() => setMobileOpen(false)}
+            title="Media Library"
+            className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-all hover:bg-gray-800"
+            style={pathname === "/library" ? { background: "rgba(43,126,201,0.15)" } : {}}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={pathname === "/library" ? "#2B7EC9" : "#64748B"} strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span className="text-[9px] font-semibold" style={{ color: pathname === "/library" ? "#2B7EC9" : "#64748B" }}>Library</span>
+          </Link>
         </div>
       </div>
 

@@ -95,7 +95,7 @@ export default function LibraryPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
 
           {/* Header */}
