@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function adminClient() {
   return createAdminClient(
@@ -15,19 +16,40 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   const { prompt, systemPrompt, images, module } = await req.json();
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (typeof prompt !== "string" || !prompt.trim()) {
+    return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
+  }
+  if (prompt.length > 40000) {
+    return NextResponse.json({ error: "Prompt too long." }, { status: 400 });
+  }
+  if (typeof systemPrompt === "string" && systemPrompt.length > 40000) {
+    return NextResponse.json({ error: "System prompt too long." }, { status: 400 });
+  }
+  if (Array.isArray(images) && images.length > 4) {
+    return NextResponse.json({ error: "Too many images." }, { status: 400 });
+  }
+
+  const ip = getRequestIp(req);
+  const rateLimit = checkRateLimit(`chat:${user.id}:${ip}`, { limit: 20, windowMs: 60_000 });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+      }
+    );
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "GEMINI_API_KEY not configured." }, { status: 500 });
-  }
-
-  // Get user for token logging (non-blocking — don't fail if auth fails)
-  let userId: string | null = null;
-  try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    userId = user?.id ?? null;
-  } catch {
-    // ignore
   }
 
   try {
@@ -53,13 +75,12 @@ export async function POST(req: NextRequest) {
     const result = await model.generateContent(content);
     const text = result.response.text();
 
-    // Log token usage (fire and forget)
     if (module) {
       const usage = result.response.usageMetadata;
       if (usage) {
         const admin = adminClient();
         void admin.from("token_logs").insert({
-          user_id: userId,
+          user_id: user.id,
           module,
           prompt_tokens: usage.promptTokenCount ?? 0,
           completion_tokens: usage.candidatesTokenCount ?? 0,
