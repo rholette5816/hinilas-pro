@@ -349,7 +349,7 @@ export default function CreativePage() {
                         <div key={s.label} className="flex-1 flex flex-col items-center gap-1.5">
                           <div
                             className="relative w-full rounded-lg overflow-hidden border border-gray-600 bg-gray-900 cursor-pointer"
-                            style={{ aspectRatio: "9/16", maxHeight: "180px" }}
+                            style={{ aspectRatio: "9/16", maxHeight: "clamp(120px, 22vw, 180px)" }}
                             onClick={() => toggleSample(i)}
                           >
                             <video
