@@ -335,18 +335,21 @@ export default function CreativePage() {
                   </div>
 
                   {/* Sample previews */}
-                  <div className="mb-6">
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Sample Output</p>
-                    <div className="flex gap-4 justify-center">
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 mb-5">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sample Output</p>
+                      <p className="text-gray-600 text-xs">Tap to play</p>
+                    </div>
+                    <div className="flex gap-3">
                       {[
-                        { label: "Clip 1 — Hook", src: "/samples/clip-hook.mp4" },
-                        { label: "Clip 2 — Solution", src: "/samples/clip-solution.mp4" },
-                        { label: "Clip 3 — CTA", src: "/samples/clip-cta.mp4" },
+                        { label: "Hook", src: "/samples/clip-hook.mp4" },
+                        { label: "Solution", src: "/samples/clip-solution.mp4" },
+                        { label: "CTA", src: "/samples/clip-cta.mp4" },
                       ].map((s, i) => (
-                        <div key={s.label} className="flex flex-col items-center gap-2">
+                        <div key={s.label} className="flex-1 flex flex-col items-center gap-1.5">
                           <div
-                            className="relative rounded-xl overflow-hidden border border-gray-700 bg-gray-900 cursor-pointer"
-                            style={{ width: "140px", height: "250px" }}
+                            className="relative w-full rounded-lg overflow-hidden border border-gray-600 bg-gray-900 cursor-pointer"
+                            style={{ aspectRatio: "9/16", maxHeight: "180px" }}
                             onClick={() => toggleSample(i)}
                           >
                             <video
@@ -357,18 +360,17 @@ export default function CreativePage() {
                               className="w-full h-full object-cover"
                               onEnded={() => setPlayingSample(null)}
                             />
-                            {/* Play/pause overlay */}
                             <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/20 transition-colors">
                               {playingsample === i ? (
-                                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+                                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                  <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
                                     <rect x="3" y="2" width="4" height="12" rx="1" />
                                     <rect x="9" y="2" width="4" height="12" rx="1" />
                                   </svg>
                                 </div>
                               ) : (
-                                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="white">
+                                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                  <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
                                     <path d="M4 2l10 6-10 6V2z" />
                                   </svg>
                                 </div>
@@ -379,7 +381,6 @@ export default function CreativePage() {
                         </div>
                       ))}
                     </div>
-                    <p className="text-gray-600 text-xs mt-3 text-center">Real outputs from the same AI. Your clips will match your angle and dialect.</p>
                   </div>
 
                   <div className="flex items-center justify-between mb-4">
