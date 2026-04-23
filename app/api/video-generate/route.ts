@@ -104,9 +104,12 @@ export async function POST(req: NextRequest) {
     // Step 3 — deduct credits immediately (generation was triggered)
     const admin = adminClient();
     const newCredits = userData.credits_remaining - CREDIT_COST;
+    const sessionTs = Date.now();
     await admin.from("user_data").update({
       credits_remaining: newCredits,
       video_prompts: prompts,
+      video_operation_names: operationNames,
+      video_session_ts: sessionTs,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
 
@@ -117,8 +120,8 @@ export async function POST(req: NextRequest) {
       description: "Video ad generation — 3 clips via Veo 3 Fast",
     });
 
-    // Return operation names so client can poll for status
-    return NextResponse.json({ prompts, operationNames, creditsRemaining: newCredits });
+    // Return operation names + sessionTs so client can poll for status
+    return NextResponse.json({ prompts, operationNames, sessionTs, creditsRemaining: newCredits });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Video generation failed";
     return NextResponse.json({ error: message }, { status: 500 });

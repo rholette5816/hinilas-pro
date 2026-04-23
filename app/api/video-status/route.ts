@@ -78,6 +78,8 @@ export async function POST(req: NextRequest) {
       video_1_url: urls[0] ?? null,
       video_2_url: urls[1] ?? null,
       video_3_url: urls[2] ?? null,
+      video_operation_names: null,
+      video_session_ts: null,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
 

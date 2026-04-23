@@ -34,6 +34,25 @@ export default function CreativePage() {
       setVideoUrls([savedVideos.v1 ?? null, savedVideos.v2 ?? null, savedVideos.v3 ?? null]);
     }
     if (savedVideoPrompts.length > 0) setVideoPrompts(savedVideoPrompts);
+
+    // Resume polling if user left mid-generation
+    async function checkPendingGeneration() {
+      try {
+        const res = await fetch("/api/video-resume");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.operationNames || !data.sessionTs) return;
+
+        // There's a pending generation — resume polling
+        setVideoLoading(true);
+        setActiveTab("video");
+        setVideoPrompts(data.prompts || []);
+        resumePoll(data.operationNames, data.prompts || [], data.sessionTs);
+      } catch {
+        // silently ignore
+      }
+    }
+    checkPendingGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [loadingMain, setLoadingMain] = useState(false);
@@ -189,6 +208,55 @@ export default function CreativePage() {
     }
   }
 
+  function resumePoll(operationNames: string[], prompts: string[], sessionTs: number) {
+    const resolvedUrls: (string | null)[] = [null, null, null];
+    let attempts = 0;
+    let consecutiveErrors = 0;
+    const maxAttempts = 72;
+    const maxConsecutiveErrors = 5;
+
+    const poll = async () => {
+      if (attempts >= maxAttempts || consecutiveErrors >= maxConsecutiveErrors) {
+        setVideoError("Video generation timed out. Please try again.");
+        setVideoLoading(false);
+        return;
+      }
+      attempts++;
+
+      const pendingNames = operationNames.map((name: string, i: number) => resolvedUrls[i] ? null : name);
+
+      try {
+        const statusRes = await fetch("/api/video-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ operationNames: pendingNames, prompts, sessionTs, angle: selectedAngle }),
+        });
+        if (!statusRes.ok) { consecutiveErrors++; setTimeout(poll, 5000); return; }
+
+        consecutiveErrors = 0;
+        const statusData = await statusRes.json();
+
+        (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
+          if (result && result !== "pending" && !resolvedUrls[i]) resolvedUrls[i] = result as string;
+        });
+        setVideoUrls([...resolvedUrls]);
+
+        const allResolved = resolvedUrls.every(u => u !== null);
+        if (statusData.allDone || allResolved) {
+          await saveVideos(resolvedUrls, prompts);
+          setVideoLoading(false);
+        } else {
+          setTimeout(poll, 5000);
+        }
+      } catch {
+        consecutiveErrors++;
+        setTimeout(poll, 5000);
+      }
+    };
+
+    setTimeout(poll, 5000);
+  }
+
   async function generateVideos() {
     if (!setup || !selectedAngle) return;
     setVideoLoading(true);
@@ -209,7 +277,7 @@ export default function CreativePage() {
 
       const prompts: string[] = data.prompts || [];
       const operationNames: string[] = data.operationNames || [];
-      const sessionTs = Date.now();
+      const sessionTs: number = data.sessionTs || Date.now();
       setVideoPrompts(prompts);
       await refreshCredits();
 
