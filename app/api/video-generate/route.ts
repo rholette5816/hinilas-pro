@@ -89,26 +89,34 @@ export async function POST(req: NextRequest) {
     const prompts = await buildVideoPrompts(angle, userContext, industry || "");
 
     // Step 2 — kick off 3 Veo jobs in parallel, return immediately without waiting
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
-    const operations = await Promise.all(
-      prompts.map(p =>
-        ai.models.generateVideos({
-          model: "veo-3.0-fast-generate-001",
-          prompt: p,
-          config: { aspectRatio: "9:16", numberOfVideos: 1, resolution: "1080p" },
-        })
-      )
-    );
-    const operationNames = operations.map(op => {
-      // op.name looks like "operations/xxx" — required for REST polling
-      const name = (op as unknown as { name?: string }).name ?? "";
-      return name;
-    });
+    let operationNames: string[];
 
-    // Step 3 — deduct credits immediately (generation was triggered)
+    if (process.env.TEST_VIDEO_MODE === "true") {
+      // Test mode — skip Veo API, return fake operation names
+      operationNames = ["test/clip-1", "test/clip-2", "test/clip-3"];
+    } else {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
+      const operations = await Promise.all(
+        prompts.map(p =>
+          ai.models.generateVideos({
+            model: "veo-3.0-fast-generate-001",
+            prompt: p,
+            config: { aspectRatio: "9:16", numberOfVideos: 1, resolution: "1080p" },
+          })
+        )
+      );
+      operationNames = operations.map(op => {
+        const name = (op as unknown as { name?: string }).name ?? "";
+        return name;
+      });
+    }
+
+    // Step 3 — deduct credits (skipped in test mode)
     const admin = adminClient();
-    const newCredits = userData.credits_remaining - CREDIT_COST;
+    const isTestMode = process.env.TEST_VIDEO_MODE === "true";
+    const newCredits = isTestMode ? userData.credits_remaining : userData.credits_remaining - CREDIT_COST;
     const sessionTs = Date.now();
+
     await admin.from("user_data").update({
       credits_remaining: newCredits,
       video_prompts: prompts,
@@ -117,12 +125,14 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
 
-    await admin.from("credit_transactions").insert({
-      user_id: user.id,
-      type: "use",
-      amount: -CREDIT_COST,
-      description: "Video ad generation — 3 clips via Veo 3 Fast",
-    });
+    if (!isTestMode) {
+      await admin.from("credit_transactions").insert({
+        user_id: user.id,
+        type: "use",
+        amount: -CREDIT_COST,
+        description: "Video ad generation — 3 clips via Veo 3 Fast",
+      });
+    }
 
     // Return operation names + sessionTs so client can poll for status
     return NextResponse.json({ prompts, operationNames, sessionTs, creditsRemaining: newCredits });

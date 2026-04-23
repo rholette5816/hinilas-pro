@@ -58,6 +58,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "operationNames required" }, { status: 400 });
   }
 
+  // Test mode — immediately return sample videos without hitting Veo
+  if (process.env.TEST_VIDEO_MODE === "true") {
+    const testUrls = ["/samples/clip-hook.mp4", "/samples/clip-solution.mp4", "/samples/clip-cta.mp4"];
+    return NextResponse.json({ videos: testUrls, allDone: true, errors: [] });
+  }
+
   const errors: string[] = [];
   const results: (string | null | "pending")[] = await Promise.all(
     operationNames.map(async (name: string | null, i: number) => {
