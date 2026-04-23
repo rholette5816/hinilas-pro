@@ -36,6 +36,9 @@ interface AppContextType {
   setCreativeImage: (s: string) => void;
   savedImages: { main: string | null; v1: string | null; v2: string | null };
   saveAdImages: (main: string | null, v1: string | null, v2: string | null) => Promise<void>;
+  savedVideos: { v1: string | null; v2: string | null; v3: string | null };
+  savedVideoPrompts: string[];
+  saveVideos: (urls: (string | null)[], prompts: string[]) => Promise<void>;
   credits: number;
   creditsTotal: number;
   plan: string;
@@ -60,6 +63,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedAngle, setSelectedAngleState] = useState("");
   const [creativeImage, setCreativeImageState] = useState("");
   const [savedImages, setSavedImages] = useState<{ main: string | null; v1: string | null; v2: string | null }>({ main: null, v1: null, v2: null });
+  const [savedVideos, setSavedVideos] = useState<{ v1: string | null; v2: string | null; v3: string | null }>({ v1: null, v2: null, v3: null });
+  const [savedVideoPrompts, setSavedVideoPrompts] = useState<string[]>([]);
   const [credits, setCredits] = useState(0);
   const [creditsTotal, setCreditsTotal] = useState(5);
   const [userId, setUserId] = useState<string | null>(null);
@@ -92,6 +97,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
           v1: data.variation_1_url || null,
           v2: data.variation_2_url || null,
         });
+        setSavedVideos({
+          v1: data.video_1_url || null,
+          v2: data.video_2_url || null,
+          v3: data.video_3_url || null,
+        });
+        if (Array.isArray(data.video_prompts)) setSavedVideoPrompts(data.video_prompts);
 
         // Check for unread referral credits — run in background, don't block hydration
         const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
@@ -199,6 +210,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await persist({ main_image_url: mainUrl, variation_1_url: v1Url, variation_2_url: v2Url });
   }
 
+  async function saveVideos(urls: (string | null)[], prompts: string[]) {
+    const [v1, v2, v3] = urls;
+    setSavedVideos({ v1: v1 ?? null, v2: v2 ?? null, v3: v3 ?? null });
+    setSavedVideoPrompts(prompts);
+    await persist({ video_1_url: v1 ?? null, video_2_url: v2 ?? null, video_3_url: v3 ?? null, video_prompts: prompts });
+  }
+
   function dismissToast(id: number) {
     setReferralToasts(prev => prev.filter(t => t.id !== id));
   }
@@ -229,6 +247,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       selectedAngle, setSelectedAngle,
       creativeImage, setCreativeImage,
       savedImages, saveAdImages,
+      savedVideos, savedVideoPrompts, saveVideos,
       credits, creditsTotal, plan: derivePlan(credits), refreshCredits,
       referralToasts, dismissToast,
     }}>

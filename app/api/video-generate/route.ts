@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleGenAI } from "@google/genai";
 
 export const maxDuration = 60;
 
 const CREDIT_COST = 10;
+
+function adminClient() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 async function buildVideoPrompts(angle: string, userContext: string, industry: string): Promise<string[]> {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -38,7 +46,6 @@ Example format:
   const result = await model.generateContent(prompt);
   const text = result.response.text().trim();
 
-  // Extract JSON array from response
   const match = text.match(/\[[\s\S]*\]/);
   if (!match) throw new Error("Could not parse video prompts");
   return JSON.parse(match[0]) as string[];
@@ -69,6 +76,28 @@ async function generateVideo(prompt: string): Promise<string | null> {
   return video.video.uri;
 }
 
+async function uploadVideoToStorage(veoUri: string, userId: string, index: number): Promise<string | null> {
+  try {
+    // Download from Google (requires API key)
+    const response = await fetch(`${veoUri}?key=${process.env.GEMINI_IMAGE_API_KEY}`);
+    if (!response.ok) return null;
+    const buffer = await response.arrayBuffer();
+
+    const admin = adminClient();
+    const path = `${userId}/videos/clip-${index + 1}.mp4`;
+    const { error } = await admin.storage.from("ad-creative").upload(path, buffer, {
+      contentType: "video/mp4",
+      upsert: true,
+    });
+    if (error) return null;
+
+    const { data: { publicUrl } } = admin.storage.from("ad-creative").getPublicUrl(path);
+    return publicUrl;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -89,16 +118,30 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1 — generate 3 locked prompts from the angle
+    // Step 1 — generate 3 locked prompts
     const prompts = await buildVideoPrompts(angle, userContext, industry || "");
 
-    // Step 2 — generate videos in parallel
-    const videoUrls = await Promise.all(prompts.map(p => generateVideo(p).catch(() => null)));
+    // Step 2 — generate videos in parallel (returns Veo URIs)
+    const veoUris = await Promise.all(prompts.map(p => generateVideo(p).catch(() => null)));
 
-    // Step 3 — deduct credits
+    // Step 3 — upload each to Supabase Storage
+    const storedUrls = await Promise.all(
+      veoUris.map((uri, i) => uri ? uploadVideoToStorage(uri, user.id, i) : Promise.resolve(null))
+    );
+
+    // Step 4 — deduct credits and persist URLs to user_data
     const newCredits = userData.credits_remaining - CREDIT_COST;
-    await supabase.from("user_data").update({ credits_remaining: newCredits }).eq("user_id", user.id);
-    await supabase.from("credit_transactions").insert({
+    const admin = adminClient();
+    await admin.from("user_data").update({
+      credits_remaining: newCredits,
+      video_1_url: storedUrls[0] ?? null,
+      video_2_url: storedUrls[1] ?? null,
+      video_3_url: storedUrls[2] ?? null,
+      video_prompts: prompts,
+      updated_at: new Date().toISOString(),
+    }).eq("user_id", user.id);
+
+    await admin.from("credit_transactions").insert({
       user_id: user.id,
       type: "use",
       amount: -CREDIT_COST,
@@ -107,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       prompts,
-      videos: videoUrls,
+      videos: storedUrls,
       creditsRemaining: newCredits,
     });
   } catch (err: unknown) {

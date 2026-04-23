@@ -7,7 +7,7 @@ import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 export default function CreativePage() {
-  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages } = useApp();
+  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages, savedVideos, savedVideoPrompts, saveVideos } = useApp();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"image" | "video">("image");
@@ -24,12 +24,16 @@ export default function CreativePage() {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [iterations, setIterations] = useState<(string | null)[]>([null, null]);
 
-  // Load saved images on mount — always restore from context on page visit
+  // Load saved images and videos on mount
   useEffect(() => {
     if (savedImages.main) setMainImage(savedImages.main);
     if (savedImages.v1 !== undefined || savedImages.v2 !== undefined) {
       setIterations([savedImages.v1 ?? null, savedImages.v2 ?? null]);
     }
+    if (savedVideos.v1 || savedVideos.v2 || savedVideos.v3) {
+      setVideoUrls([savedVideos.v1 ?? null, savedVideos.v2 ?? null, savedVideos.v3 ?? null]);
+    }
+    if (savedVideoPrompts.length > 0) setVideoPrompts(savedVideoPrompts);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [loadingMain, setLoadingMain] = useState(false);
@@ -184,8 +188,11 @@ export default function CreativePage() {
       const data = await res.json();
       if (data.code === "NO_CREDITS") { setNoCredits(true); setVideoLoading(false); return; }
       if (data.error) { setVideoError(data.error); setVideoLoading(false); return; }
-      setVideoPrompts(data.prompts || []);
-      setVideoUrls(data.videos || [null, null, null]);
+      const prompts = data.prompts || [];
+      const urls = data.videos || [null, null, null];
+      setVideoPrompts(prompts);
+      setVideoUrls(urls);
+      await saveVideos(urls, prompts);
       await refreshCredits();
     } catch {
       setVideoError("Something went wrong. Try again.");
