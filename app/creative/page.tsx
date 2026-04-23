@@ -416,8 +416,8 @@ export default function CreativePage() {
                   </div>
 
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
-                    <p className="text-white text-sm font-semibold mb-1">3 Locked Video Clips</p>
-                    <p className="text-gray-400 text-xs leading-relaxed">AI generates 3 short video prompts from your angle — all locked together in character, setting, and style. Clip 1 = hook, Clip 2 = solution, Clip 3 = CTA. Powered by Google Veo 3 Fast, 1080p 9:16 vertical format for Reels/Stories.</p>
+                    <p className="text-white text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">Based on your angle, we generate 3 short clips — a hook, a solution, and a call to action. Shot in vertical format, ready to upload to Reels and Stories.</p>
                   </div>
 
                   {/* Sample previews */}
