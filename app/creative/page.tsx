@@ -10,6 +10,14 @@ export default function CreativePage() {
   const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages } = useApp();
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState<"image" | "video">("image");
+
+  // Video tab state
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState("");
+  const [videoPrompts, setVideoPrompts] = useState<string[]>([]);
+  const [videoUrls, setVideoUrls] = useState<(string | null)[]>([null, null, null]);
+
   const [extraPrompt, setExtraPrompt] = useState("");
   const [logoFile, setLogoFile] = useState<string | null>(null);
   const [productFile, setProductFile] = useState<string | null>(null);
@@ -160,6 +168,32 @@ export default function CreativePage() {
     }
   }
 
+  async function generateVideos() {
+    if (!setup || !selectedAngle) return;
+    setVideoLoading(true);
+    setVideoError("");
+    setVideoPrompts([]);
+    setVideoUrls([null, null, null]);
+    try {
+      const userCtx = buildUserContext(setup);
+      const res = await fetch("/api/video-generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ angle: selectedAngle, userContext: userCtx, industry: setup.industry || "" }),
+      });
+      const data = await res.json();
+      if (data.code === "NO_CREDITS") { setNoCredits(true); setVideoLoading(false); return; }
+      if (data.error) { setVideoError(data.error); setVideoLoading(false); return; }
+      setVideoPrompts(data.prompts || []);
+      setVideoUrls(data.videos || [null, null, null]);
+      await refreshCredits();
+    } catch {
+      setVideoError("Something went wrong. Try again.");
+    } finally {
+      setVideoLoading(false);
+    }
+  }
+
   if (!setup) {
     return (
       <div className="flex h-screen overflow-hidden">
@@ -181,13 +215,134 @@ export default function CreativePage() {
         <div className="max-w-3xl mx-auto px-6 py-10">
 
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="inline-flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-full px-3 py-1 mb-4">
               <span className="text-pink-300 text-xs font-medium">🖼 Creative Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Generate Ad Images</h1>
-            <p className="text-gray-400 text-sm">AI generates static ad creatives based on your angle and brand assets.</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Ad Creatives</h1>
+            <p className="text-gray-400 text-sm">Generate static images or short video clips for your Meta ads.</p>
           </div>
+
+          {/* Tab switcher */}
+          <div className="flex gap-2 mb-8">
+            <button
+              onClick={() => setActiveTab("image")}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "image" ? "bg-pink-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+            >
+              🖼 Image
+            </button>
+            <button
+              onClick={() => setActiveTab("video")}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+            >
+              🎬 Video Clips
+            </button>
+          </div>
+
+          {/* === VIDEO TAB === */}
+          {activeTab === "video" && (
+            <div>
+              {!selectedAngle ? (
+                <div className="bg-orange-950 border border-orange-800 rounded-xl p-6 text-center mb-6">
+                  <p className="text-orange-300 text-sm font-semibold mb-1">Angle required</p>
+                  <p className="text-orange-400 text-xs mb-4">You need a marketing angle before generating video clips. Go to Angles first.</p>
+                  <button onClick={() => router.push("/angles")} className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-semibold">
+                    Go to Angles
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-start gap-2 bg-orange-950 border border-orange-800 rounded-lg px-4 py-3 mb-6 text-sm">
+                    <span className="text-orange-400 mt-0.5">🎯</span>
+                    <div>
+                      <p className="text-orange-300 text-xs font-medium mb-0.5">Angle loaded</p>
+                      <p className="text-orange-200 text-xs line-clamp-2">{selectedAngle}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
+                    <p className="text-white text-sm font-semibold mb-1">3 Locked Video Clips</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">AI generates 3 short video prompts from your angle — all locked together in character, setting, and style. Clip 1 = hook, Clip 2 = solution, Clip 3 = CTA. Powered by Google Veo 2, 9:16 vertical format for Reels/Stories.</p>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs text-gray-500">{credits} credits remaining</span>
+                    {credits <= 10 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
+                  </div>
+
+                  {videoError && (
+                    <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-5">{videoError}</div>
+                  )}
+
+                  <button
+                    onClick={generateVideos}
+                    disabled={videoLoading || credits < 10}
+                    className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-8 transition-opacity hover:opacity-90 disabled:opacity-40"
+                    style={{ background: videoLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
+                  >
+                    {videoLoading ? "Generating videos... this takes up to 3 minutes" : "Generate 3 Video Clips — 10 credits"}
+                  </button>
+
+                  {videoLoading && (
+                    <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center mb-8">
+                      <div className="flex justify-center gap-1 mb-3">
+                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                      <p className="text-gray-300 text-sm font-medium">Veo 2 is rendering your clips</p>
+                      <p className="text-gray-500 text-xs mt-1">Video generation takes 1 to 3 minutes. Don&apos;t close this page.</p>
+                    </div>
+                  )}
+
+                  {videoUrls.some(v => v !== null) && !videoLoading && (
+                    <div className="flex flex-col gap-6">
+                      {videoUrls.map((url, i) => (
+                        <div key={i} className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
+                          <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
+                            <div>
+                              <p className="text-white text-xs font-semibold">
+                                {i === 0 ? "Clip 1 — Hook" : i === 1 ? "Clip 2 — Solution" : "Clip 3 — CTA"}
+                              </p>
+                              {videoPrompts[i] && (
+                                <p className="text-gray-500 text-xs mt-0.5 line-clamp-2">{videoPrompts[i]}</p>
+                              )}
+                            </div>
+                            {url && (
+                              <a
+                                href={url}
+                                download={`hinilas-clip-${i + 1}.mp4`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100 ml-3 shrink-0"
+                              >
+                                Download
+                              </a>
+                            )}
+                          </div>
+                          {url ? (
+                            <video
+                              src={url}
+                              controls
+                              className="w-full"
+                              style={{ maxHeight: "480px", background: "#000" }}
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center py-10">
+                              <p className="text-gray-600 text-xs">Generation failed for this clip</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* === IMAGE TAB === */}
+          {activeTab === "image" && <>
 
           {/* Angle context */}
           {selectedAngle && (
@@ -395,6 +550,7 @@ export default function CreativePage() {
             </div>
           )}
 
+          </>}
 
         </div>
       </main>
