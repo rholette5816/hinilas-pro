@@ -99,7 +99,11 @@ export async function POST(req: NextRequest) {
         })
       )
     );
-    const operationNames = operations.map(op => op.name as string);
+    const operationNames = operations.map(op => {
+      // op.name looks like "operations/xxx" — required for REST polling
+      const name = (op as unknown as { name?: string }).name ?? "";
+      return name;
+    });
 
     // Step 3 — deduct credits immediately (generation was triggered)
     const admin = adminClient();

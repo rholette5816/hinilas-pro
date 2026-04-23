@@ -1,9 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import { GoogleGenAI } from "@google/genai";
 
 export const maxDuration = 120;
+
+const VEO_API_KEY = process.env.GEMINI_IMAGE_API_KEY!;
+
+async function pollOperation(name: string): Promise<{ done: boolean; uri: string | null; error: string | null }> {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/${name}?key=${VEO_API_KEY}`
+  );
+  if (!res.ok) {
+    const text = await res.text();
+    return { done: false, uri: null, error: `HTTP ${res.status}: ${text}` };
+  }
+  const data = await res.json();
+  if (!data.done) return { done: false, uri: null, error: null };
+  const uri = data.response?.generatedVideos?.[0]?.video?.uri ?? null;
+  return { done: true, uri, error: null };
+}
 
 function adminClient() {
   return createAdminClient(
@@ -43,27 +58,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "operationNames required" }, { status: 400 });
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
-
-  // Check each pending operation (null = already resolved by client)
   const errors: string[] = [];
   const results: (string | null | "pending")[] = await Promise.all(
     operationNames.map(async (name: string | null, i: number) => {
       if (!name) return null; // client already has this URL
 
       // Invalid operation name — fail fast
-      if (!name || name === "undefined" || name === "null" || !name.includes("/")) {
+      if (name === "undefined" || name === "null" || !name.includes("/")) {
         errors.push(`Clip ${i + 1}: invalid operation name "${name}"`);
         return null;
       }
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const operation = await ai.operations.getVideosOperation({ operation: { name } as any });
+        const { done, uri, error } = await pollOperation(name);
 
-        if (!operation.done) return "pending";
-
-        const uri = operation.response?.generatedVideos?.[0]?.video?.uri;
+        if (error) {
+          errors.push(`Clip ${i + 1}: ${error}`);
+          return "pending";
+        }
+        if (!done) return "pending";
         if (!uri) return null;
 
         const url = await uploadVideoToStorage(uri, user.id, i, sessionTs);
