@@ -51,7 +51,8 @@ export async function POST(req: NextRequest) {
       if (!name) return null; // client already has this URL
 
       try {
-        const operation = await ai.operations.getVideosOperation({ operation: { name } });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const operation = await ai.operations.getVideosOperation({ operation: { name } as any });
 
         if (!operation.done) return "pending";
 
