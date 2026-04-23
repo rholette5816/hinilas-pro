@@ -46,9 +46,16 @@ export async function POST(req: NextRequest) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_IMAGE_API_KEY! });
 
   // Check each pending operation (null = already resolved by client)
+  const errors: string[] = [];
   const results: (string | null | "pending")[] = await Promise.all(
     operationNames.map(async (name: string | null, i: number) => {
       if (!name) return null; // client already has this URL
+
+      // Invalid operation name — fail fast
+      if (!name || name === "undefined" || name === "null" || !name.includes("/")) {
+        errors.push(`Clip ${i + 1}: invalid operation name "${name}"`);
+        return null;
+      }
 
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,12 +64,14 @@ export async function POST(req: NextRequest) {
         if (!operation.done) return "pending";
 
         const uri = operation.response?.generatedVideos?.[0]?.video?.uri;
-        if (!uri) return null; // truly failed — no video produced
+        if (!uri) return null;
 
         const url = await uploadVideoToStorage(uri, user.id, i, sessionTs);
         return url ?? null;
-      } catch {
-        return "pending"; // treat errors as still in progress — retry on next poll
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        errors.push(`Clip ${i + 1}: ${msg}`);
+        return "pending";
       }
     })
   );
@@ -98,5 +107,5 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ videos: results, allDone });
+  return NextResponse.json({ videos: results, allDone, errors });
 }

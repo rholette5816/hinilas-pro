@@ -236,6 +236,12 @@ export default function CreativePage() {
         consecutiveErrors = 0;
         const statusData = await statusRes.json();
 
+        if (statusData.errors?.length) {
+          setVideoError(statusData.errors[0]);
+          setVideoLoading(false);
+          return;
+        }
+
         (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
           if (result && result !== "pending" && !resolvedUrls[i]) resolvedUrls[i] = result as string;
         });
@@ -319,8 +325,16 @@ export default function CreativePage() {
             return;
           }
 
-          consecutiveErrors = 0; // reset on successful response
+          consecutiveErrors = 0;
           const statusData = await statusRes.json();
+
+          // Show any errors from the server for diagnosis
+          if (statusData.errors?.length) {
+            console.error("[video-status errors]", statusData.errors);
+            setVideoError(statusData.errors[0]);
+            setVideoLoading(false);
+            return;
+          }
 
           (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
             if (result && result !== "pending" && !resolvedUrls[i]) {
