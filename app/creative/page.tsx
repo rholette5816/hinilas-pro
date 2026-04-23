@@ -216,17 +216,26 @@ export default function CreativePage() {
       // Step 2 — poll for status every 5 seconds until all 3 clips are ready
       const resolvedUrls: (string | null)[] = [null, null, null];
       let attempts = 0;
-      const maxAttempts = 72; // 6 minutes max (72 × 5s)
+      let consecutiveErrors = 0;
+      const maxAttempts = 72;       // 6 minutes max (72 × 5s)
+      const maxConsecutiveErrors = 5; // bail out if server errors 5x in a row
 
       const poll = async () => {
+        // Hard stop — max total attempts
         if (attempts >= maxAttempts) {
           setVideoError("Video generation timed out. Veo took too long — please try again.");
           setVideoLoading(false);
           return;
         }
+        // Hard stop — too many consecutive errors, something is broken
+        if (consecutiveErrors >= maxConsecutiveErrors) {
+          setVideoError("Could not reach the server after multiple attempts. Please refresh and try again.");
+          setVideoLoading(false);
+          return;
+        }
+
         attempts++;
 
-        // Send null for already-resolved indices so server skips them
         const pendingNames = operationNames.map((name: string, i: number) => resolvedUrls[i] ? null : name);
 
         try {
@@ -237,14 +246,14 @@ export default function CreativePage() {
           });
 
           if (!statusRes.ok) {
-            // Server error — retry
+            consecutiveErrors++;
             setTimeout(poll, 5000);
             return;
           }
 
+          consecutiveErrors = 0; // reset on successful response
           const statusData = await statusRes.json();
 
-          // Merge newly resolved URLs into state
           (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
             if (result && result !== "pending" && !resolvedUrls[i]) {
               resolvedUrls[i] = result as string;
@@ -260,11 +269,12 @@ export default function CreativePage() {
             setTimeout(poll, 5000);
           }
         } catch {
-          setTimeout(poll, 5000); // retry on network error
+          consecutiveErrors++;
+          setTimeout(poll, 5000);
         }
       };
 
-      setTimeout(poll, 8000); // give Veo a head start before first check
+      setTimeout(poll, 8000);
     } catch {
       setVideoError("Something went wrong. Try again.");
       setVideoLoading(false);
