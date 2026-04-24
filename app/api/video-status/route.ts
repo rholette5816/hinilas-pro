@@ -64,14 +64,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ done: true, url: testUrls[clipIndex], error: null });
   }
 
-  if (operationName === "undefined" || operationName === "null" || !operationName.includes("/")) {
-    return NextResponse.json({ done: false, url: null, error: `Invalid operation name: "${operationName}"` });
+  if (!operationName || operationName === "undefined" || operationName === "null" || !operationName.includes("/")) {
+    return NextResponse.json({ done: true, url: null, error: `Invalid operation name received. Please try generating again.` });
   }
 
   try {
     const { done, uri, error } = await pollOperation(operationName);
 
-    if (error) return NextResponse.json({ done: false, url: null, error });
+    if (error) return NextResponse.json({ done: false, url: null, error }); // done:false = client retries — correct for transient errors
     if (!done) return NextResponse.json({ done: false, url: null, error: null });
     if (!uri) return NextResponse.json({ done: true, url: null, error: "Veo returned no video URI" });
 

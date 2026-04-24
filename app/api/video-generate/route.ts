@@ -51,27 +51,35 @@ export async function POST(req: NextRequest) {
       operationName = (operation as unknown as { name?: string }).name ?? "";
     }
 
+    // Fail fast if Veo didn't return a valid operation name
+    if (!operationName || !operationName.includes("/")) {
+      return NextResponse.json({ error: "Veo did not return a valid operation name. Try again." }, { status: 500 });
+    }
+
     // Save operation name for this clip slot
     const admin = adminClient();
     const isTestMode = process.env.TEST_VIDEO_MODE === "true";
     const newCredits = isTestMode ? userData.credits_remaining : userData.credits_remaining - CREDIT_COST;
 
-    // Save operation name into per-clip slot
-    const clipField = `video_operation_names`;
     const { data: existing } = await admin
       .from("user_data")
       .select("video_operation_names, video_session_ts")
       .eq("user_id", user.id)
       .single();
 
-    const existingNames: (string | null)[] = existing?.video_operation_names ?? [null, null, null];
-    const existingTs: number[] = existing?.video_session_ts ?? [0, 0, 0];
+    const existingNames: (string | null)[] = Array.isArray(existing?.video_operation_names)
+      ? existing.video_operation_names
+      : [null, null, null];
+    const existingTs: number[] = Array.isArray(existing?.video_session_ts)
+      ? existing.video_session_ts
+      : [0, 0, 0];
+
     existingNames[clipIndex] = operationName;
     existingTs[clipIndex] = sessionTs;
 
     await admin.from("user_data").update({
       credits_remaining: newCredits,
-      [clipField]: existingNames,
+      video_operation_names: existingNames,
       video_session_ts: existingTs,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);

@@ -276,8 +276,12 @@ export default function CreativePage() {
           return;
         }
 
-        if (statusData.done && statusData.url) {
-          setVideoUrls(prev => { const n = [...prev]; n[clipIndex] = statusData.url; return n; });
+        if (statusData.done) {
+          if (statusData.url) {
+            setVideoUrls(prev => { const n = [...prev]; n[clipIndex] = statusData.url; return n; });
+          } else if (!statusData.error) {
+            setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Veo returned no video. Please try again."; return n; });
+          }
           setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
           await refreshCredits();
           return;
