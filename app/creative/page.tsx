@@ -518,12 +518,10 @@ export default function CreativePage() {
                               </a>
                             ) : (
                               <button
-                                onClick={() => generateClip(i)}
-                                disabled={clipLoading[i] || credits < 25}
-                                className="text-white w-full py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-                                style={{ background: clipLoading[i] ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
+                                disabled
+                                className="text-gray-400 w-full py-1.5 rounded-lg text-xs font-semibold bg-gray-700 cursor-not-allowed"
                               >
-                                {clipLoading[i] ? "Rendering..." : "Generate — 25 cr"}
+                                Coming Soon
                               </button>
                             )}
                           </div>
