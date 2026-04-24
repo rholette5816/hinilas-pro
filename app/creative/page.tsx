@@ -13,10 +13,14 @@ export default function CreativePage() {
   const [activeTab, setActiveTab] = useState<"image" | "video">("image");
 
   // Video tab state
-  const [videoLoading, setVideoLoading] = useState(false);
-  const [videoError, setVideoError] = useState("");
+  const [promptsLoading, setPromptsLoading] = useState(false);
+  const [promptsError, setPromptsError] = useState("");
   const [videoPrompts, setVideoPrompts] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<(string | null)[]>([null, null, null]);
+  const [clipLoading, setClipLoading] = useState<boolean[]>([false, false, false]);
+  const [clipErrors, setClipErrors] = useState<string[]>(["", "", ""]);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState("");
 
   const [extraPrompt, setExtraPrompt] = useState("");
   const [logoFile, setLogoFile] = useState<string | null>(null);
@@ -208,160 +212,112 @@ export default function CreativePage() {
     }
   }
 
-  function resumePoll(operationNames: string[], prompts: string[], sessionTs: number) {
-    const resolvedUrls: (string | null)[] = [null, null, null];
+  async function generatePrompts() {
+    if (!setup || !selectedAngle) return;
+    setPromptsLoading(true);
+    setPromptsError("");
+    setVideoPrompts([]);
+    setVideoUrls([null, null, null]);
+    setClipErrors(["", "", ""]);
+    try {
+      const userCtx = buildUserContext(setup);
+      const res = await fetch("/api/video-prompts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ angle: selectedAngle, userContext: userCtx, industry: setup.industry || "" }),
+      });
+      const data = await res.json();
+      if (data.error) { setPromptsError(data.error); return; }
+      setVideoPrompts(data.prompts || []);
+    } catch {
+      setPromptsError("Something went wrong. Try again.");
+    } finally {
+      setPromptsLoading(false);
+    }
+  }
+
+  function pollClip(clipIndex: number, operationName: string, sessionTs: number) {
     let attempts = 0;
     let consecutiveErrors = 0;
     const maxAttempts = 72;
     const maxConsecutiveErrors = 5;
 
     const poll = async () => {
-      if (attempts >= maxAttempts || consecutiveErrors >= maxConsecutiveErrors) {
-        setVideoError("Video generation timed out. Please try again.");
-        setVideoLoading(false);
+      if (attempts >= maxAttempts) {
+        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Timed out. Veo took too long — try again."; return n; });
+        setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
+        return;
+      }
+      if (consecutiveErrors >= maxConsecutiveErrors) {
+        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Server error — please refresh and try again."; return n; });
+        setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
         return;
       }
       attempts++;
-
-      const pendingNames = operationNames.map((name: string, i: number) => resolvedUrls[i] ? null : name);
 
       try {
         const statusRes = await fetch("/api/video-status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ operationNames: pendingNames, prompts, sessionTs, angle: selectedAngle }),
+          body: JSON.stringify({ operationName, clipIndex, sessionTs, angle: selectedAngle }),
         });
+
         if (!statusRes.ok) { consecutiveErrors++; setTimeout(poll, 5000); return; }
 
         consecutiveErrors = 0;
         const statusData = await statusRes.json();
 
-        if (statusData.errors?.length) {
-          setVideoError(statusData.errors[0]);
-          setVideoLoading(false);
+        if (statusData.error) {
+          setClipErrors(prev => { const n = [...prev]; n[clipIndex] = statusData.error; return n; });
+          setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
           return;
         }
 
-        (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
-          if (result && result !== "pending" && !resolvedUrls[i]) resolvedUrls[i] = result as string;
-        });
-        setVideoUrls([...resolvedUrls]);
-
-        const allResolved = resolvedUrls.every(u => u !== null);
-        if (statusData.allDone || allResolved) {
-          await saveVideos(resolvedUrls, prompts);
-          setVideoLoading(false);
-        } else {
-          setTimeout(poll, 5000);
+        if (statusData.done && statusData.url) {
+          setVideoUrls(prev => { const n = [...prev]; n[clipIndex] = statusData.url; return n; });
+          setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
+          await refreshCredits();
+          return;
         }
+
+        setTimeout(poll, 5000);
       } catch {
         consecutiveErrors++;
         setTimeout(poll, 5000);
       }
     };
 
-    setTimeout(poll, 5000);
+    setTimeout(poll, 8000);
   }
 
-  async function generateVideos() {
-    if (!setup || !selectedAngle) return;
-    setVideoLoading(true);
-    setVideoError("");
-    setVideoUrls([null, null, null]);
-    try {
-      const userCtx = buildUserContext(setup);
+  async function generateClip(clipIndex: number) {
+    if (!videoPrompts[clipIndex]) return;
+    setClipLoading(prev => { const n = [...prev]; n[clipIndex] = true; return n; });
+    setClipErrors(prev => { const n = [...prev]; n[clipIndex] = ""; return n; });
+    setVideoUrls(prev => { const n = [...prev]; n[clipIndex] = null; return n; });
 
-      // Step 1 — kick off generation, get operation names back immediately
+    try {
       const res = await fetch("/api/video-generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ angle: selectedAngle, userContext: userCtx, industry: setup.industry || "" }),
+        body: JSON.stringify({ prompt: videoPrompts[clipIndex], clipIndex }),
       });
       const data = await res.json();
-      if (data.code === "NO_CREDITS") { setNoCredits(true); setVideoLoading(false); return; }
-      if (data.error) { setVideoError(data.error); setVideoLoading(false); return; }
-
-      const prompts: string[] = data.prompts || [];
-      const operationNames: string[] = data.operationNames || [];
-      const sessionTs: number = data.sessionTs || Date.now();
-      setVideoPrompts(prompts);
-      await refreshCredits();
-
-      // Step 2 — poll for status every 5 seconds until all 3 clips are ready
-      const resolvedUrls: (string | null)[] = [null, null, null];
-      let attempts = 0;
-      let consecutiveErrors = 0;
-      const maxAttempts = 72;       // 6 minutes max (72 × 5s)
-      const maxConsecutiveErrors = 5; // bail out if server errors 5x in a row
-
-      const poll = async () => {
-        // Hard stop — max total attempts
-        if (attempts >= maxAttempts) {
-          setVideoError("Video generation timed out. Veo took too long — please try again.");
-          setVideoLoading(false);
-          return;
-        }
-        // Hard stop — too many consecutive errors, something is broken
-        if (consecutiveErrors >= maxConsecutiveErrors) {
-          setVideoError("Could not reach the server after multiple attempts. Please refresh and try again.");
-          setVideoLoading(false);
-          return;
-        }
-
-        attempts++;
-
-        const pendingNames = operationNames.map((name: string, i: number) => resolvedUrls[i] ? null : name);
-
-        try {
-          const statusRes = await fetch("/api/video-status", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ operationNames: pendingNames, prompts, sessionTs, angle: selectedAngle }),
-          });
-
-          if (!statusRes.ok) {
-            consecutiveErrors++;
-            setTimeout(poll, 5000);
-            return;
-          }
-
-          consecutiveErrors = 0;
-          const statusData = await statusRes.json();
-
-          // Show any errors from the server for diagnosis
-          if (statusData.errors?.length) {
-            console.error("[video-status errors]", statusData.errors);
-            setVideoError(statusData.errors[0]);
-            setVideoLoading(false);
-            return;
-          }
-
-          (statusData.videos as (string | null | "pending")[]).forEach((result, i) => {
-            if (result && result !== "pending" && !resolvedUrls[i]) {
-              resolvedUrls[i] = result as string;
-            }
-          });
-          setVideoUrls([...resolvedUrls]);
-
-          const allResolved = resolvedUrls.every(u => u !== null);
-          if (statusData.allDone || allResolved) {
-            await saveVideos(resolvedUrls, prompts);
-            setVideoLoading(false);
-          } else {
-            setTimeout(poll, 5000);
-          }
-        } catch {
-          consecutiveErrors++;
-          setTimeout(poll, 5000);
-        }
-      };
-
-      setTimeout(poll, 8000);
+      if (data.code === "NO_CREDITS") { setNoCredits(true); setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; }); return; }
+      if (data.error) {
+        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = data.error; return n; });
+        setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
+        return;
+      }
+      pollClip(clipIndex, data.operationName, data.sessionTs);
     } catch {
-      setVideoError("Something went wrong. Try again.");
-      setVideoLoading(false);
+      setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Something went wrong. Try again."; return n; });
+      setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
     }
   }
+
+  // Keep generateVideos stub so resumePoll reference doesn't break (unused now)
+  function resumePoll(_a: string[], _b: string[], _c: number) { return; }
 
   if (!setup) {
     return (
@@ -483,87 +439,84 @@ export default function CreativePage() {
                     </div>
                   </div>
 
+                  {/* Credits */}
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs text-gray-500">{credits} credits remaining</span>
-                    {credits <= 70 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
+                    {credits <= 25 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
                   </div>
 
-                  {videoError && (
-                    <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-5">{videoError}</div>
+                  {/* Step 1 — Generate Scripts */}
+                  {promptsError && (
+                    <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-4">{promptsError}</div>
                   )}
 
                   <button
-                    onClick={generateVideos}
-                    disabled={videoLoading || credits < 70}
-                    className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-8 transition-opacity hover:opacity-90 disabled:opacity-40"
-                    style={{ background: videoLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
+                    onClick={generatePrompts}
+                    disabled={promptsLoading}
+                    className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-6 transition-opacity hover:opacity-90 disabled:opacity-40"
+                    style={{ background: promptsLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                   >
-                    {videoLoading ? "Generating videos... this takes up to 6 minutes" : "Generate 3 Video Clips — 70 credits"}
+                    {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts — Free" : "Generate Scripts — Free"}
                   </button>
 
-                  {videoLoading && (
-                    <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                        </div>
-                        <p className="text-gray-300 text-xs font-semibold">Veo 3 Fast is rendering — up to 6 minutes</p>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        {["Clip 1 — Hook", "Clip 2 — Solution", "Clip 3 — CTA"].map((label, i) => (
-                          <div key={i} className="flex items-center justify-between bg-gray-900 rounded-lg px-3 py-2">
-                            <span className="text-gray-400 text-xs">{label}</span>
-                            {videoUrls[i] ? (
-                              <span className="text-green-400 text-xs font-semibold">Done</span>
-                            ) : (
-                              <span className="text-purple-400 text-xs">Rendering...</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-gray-600 text-xs mt-3">You can leave this page — it will resume when you come back.</p>
-                    </div>
-                  )}
-
-                  {videoUrls.some(v => v !== null) && (
-                    <div className="flex flex-col gap-6">
-                      {videoUrls.map((url, i) => (
+                  {/* Step 2 — Per-clip cards */}
+                  {videoPrompts.length > 0 && (
+                    <div className="flex flex-col gap-5">
+                      {[
+                        { label: "Clip 1 — Hook", emoji: "🎣" },
+                        { label: "Clip 2 — Solution", emoji: "💡" },
+                        { label: "Clip 3 — CTA", emoji: "📣" },
+                      ].map(({ label, emoji }, i) => (
                         <div key={i} className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
+                          {/* Card header */}
                           <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
-                            <div>
-                              <p className="text-white text-xs font-semibold">
-                                {i === 0 ? "Clip 1 — Hook" : i === 1 ? "Clip 2 — Solution" : "Clip 3 — CTA"}
-                              </p>
-                              {videoPrompts[i] && (
-                                <p className="text-gray-500 text-xs mt-0.5 line-clamp-2">{videoPrompts[i]}</p>
-                              )}
-                            </div>
-                            {url && (
+                            <p className="text-white text-xs font-semibold">{emoji} {label}</p>
+                            {videoUrls[i] ? (
                               <a
-                                href={url}
+                                href={videoUrls[i]!}
                                 download={`hinilas-clip-${i + 1}.mp4`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100 ml-3 shrink-0"
+                                className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100"
                               >
                                 Download
                               </a>
+                            ) : (
+                              <button
+                                onClick={() => generateClip(i)}
+                                disabled={clipLoading[i] || credits < 25}
+                                className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+                                style={{ background: clipLoading[i] ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
+                              >
+                                {clipLoading[i] ? "Rendering..." : "Generate — 25 credits"}
+                              </button>
                             )}
                           </div>
-                          {url ? (
-                            <video
-                              src={url}
-                              controls
-                              className="w-full"
-                              style={{ maxHeight: "480px", background: "#000" }}
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center py-10">
-                              <p className="text-gray-600 text-xs">Generation failed for this clip</p>
+
+                          {/* Prompt text */}
+                          <div className="px-4 py-3 border-b border-gray-700">
+                            <p className="text-gray-400 text-xs leading-relaxed">{videoPrompts[i]}</p>
+                          </div>
+
+                          {/* Error */}
+                          {clipErrors[i] && (
+                            <div className="px-4 py-3 border-b border-gray-700">
+                              <p className="text-red-400 text-xs">{clipErrors[i]}</p>
                             </div>
                           )}
+
+                          {/* Loading state */}
+                          {clipLoading[i] && (
+                            <div className="px-4 py-5 flex items-center gap-3">
+                              <div className="flex gap-1">
+                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                              </div>
+                              <p className="text-gray-400 text-xs">Veo 3 Fast is rendering — up to 6 minutes. You can leave and come back.</p>
+                            </div>
+                          )}
+
                         </div>
                       ))}
                     </div>

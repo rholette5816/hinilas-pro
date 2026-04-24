@@ -53,78 +53,52 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { operationNames, prompts, sessionTs, angle } = await req.json();
-  if (!operationNames || !Array.isArray(operationNames)) {
-    return NextResponse.json({ error: "operationNames required" }, { status: 400 });
+  const { operationName, clipIndex, sessionTs, angle } = await req.json();
+  if (!operationName || clipIndex === undefined) {
+    return NextResponse.json({ error: "operationName and clipIndex required" }, { status: 400 });
   }
 
-  // Test mode — immediately return sample videos without hitting Veo
+  // Test mode — return sample video immediately
   if (process.env.TEST_VIDEO_MODE === "true") {
     const testUrls = ["/samples/clip-hook.mp4", "/samples/clip-solution.mp4", "/samples/clip-cta.mp4"];
-    return NextResponse.json({ videos: testUrls, allDone: true, errors: [] });
+    return NextResponse.json({ done: true, url: testUrls[clipIndex], error: null });
   }
 
-  const errors: string[] = [];
-  const results: (string | null | "pending")[] = await Promise.all(
-    operationNames.map(async (name: string | null, i: number) => {
-      if (!name) return null; // client already has this URL
+  if (operationName === "undefined" || operationName === "null" || !operationName.includes("/")) {
+    return NextResponse.json({ done: false, url: null, error: `Invalid operation name: "${operationName}"` });
+  }
 
-      // Invalid operation name — fail fast
-      if (name === "undefined" || name === "null" || !name.includes("/")) {
-        errors.push(`Clip ${i + 1}: invalid operation name "${name}"`);
-        return null;
-      }
+  try {
+    const { done, uri, error } = await pollOperation(operationName);
 
-      try {
-        const { done, uri, error } = await pollOperation(name);
+    if (error) return NextResponse.json({ done: false, url: null, error });
+    if (!done) return NextResponse.json({ done: false, url: null, error: null });
+    if (!uri) return NextResponse.json({ done: true, url: null, error: "Veo returned no video URI" });
 
-        if (error) {
-          errors.push(`Clip ${i + 1}: ${error}`);
-          return "pending";
-        }
-        if (!done) return "pending";
-        if (!uri) return null;
+    const url = await uploadVideoToStorage(uri, user.id, clipIndex, sessionTs);
+    if (!url) return NextResponse.json({ done: true, url: null, error: "Upload to storage failed" });
 
-        const url = await uploadVideoToStorage(uri, user.id, i, sessionTs);
-        return url ?? null;
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        errors.push(`Clip ${i + 1}: ${msg}`);
-        return "pending";
-      }
-    })
-  );
-
-  const allDone = results.every(r => r !== "pending");
-
-  // When all clips are resolved, save final URLs to user_data + media_library
-  if (allDone) {
-    const urls = results as (string | null)[];
+    // Save URL to user_data
     const admin = adminClient();
-
+    const urlField = `video_${clipIndex + 1}_url` as "video_1_url" | "video_2_url" | "video_3_url";
     await admin.from("user_data").update({
-      video_1_url: urls[0] ?? null,
-      video_2_url: urls[1] ?? null,
-      video_3_url: urls[2] ?? null,
-      video_operation_names: null,
-      video_session_ts: null,
+      [urlField]: url,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
 
+    // Log to media_library
     const CLIP_LABELS = ["Clip 1 — Hook", "Clip 2 — Solution", "Clip 3 — CTA"];
-    const mediaRows = urls
-      .map((url, i) => url ? {
-        user_id: user.id,
-        type: "video",
-        url,
-        label: CLIP_LABELS[i],
-        angle: angle || null,
-      } : null)
-      .filter(Boolean);
-    if (mediaRows.length > 0) {
-      void admin.from("media_library").insert(mediaRows);
-    }
-  }
+    void admin.from("media_library").insert({
+      user_id: user.id,
+      type: "video",
+      url,
+      label: CLIP_LABELS[clipIndex],
+      angle: angle || null,
+    });
 
-  return NextResponse.json({ videos: results, allDone, errors });
+    return NextResponse.json({ done: true, url, error: null });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ done: false, url: null, error: message });
+  }
 }
