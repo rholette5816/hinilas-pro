@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (!angle || !userContext) return NextResponse.json({ error: "angle and userContext are required" }, { status: 400 });
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `You are a video ad director and scriptwriter for Meta Ads. Your job is to write 3 short video clip prompts powered by Veo 3, which generates video WITH audio and spoken dialogue.
 
