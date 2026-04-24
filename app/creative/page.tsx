@@ -39,19 +39,22 @@ export default function CreativePage() {
     }
     if (savedVideoPrompts.length > 0) setVideoPrompts(savedVideoPrompts);
 
-    // Resume polling if user left mid-generation
+    // Resume any clips that were mid-generation when user left
     async function checkPendingGeneration() {
       try {
         const res = await fetch("/api/video-resume");
         if (!res.ok) return;
         const data = await res.json();
-        if (!data.operationNames || !data.sessionTs) return;
+        if (!data.pending?.length) return;
 
-        // There's a pending generation — resume polling
-        setVideoLoading(true);
         setActiveTab("video");
-        setVideoPrompts(data.prompts || []);
-        resumePoll(data.operationNames, data.prompts || [], data.sessionTs);
+        if (data.prompts?.length) setVideoPrompts(data.prompts);
+
+        // Resume polling for each pending clip
+        for (const { clipIndex, operationName, sessionTs } of data.pending) {
+          setClipLoading(prev => { const n = [...prev]; n[clipIndex] = true; return n; });
+          pollClip(clipIndex, operationName, sessionTs);
+        }
       } catch {
         // silently ignore
       }
