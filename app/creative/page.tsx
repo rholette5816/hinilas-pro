@@ -466,25 +466,53 @@ export default function CreativePage() {
                     {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts — Free" : "Generate Scripts — Free"}
                   </button>
 
-                  {/* Step 2 — Per-clip cards */}
+                  {/* Step 2 — Per-clip cards (horizontal) */}
                   {videoPrompts.length > 0 && (
-                    <div className="flex flex-col gap-5">
+                    <div className="flex gap-3">
                       {[
-                        { label: "Clip 1 — Hook", emoji: "🎣" },
-                        { label: "Clip 2 — Solution", emoji: "💡" },
-                        { label: "Clip 3 — CTA", emoji: "📣" },
+                        { label: "Clip 1\nHook", emoji: "🎣" },
+                        { label: "Clip 2\nSolution", emoji: "💡" },
+                        { label: "Clip 3\nCTA", emoji: "📣" },
                       ].map(({ label, emoji }, i) => (
-                        <div key={i} className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
-                          {/* Card header */}
-                          <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
-                            <p className="text-white text-xs font-semibold">{emoji} {label}</p>
+                        <div key={i} className="flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+                          {/* Video or placeholder */}
+                          <div className="relative bg-gray-900 flex-1" style={{ aspectRatio: "9/16", minHeight: 160 }}>
+                            {videoUrls[i] ? (
+                              <video
+                                src={videoUrls[i]!}
+                                className="w-full h-full object-cover"
+                                controls
+                                playsInline
+                              />
+                            ) : clipLoading[i] ? (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                                <div className="flex gap-1">
+                                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                                </div>
+                                <p className="text-gray-500 text-xs text-center px-2">Rendering...</p>
+                              </div>
+                            ) : (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                                <span className="text-2xl">{emoji}</span>
+                                <p className="text-gray-500 text-xs text-center whitespace-pre-line leading-tight">{label}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Footer */}
+                          <div className="px-2 py-2 border-t border-gray-700 flex flex-col gap-1.5">
+                            {clipErrors[i] && (
+                              <p className="text-red-400 text-xs text-center leading-tight">{clipErrors[i]}</p>
+                            )}
                             {videoUrls[i] ? (
                               <a
                                 href={videoUrls[i]!}
                                 download={`hinilas-clip-${i + 1}.mp4`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100"
+                                className="bg-white text-black w-full py-1.5 rounded-lg text-xs font-semibold text-center hover:bg-gray-100"
                               >
                                 Download
                               </a>
@@ -492,38 +520,13 @@ export default function CreativePage() {
                               <button
                                 onClick={() => generateClip(i)}
                                 disabled={clipLoading[i] || credits < 25}
-                                className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+                                className="text-white w-full py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                                 style={{ background: clipLoading[i] ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                               >
-                                {clipLoading[i] ? "Rendering..." : "Generate — 25 credits"}
+                                {clipLoading[i] ? "Rendering..." : "Generate — 25 cr"}
                               </button>
                             )}
                           </div>
-
-                          {/* Prompt text */}
-                          <div className="px-4 py-3 border-b border-gray-700">
-                            <p className="text-gray-400 text-xs leading-relaxed">{videoPrompts[i]}</p>
-                          </div>
-
-                          {/* Error */}
-                          {clipErrors[i] && (
-                            <div className="px-4 py-3 border-b border-gray-700">
-                              <p className="text-red-400 text-xs">{clipErrors[i]}</p>
-                            </div>
-                          )}
-
-                          {/* Loading state */}
-                          {clipLoading[i] && (
-                            <div className="px-4 py-5 flex items-center gap-3">
-                              <div className="flex gap-1">
-                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                                <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                              </div>
-                              <p className="text-gray-400 text-xs">Veo 3 Fast is rendering — up to 6 minutes. You can leave and come back.</p>
-                            </div>
-                          )}
-
                         </div>
                       ))}
                     </div>
