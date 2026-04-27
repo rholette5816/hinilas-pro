@@ -63,6 +63,7 @@ type TopUpRequestRow = {
 
 type FeedbackRow = {
   user_id?: string | null;
+  user_email?: string | null;
   rating?: number | null;
   category?: string | null;
   message?: string | null;
@@ -78,6 +79,7 @@ type CampaignLaunchRow = {
 
 type ConsultationRow = {
   user_id?: string | null;
+  user_email?: string | null;
   status?: string | null;
   created_at?: string | null;
 };
@@ -96,6 +98,9 @@ type FeedbackPromptRow = {
 type WindowKey = "today" | "sevenDays" | "thirtyDays" | "allTime";
 
 const WINDOW_KEYS: WindowKey[] = ["today", "sevenDays", "thirtyDays", "allTime"];
+const STATS_CACHE_MS = 60_000;
+
+let statsCache: { createdAt: number; payload: Record<string, unknown> } | null = null;
 
 function adminClient() {
   return createAdminClient(
@@ -185,21 +190,6 @@ function moduleFromDescription(description: string) {
   return "other";
 }
 
-async function listAllAuthUsers() {
-  const admin = adminClient();
-  const users: Array<{ id: string; email?: string; user_metadata?: { full_name?: string } }> = [];
-  let page = 1;
-  while (true) {
-    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
-    if (error) throw error;
-    const batch = data.users ?? [];
-    users.push(...batch);
-    if (batch.length < 1000) break;
-    page += 1;
-  }
-  return users;
-}
-
 async function safeRows<T>(
   label: string,
   query: PromiseLike<{ data: T[] | null; error: { message: string } | null }>,
@@ -234,6 +224,13 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  if (statsCache && Date.now() - statsCache.createdAt < STATS_CACHE_MS) {
+    return NextResponse.json({
+      ...statsCache.payload,
+      cache: { hit: true, ageSeconds: Math.round((Date.now() - statsCache.createdAt) / 1000) },
+    });
+  }
+
   const admin = adminClient();
   const warnings: string[] = [];
 
@@ -247,7 +244,6 @@ export async function GET() {
     consultationRows,
     emailRows,
     promptRows,
-    authUsers,
   ] = await Promise.all([
     admin
       .from("user_data")
@@ -266,7 +262,7 @@ export async function GET() {
     ),
     safeRows<FeedbackRow>(
       "feedbacks",
-      admin.from("feedbacks").select("user_id, rating, category, message, created_at"),
+      admin.from("feedbacks").select("user_id, user_email, rating, category, message, created_at"),
       warnings
     ),
     safeRows<CampaignLaunchRow>(
@@ -276,7 +272,7 @@ export async function GET() {
     ),
     safeRows<ConsultationRow>(
       "consultations",
-      admin.from("consultations").select("user_id, status, created_at"),
+      admin.from("consultations").select("user_id, user_email, status, created_at"),
       warnings
     ),
     safeRows<EmailLogRow>(
@@ -289,7 +285,6 @@ export async function GET() {
       admin.from("user_data").select("user_id, feedback_prompt_shown_at").not("feedback_prompt_shown_at", "is", null),
       warnings
     ),
-    listAllAuthUsers(),
   ]);
 
   if (userDataError) return NextResponse.json({ error: userDataError.message }, { status: 500 });
@@ -305,9 +300,12 @@ export async function GET() {
   const emails = emailRows as EmailLogRow[];
   const promptShown = promptRows as FeedbackPromptRow[];
 
-  const authUserMap = new Map(
-    authUsers.map(u => [u.id, { email: u.email || "", fullName: u.user_metadata?.full_name || "" }])
-  );
+  const emailByUserId = new Map<string, string>();
+  for (const row of [...topups, ...feedbacks, ...consultations]) {
+    if (row.user_id && row.user_email && !emailByUserId.has(row.user_id)) {
+      emailByUserId.set(row.user_id, row.user_email);
+    }
+  }
 
   const trueSignupDate = new Map<string, string>();
   for (const tx of [...transactions].reverse()) {
@@ -334,8 +332,8 @@ export async function GET() {
     const signupDate = trueSignupDate.get(row.user_id) || row.updated_at || null;
     const creditsRemaining = row.credits_remaining ?? 0;
     const plan = deriveTier(creditsRemaining, row.locked_tier, row.tier_expires_at);
-    const authUser = authUserMap.get(row.user_id);
-    const username = row.username || authUser?.fullName || authUser?.email?.split("@")[0] || "User";
+    const email = emailByUserId.get(row.user_id) || "";
+    const username = row.username || email.split("@")[0] || "User";
 
     if (signupDate) {
       const t = new Date(signupDate).getTime();
@@ -348,7 +346,7 @@ export async function GET() {
 
     planBreakdown[plan]++;
 
-    return { userId: row.user_id, username, email: authUser?.email || "", plan, creditsRemaining, signupDate };
+    return { userId: row.user_id, username, email, plan, creditsRemaining, signupDate };
   });
 
   const usageTransactions = transactions.filter(tx => tx.amount < 0);
@@ -723,9 +721,8 @@ export async function GET() {
   }
 
   const recentActivity = transactions.slice(0, 20).map(tx => {
-    const authUser = authUserMap.get(tx.user_id);
     const matchingUser = userTable.find(r => r.userId === tx.user_id);
-    const username = matchingUser?.username || authUser?.fullName || authUser?.email?.split("@")[0] || "User";
+    const username = matchingUser?.username || emailByUserId.get(tx.user_id)?.split("@")[0] || "User";
     return {
       userId: tx.user_id,
       username,
@@ -737,7 +734,7 @@ export async function GET() {
     };
   });
 
-  return NextResponse.json({
+  const payload = {
     userStats: {
       totalSignups: users.length,
       newToday,
@@ -787,5 +784,12 @@ export async function GET() {
       },
     },
     fetchedAt: new Date().toISOString(),
+  };
+
+  statsCache = { createdAt: Date.now(), payload };
+
+  return NextResponse.json({
+    ...payload,
+    cache: { hit: false, ageSeconds: 0 },
   });
 }

@@ -346,21 +346,38 @@ export default function AdminDashboardClient() {
 
   useEffect(() => {
     let mounted = true;
+    let inFlight = false;
     async function loadStats() {
+      if (inFlight) return;
+      if (document.visibilityState === "hidden") return;
+      inFlight = true;
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 25_000);
       try {
-        const res = await fetch("/api/admin/stats", { cache: "no-store" });
+        const res = await fetch("/api/admin/stats", { cache: "no-store", signal: controller.signal });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load admin stats");
         if (mounted) { setStats(data); setError(""); }
       } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
         if (mounted) setError(err instanceof Error ? err.message : "Failed to load");
       } finally {
+        window.clearTimeout(timeout);
+        inFlight = false;
         if (mounted) setLoading(false);
       }
     }
     loadStats();
-    const interval = setInterval(loadStats, 30000);
-    return () => { mounted = false; clearInterval(interval); };
+    const interval = setInterval(loadStats, 60_000);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") loadStats();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, []);
 
   async function handleResetTopups() {
@@ -474,7 +491,7 @@ export default function AdminDashboardClient() {
           <div>
             <p className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "#2B7EC9" }}>Owner Dashboard</p>
             <h1 className="text-3xl font-black text-white">Command Center</h1>
-            <p className="text-sm mt-1" style={{ color: "#64748B" }}>Live app awareness - refreshes every 30s</p>
+            <p className="text-sm mt-1" style={{ color: "#64748B" }}>Live app awareness - refreshes every 60s while active</p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <button
