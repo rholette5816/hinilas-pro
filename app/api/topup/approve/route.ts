@@ -96,10 +96,26 @@ export async function POST(req: Request) {
   const newCredits = userData.credits_remaining + request.credits_requested;
   const newTotal = userData.credits_total + request.credits_requested;
 
-  // Add credits
+  // Determine if this purchase locks a tier (Flex 150 or Max 500). Top-ups do not lock tier.
+  let lockedTier: "Flex" | "Max" | null = null;
+  if (request.credits_requested >= 500) lockedTier = "Max";
+  else if (request.credits_requested >= 150) lockedTier = "Flex";
+
+  const tierUpdate = lockedTier
+    ? {
+        locked_tier: lockedTier,
+        tier_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      }
+    : {};
+
+  // Add credits (and lock tier if applicable)
   await supabase
     .from("user_data")
-    .update({ credits_remaining: newCredits, credits_total: newTotal })
+    .update({
+      credits_remaining: newCredits,
+      credits_total: newTotal,
+      ...tierUpdate,
+    })
     .eq("user_id", request.user_id);
 
   // Log transaction

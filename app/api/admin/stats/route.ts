@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import { derivePlanFromCredits, isOwnerUser } from "@/lib/admin";
+import { deriveTier, isOwnerUser } from "@/lib/admin";
 
 type UserDataRow = {
   user_id: string;
   username?: string | null;
   credits_remaining?: number | null;
   credits_total?: number | null;
+  locked_tier?: string | null;
+  tier_expires_at?: string | null;
   updated_at?: string | null;
 };
 
@@ -95,7 +97,7 @@ export async function GET() {
     { data: tokenRows },
     authUsers,
   ] = await Promise.all([
-    admin.from("user_data").select("user_id, username, credits_remaining, credits_total, updated_at").order("updated_at", { ascending: false }),
+    admin.from("user_data").select("user_id, username, credits_remaining, credits_total, locked_tier, tier_expires_at, updated_at").order("updated_at", { ascending: false }),
     admin.from("credit_transactions").select("user_id, type, amount, description, created_at").order("created_at", { ascending: false }),
     admin.from("token_logs").select("user_id, module, prompt_tokens, completion_tokens, total_tokens, created_at"),
     listAllAuthUsers(),
@@ -135,7 +137,7 @@ export async function GET() {
     // Use true signup date from welcome credit transaction, fall back to updated_at
     const signupDate = trueSignupDate.get(row.user_id) || row.updated_at || null;
     const creditsRemaining = row.credits_remaining ?? 0;
-    const plan = derivePlanFromCredits(creditsRemaining);
+    const plan = deriveTier(creditsRemaining, row.locked_tier, row.tier_expires_at);
     const authUser = authUserMap.get(row.user_id);
     const username = row.username || authUser?.fullName || authUser?.email?.split("@")[0] || "User";
 

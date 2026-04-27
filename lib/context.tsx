@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { deriveTier } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/client";
 
 export interface UserSetup {
@@ -42,6 +43,7 @@ interface AppContextType {
   credits: number;
   creditsTotal: number;
   plan: string;
+  tierLockExpiresAt: Date | null;
   refreshCredits: () => Promise<void>;
   referralToasts: ReferralToast[];
   dismissToast: (id: number) => void;
@@ -49,10 +51,18 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
-export function derivePlan(credits: number): string {
-  if (credits >= 300) return "max";
-  if (credits >= 50) return "flex";
-  return "lite";
+function parseTierLockExpiresAt(value: string | null | undefined): Date | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+export function derivePlan(
+  credits: number,
+  lockedTier?: string | null,
+  tierExpiresAt?: string | Date | null
+): string {
+  return deriveTier(credits, lockedTier, tierExpiresAt).toLowerCase();
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -67,6 +77,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [savedVideoPrompts, setSavedVideoPrompts] = useState<string[]>([]);
   const [credits, setCredits] = useState(0);
   const [creditsTotal, setCreditsTotal] = useState(5);
+  const [lockedTier, setLockedTier] = useState<string | null>(null);
+  const [tierLockExpiresAt, setTierLockExpiresAt] = useState<Date | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [referralToasts, setReferralToasts] = useState<ReferralToast[]>([]);
@@ -80,7 +92,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       const { data } = await supabase
         .from("user_data")
-        .select("*")
+        .select("*, locked_tier, tier_expires_at")
         .eq("user_id", user.id)
         .single();
 
@@ -92,6 +104,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
         if (data.credits_remaining !== undefined) setCredits(data.credits_remaining);
         if (data.credits_total !== undefined) setCreditsTotal(data.credits_total);
+        setLockedTier(data.locked_tier ?? null);
+        setTierLockExpiresAt(parseTierLockExpiresAt(data.tier_expires_at));
         setSavedImages({
           main: data.main_image_url || null,
           v1: data.variation_1_url || null,
@@ -227,12 +241,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const { data } = await supabase
       .from("user_data")
-      .select("credits_remaining, credits_total")
+      .select("credits_remaining, credits_total, locked_tier, tier_expires_at")
       .eq("user_id", user.id)
       .single();
     if (data) {
       setCredits(data.credits_remaining);
       setCreditsTotal(data.credits_total);
+      setLockedTier(data.locked_tier ?? null);
+      setTierLockExpiresAt(parseTierLockExpiresAt(data.tier_expires_at));
     }
   }
 
@@ -248,7 +264,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       creativeImage, setCreativeImage,
       savedImages, saveAdImages,
       savedVideos, savedVideoPrompts, saveVideos,
-      credits, creditsTotal, plan: derivePlan(credits), refreshCredits,
+      credits,
+      creditsTotal,
+      plan: derivePlan(credits, lockedTier, tierLockExpiresAt),
+      tierLockExpiresAt,
+      refreshCredits,
       referralToasts, dismissToast,
     }}>
       {children}
