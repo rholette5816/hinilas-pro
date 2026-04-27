@@ -18,7 +18,7 @@ const FEATURES = [
       { label: "Marketing Angles (5 angles + 3C Hook)", lite: true, flex: true, max: true },
       { label: "Sales Copy Writing (PAS, BAB, AIDA, Story)", lite: true, flex: true, max: true },
       { label: "Ad Results Analysis (screenshot upload)", lite: true, flex: true, max: true },
-      { label: "Ad Image Generation", lite: "5 only", flex: true, max: true },
+      { label: "Ad Image Generation", lite: true, flex: true, max: true },
     ],
   },
   {
@@ -42,7 +42,7 @@ const FEATURES = [
 type FeatureValue = boolean | string;
 
 function Check({ value, color }: { value: FeatureValue; color: string }) {
-  if (value === false) return <span className="text-gray-700 text-base">—</span>;
+  if (value === false) return <span className="text-gray-700 text-base">-</span>;
   if (typeof value === "string") return <span className="text-xs font-semibold" style={{ color }}>{value}</span>;
   return <span className="text-base" style={{ color }}>✓</span>;
 }
@@ -58,8 +58,8 @@ export default function PricingPage() {
       name: "Lite",
       tagline: "Get started for free",
       price: "Free",
-      credits: "20 one-time credits",
-      threshold: "0 – 49 credits",
+      credits: "30 free credits (15 + 15 after first action)",
+      threshold: "0 - 49 credits",
       color: "#9CA3AF",
       nextAt: `${49 - credits > 0 ? 49 - credits + " more credits" : ""}`,
     },
@@ -69,8 +69,8 @@ export default function PricingPage() {
       tagline: "The engine of your marketing",
       price: "₱499",
       period: " / 150 credits",
-      credits: "150 credits — never expires",
-      threshold: "50 – 299 credits",
+      credits: "150 credits - never expires",
+      threshold: "50 - 299 credits",
       color: BRAND_ORANGE,
       popular: true,
     },
@@ -80,7 +80,7 @@ export default function PricingPage() {
       tagline: "Unmatched power. Zero limits.",
       price: "₱1,299",
       period: " / 500 credits",
-      credits: "500 credits — never expires",
+      credits: "500 credits - never expires",
       threshold: "300+ credits",
       color: BRAND_RED,
     },
@@ -91,25 +91,27 @@ export default function PricingPage() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-4xl mx-auto px-6 py-10">
-
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Credits & Plans</h1>
-            <p className="text-gray-400 text-sm">Buy credits once — they never expire. Your tier unlocks automatically based on your <span className="text-white font-medium">credits remaining</span>.</p>
+            <p className="text-gray-400 text-sm">Buy credits once. Flex and Max <span className="text-white font-medium">lock your tier for 30 days</span>. After that, tier auto-adjusts based on credits remaining.</p>
           </div>
 
           {/* Threshold bar */}
           <div className="rounded-2xl border border-gray-700 px-6 py-5 mb-8" style={{ background: "#0A0F1A" }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-gray-400">Your credits</p>
-              <span className="text-sm font-bold" style={{
-                color: currentPlan === "max" ? BRAND_RED : currentPlan === "flex" ? BRAND_ORANGE : "#9CA3AF"
-              }}>
-                {credits} credits — <span className="uppercase">{currentPlan}</span> tier
+              <span
+                className="text-sm font-bold"
+                style={{
+                  color: currentPlan === "max" ? BRAND_RED : currentPlan === "flex" ? BRAND_ORANGE : "#9CA3AF",
+                }}
+              >
+                {credits} credits - <span className="uppercase">{currentPlan}</span> tier
               </span>
             </div>
             <div className="relative w-full bg-gray-800 rounded-full h-3">
-              <div className="absolute top-0 bottom-0 w-px bg-gray-500" style={{ left: `${(50/300)*100}%` }} />
+              <div className="absolute top-0 bottom-0 w-px bg-gray-500" style={{ left: `${(50 / 300) * 100}%` }} />
               <div
                 className="h-3 rounded-full transition-all"
                 style={{
@@ -119,15 +121,15 @@ export default function PricingPage() {
               />
             </div>
             <div className="flex justify-between mt-2 text-xs text-gray-600">
-              <span>0 — Lite</span>
-              <span>50 — Flex unlocks</span>
-              <span>300 — Max unlocks</span>
+              <span>0 - Lite</span>
+              <span>50 - Flex unlocks</span>
+              <span>300 - Max unlocks</span>
             </div>
           </div>
 
           {/* Plan cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {plans.map(p => {
+            {plans.map((p) => {
               const isCurrent = currentPlan === p.key;
               return (
                 <div
@@ -155,7 +157,9 @@ export default function PricingPage() {
                   )}
 
                   <div className="mb-4">
-                    <h2 className="text-white font-bold text-xl mb-0.5">Hinilas <span style={{ color: p.color }}>{p.name}</span></h2>
+                    <h2 className="text-white font-bold text-xl mb-0.5">
+                      Hinilas <span style={{ color: p.color }}>{p.name}</span>
+                    </h2>
                     <p className="text-gray-500 text-xs">{p.tagline}</p>
                   </div>
 
@@ -190,7 +194,7 @@ export default function PricingPage() {
                         cursor: currentPlan === "max" ? "not-allowed" : "pointer",
                       }}
                     >
-                      Get Flex — ₱499
+                      Get Flex - ₱499
                     </button>
                   ) : (
                     <button
@@ -198,7 +202,7 @@ export default function PricingPage() {
                       className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
                       style={{ background: BRAND_RED }}
                     >
-                      Get Max — ₱1,299
+                      Get Max - ₱1,299
                     </button>
                   )}
                 </div>
@@ -206,12 +210,12 @@ export default function PricingPage() {
             })}
           </div>
 
-          {/* Feature comparison table — mobile: stacked cards, desktop: grid */}
+          {/* Feature comparison table - mobile: stacked cards, desktop: grid */}
           <div className="rounded-2xl border border-gray-700 overflow-hidden mb-8" style={{ background: "#0A0F1A" }}>
             {/* Desktop header */}
             <div className="hidden md:grid grid-cols-4 px-5 py-3 border-b border-gray-700" style={{ background: "#0F172A" }}>
               <div className="col-span-1" />
-              {plans.map(p => (
+              {plans.map((p) => (
                 <div key={p.key} className="text-center">
                   <p className="text-xs font-bold uppercase" style={{ color: p.color }}>{p.name}</p>
                 </div>
@@ -220,7 +224,7 @@ export default function PricingPage() {
 
             {/* Desktop rows */}
             <div className="hidden md:block">
-              {FEATURES.map(group => (
+              {FEATURES.map((group) => (
                 <div key={group.category}>
                   <div className="px-5 py-2 border-b border-gray-800" style={{ background: "#0F172A" }}>
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{group.category}</p>
@@ -246,7 +250,7 @@ export default function PricingPage() {
                 { key: "lite", label: "Lite", color: "#9CA3AF", field: "lite" as const },
                 { key: "flex", label: "Flex", color: BRAND_ORANGE, field: "flex" as const },
                 { key: "max", label: "Max", color: BRAND_RED, field: "max" as const },
-              ].map(tier => (
+              ].map((tier) => (
                 <div key={tier.key} className="p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full" style={{ background: tier.color }} />
@@ -255,12 +259,12 @@ export default function PricingPage() {
                     </p>
                   </div>
                   <div className="space-y-2">
-                    {FEATURES.flatMap(group => group.items).map(item => {
+                    {FEATURES.flatMap((group) => group.items).map((item) => {
                       const value = item[tier.field];
                       return (
                         <div key={item.label} className="flex items-start gap-2">
                           <span className="mt-0.5 text-xs w-4 shrink-0" style={{ color: value === false ? "#374151" : tier.color }}>
-                            {value === false ? "—" : "✓"}
+                            {value === false ? "-" : "✓"}
                           </span>
                           <span className={`text-xs leading-snug ${value === false ? "text-gray-600" : "text-gray-300"}`}>
                             {item.label}
@@ -277,28 +281,39 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* Top-up */}
-          <div id="topup" className="rounded-2xl border border-gray-700 p-6" style={{ background: "#0A0F1A" }}>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h3 className="text-white font-bold text-lg mb-1">Need more credits?</h3>
-                <p className="text-gray-400 text-sm">Need a small top-up? Get 50 credits added to your balance instantly.</p>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs font-semibold" style={{ color: BRAND_BLUE }}>₱249 · 50 credits · Never expires</span>
-                  <span className="text-gray-700 text-xs">·</span>
-                  <span className="text-xs text-gray-600">Adds to your current balance</span>
-                </div>
-              </div>
-              <button
-                onClick={() => setGcash({ label: "Top-Up", credits: 50, price: 249, color: BRAND_BLUE })}
-                className="shrink-0 text-sm font-bold px-8 py-3 rounded-xl transition-opacity hover:opacity-90"
-                style={{ background: BRAND_BLUE, color: "#fff" }}
-              >
-                Get 50 Credits — ₱249
-              </button>
+          {/* Top-up tiers */}
+          <div className="mt-8 mb-12">
+            <div className="mb-4">
+              <h3 className="text-white font-bold text-lg mb-1">Need more credits?</h3>
+              <p className="text-gray-400 text-sm">Top-up credits never expire. They do not lock a tier - your plan stays as it is.</p>
+            </div>
+
+            <div id="topup" className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                { label: "Small", modalLabel: "Top-Up Small", credits: 25, price: 99, perCredit: "P3.96/cr" },
+                { label: "Medium", modalLabel: "Top-Up Medium", credits: 50, price: 179, perCredit: "P3.58/cr" },
+                { label: "Large", modalLabel: "Top-Up Large", credits: 100, price: 299, perCredit: "P2.99/cr", best: true },
+              ].map((opt) => (
+                <button
+                  key={opt.label}
+                  onClick={() => setGcash({ label: opt.modalLabel, credits: opt.credits, price: opt.price, color: BRAND_BLUE })}
+                  className="relative bg-gray-900 border border-gray-700 hover:border-blue-500 rounded-xl p-4 text-left transition-colors"
+                >
+                  {opt.best && (
+                    <span className="absolute -top-2 right-3 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">
+                      Best value
+                    </span>
+                  )}
+                  <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: BRAND_BLUE }}>{opt.label}</p>
+                  <p className="text-white font-bold text-2xl mb-0.5">
+                    {opt.credits} <span className="text-sm font-medium text-gray-400">credits</span>
+                  </p>
+                  <p className="text-gray-300 text-sm font-semibold mb-1">P{opt.price}</p>
+                  <p className="text-gray-500 text-xs">{opt.perCredit} - never expires</p>
+                </button>
+              ))}
             </div>
           </div>
-
         </div>
       </main>
       {gcash && (
