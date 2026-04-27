@@ -668,24 +668,7 @@ export default function CreativePage() {
                         </div>
                       </div>
                     ) : card.image ? (
-                      <>
-                        <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
-                        <button
-                          onClick={card.onGen}
-                          disabled={card.loading || card.disabled}
-                          title="Regenerate (2 credits)"
-                          className="absolute top-2 left-2 bg-black/70 hover:bg-black text-white w-7 h-7 rounded-full flex items-center justify-center text-xs disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          â†»
-                        </button>
-                        <button
-                          onClick={card.onDl}
-                          title="Download"
-                          className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white w-7 h-7 rounded-full flex items-center justify-center text-xs"
-                        >
-                          ⬇
-                        </button>
-                      </>
+                      <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                         <span className="text-2xl opacity-60">{card.emoji}</span>
@@ -694,21 +677,37 @@ export default function CreativePage() {
                     )}
                   </div>
 
-                  {/* Action button — uniform style, glows when image is ready */}
-                  <div className="p-2 border-t border-gray-700">
+                  {/* Footer actions - 3 big buttons when image exists, single Generate when empty */}
+                  <div className="p-2.5 border-t border-gray-700 flex flex-col gap-2">
                     {card.image && !card.loading ? (
-                      <button
-                        onClick={card.onUse}
-                        className="w-full text-white py-2 rounded-lg text-xs font-bold transition-all hover:scale-[1.02] active:scale-95"
-                        style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", animation: "btnGlowOrange 2s ease-in-out infinite alternate", boxShadow: "0 0 14px #ff6a0090" }}
-                      >
-                        🔥 Use for Copy
-                      </button>
+                      <>
+                        <button
+                          onClick={card.onGen}
+                          disabled={card.loading || card.disabled}
+                          className="w-full text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                          style={{ background: "#F5A623" }}
+                        >
+                          â†» Regenerate - 2 cr
+                        </button>
+                        <button
+                          onClick={card.onDl}
+                          className="w-full bg-white text-black py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90"
+                        >
+                          â¬‡ Download
+                        </button>
+                        <button
+                          onClick={card.onUse}
+                          className="w-full text-white py-3 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] active:scale-95"
+                          style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", animation: "btnGlowOrange 2s ease-in-out infinite alternate", boxShadow: "0 0 14px #ff6a0090" }}
+                        >
+                          ðŸ”¥ Use for Copy
+                        </button>
+                      </>
                     ) : (
                       <button
                         onClick={card.onGen}
                         disabled={card.loading || card.disabled}
-                        className="w-full text-white py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-full text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                         style={{ background: card.loading ? "#4B5563" : "#F5A623" }}
                       >
                         {card.loading ? "Generating..." : "Generate - 2 cr"}
