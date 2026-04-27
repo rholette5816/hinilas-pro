@@ -561,61 +561,55 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
     const layers = MODULE_PROMPTS.getIndustryLayers(industry || "");
     return `
-Commercial editorial photograph for a brand advertisement. Cinematic. High-converting. Agency quality.
+Filipino Meta Ads creative. Square or vertical poster-style layout. Photorealistic hero, bold typographic design. Agency-grade. High-converting.
 
 BUSINESS: ${userContext}
 MARKETING ANGLE: ${angle}
 FORMAT: ${format}
 
-[PERSON]
+DETECT DIALECT from the angle (Tagalog, Bisaya, Taglish, English) and write ALL on-image copy in that exact dialect. Match the slang and tone of the angle word-for-word.
+
+LAYOUT - strict 3-band composition, top to bottom:
+
+[BAND 1 - TOP HEADLINE STRIP, full width, white background]
+- Brand logo: small, top-left or top-right corner.
+- Line 1: heavy bold black or dark green sans-serif, 3-5 words, slight italic or condensed face. Pulled from angle as a hook line in detected dialect.
+- Line 2: BIGGER, BOLDER, all caps, primary brand color. 2-4 words. Punchline or emotional payoff from the angle.
+- Sub-headline below: thin/medium weight, dark gray or black, ONE line of supporting copy in detected dialect.
+
+[BAND 2 - MIDDLE HERO + BENEFITS SPLIT]
+LEFT 55-60%: photorealistic hero image.
 ${layers.person}
-Positioned on the RIGHT side of the frame.
-
-[ENVIRONMENT]
 ${layers.environment}
-Left side: low-detail, soft-focus, low-contrast visual rest zone — smooth gradients, minimal texture, subtle lighting. Never empty but visually quiet. Use depth of field and lighting falloff to create natural hierarchy.
+${layers.lighting}
+Natural skin tones. Sharp focus. Subject framed naturally - using the product, reacting to it, or product hero shot if no person fits the angle.
 
-[LIGHTING]
-${layers.lighting} Natural skin tones.
+RIGHT 40-45%: stack of exactly 3 benefit bullets, vertically centered.
+- Each bullet = circle icon (filled, primary brand color, white pictogram inside) + 2 lines of text.
+- Line A: bold all-caps benefit (2-3 words) in primary brand color.
+- Line B: smaller medium-weight black supporting copy (1 line, 4-7 words).
+- Pull the 3 benefits directly from the angle's value proposition. Translate to detected dialect.
 
-[RENDER]
-Photorealistic, sharp focus on subject, ultra-high resolution.
-${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style\n- Logo: medium size, bottom left corner — subtle drop shadow or soft outer glow` : ""}
-${productDesc ? `HERO SUBJECT: ${productDesc} — dominant focal point` : ""}
+[BAND 3 - BOTTOM RIBBON, full width, primary brand color background, white text]
+- Left side: 1-2 trust badges (round seals or shield icons). Pick from: FDA APPROVED, AUTHENTIC, HALAL, DOH REGISTERED, BIR REGISTERED, ISO CERTIFIED - only those that realistically fit the industry/angle. Skip badges if none fit.
+- Center: bold offer block, oversized text on contrasting plate. Pull offer from angle if mentioned (BUY 1 TAKE 1, 50% OFF, FREE SHIPPING, MURA LANG, etc). If no offer in angle, use a soft CTA like MESSAGE US TODAY.
+- Right side: 2-3 small CTA chips (icon + label): COD CASH ON DELIVERY, FREE SHIPPING, MESSAGE US, MGA SLOT NA LANG, etc. Use only ones that fit the angle/industry.
+
+${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style.\n- Apply brand colors to: Line 2 of headline, benefit icon fills, benefit Line A text, bottom ribbon background.` : "BRAND PALETTE: pick 1 primary saturated color (red, green, blue, or orange) + black + white. Apply consistently across headline accent, icons, and ribbon."}
+${productDesc ? `HERO PRODUCT: ${productDesc} - must appear visibly in hero image, dominant focal point on the right edge of the hero photo.` : ""}
 ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
-GRAPHIC ELEMENT — pick ONE based on angle emotion:
-- Gradient blur wash + oversized text (scroll stop / bold hooks)
-- Frosted glass panel, thin border (authority / premium)
-- Solid bold color block, high contrast (hard sell / urgency)
-- Directional swoosh or arc behind text (energy / youth)
-- Corner tag or angled banner with CTA (subtle / clean)
-- Radial glow burst behind focal point (attention / highlight)
-- Soft shadowed card stack (depth / modern UI feel)
-- Neon outline or stroke glow around subject/text (tech / high energy)
-- Grain texture overlay (raw / authentic / anti-polished)
-- Light leak or lens flare accent (cinematic / aspirational)
-- Cutout collage layering (chaotic / high scroll-stop)
-- Floating particles or dust (premium / atmospheric depth)
-- Bold underline / highlight marker stroke (emphasis / clarity)
-- Frame-in-frame border (focus / guided attention)
-- Split background (contrast storytelling: before vs after)
-- Halftone dots or comic texture (edgy / disruptive)
-- 3D extrusion text or object (impact / depth illusion)
-- Sticker-style elements (playful / native social feel)
-- Scribble / hand-drawn accents (raw / human / unfiltered)
-- Grid overlay / blueprint lines (structured / systemized feel)
+STYLE RULES:
+- High saturation, vibrant, scroll-stopping.
+- Strong contrast - every text element must be legible at thumbnail size.
+- White or near-white background in top band only. Avoid muddy mid-tones.
+- All typography is heavy, bold, condensed or chunky. NO thin fonts.
+- Filipino Meta Ads aesthetic: direct, busy-but-organized, sells immediately.
+- Photorealistic hero only - no AI artifacts, no cartoon, no 3D render, no anime.
 
-HEADLINE (LEFT ZONE) — all colors and fonts follow BRAND REFERENCE:
-- Line 1: brand font, medium weight, 4–5 words, light brand tone
-- Line 2: primary brand color, bold, slightly larger
-- Line 3: secondary brand color, smaller — 1 line offer/promise
-- Below: pill CTA button, primary brand color fill, white bold text
-- Left-aligned, stacked. Zero typos. Zero distortion.
+NEGATIVE: blurry text, distorted face, extra limbs, watermark, oversaturated skin, horror lighting, cartoon, anime, 3D render, generic stock-photo poses, overlapping text, cropped headlines, empty wasted space.
 
-NEGATIVE: blurry, distorted face, extra limbs, text errors, watermark, horror lighting, oversaturated, AI artifacts, cartoon, 3D render, anime.
-No badges, callouts, borders, frames. One subject, one message.
-Final output: ready-to-upload Facebook/Instagram ad.
+Final output: ready-to-upload Facebook/Instagram feed ad in the requested ${format} format.
 `;
   },
 };
