@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import Sidebar from "@/components/Sidebar";
 import { useApp, buildUserContext } from "@/lib/context";
@@ -638,112 +637,80 @@ export default function CreativePage() {
             <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-6">{error}</div>
           )}
 
-          {/* Main image */}
+          {/* 3-card horizontal gallery: Main + Variation 1 + Variation 2 */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <p className="text-white font-semibold text-sm">Ad Creative</p>
-                <p className="text-gray-500 text-xs">1:1 - Feed</p>
-              </div>
-              <button
-                onClick={generateMain}
-                disabled={loadingMain}
-                className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-                style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
-              >
-                {loadingMain ? "Generating..." : mainImage ? "Regenerate - 2 credits" : "Generate Image - 2 credits"}
-              </button>
+            <div className="mb-3">
+              <p className="text-white font-semibold text-sm">Ad Creative Set</p>
+              <p className="text-gray-500 text-xs">Main + 2 variations. Each uses 2 credits. Variations require Main first.</p>
             </div>
 
-            {loadingMain ? (
-              <AILoadingState
-                messages={[
-                  "🎨 Sketching your concept...",
-                  "Mixing colors and composition...",
-                  "Refining details...",
-                  "Polishing the final image...",
-                ]}
-                estimatedTime="This takes about 30-60 seconds."
-                icon="🎨"
-              />
-            ) : mainImage && (
-              <div className="relative rounded-xl overflow-hidden border border-gray-700">
-                <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <button
-                    onClick={() => applyForCopy(mainImage)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 12px #ff6a0080" }}
-                  >
-                    🔥 Use for Copy
-                  </button>
-                  <button onClick={() => downloadImage(mainImage, "hinilas-ad.png")} className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-100">
-                    Download
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+            <div className="flex gap-3">
+              {[
+                { label: "Main", ratio: "1:1 Feed", emoji: "🎨", image: mainImage, loading: loadingMain, disabled: false, onGen: generateMain, onUse: () => mainImage && applyForCopy(mainImage), onDl: () => mainImage && downloadImage(mainImage, "hinilas-ad.png") },
+                { label: "Variation 1", ratio: "9:16 Story", emoji: "📱", image: iterations[0], loading: loadingIter[0], disabled: !mainImage, onGen: () => generateIteration(0), onUse: () => iterations[0] && applyForCopy(iterations[0]!), onDl: () => iterations[0] && downloadImage(iterations[0]!, "hinilas-ad-v1.png") },
+                { label: "Variation 2", ratio: "1.91:1 Landscape", emoji: "🖼️", image: iterations[1], loading: loadingIter[1], disabled: !mainImage, onGen: () => generateIteration(1), onUse: () => iterations[1] && applyForCopy(iterations[1]!), onDl: () => iterations[1] && downloadImage(iterations[1]!, "hinilas-ad-v2.png") },
+              ].map((card, i) => (
+                <div key={i} className="flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+                  {/* Header */}
+                  <div className="px-3 py-2 border-b border-gray-700">
+                    <p className="text-white text-xs font-semibold leading-tight">{card.label}</p>
+                    <p className="text-gray-500 text-[10px] leading-tight">{card.ratio}</p>
+                  </div>
 
-          {/* Iterations - only show after main is generated */}
-          {mainImage && (
-            <div className="border-t border-gray-700 pt-6 mb-8">
-              <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
-              <p className="text-gray-500 text-xs mb-5">Different placements, different formats. Each uses 2 credits.</p>
-
-              <div className="grid grid-cols-2 gap-4">
-                {[0, 1].map(i => (
-                  <div key={i}>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-gray-300 text-xs font-medium">Variation {i + 1}</p>
-                      <button
-                        onClick={() => generateIteration(i)}
-                        disabled={loadingIter[i]}
-                        className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-                        style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
-                      >
-                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate - 2 credits" : "Generate - 2 credits"}
-                      </button>
-                    </div>
-
-                    {loadingIter[i] && (
-                      <div className="bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center aspect-square">
+                  {/* Image area — 1:1 square */}
+                  <div className="relative bg-gray-900" style={{ aspectRatio: "1/1" }}>
+                    {card.loading ? (
+                      <div className="absolute inset-0 flex items-center justify-center">
                         <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                          <span className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                         </div>
                       </div>
-                    )}
-
-                    {iterations[i] && !loadingIter[i] && (
-                      <div className="relative rounded-xl overflow-hidden border border-gray-700">
-                        <img src={iterations[i]!} alt={`Variation ${i + 2}`} className="w-full object-cover" />
-                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                          <button
-                            onClick={() => applyForCopy(iterations[i]!)}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-white transition-all hover:scale-105 active:scale-95"
-                            style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", boxShadow: "0 0 10px #ff6a0070" }}
-                          >
-                            🔥 Use
-                          </button>
-                          <button onClick={() => downloadImage(iterations[i]!, `hinilas-ad-v${i + 2}.png`)} className="bg-white text-black px-2.5 py-1 rounded-lg text-xs font-semibold hover:bg-gray-100">
-                            Download
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {!iterations[i] && !loadingIter[i] && (
-                      <div className="bg-gray-800 border border-dashed border-gray-700 rounded-xl flex items-center justify-center aspect-square">
-                        <p className="text-gray-600 text-xs">Not generated</p>
+                    ) : card.image ? (
+                      <>
+                        <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
+                        <button
+                          onClick={card.onDl}
+                          title="Download"
+                          className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white w-7 h-7 rounded-full flex items-center justify-center text-xs"
+                        >
+                          ⬇
+                        </button>
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                        <span className="text-2xl opacity-60">{card.emoji}</span>
+                        <p className="text-gray-600 text-[10px] text-center px-2">{card.disabled ? "Generate Main first" : "Not generated"}</p>
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
+
+                  {/* Action button — uniform style, glows when image is ready */}
+                  <div className="p-2 border-t border-gray-700">
+                    {card.image && !card.loading ? (
+                      <button
+                        onClick={card.onUse}
+                        className="w-full text-white py-2 rounded-lg text-xs font-bold transition-all hover:scale-[1.02] active:scale-95"
+                        style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", animation: "btnGlowOrange 2s ease-in-out infinite alternate", boxShadow: "0 0 14px #ff6a0090" }}
+                      >
+                        🔥 Use for Copy
+                      </button>
+                    ) : (
+                      <button
+                        onClick={card.onGen}
+                        disabled={card.loading || card.disabled}
+                        className="w-full text-white py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{ background: card.loading ? "#4B5563" : "#F5A623" }}
+                      >
+                        {card.loading ? "Generating..." : "Generate - 2 cr"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
 
           </>}
 
