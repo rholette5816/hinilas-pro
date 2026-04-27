@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 type ModuleStats = { prompt: number; completion: number; total: number; calls: number };
 type AlertLevel = "good" | "info" | "warning" | "critical";
@@ -215,19 +216,75 @@ function SectionHeader({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-function BarChart({ data, color = "#2B7EC9" }: { data: { label: string; value: number }[]; color?: string }) {
-  const max = Math.max(...data.map(d => d.value), 1);
+function LineChart({ data, color = "#2B7EC9" }: { data: { label: string; value: number }[]; color?: string }) {
+  const width = 680;
+  const height = 220;
+  const padding = { top: 24, right: 24, bottom: 38, left: 42 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const values = data.map(d => Math.max(0, d.value));
+  const peak = Math.max(...values, 0);
+  const axisMax = Math.max(1, Math.ceil(peak * 1.2));
+  const baselineY = padding.top + plotHeight;
+  const points = data.map((d, i) => {
+    const x = data.length === 1 ? padding.left + plotWidth / 2 : padding.left + (plotWidth / (data.length - 1)) * i;
+    const y = padding.top + (1 - Math.max(0, d.value) / axisMax) * plotHeight;
+    return { ...d, x, y };
+  });
+  const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+  const areaPath = points.length ? `${path} L ${points[points.length - 1].x.toFixed(1)} ${baselineY} L ${points[0].x.toFixed(1)} ${baselineY} Z` : "";
+  const tickValues = Array.from(new Set([axisMax, Math.round(axisMax / 2), 0]));
+  const labelStep = Math.max(1, Math.ceil(data.length / 7));
+  const latest = data[data.length - 1]?.value ?? 0;
+
   return (
-    <div className="flex items-end gap-1 h-28 w-full">
-      {data.map((d, i) => (
-        <div key={`${d.label}-${i}`} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-          <div
-            className="w-full rounded-t-sm transition-all"
-            style={{ height: `${Math.max((d.value / max) * 100, d.value > 0 ? 4 : 0)}%`, background: d.value > 0 ? color : "#1E293B", minHeight: d.value > 0 ? 3 : 1 }}
-          />
-          <span className="text-[8px] text-gray-600 truncate w-full text-center">{d.label}</span>
-        </div>
-      ))}
+    <div>
+      <div className="mb-3 flex items-center justify-between gap-3 text-xs">
+        <span style={{ color: "#94A3B8" }}>Peak: <strong className="text-white">{formatNumber(peak)}</strong></span>
+        <span style={{ color: "#94A3B8" }}>Latest: <strong className="text-white">{formatNumber(latest)}</strong></span>
+      </div>
+      <div className="relative h-52 w-full overflow-hidden rounded-lg" style={{ background: "rgba(15, 23, 42, 0.45)", border: "1px solid rgba(30, 45, 69, 0.75)" }}>
+        {peak === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-xs font-semibold" style={{ color: "#64748B" }}>
+            No new signups recorded in this window
+          </div>
+        )}
+        <svg className="h-full w-full" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Signup trend line chart" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="signupTrendFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+              <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          {tickValues.map(tick => {
+            const y = padding.top + (1 - tick / axisMax) * plotHeight;
+            return (
+              <g key={tick}>
+                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#1E2D45" strokeWidth="1" />
+                <text x={padding.left - 10} y={y + 4} textAnchor="end" fontSize="10" fill="#64748B">{formatNumber(tick)}</text>
+              </g>
+            );
+          })}
+          <line x1={padding.left} x2={padding.left} y1={padding.top} y2={baselineY} stroke="#1E2D45" strokeWidth="1" />
+          {areaPath && <path d={areaPath} fill="url(#signupTrendFill)" />}
+          {path && <path d={path} fill="none" stroke={peak > 0 ? color : "#334155"} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />}
+          {points.map((p, i) => (
+            <g key={`${p.label}-${i}`}>
+              <circle cx={p.x} cy={p.y} r={p.value > 0 ? 5 : 3} fill="#0F172A" stroke={p.value > 0 ? color : "#334155"} strokeWidth="3" vectorEffect="non-scaling-stroke">
+                <title>{`${p.label}: ${formatNumber(p.value)} signups`}</title>
+              </circle>
+              {p.value > 0 && (
+                <text x={p.x} y={Math.max(12, p.y - 12)} textAnchor="middle" fontSize="11" fontWeight="700" fill="#E2E8F0">
+                  {formatNumber(p.value)}
+                </text>
+              )}
+              {(i % labelStep === 0 || i === points.length - 1) && (
+                <text x={p.x} y={height - 12} textAnchor="middle" fontSize="10" fill="#64748B">{p.label}</text>
+              )}
+            </g>
+          ))}
+        </svg>
+      </div>
     </div>
   );
 }
@@ -502,10 +559,10 @@ export default function AdminDashboardClient() {
             >
               {reportLoading ? "Generating..." : "Generate Report & Analysis"}
             </button>
-            <a href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid #1E2D45" }}>
+            <Link href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid #1E2D45" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
               Back to App
-            </a>
+            </Link>
             <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
               <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>Last Refresh</p>
               <p className="text-sm text-white mt-1">{timeAgo(stats.fetchedAt)}</p>
@@ -593,7 +650,7 @@ export default function AdminDashboardClient() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Card className="p-5">
                 <SectionHeader title="Signup Trend - Last 14 Days" sub="New users per day" />
-                <BarChart data={signupTrend.map(d => ({ label: d.label, value: d.count }))} color="#2B7EC9" />
+                <LineChart data={signupTrend.map(d => ({ label: d.label, value: d.count }))} color="#2B7EC9" />
               </Card>
               <Card className="p-5">
                 <SectionHeader title="Recommended Actions" sub="Generated from current alerts" />

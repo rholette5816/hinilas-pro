@@ -6,13 +6,12 @@ import Link from "next/link";
 import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 
 const HIDDEN_PATHS = ["/home", "/loading-screen"];
-const BLOG_PATHS = ["/blog"];
 
 export default function TopBar() {
   const pathname = usePathname();
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
-  if (HIDDEN_PATHS.includes(pathname)) return null;
+  if (HIDDEN_PATHS.includes(pathname) || pathname.startsWith("/admin")) return null;
 
   const isBlog = pathname.startsWith("/blog");
 
