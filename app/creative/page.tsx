@@ -671,6 +671,14 @@ export default function CreativePage() {
                       <>
                         <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
                         <button
+                          onClick={card.onGen}
+                          disabled={card.loading || card.disabled}
+                          title="Regenerate (2 credits)"
+                          className="absolute top-2 left-2 bg-black/70 hover:bg-black text-white w-7 h-7 rounded-full flex items-center justify-center text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          â†»
+                        </button>
+                        <button
                           onClick={card.onDl}
                           title="Download"
                           className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white w-7 h-7 rounded-full flex items-center justify-center text-xs"
