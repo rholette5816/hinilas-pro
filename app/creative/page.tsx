@@ -687,20 +687,20 @@ export default function CreativePage() {
                           className="w-full text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                           style={{ background: "#F5A623" }}
                         >
-                          â†» Regenerate - 2 cr
+                          {"↻"} Regenerate - 2 cr
                         </button>
                         <button
                           onClick={card.onDl}
                           className="w-full bg-white text-black py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90"
                         >
-                          â¬‡ Download
+                          {"⬇"} Download
                         </button>
                         <button
                           onClick={card.onUse}
                           className="w-full text-white py-3 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] active:scale-95"
                           style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", animation: "btnGlowOrange 2s ease-in-out infinite alternate", boxShadow: "0 0 14px #ff6a0090" }}
                         >
-                          ðŸ”¥ Use for Copy
+                          {"🔥"} Use for Copy
                         </button>
                       </>
                     ) : (
