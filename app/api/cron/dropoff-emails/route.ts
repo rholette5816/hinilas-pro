@@ -180,8 +180,11 @@ export async function GET(req: NextRequest) {
 
     let processed = 0;
     let skipped = 0;
+    let firstSend = true;
 
     for (const userId of candidateUserIds) {
+      if (!firstSend) await new Promise((r) => setTimeout(r, 600));
+      firstSend = false;
       try {
         const { data: userData, error: userError } = await admin.auth.admin.getUserById(userId);
 

@@ -194,8 +194,11 @@ export async function GET(req: NextRequest) {
 
     let processed = 0;
     let skipped = 0;
+    let firstSend = true;
 
     for (const user of candidateUsers) {
+      if (!firstSend) await new Promise((r) => setTimeout(r, 600));
+      firstSend = false;
       try {
         const email = user.email?.trim();
 
