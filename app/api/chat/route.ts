@@ -63,8 +63,24 @@ export async function POST(req: NextRequest) {
     if (images && images.length > 0) {
       const parts: Part[] = [{ text: prompt }];
       for (const img of images as string[]) {
-        const [header, data] = img.split(",");
-        const mimeType = (header.match(/:(.*?);/)?.[1] || "image/png") as "image/png" | "image/jpeg" | "image/webp";
+        let mimeType: "image/png" | "image/jpeg" | "image/webp" = "image/png";
+        let data: string;
+
+        if (img.startsWith("data:")) {
+          const [header, b64] = img.split(",");
+          mimeType = (header.match(/:(.*?);/)?.[1] || "image/png") as typeof mimeType;
+          data = b64;
+        } else {
+          const fetchRes = await fetch(img);
+          if (!fetchRes.ok) continue;
+          const buffer = await fetchRes.arrayBuffer();
+          const fetched = (fetchRes.headers.get("content-type") || "image/png") as string;
+          if (fetched.startsWith("image/jpeg")) mimeType = "image/jpeg";
+          else if (fetched.startsWith("image/webp")) mimeType = "image/webp";
+          else mimeType = "image/png";
+          data = Buffer.from(buffer).toString("base64");
+        }
+
         parts.push({ inlineData: { mimeType, data } });
       }
       content = parts;
