@@ -149,6 +149,12 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const expectedSecret = process.env.CRON_SECRET;
 
+  console.log("[cron-debug] expectedSecret length:", expectedSecret?.length ?? "undefined");
+  console.log("[cron-debug] expectedSecret first 3:", expectedSecret?.slice(0, 3) ?? "none");
+  console.log("[cron-debug] authHeader length:", authHeader?.length ?? "undefined");
+  console.log("[cron-debug] authHeader first 10:", authHeader?.slice(0, 10) ?? "none");
+  console.log("[cron-debug] match:", authHeader === `Bearer ${expectedSecret}`);
+
   if (!expectedSecret || authHeader !== `Bearer ${expectedSecret}`) {
     return unauthorized();
   }
