@@ -28,6 +28,7 @@ export default function CreativePage() {
   const [productFile, setProductFile] = useState<string | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [iterations, setIterations] = useState<(string | null)[]>([null, null]);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Load saved images and videos on mount
   useEffect(() => {
@@ -63,6 +64,14 @@ export default function CreativePage() {
     checkPendingGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!previewImage) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setPreviewImage(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [previewImage]);
+
   const [loadingMain, setLoadingMain] = useState(false);
   const [loadingIter, setLoadingIter] = useState<boolean[]>([false, false]);
   const [error, setError] = useState("");
@@ -644,17 +653,16 @@ export default function CreativePage() {
               <p className="text-gray-500 text-xs">Main + 2 variations. Each uses 2 credits. Variations require Main first.</p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-3">
               {[
-                { label: "Main", ratio: "1:1 Feed", emoji: "🎨", image: mainImage, loading: loadingMain, disabled: false, onGen: generateMain, onUse: () => mainImage && applyForCopy(mainImage), onDl: () => mainImage && downloadImage(mainImage, "hinilas-ad.png") },
-                { label: "Variation 1", ratio: "9:16 Story", emoji: "📱", image: iterations[0], loading: loadingIter[0], disabled: !mainImage, onGen: () => generateIteration(0), onUse: () => iterations[0] && applyForCopy(iterations[0]!), onDl: () => iterations[0] && downloadImage(iterations[0]!, "hinilas-ad-v1.png") },
-                { label: "Variation 2", ratio: "1.91:1 Landscape", emoji: "🖼️", image: iterations[1], loading: loadingIter[1], disabled: !mainImage, onGen: () => generateIteration(1), onUse: () => iterations[1] && applyForCopy(iterations[1]!), onDl: () => iterations[1] && downloadImage(iterations[1]!, "hinilas-ad-v2.png") },
+                { label: "Main", emoji: "🎨", image: mainImage, loading: loadingMain, disabled: false, onGen: generateMain, onUse: () => mainImage && applyForCopy(mainImage), onDl: () => mainImage && downloadImage(mainImage, "hinilas-ad.png") },
+                { label: "Variation 1", emoji: "📱", image: iterations[0], loading: loadingIter[0], disabled: !mainImage, onGen: () => generateIteration(0), onUse: () => iterations[0] && applyForCopy(iterations[0]!), onDl: () => iterations[0] && downloadImage(iterations[0]!, "hinilas-ad-v1.png") },
+                { label: "Variation 2", emoji: "🖼️", image: iterations[1], loading: loadingIter[1], disabled: !mainImage, onGen: () => generateIteration(1), onUse: () => iterations[1] && applyForCopy(iterations[1]!), onDl: () => iterations[1] && downloadImage(iterations[1]!, "hinilas-ad-v2.png") },
               ].map((card, i) => (
-                <div key={i} className="flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+                <div key={i} className="w-full md:flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
                   {/* Header */}
                   <div className="px-3 py-2 border-b border-gray-700">
                     <p className="text-white text-xs font-semibold leading-tight">{card.label}</p>
-                    <p className="text-gray-500 text-[10px] leading-tight">{card.ratio}</p>
                   </div>
 
                   {/* Image area — 1:1 square */}
@@ -668,7 +676,14 @@ export default function CreativePage() {
                         </div>
                       </div>
                     ) : card.image ? (
-                      <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage(card.image)}
+                        className="w-full h-full block cursor-zoom-in"
+                        aria-label={`Enlarge ${card.label}`}
+                      >
+                        <img src={card.image} alt={card.label} className="w-full h-full object-contain bg-black" />
+                      </button>
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                         <span className="text-2xl opacity-60">{card.emoji}</span>
@@ -684,20 +699,20 @@ export default function CreativePage() {
                         <button
                           onClick={card.onGen}
                           disabled={card.loading || card.disabled}
-                          className="w-full text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="w-full whitespace-nowrap text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                           style={{ background: "#F5A623" }}
                         >
                           {"↻"} Regenerate - 2 cr
                         </button>
                         <button
                           onClick={card.onDl}
-                          className="w-full bg-white text-black py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90"
+                          className="w-full whitespace-nowrap bg-white text-black py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90"
                         >
                           {"⬇"} Download
                         </button>
                         <button
                           onClick={card.onUse}
-                          className="w-full text-white py-3 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] active:scale-95"
+                          className="w-full whitespace-nowrap text-white py-3 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] active:scale-95"
                           style={{ background: "linear-gradient(135deg, #ff6a00, #ee0979)", animation: "btnGlowOrange 2s ease-in-out infinite alternate", boxShadow: "0 0 14px #ff6a0090" }}
                         >
                           {"🔥"} Use for Copy
@@ -707,7 +722,7 @@ export default function CreativePage() {
                       <button
                         onClick={card.onGen}
                         disabled={card.loading || card.disabled}
-                        className="w-full text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-full whitespace-nowrap text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                         style={{ background: card.loading ? "#4B5563" : "#F5A623" }}
                       >
                         {card.loading ? "Generating..." : "Generate - 2 cr"}
@@ -718,6 +733,31 @@ export default function CreativePage() {
               ))}
             </div>
           </div>
+
+          {/* Click-to-enlarge preview */}
+          {previewImage && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+              onClick={() => setPreviewImage(null)}
+              role="dialog"
+              aria-modal="true"
+            >
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
+                className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
+                aria-label="Close preview"
+              >
+                {"Ã—"}
+              </button>
+              <img
+                src={previewImage}
+                alt="Preview"
+                onClick={(e) => e.stopPropagation()}
+                className="max-w-[90vw] max-h-[90vh] object-contain"
+              />
+            </div>
+          )}
 
           </>}
 
