@@ -108,11 +108,28 @@ async function maybeGrantWelcomeDrip(userId: string): Promise<void> {
 
     if (flipError || !flipped) return;
 
-    await grantCreditsAtomic({
+    const grant = await grantCreditsAtomic({
       userId,
       amount: 15,
       description: "Welcome drip - 15 bonus credits unlocked after first generation",
     });
+
+    if (!grant.ok) {
+      const { data: existingDrip } = await admin
+        .from("credit_transactions")
+        .select("id")
+        .eq("user_id", userId)
+        .ilike("description", "Welcome drip%")
+        .limit(1)
+        .maybeSingle();
+
+      if (!existingDrip) {
+        await admin
+          .from("user_data")
+          .update({ welcome_drip_granted: false })
+          .eq("user_id", userId);
+      }
+    }
   } catch {
     // Drip failure must not affect the deduction outcome.
   }
