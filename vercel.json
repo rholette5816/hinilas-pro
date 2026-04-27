@@ -26,6 +26,14 @@
     {
       "path": "/api/cron/dropoff-emails-signup",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/dropoff-emails-creative",
+      "schedule": "30 2 * * *"
+    },
+    {
+      "path": "/api/cron/dropoff-emails-copy",
+      "schedule": "0 3 * * *"
     }
   ]
 }
