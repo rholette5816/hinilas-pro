@@ -18,6 +18,10 @@
     {
       "path": "/api/cron/dropoff-emails",
       "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/cron/dropoff-emails-angles",
+      "schedule": "30 1 * * *"
     }
   ]
 }
