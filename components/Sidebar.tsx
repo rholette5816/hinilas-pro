@@ -118,6 +118,24 @@ export default function Sidebar() {
     });
   }, [credits]);
 
+  // Auto-open feedback after the user's 3rd paid generation, once per user.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/feedback-trigger-check")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (cancelled || !data?.shouldShow) return;
+        // Brief delay so the user sees their result first, then the modal appears.
+        setTimeout(() => { if (!cancelled) setFeedbackOpen(true); }, 1500);
+      })
+      .catch(() => {
+        // Silent failure - never block the UI on this check.
+      });
+    return () => { cancelled = true; };
+  // Run once on mount only
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function openEarn() {
     setEarnOpen(true);
     setMobileOpen(false);
