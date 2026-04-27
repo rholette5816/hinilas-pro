@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
+import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
@@ -169,7 +170,21 @@ export default function ResearchPage() {
             </button>
           </div>
 
-          <AIOutput content={researchOutput} loading={loading} loadingText="Analyzing your market..." />
+          {loading ? (
+            <AILoadingState
+              messages={[
+                "🔍 Diving into your market...",
+                "Studying your competitors and what they're missing...",
+                "Mapping your customer's pain points...",
+                "Spotting buying triggers in your niche...",
+                "Almost there. Polishing the insights...",
+              ]}
+              estimatedTime="This usually takes 2-3 minutes. Good research can't be rushed."
+              icon="🔍"
+            />
+          ) : (
+            <AIOutput content={researchOutput} />
+          )}
 
           {researchOutput && !loading && (
             <div

@@ -2,8 +2,11 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import AILoadingState from "@/components/AILoadingState";
 import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
+import FireCelebration from "@/components/FireCelebration";
+import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
@@ -164,6 +167,7 @@ export default function CopyPage() {
       )}
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
+          <FunnelProgress currentStep={5} />
 
           {/* Header */}
           <div className="mb-8">
@@ -194,7 +198,7 @@ export default function CopyPage() {
                 </div>
                 <div className="flex items-center gap-3 mt-2">
                   <p className="text-gray-500 text-xs">
-                    {uploadedImage ? "Uploaded image" : "Generated from Creative"} — copy will be based on this.
+                    {uploadedImage ? "Uploaded image" : "Generated from Creative"} - copy will be based on this.
                   </p>
                   {uploadedImage && (
                     <button
@@ -295,7 +299,7 @@ export default function CopyPage() {
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
               style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
-              {loading ? "Writing..." : output ? "Rewrite Captions — 1 credit" : "Generate Captions — 1 credit"}
+              {loading ? "Writing..." : output ? "Rewrite Captions - 1 credit" : "Generate Captions - 1 credit"}
             </button>
             {output && !loading && (
               <button
@@ -309,13 +313,32 @@ export default function CopyPage() {
           </div>
 
           {/* Output */}
-          {loading && <AIOutput content="" loading={true} loadingText="Writing your captions..." />}
+          {loading && (
+            <AILoadingState
+              messages={[
+                "✍️ Studying your angle and image...",
+                "Drafting hooks that grab attention...",
+                "Sharpening your CTA...",
+                "Polishing every line...",
+              ]}
+              estimatedTime="This takes about 30-60 seconds."
+              icon="✍️"
+            />
+          )}
 
           {output && !loading && (() => {
             const variations = parseCaptionVariations(output);
-            if (variations.length === 0) return <AIOutput content={output} loading={false} />;
+            if (variations.length === 0) {
+              return (
+                <>
+                  <FireCelebration show={true} />
+                  <AIOutput content={output} loading={false} />
+                </>
+              );
+            }
             return (
               <div className="space-y-4">
+                <FireCelebration show={true} />
                 {variations.map((v, idx) => (
                   <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
                     {/* Card header */}

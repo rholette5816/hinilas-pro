@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AILoadingState from "@/components/AILoadingState";
+import FunnelProgress from "@/components/FunnelProgress";
 import Sidebar from "@/components/Sidebar";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
@@ -124,7 +126,7 @@ export default function CreativePage() {
 - Font style: weight (thin/regular/bold/black), type (serif/sans-serif/script/display), character (modern/classic/playful/premium/aggressive)
 - Logo shape, icon elements, and layout structure
 - Brand personality: luxury / mass market / clinical / fun / bold / trustworthy / youthful
-- Any tagline or text present — spell it exactly as shown
+- Any tagline or text present - spell it exactly as shown
 - Overall graphic style: minimal, detailed, illustrative, geometric, organic`
       : `Describe this image for use as the hero element in a Meta ad:
 - If product: exact shape, color, size, material, packaging details, and any text on the packaging spelled exactly
@@ -247,12 +249,12 @@ export default function CreativePage() {
 
     const poll = async () => {
       if (attempts >= maxAttempts) {
-        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Timed out. Veo took too long — try again."; return n; });
+        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Timed out. Veo took too long - try again."; return n; });
         setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
         return;
       }
       if (consecutiveErrors >= maxConsecutiveErrors) {
-        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Server error — please refresh and try again."; return n; });
+        setClipErrors(prev => { const n = [...prev]; n[clipIndex] = "Server error - please refresh and try again."; return n; });
         setClipLoading(prev => { const n = [...prev]; n[clipIndex] = false; return n; });
         return;
       }
@@ -345,6 +347,7 @@ export default function CreativePage() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
+          <FunnelProgress currentStep={4} />
 
           {/* Header */}
           <div className="mb-6">
@@ -394,7 +397,7 @@ export default function CreativePage() {
 
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
                     <p className="text-white text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
-                    <p className="text-gray-400 text-xs leading-relaxed">Based on your angle, we generate 3 short clips — a hook, a solution, and a call to action. Shot in vertical format, ready to upload to Reels and Stories.</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">Based on your angle, we generate 3 short clips - a hook, a solution, and a call to action. Shot in vertical format, ready to upload to Reels and Stories.</p>
                   </div>
 
                   {/* Sample previews */}
@@ -452,7 +455,7 @@ export default function CreativePage() {
                     {credits <= 25 && <a href="/pricing" className="text-xs text-orange-400 hover:text-orange-300 underline">Top up</a>}
                   </div>
 
-                  {/* Step 1 — Generate Scripts */}
+                  {/* Step 1 - Generate Scripts */}
                   {promptsError && (
                     <div className="bg-red-950 border border-red-800 rounded-lg px-4 py-3 text-red-300 text-sm mb-4">{promptsError}</div>
                   )}
@@ -463,10 +466,10 @@ export default function CreativePage() {
                     className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-6 transition-opacity hover:opacity-90 disabled:opacity-40"
                     style={{ background: promptsLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                   >
-                    {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts — Free" : "Generate Scripts — Free"}
+                    {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts - Free" : "Generate Scripts - Free"}
                   </button>
 
-                  {/* Step 2 — Per-clip cards (horizontal) */}
+                  {/* Step 2 - Per-clip cards (horizontal) */}
                   {videoPrompts.length > 0 && (
                     <div className="flex gap-3">
                       {[
@@ -609,10 +612,10 @@ export default function CreativePage() {
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
                   <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>
-                    Upgrade to Flex — ₱499
+                    Upgrade to Flex - ₱499
                   </a>
                   <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#2B7EC9" }}>
-                    Get 50 Credits — ₱249
+                    Get 50 Credits - ₱249
                   </a>
                   <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
                 </div>
@@ -640,7 +643,7 @@ export default function CreativePage() {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-white font-semibold text-sm">Ad Creative</p>
-                <p className="text-gray-500 text-xs">1:1 — Feed</p>
+                <p className="text-gray-500 text-xs">1:1 - Feed</p>
               </div>
               <button
                 onClick={generateMain}
@@ -648,34 +651,22 @@ export default function CreativePage() {
                 className="text-white px-5 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                 style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
-                {loadingMain ? "Generating..." : mainImage ? "Regenerate — 2 credits" : "Generate Image — 2 credits"}
+                {loadingMain ? "Generating..." : mainImage ? "Regenerate - 2 credits" : "Generate Image - 2 credits"}
               </button>
             </div>
 
-            {loadingMain && !mainImage && (
-              <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
-                <div className="flex justify-center gap-1 mb-3">
-                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-                <p className="text-gray-400 text-sm">Generating your ad image...</p>
-                <p className="text-gray-600 text-xs mt-1">About 20 to 40 seconds</p>
-              </div>
-            )}
-
-            {loadingMain && mainImage && (
-              <div className="flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-lg px-4 py-3 mb-3">
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-                <p className="text-pink-300 text-xs">Regenerating — current image shown below until ready.</p>
-              </div>
-            )}
-
-            {mainImage && (
+            {loadingMain ? (
+              <AILoadingState
+                messages={[
+                  "🎨 Sketching your concept...",
+                  "Mixing colors and composition...",
+                  "Refining details...",
+                  "Polishing the final image...",
+                ]}
+                estimatedTime="This takes about 30-60 seconds."
+                icon="🎨"
+              />
+            ) : mainImage && (
               <div className="relative rounded-xl overflow-hidden border border-gray-700">
                 <img src={mainImage} alt="Ad creative" className="w-full object-cover" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
@@ -694,7 +685,7 @@ export default function CreativePage() {
             )}
           </div>
 
-          {/* Iterations — only show after main is generated */}
+          {/* Iterations - only show after main is generated */}
           {mainImage && (
             <div className="border-t border-gray-700 pt-6 mb-8">
               <p className="text-white font-semibold text-sm mb-1">Generate Variations</p>
@@ -711,7 +702,7 @@ export default function CreativePage() {
                         className="text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
                         style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
                       >
-                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate — 2 credits" : "Generate — 2 credits"}
+                        {loadingIter[i] ? "..." : iterations[i] ? "Regenerate - 2 credits" : "Generate - 2 credits"}
                       </button>
                     </div>
 

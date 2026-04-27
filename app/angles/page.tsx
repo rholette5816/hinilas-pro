@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
+import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
@@ -252,16 +253,16 @@ export default function AnglesPage() {
           )}
 
           {loading && (
-            <div className="rounded-xl border border-gray-700 p-6" style={{ background: "#0F172A" }}>
-              <div className="flex items-center gap-3 text-gray-400">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-                <span className="text-sm">Finding winning angles...</span>
-              </div>
-            </div>
+            <AILoadingState
+              messages={[
+                "🎯 Studying your market data...",
+                "Crafting hooks that convert...",
+                "Testing angle variations...",
+                "Finalizing your winning angles...",
+              ]}
+              estimatedTime="This takes about 1-2 minutes. Sit tight."
+              icon="🎯"
+            />
           )}
 
           {!loading && angles.length > 0 && (

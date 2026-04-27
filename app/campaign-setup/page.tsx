@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import FunnelProgress from "@/components/FunnelProgress";
 import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
 import { createClient } from "@/lib/supabase/client";
@@ -182,12 +183,12 @@ export default function CampaignSetupPage() {
     const lines = research.split("\n");
     const interests: string[] = [];
     let inTargeting = false;
-    const skipWords = ["age", "gender", "advantage", "10–15", "10-15", "facebook interest", "location", "targeting suggestion", "suggestion"];
+    const skipWords = ["age", "gender", "advantage", "10-15", "facebook interest", "location", "targeting suggestion", "suggestion"];
 
     for (const line of lines) {
       const lower = line.toLowerCase();
 
-      // Enter targeting section — must be a heading line
+      // Enter targeting section - must be a heading line
       if (
         (lower.includes("targeting suggestion") || lower.includes("targeting suggestions")) ||
         (lower.includes("targeting") && (line.startsWith("#") || line.startsWith("**"))) ||
@@ -349,6 +350,11 @@ export default function CampaignSetupPage() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-2xl mx-auto px-4 py-8">
+          <FunnelProgress currentStep={5} />
+          <div className="mb-6 flex items-center justify-center gap-2 text-xs md:text-sm font-semibold" style={{ color: "#22c55e" }}>
+            <span>✓</span>
+            <span>All steps complete - Ready to launch your campaign</span>
+          </div>
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-white mb-1">Campaign Setup</h1>
             <p className="text-gray-400 text-sm">Step-by-step ad campaign guides</p>
@@ -467,7 +473,7 @@ export default function CampaignSetupPage() {
                             className="px-5 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
                             style={{ background: step.color, color: step.level === "Ad Set" ? "#000" : "#fff" }}
                           >
-                            {isLoadingReward ? "Unlocking..." : "Unlock — 1 credit"}
+                            {isLoadingReward ? "Unlocking..." : "Unlock - 1 credit"}
                           </button>
                         </div>
                       )
@@ -484,7 +490,7 @@ export default function CampaignSetupPage() {
                 );
               })()}
 
-              {/* Targeting suggestions — only on Audience Targeting step */}
+              {/* Targeting suggestions - only on Audience Targeting step */}
               {!done && step.label === "Audience Targeting" && (
                 <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#0A0F1A" }}>
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#0F172A" }}>
@@ -497,7 +503,7 @@ export default function CampaignSetupPage() {
                       const interests = parseInterests(researchOutput);
                       return interests.length > 0 ? (
                         <>
-                          <p className="text-xs text-gray-500 mb-3">Tap any interest to copy — paste directly into Detailed Targeting in Meta Ads Manager.</p>
+                          <p className="text-xs text-gray-500 mb-3">Tap any interest to copy - paste directly into Detailed Targeting in Meta Ads Manager.</p>
                           <div className="flex flex-wrap gap-2">
                             {interests.map((interest, i) => (
                               <button
@@ -641,7 +647,7 @@ export default function CampaignSetupPage() {
                               className="w-full py-3 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
                               style={{ background: "linear-gradient(135deg, #F5A623, #ee6b0e)" }}
                             >
-                              {launchSubmitting ? "Submitting..." : "Submit for Review — +20 cr"}
+                              {launchSubmitting ? "Submitting..." : "Submit for Review - +20 cr"}
                             </button>
                           </>
                         )}
