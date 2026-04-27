@@ -76,10 +76,46 @@ export async function deductCreditsAtomic({
       return { ok: false, code: "ERROR", error: transactionError.message };
     }
 
+    // Drip second-half welcome credits if this is the user's first successful deduction.
+    void maybeGrantWelcomeDrip(userId);
+
     return { ok: true, creditsRemaining: nextCredits };
   }
 
   return { ok: false, code: "CONFLICT" };
+}
+
+async function maybeGrantWelcomeDrip(userId: string): Promise<void> {
+  try {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("user_data")
+      .select("welcome_drip_granted")
+      .eq("user_id", userId)
+      .single();
+
+    if (error || !data) return;
+    if (data.welcome_drip_granted) return;
+
+    // Atomically flip the flag. If another concurrent call won the race, our update returns no row and we skip.
+    const { data: flipped, error: flipError } = await admin
+      .from("user_data")
+      .update({ welcome_drip_granted: true })
+      .eq("user_id", userId)
+      .eq("welcome_drip_granted", false)
+      .select("user_id")
+      .maybeSingle();
+
+    if (flipError || !flipped) return;
+
+    await grantCreditsAtomic({
+      userId,
+      amount: 15,
+      description: "Welcome drip - 15 bonus credits unlocked after first generation",
+    });
+  } catch {
+    // Drip failure must not affect the deduction outcome.
+  }
 }
 
 export async function grantCreditsAtomic({

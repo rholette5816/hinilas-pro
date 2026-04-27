@@ -79,12 +79,13 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
     const avatar_url = user.user_metadata?.avatar_url || null;
     await adminSupabase.from("user_data").upsert({
       user_id: user.id,
-      credits_remaining: 30,
-      credits_total: 30,
+      credits_remaining: 15,
+      credits_total: 15,
       plan: "lite",
       referral_code: referralCode,
       referred_by: referredBy,
       referral_rewarded: false,
+      welcome_drip_granted: false,
       username,
       avatar_url,
     }, { onConflict: "user_id" });
@@ -92,8 +93,8 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
     await adminSupabase.from("credit_transactions").insert({
       user_id: user.id,
       type: "grant",
-      amount: 30,
-      description: "Welcome credits — 30 free credits on signup",
+      amount: 15,
+      description: "Welcome credits - 15 free credits on signup (15 more after first generation)",
     });
 
     await sendMetaEvent({
@@ -201,7 +202,7 @@ function getWelcomeEmailHtml(firstName?: string) {
 
       <p style="font-size: 16px; line-height: 1.6;">Welcome sa Hinilas Pro. Si Ken ito - yung gumawa ng tool na ginagamit mo ngayon.</p>
 
-      <p style="font-size: 16px; line-height: 1.6;">Binigyan kita ng <strong>30 free credits</strong> para masimulan mo agad. Yan ang panggastos mo sa research, angles, image, at copy generation.</p>
+      <p style="font-size: 16px; line-height: 1.6;">Binigyan kita ng <strong>15 free credits</strong> para masimulan mo agad. Pag nag-generate ka ng kahit ano (research, angle, copy, o image), automatic na may dagdag pang <strong>15 credits</strong> - total 30 free credits para sa simula mo.</p>
 
       <p style="font-size: 16px; line-height: 1.6;"><strong>Eto yung 4 na step na susundan mo:</strong></p>
 
