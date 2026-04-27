@@ -183,15 +183,24 @@ export default function CampaignSetupPage() {
     const lines = research.split("\n");
     const interests: string[] = [];
     let inTargeting = false;
-    const skipWords = ["age", "gender", "advantage", "10-15", "facebook interest", "location", "targeting suggestion", "suggestion"];
+    // Word-boundary skip patterns: skip a line if its EXTRACTED bullet content matches.
+    const skipPatterns = [
+      /\bage\s*range\b/i,
+      /\bgender\b/i,
+      /\badvantage\+/i,
+      /\b10\s*[-–]\s*15\b/i,
+      /\blocation\b/i,
+      /facebook\s+interest\s+suggestion/i,
+      /^targeting\s+suggestion/i,
+    ];
 
     for (const line of lines) {
       const lower = line.toLowerCase();
 
       // Enter targeting section - must be a heading line
       if (
-        (lower.includes("targeting suggestion") || lower.includes("targeting suggestions")) ||
-        (lower.includes("targeting") && (line.startsWith("#") || line.startsWith("**"))) ||
+        lower.includes("targeting suggestion") ||
+        (lower.includes("targeting") && (line.trim().startsWith("#") || line.trim().startsWith("**"))) ||
         lower.includes("facebook interest suggestion")
       ) {
         inTargeting = true;
@@ -201,22 +210,27 @@ export default function CampaignSetupPage() {
       if (!inTargeting) continue;
 
       // Exit on next major heading
-      if (/^#{1,3}\s/.test(line) || /^\*\*[A-Z]/.test(line)) {
+      const trimmed = line.trim();
+      if (/^#{1,3}\s/.test(trimmed) || /^\*\*[A-Z]/.test(trimmed)) {
         if (interests.length > 0) break;
         continue;
       }
 
-      if (skipWords.some(s => lower.includes(s))) continue;
+      // Match: "1. Word", "1) Word", "- Word", "* Word" (with optional leading whitespace)
+      const match = line.match(/^\s*(?:\d+[.)]\s+|[-*•]\s+)(.+)/);
+      if (!match) continue;
 
-      // Match: "1. Word", "1) Word", "- Word", "* Word"
-      const match = line.match(/^(?:\d+[.)]\s+|[-*•]\s+)(.+)/);
-      if (match) {
-        const clean = match[1]
-          .replace(/\s*\(.*?\)/g, "")
-          .replace(/[*_:#]/g, "")
-          .trim();
-        if (clean.length > 1 && clean.length < 60) interests.push(clean);
-      }
+      const clean = match[1]
+        .replace(/\s*\(.*?\)/g, "")
+        .replace(/[*_:#]/g, "")
+        .trim();
+
+      if (clean.length <= 1 || clean.length >= 60) continue;
+
+      // Skip-word check now runs on the EXTRACTED interest, with word boundaries
+      if (skipPatterns.some(re => re.test(clean))) continue;
+
+      interests.push(clean);
     }
     return interests.slice(0, 15);
   }
