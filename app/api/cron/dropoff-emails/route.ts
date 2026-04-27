@@ -149,12 +149,6 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const expectedSecret = process.env.CRON_SECRET;
 
-  console.log("[cron-debug] expectedSecret length:", expectedSecret?.length ?? "undefined");
-  console.log("[cron-debug] expectedSecret first 3:", expectedSecret?.slice(0, 3) ?? "none");
-  console.log("[cron-debug] authHeader length:", authHeader?.length ?? "undefined");
-  console.log("[cron-debug] authHeader first 10:", authHeader?.slice(0, 10) ?? "none");
-  console.log("[cron-debug] match:", authHeader === `Bearer ${expectedSecret}`);
-
   if (!expectedSecret || authHeader !== `Bearer ${expectedSecret}`) {
     return unauthorized();
   }
@@ -206,7 +200,7 @@ export async function GET(req: NextRequest) {
         const firstName = getFirstName(user.user_metadata?.full_name as string | undefined);
 
         const sendResult = await resend.emails.send({
-          from: "Ken from Hinilas Pro <onboarding@resend.dev>",
+          from: "Ken from Hinilas Pro <ken@hinilas.pro>",
           to: email,
           replyTo: REPLY_TO,
           subject: getSubject(firstName),
