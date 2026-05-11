@@ -1,7 +1,7 @@
 "use client";
 
 import { HinilasIcon } from "@/components/HinilasLogo";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import Image from "next/image";
@@ -38,10 +38,10 @@ const FEATURES = [
 ];
 
 const UGC_VIDEOS = [
-  { src: "/videos/restaurant-owner.mp4", name: "Local Restaurant Owner" },
-  { src: "/videos/realestate-broker.mp4", name: "Real Estate Broker" },
-  { src: "/videos/hardware-owner.mp4", name: "Local Hardware Owner" },
-  { src: "/videos/spa-wellness-owner.mp4", name: "Spa & Wellness Owner" },
+  { src: "/videos/restaurant-owner.mp4", name: "Local Restaurant Owner", handle: "@restolord_ph", caption: "Kinaya ng AI ang ads namin 🔥 Solid results gamit Hinilas Pro!", likes: "14.2K", shares: "3.8K", comments: "912" },
+  { src: "/videos/realestate-broker.mp4", name: "Real Estate Broker", handle: "@kenbroker_realty", caption: "Grabe ang lead quality pagkatapos gamitin ito. Hindi pa ako nag-hire ng copywriter 💯", likes: "21.5K", shares: "6.1K", comments: "1.4K" },
+  { src: "/videos/hardware-owner.mp4", name: "Local Hardware Owner", handle: "@hardwaremarcelo", caption: "Sa loob ng 10 minuto may ad na ako. Walang agency needed 🛠️", likes: "9.7K", shares: "2.3K", comments: "541" },
+  { src: "/videos/spa-wellness-owner.mp4", name: "Spa & Wellness Owner", handle: "@serenityspa_davao", caption: "Ang gaan gamitin kahit hindi ako tech-savvy. Booking namin nag-double! ✨", likes: "18.3K", shares: "5.2K", comments: "1.1K" },
 ];
 
 const FAQS = [
@@ -67,6 +67,50 @@ function BrandMark() {
         <div className="flex items-baseline">
           <span className="font-bold text-lg text-[#1c1e21]">Hinilas</span>
           <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReelCard({ src, name, handle, caption, likes, shares, comments }: { src: string; name: string; handle: string; caption: string; likes: string; shares: string; comments: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { el.play().catch(() => {}); }
+      else { el.pause(); }
+    }, { threshold: 0.5 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div className="ugc-card">
+      <div className="relative rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "9/16" }}>
+        <video ref={videoRef} src={src} loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ transform: "scale(1.08)", transformOrigin: "center center" }} />
+        {/* gradient overlay bottom */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 50%)" }} />
+        {/* right side actions */}
+        <div className="absolute right-3 bottom-20 flex flex-col gap-5">
+          <div className="reel-action-btn">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span className="reel-action-label">{likes}</span>
+          </div>
+          <div className="reel-action-btn">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span className="reel-action-label">{comments}</span>
+          </div>
+          <div className="reel-action-btn">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <span className="reel-action-label">{shares}</span>
+          </div>
+        </div>
+        {/* bottom caption */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3">
+          <p className="text-white text-xs font-black mb-0.5" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>{name}</p>
+          <p className="text-white/80 text-[11px] leading-snug" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.6)" }}>{handle}</p>
+          <p className="text-white text-xs mt-1 leading-snug line-clamp-2" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.6)" }}>{caption}</p>
         </div>
       </div>
     </div>
@@ -164,10 +208,13 @@ export default function LandingPage() {
     <div className="min-h-screen overflow-x-hidden" style={{ background: "#F0F2F5", color: TEXT }}>
       <style>{`
         @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .ugc-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .ugc-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .ugc-scroll::-webkit-scrollbar { display: none; }
-        .ugc-card { flex: 0 0 180px; scroll-snap-align: start; }
-        @media (min-width: 1024px) { .ugc-scroll { display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: visible; } }
+        .ugc-card { flex: 0 0 220px; scroll-snap-align: start; }
+        @media (min-width: 1024px) { .ugc-scroll { display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: visible; gap: 16px; } .ugc-card { flex: none; } }
+        .reel-action-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: default; }
+        .reel-action-btn svg { filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+        .reel-action-label { font-size: 11px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
         .testimonial-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .testimonial-scroll::-webkit-scrollbar { display: none; }
         .testimonial-card { flex: 0 0 300px; scroll-snap-align: start; }
@@ -328,25 +375,7 @@ export default function LandingPage() {
         </div>
         <div className="ugc-scroll">
           {UGC_VIDEOS.map((u, i) => (
-            <div key={i} className="ugc-card">
-              <div className="rounded-2xl border bg-black overflow-hidden" style={{ borderColor: BORDER }}>
-                {/* Portrait 9:16 video — zoomed 8% to crop watermark edges */}
-                <div className="relative overflow-hidden" style={{ aspectRatio: "9/16" }}>
-                  <video
-                    src={u.src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{ transform: "scale(1.08)", transformOrigin: "center center" }}
-                  />
-                </div>
-                <div className="p-3 border-t" style={{ borderColor: BORDER, background: "#FFFFFF" }}>
-                  <p className="text-sm font-bold text-[#1c1e21]">{u.name}</p>
-                </div>
-              </div>
-            </div>
+            <ReelCard key={i} {...u} />
           ))}
         </div>
       </section>
