@@ -28,6 +28,12 @@ const LEVEL_VIDEOS: Record<Level, string> = {
   Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2",
 };
 
+const LEVEL_THUMBNAILS: Record<Level, string> = {
+  Campaign: "https://cdn.loom.com/sessions/thumbnails/e594f91be4314832b75e295791f70ea0-with-play.gif",
+  "Ad Set": "https://cdn.loom.com/sessions/thumbnails/7f598578f67540f0a33c2ff45015e116-with-play.gif",
+  Ads: "https://cdn.loom.com/sessions/thumbnails/2268db0a4a84402a95eb9c7f0fd7aba2-with-play.gif",
+};
+
 const LEVEL_VIDEO_KEYS: Record<Level, VideoKey> = {
   Campaign: "campaign",
   "Ad Set": "adset",
@@ -473,31 +479,52 @@ export default function CampaignSetupPage() {
                           )}
                         </>
                       ) : (
-                        <div className="px-6 py-10 text-center">
-                          <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${step.color}20` }}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        <div>
+                          {/* Thumbnail with lock overlay */}
+                          <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo(currentVideoKey)}>
+                            <img
+                              src={LEVEL_THUMBNAILS[step.level]}
+                              alt={`${step.level} tutorial preview`}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                            {/* Dark overlay */}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
+                              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                              </div>
+                              <p className="text-white text-sm font-bold">Watch Tutorial</p>
+                              <p className="text-white/70 text-xs mt-0.5">1 credit · 24hr access</p>
+                            </div>
                           </div>
-                          <p className="text-[#1c1e21] text-sm font-semibold mb-1">Unlock this tutorial video</p>
-                          <p className="text-xs text-[#1c1e21] mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
-                          {noCredits && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
-                          {!noCredits && <div className="mb-3" />}
-                          <button
-                            onClick={() => unlockVideo(currentVideoKey)}
-                            disabled={isLoadingReward}
-                            className="px-5 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
-                            style={{ background: step.color, color: step.level === "Ad Set" ? "#000" : "#fff" }}
-                          >
-                            {isLoadingReward ? "Unlocking..." : "Unlock - 1 credit"}
-                          </button>
+                          {/* Unlock bar */}
+                          <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: "#FFFFFF", borderTop: "1px solid #E4E6EB" }}>
+                            <div>
+                              <p className="text-sm font-semibold" style={{ color: "#1c1e21" }}>{step.level} Level Tutorial</p>
+                              {noCredits
+                                ? <p className="text-xs" style={{ color: "#fa383e" }}>No credits left. Top up to watch.</p>
+                                : <p className="text-xs" style={{ color: "#65676b" }}>Unlock once, watch for 24 hours</p>
+                              }
+                            </div>
+                            <button
+                              onClick={() => unlockVideo(currentVideoKey)}
+                              disabled={isLoadingReward}
+                              className="shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
+                              style={{ background: step.color, color: step.level === "Ad Set" ? "#000" : "#fff" }}
+                            >
+                              {isLoadingReward ? "Unlocking..." : "Unlock — 1 cr"}
+                            </button>
+                          </div>
                         </div>
                       )
                     ) : (
-                      <div className="flex flex-col items-center justify-center py-10 text-center">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ background: `${step.color}20` }}>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      <div className="relative w-full flex flex-col items-center justify-center" style={{ paddingBottom: "56.25%", background: "#f2f3f5" }}>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2" style={{ background: `${step.color}20` }}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          </div>
+                          <p className="text-sm font-semibold" style={{ color: step.color }}>{step.level} Level Tutorial</p>
+                          <p className="text-xs mt-1" style={{ color: "#8a8d91" }}>Video coming soon</p>
                         </div>
-                        <p className="text-sm font-semibold" style={{ color: step.color }}>{step.level} Level Tutorial</p>
-                        <p className="text-xs text-[#1c1e21] mt-1">Video coming soon</p>
                       </div>
                     )}
                   </div>
