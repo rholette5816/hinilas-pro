@@ -280,119 +280,100 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 pb-4 pt-3 shrink-0" style={{ borderTop: "1px solid #E4E6EB" }}>
+      <div className="px-3 pb-3 pt-2 shrink-0 space-y-2" style={{ borderTop: "1px solid #E4E6EB" }}>
 
-        {/* Usage */}
-        <div className="mb-3 relative">
-          <div className="flex items-center justify-between mb-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-semibold" style={{ color: "#65676B" }}>Usage</span>
+        {/* Usage bar */}
+        <div className="relative">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-semibold" style={{ color: "#65676B" }}>Credits</span>
               <button
                 type="button"
                 onClick={() => setCreditTooltipOpen(open => !open)}
                 aria-label="Show credit costs"
-                className="w-4 h-4 rounded-full text-sm font-bold leading-none flex items-center justify-center"
+                className="w-3.5 h-3.5 rounded-full text-xs font-bold leading-none flex items-center justify-center"
                 style={{ color: "#65676B", border: "1px solid #CBD5E1", background: "#FFFFFF" }}
-              >
-                ?
-              </button>
+              >?</button>
             </div>
-            <span className="text-sm font-bold" style={{ color: planColor }}>{credits} credits</span>
+            <span className="text-xs font-bold" style={{ color: planColor }}>{credits} / {creditsTotal}</span>
           </div>
           {creditTooltipOpen && (
-            <div
-              className="absolute bottom-full left-0 mb-2 w-44 rounded-lg px-3 py-2 text-sm shadow-lg z-20"
-              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#1C1E21" }}
-            >
+            <div className="absolute bottom-full left-0 mb-2 w-40 rounded-lg px-3 py-2 text-xs shadow-lg z-20" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#1C1E21" }}>
               <div className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
-                <span>Research</span><span>1 credit</span>
-                <span>Strategy</span><span>1 credit</span>
-                <span>Caption</span><span>1 credit</span>
-                <span>Image</span><span>2 credits</span>
-                <span>Audit</span><span>1-2 credits</span>
+                <span>Research</span><span>1 cr</span>
+                <span>Strategy</span><span>1 cr</span>
+                <span>Caption</span><span>1 cr</span>
+                <span>Image</span><span>2 cr</span>
+                <span>Audit</span><span>1-2 cr</span>
               </div>
             </div>
           )}
-          <div className="w-full rounded-full h-1.5 mb-1" style={{ background: "#E4E6EB" }}>
-            <div className="h-1.5 rounded-full transition-all" style={{ width: `${creditPct}%`, background: planColor }} />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm" style={{ color: "#65676B" }}>0</span>
-            <span className="text-sm" style={{ color: "#65676B" }}>{creditsTotal} total</span>
+          <div className="w-full rounded-full h-1" style={{ background: "#E4E6EB" }}>
+            <div className="h-1 rounded-full transition-all" style={{ width: `${creditPct}%`, background: planColor }} />
           </div>
         </div>
 
         {/* Top up + Earn */}
-        <div className="flex gap-1.5 mb-3">
+        <div className="flex gap-1">
           <button
             onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
-            className="flex-1 text-center text-sm font-bold py-1.5 rounded-lg transition-all hover:brightness-110"
+            className="flex-1 text-center text-xs font-bold py-1 rounded-lg transition-all hover:brightness-110"
             style={{ background: planColor, color: "#000" }}
-          >
-            Top Up
-          </button>
+          >Top Up</button>
           <button
             onClick={openEarn}
-            className="flex-1 text-center text-sm font-semibold py-1.5 rounded-lg transition-all hover:opacity-90"
-            style={{ background: "#ECFDF5", color: "#16A34A", border: "1px solid #22c55e50", boxShadow: "0 0 8px rgba(34,197,94,0.15)" }}
-          >
-            Earn Credits
-          </button>
+            className="flex-1 text-center text-xs font-semibold py-1 rounded-lg transition-all hover:opacity-90"
+            style={{ background: "#ECFDF5", color: "#16A34A", border: "1px solid #22c55e50" }}
+          >Earn Credits</button>
         </div>
 
         {canEarnFromFeedback && (
           <button
             onClick={() => setFeedbackOpen(true)}
-            className="w-full mb-3 rounded-lg px-3 py-2 text-left flex items-center gap-2 transition-all hover:opacity-90"
+            className="w-full rounded-lg px-2 py-1.5 text-left flex items-center gap-1.5 transition-all hover:opacity-90"
             style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}
           >
-            <span className="text-amber-400 text-base shrink-0">⚡</span>
-            <div className="min-w-0">
-              <p className="text-[#1c1e21] text-sm font-semibold">Leave feedback and earn credits</p>
-              <p className="text-amber-700 text-sm">One-time reward. +50 for video.</p>
-            </div>
+            <span className="text-amber-400 text-sm shrink-0">⚡</span>
+            <p className="text-xs font-semibold" style={{ color: "#1c1e21" }}>Feedback → earn credits</p>
           </button>
         )}
 
-        {/* User profile */}
+        {/* User row + actions */}
         {user && (
-          <div className="rounded-xl px-3 py-3" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
-            <div className="flex items-center gap-2.5 mb-2.5">
+          <div className="rounded-lg px-2 py-2" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
+            <div className="flex items-center gap-2 mb-1.5">
               {user.avatar ? (
-                <Image src={user.avatar} alt={user.name} width={34} height={34} className="rounded-full shrink-0" />
+                <Image src={user.avatar} alt={user.name} width={28} height={28} className="rounded-full shrink-0" />
               ) : (
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#1877F2" }}>
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#1877F2" }}>
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <p className="text-[#1c1e21] text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="text-sm font-black px-1.5 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor, border: `1px solid ${planColor}40` }}>
-                    {plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite"}
-                  </span>
-                  <span className="text-sm" style={{ color: "#65676B" }}>{credits} cr</span>
-                </div>
+                <p className="text-xs font-semibold truncate" style={{ color: "#1c1e21" }}>{user.name.split(" ")[0]}</p>
+                <span className="text-xs font-bold px-1 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor }}>
+                  {plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite"}
+                </span>
               </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-90 shrink-0"
+                style={{ background: "#FFFFFF", color: "#65676B", border: "1px solid #E4E6EB" }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Out
+              </button>
             </div>
             {isOwner && (
               <button
                 onClick={() => { setMobileOpen(false); router.push("/admin"); }}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 mb-1.5"
-                style={{ background: "rgba(24,119,242,0.15)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.3)" }}
+                className="w-full flex items-center justify-center gap-1.5 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+                style={{ background: "rgba(24,119,242,0.12)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.25)" }}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Admin Dashboard
               </button>
             )}
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
-              style={{ background: "#f2f3f5", color: "#65676B" }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Log Out
-            </button>
           </div>
         )}
       </div>
