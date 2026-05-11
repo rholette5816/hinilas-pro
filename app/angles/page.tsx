@@ -10,7 +10,7 @@ import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
 const ANGLE_COLORS: Record<string, string> = {
   Problem: "#EF4444",
-  Solution: "#0866FF",
+  Solution: "#1877F2",
   Transformation: "#8B5CF6",
   Story: "#D97706",
   Testimonial: "#10B981",
@@ -140,7 +140,7 @@ export default function AnglesPage() {
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-slate-700 mb-4">Set up your business profile first.</p>
+            <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
             <button
               onClick={() => router.push("/")}
               className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium"
@@ -165,8 +165,8 @@ export default function AnglesPage() {
             >
               !
             </div>
-            <h2 className="text-slate-900 font-bold text-lg mb-2">Not enough credits</h2>
-            <p className="text-slate-700 text-sm mb-6">Angles costs 1 credit. Top up to continue.</p>
+            <h2 className="text-[#1c1e21] font-bold text-lg mb-2">Not enough credits</h2>
+            <p className="text-[#1c1e21] text-sm mb-6">Angles costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a
                 href="/pricing"
@@ -175,7 +175,7 @@ export default function AnglesPage() {
               >
                 View Plans
               </a>
-              <button onClick={() => setNoCredits(false)} className="text-slate-700 text-sm hover:text-slate-700">
+              <button onClick={() => setNoCredits(false)} className="text-[#1c1e21] text-sm hover:text-[#1c1e21]">
                 Cancel
               </button>
             </div>
@@ -190,8 +190,8 @@ export default function AnglesPage() {
             <div className="inline-flex items-center gap-2 bg-orange-950 border border-orange-800 rounded-full px-3 py-1 mb-4">
               <span className="text-orange-300 text-xs font-medium">Strategy Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">Find Winning Marketing Angles</h1>
-            <p className="text-slate-700 text-sm">
+            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Find Winning Marketing Angles</h1>
+            <p className="text-[#1c1e21] text-sm">
               Your angle is the reason people buy. Pick one and use it to guide your creative and copy.
             </p>
           </div>
@@ -201,7 +201,7 @@ export default function AnglesPage() {
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 mb-5 text-sm"
               style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
             >
-              <span className="text-[#0866FF]">
+              <span className="text-[#1877F2]">
                 <CheckIcon />
               </span>
               <span className="text-[#64748B]">Research loaded - angles will be based on your customer insights</span>
@@ -213,7 +213,7 @@ export default function AnglesPage() {
               onClick={() => generateAngles()}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#0866FF", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#1877F2", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles - 1 credit" : "Generate Angles - 1 credit"}
             </button>
@@ -221,7 +221,7 @@ export default function AnglesPage() {
             {angles.length > 0 && !loading && (
               <button
                 onClick={() => setShowAdjust(!showAdjust)}
-                className="px-4 py-3 rounded-lg text-sm font-medium border border-slate-200 text-slate-700 hover:text-slate-900 hover:border-gray-500 transition-colors"
+                className="px-4 py-3 rounded-lg text-sm font-medium border border-slate-200 text-[#1c1e21] hover:text-[#1c1e21] hover:border-gray-500 transition-colors"
               >
                 {showAdjust ? "Cancel" : "Not happy with these?"}
               </button>
@@ -230,8 +230,8 @@ export default function AnglesPage() {
 
           {showAdjust && (
             <div className="rounded-xl border border-slate-200 p-4 mb-6" style={{ background: "#FFFFFF" }}>
-              <p className="text-sm font-medium text-slate-900 mb-2">Tell me what to change</p>
-              <p className="text-slate-700 text-xs mb-3">
+              <p className="text-sm font-medium text-[#1c1e21] mb-2">Tell me what to change</p>
+              <p className="text-[#1c1e21] text-xs mb-3">
                 e.g. &quot;More aggressive tone&quot;, &quot;Focus on testimonial&quot;, &quot;Target moms aged 25&ndash;35&quot;
               </p>
               <textarea
@@ -239,7 +239,7 @@ export default function AnglesPage() {
                 value={adjustNote}
                 onChange={(event) => setAdjustNote(event.target.value)}
                 placeholder="Your direction..."
-                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none mb-3"
+                className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-[#1c1e21] placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none mb-3"
               />
               <button
                 onClick={() => generateAngles(adjustNote)}
@@ -268,8 +268,8 @@ export default function AnglesPage() {
           {!loading && angles.length > 0 && (
             <>
               <div className="rounded-xl p-4 mb-4" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
-                <p className="text-sm text-slate-900 font-semibold">Pick the angle that feels right. We&apos;ll use it for your image and copy.</p>
-                <p className="text-xs text-slate-700 mt-1">Choose the angle that best matches how you want to sell this offer.</p>
+                <p className="text-sm text-[#1c1e21] font-semibold">Pick the angle that feels right. We&apos;ll use it for your image and copy.</p>
+                <p className="text-xs text-[#1c1e21] mt-1">Choose the angle that best matches how you want to sell this offer.</p>
               </div>
 
               <div className="space-y-4">
@@ -299,7 +299,7 @@ export default function AnglesPage() {
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="text-slate-900 font-bold text-sm">{angle.name}</h3>
+                              <h3 className="text-[#1c1e21] font-bold text-sm">{angle.name}</h3>
                               <span
                                 className="text-xs px-2 py-0.5 rounded-full font-medium"
                                 style={{ background: `${color}20`, color }}
@@ -307,13 +307,13 @@ export default function AnglesPage() {
                                 {angle.type}
                               </span>
                               {angle.formula && (
-                                <span className="text-xs px-2 py-0.5 rounded-full border border-slate-200 text-slate-700">
+                                <span className="text-xs px-2 py-0.5 rounded-full border border-slate-200 text-[#1c1e21]">
                                   {angle.formula}
                                 </span>
                               )}
                             </div>
                             {angle.coreMessage && (
-                              <p className="text-slate-700 text-xs mt-1 leading-relaxed">{angle.coreMessage}</p>
+                              <p className="text-[#1c1e21] text-xs mt-1 leading-relaxed">{angle.coreMessage}</p>
                             )}
                           </div>
                         </div>
@@ -335,7 +335,7 @@ export default function AnglesPage() {
                           <p className="text-xs font-semibold mb-1" style={{ color }}>
                             Hook Line
                           </p>
-                          <p className="text-slate-800 text-sm italic">&quot;{angle.hookLine}&quot;</p>
+                          <p className="text-[#1c1e21] text-sm italic">&quot;{angle.hookLine}&quot;</p>
                         </div>
                       )}
 
@@ -343,14 +343,14 @@ export default function AnglesPage() {
                         <div className="px-5 pb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                           {angle.uso && (
                             <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
-                              <p className="text-xs font-semibold text-slate-700 mb-1">Unique Selling Offer</p>
-                              <p className="text-slate-800 text-xs leading-relaxed">{angle.uso}</p>
+                              <p className="text-xs font-semibold text-[#1c1e21] mb-1">Unique Selling Offer</p>
+                              <p className="text-[#1c1e21] text-xs leading-relaxed">{angle.uso}</p>
                             </div>
                           )}
                           {angle.whyItWorks && (
                             <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
-                              <p className="text-xs font-semibold text-slate-700 mb-1">Why It Works</p>
-                              <p className="text-slate-800 text-xs leading-relaxed">{angle.whyItWorks}</p>
+                              <p className="text-xs font-semibold text-[#1c1e21] mb-1">Why It Works</p>
+                              <p className="text-[#1c1e21] text-xs leading-relaxed">{angle.whyItWorks}</p>
                             </div>
                           )}
                         </div>

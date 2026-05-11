@@ -49,7 +49,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} text-slate-900 antialiased`} style={{ background: "#F0F2F5" }}>
+      <body className={`${inter.className} text-[#1c1e21] antialiased`} style={{ background: "#F0F2F5" }}>
         <div style={{ position: "relative", zIndex: 1 }}>
           <AppProvider>
             <TopBar />

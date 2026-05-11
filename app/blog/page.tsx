@@ -37,12 +37,12 @@ function LogoMark() {
   return (
     <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect width="48" height="48" rx="10" fill="#1C1E21" />
-      <line x1="14" y1="10" x2="14" y2="38" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="34" y1="10" x2="34" y2="38" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="14" y1="24" x2="34" y2="24" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="14" y1="10" x2="14" y2="38" stroke="#1877F2" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="34" y1="10" x2="34" y2="38" stroke="#1877F2" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="14" y1="24" x2="34" y2="24" stroke="#1877F2" strokeWidth="3.5" strokeLinecap="round" />
       <circle cx="14" cy="10" r="3" fill="#D97706" />
-      <circle cx="14" cy="38" r="3" fill="#0866FF" />
-      <circle cx="34" cy="10" r="3" fill="#0866FF" />
+      <circle cx="14" cy="38" r="3" fill="#1877F2" />
+      <circle cx="34" cy="10" r="3" fill="#1877F2" />
       <circle cx="34" cy="38" r="3" fill="#D97706" />
     </svg>
   );
@@ -58,14 +58,14 @@ export default async function BlogPage() {
           <Link href="/home" className="flex items-center gap-3 transition-opacity hover:opacity-85">
             <LogoMark />
             <div className="leading-tight">
-              <span className="text-sm font-black text-slate-900">Hinilas Pro</span>
-              <p className="text-sm font-bold uppercase tracking-widest" style={{ color: "#0866FF" }}>Marketing library</p>
+              <span className="text-sm font-black text-[#1c1e21]">Hinilas Pro</span>
+              <p className="text-sm font-bold uppercase tracking-widest" style={{ color: "#1877F2" }}>Marketing library</p>
             </div>
           </Link>
           <Link
             href="/home"
             className="rounded-xl px-4 py-2 text-xs font-bold transition-colors hover:bg-blue-700"
-            style={{ background: "#0866FF", color: "#FFFFFF" }}
+            style={{ background: "#1877F2", color: "#FFFFFF" }}
           >
             Start free
           </Link>
@@ -76,11 +76,11 @@ export default async function BlogPage() {
         <div className="mb-12 max-w-2xl">
           <div
             className="mb-4 inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-            style={{ background: "#EAF4FF", color: "#0866FF", border: "1px solid #BFDBFE" }}
+            style={{ background: "#e7f3ff", color: "#1877F2", border: "1px solid #BFDBFE" }}
           >
             Hinilas Pro Blog
           </div>
-          <h1 className="mb-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+          <h1 className="mb-4 text-4xl font-black tracking-tight text-[#050505] sm:text-5xl">
             Clear Meta Ads thinking for serious sellers.
           </h1>
           <p className="max-w-xl text-base leading-7" style={{ color: "#65676B" }}>
@@ -116,7 +116,7 @@ export default async function BlogPage() {
                         timeZone: "Asia/Manila",
                       }) : "Unpublished"}
                     </p>
-                    <h2 className="mb-2 text-xl font-black tracking-tight text-slate-900 transition-colors group-hover:text-blue-700">
+                    <h2 className="mb-2 text-xl font-black tracking-tight text-[#1c1e21] transition-colors group-hover:text-blue-700">
                       {post.title}
                     </h2>
                     {post.meta_description && (
@@ -127,7 +127,7 @@ export default async function BlogPage() {
                   </div>
                   <div
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black transition-colors group-hover:bg-blue-600 group-hover:text-white"
-                    style={{ background: "#EAF4FF", color: "#0866FF" }}
+                    style={{ background: "#e7f3ff", color: "#1877F2" }}
                   >
                     Go
                   </div>

@@ -362,7 +362,7 @@ export default function CreativePage() {
             <div className="inline-flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-full px-3 py-1 mb-4">
               <span className="text-pink-300 text-xs font-medium">🖼 Creative Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">Ad Creatives</h1>
+            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Ad Creatives</h1>
             <p className="text-gray-400 text-sm">Generate static images or short video clips for your Meta ads.</p>
           </div>
 
@@ -370,13 +370,13 @@ export default function CreativePage() {
           <div className="flex gap-2 mb-8">
             <button
               onClick={() => setActiveTab("image")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "image" ? "bg-pink-600 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "image" ? "bg-pink-600 text-white" : "bg-white text-[#8a8d91] hover:text-[#1c1e21]"}`}
             >
               🖼 Image
             </button>
             <button
               onClick={() => setActiveTab("video")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? "bg-purple-600 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? "bg-purple-600 text-white" : "bg-white text-[#8a8d91] hover:text-[#1c1e21]"}`}
             >
               🎬 Video Clips
             </button>
@@ -396,15 +396,15 @@ export default function CreativePage() {
               ) : (
                 <>
                   <div className="flex items-start gap-2 rounded-lg px-4 py-3 mb-6 text-sm" style={{ background: "#EFF4FF", border: "1px solid #C7D7FD" }}>
-                    <span className="mt-0.5" style={{ color: "#0866FF" }}>🎯</span>
+                    <span className="mt-0.5" style={{ color: "#1877F2" }}>🎯</span>
                     <div>
-                      <p className="text-sm font-semibold mb-0.5" style={{ color: "#0866FF" }}>Angle loaded</p>
-                      <p className="text-sm text-slate-800 line-clamp-2">{selectedAngle}</p>
+                      <p className="text-sm font-semibold mb-0.5" style={{ color: "#1877F2" }}>Angle loaded</p>
+                      <p className="text-sm text-[#1c1e21] line-clamp-2">{selectedAngle}</p>
                     </div>
                   </div>
 
                   <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6">
-                    <p className="text-slate-900 text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
+                    <p className="text-[#1c1e21] text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
                     <p className="text-gray-400 text-xs leading-relaxed">Based on your angle, we generate 3 short clips - a hook, a solution, and a call to action. Shot in vertical format, ready to upload to Reels and Stories.</p>
                   </div>
 
@@ -551,10 +551,10 @@ export default function CreativePage() {
           {/* Angle context */}
           {selectedAngle && (
             <div className="flex items-start gap-2 rounded-lg px-4 py-3 mb-6 text-sm" style={{ background: "#EFF4FF", border: "1px solid #C7D7FD" }}>
-              <span className="mt-0.5" style={{ color: "#0866FF" }}>🎯</span>
+              <span className="mt-0.5" style={{ color: "#1877F2" }}>🎯</span>
               <div>
-                <p className="text-sm font-semibold mb-0.5" style={{ color: "#0866FF" }}>Angle loaded</p>
-                <p className="text-sm text-slate-800 line-clamp-2">{selectedAngle}</p>
+                <p className="text-sm font-semibold mb-0.5" style={{ color: "#1877F2" }}>Angle loaded</p>
+                <p className="text-sm text-[#1c1e21] line-clamp-2">{selectedAngle}</p>
               </div>
             </div>
           )}
@@ -607,7 +607,7 @@ export default function CreativePage() {
               value={extraPrompt}
               onChange={e => setExtraPrompt(e.target.value)}
               placeholder="e.g. dark themed, warm colors, show before and after, minimalist design..."
-              className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+              className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-[#1c1e21] placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
             />
           </div>
 
@@ -616,13 +616,13 @@ export default function CreativePage() {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
               <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
                 <div className="text-4xl mb-4">⚡</div>
-                <h2 className="text-slate-900 font-bold text-lg mb-2">You&apos;re out of credits</h2>
+                <h2 className="text-[#1c1e21] font-bold text-lg mb-2">You&apos;re out of credits</h2>
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
                   <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>
                     Upgrade to Flex - ₱499
                   </a>
-                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#0866FF" }}>
+                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#1877F2" }}>
                     Get 50 Credits - ₱249
                   </a>
                   <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
@@ -649,7 +649,7 @@ export default function CreativePage() {
           {/* 3-card horizontal gallery: Main + Variation 1 + Variation 2 */}
           <div className="mb-8">
             <div className="mb-3">
-              <p className="text-slate-700 font-semibold text-sm">Ad Creative Set</p>
+              <p className="text-[#1c1e21] font-semibold text-sm">Ad Creative Set</p>
               <p className="text-gray-500 text-xs">Main + 2 variations. Each uses 2 credits. Variations require Main first.</p>
             </div>
 
@@ -662,7 +662,7 @@ export default function CreativePage() {
                 <div key={i} className="w-full md:flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
                   {/* Header */}
                   <div className="px-3 py-2 border-b border-slate-200">
-                    <p className="text-slate-900 text-xs font-semibold leading-tight">{card.label}</p>
+                    <p className="text-[#1c1e21] text-xs font-semibold leading-tight">{card.label}</p>
                   </div>
 
                   {/* Image area — 1:1 square */}
@@ -745,7 +745,7 @@ export default function CreativePage() {
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
-                className="absolute top-4 right-4 bg-black/10 hover:bg-black/20 text-slate-900 w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
+                className="absolute top-4 right-4 bg-black/10 hover:bg-black/20 text-[#1c1e21] w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
                 aria-label="Close preview"
               >
                 {"Ã—"}

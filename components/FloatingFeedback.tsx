@@ -160,15 +160,15 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
     >
       <div className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
         {checking && (
-          <div className="px-6 py-8 text-center text-slate-500 text-sm">Loading...</div>
+          <div className="px-6 py-8 text-center text-[#8a8d91] text-sm">Loading...</div>
         )}
 
         {!checking && step === "already_submitted" && (
           <div className="px-6 py-8 text-center">
             <div className="text-3xl mb-3">⭐</div>
-            <h3 className="text-slate-900 font-bold text-base mb-2">Already submitted</h3>
+            <h3 className="text-[#1c1e21] font-bold text-base mb-2">Already submitted</h3>
             <p className="text-slate-600 text-sm mb-4">You already used your one-time feedback reward.</p>
-            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#0866FF" }}>
+            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#1877F2" }}>
               Close
             </button>
           </div>
@@ -178,15 +178,15 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
           <>
             <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h3 className="text-slate-900 font-bold text-sm">Send Feedback</h3>
-                <p className="text-slate-500 text-xs">One-time reward. +50 for video.</p>
+                <h3 className="text-[#1c1e21] font-bold text-sm">Send Feedback</h3>
+                <p className="text-[#8a8d91] text-xs">One-time reward. +50 for video.</p>
               </div>
-              <button onClick={onClose} className="text-slate-500 hover:text-slate-900 text-base px-1">✕</button>
+              <button onClick={onClose} className="text-[#8a8d91] hover:text-[#1c1e21] text-base px-1">✕</button>
             </div>
 
             <div className="px-4 py-4 space-y-3">
               {/* Reward info — compact inline */}
-              <div className="rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+              <div className="rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(s => (
                     <div key={s} className="text-center">
@@ -226,7 +226,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full bg-[#f2f3f5] border border-slate-200 rounded-lg px-3 py-2 text-[#1c1e21] text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -240,8 +240,8 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                     <>
                       <style>{`
                         @keyframes polishPulse {
-                          0%, 100% { box-shadow: 0 0 0 0 rgba(8,102,255,0.5); }
-                          50% { box-shadow: 0 0 0 6px rgba(8,102,255,0); }
+                          0%, 100% { box-shadow: 0 0 0 0 rgba(24,119,242,0.5); }
+                          50% { box-shadow: 0 0 0 6px rgba(24,119,242,0); }
                         }
                       `}</style>
                       <button
@@ -250,9 +250,9 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                         disabled={improving}
                         className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                         style={{
-                          background: "rgba(8,102,255,0.15)",
-                          color: "#0866FF",
-                          border: "1px solid rgba(8,102,255,0.3)",
+                          background: "rgba(24,119,242,0.15)",
+                          color: "#1877F2",
+                          border: "1px solid rgba(24,119,242,0.3)",
                           animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
                         }}
                       >
@@ -269,7 +269,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                   onChange={e => handleMessageChange(e.target.value)}
                   placeholder="What's working well? What can we improve?"
                   rows={3}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                  className="w-full bg-[#f2f3f5] border border-slate-200 rounded-lg px-3 py-2 text-[#1c1e21] placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                 />
               </div>
 
@@ -279,9 +279,9 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                 <input ref={fileRef} type="file" accept="video/*" onChange={handleVideoChange} className="hidden" />
                 <input ref={cameraRef} type="file" accept="video/*" capture="user" onChange={handleVideoChange} className="hidden" />
                 {video ? (
-                  <div className="rounded-lg border border-slate-200 px-3 py-2 flex items-center justify-between" style={{ background: "#F1F5F9" }}>
+                  <div className="rounded-lg border border-slate-200 px-3 py-2 flex items-center justify-between" style={{ background: "#f2f3f5" }}>
                     <div className="min-w-0 mr-2">
-                      <p className="text-slate-900 text-xs font-medium truncate">{videoName}</p>
+                      <p className="text-[#1c1e21] text-xs font-medium truncate">{videoName}</p>
                       <p className="text-emerald-400 text-xs">+50 credits included</p>
                     </div>
                     <button onClick={() => { setVideo(null); setVideoName(""); if (fileRef.current) fileRef.current.value = ""; }} className="text-xs text-red-400 hover:text-red-300 shrink-0">Remove</button>
@@ -290,15 +290,15 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => fileRef.current?.click()}
-                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed text-slate-600 hover:text-slate-900 text-xs transition-colors"
-                      style={{ background: "#F1F5F9" }}
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed text-slate-600 hover:text-[#1c1e21] text-xs transition-colors"
+                      style={{ background: "#f2f3f5" }}
                     >
                       <span>📁</span> Upload
                     </button>
                     <button
                       onClick={() => cameraRef.current?.click()}
-                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed text-slate-600 hover:text-slate-900 text-xs transition-colors"
-                      style={{ background: "#F1F5F9" }}
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed text-slate-600 hover:text-[#1c1e21] text-xs transition-colors"
+                      style={{ background: "#f2f3f5" }}
                     >
                       <span>📷</span> Camera
                     </button>
@@ -325,7 +325,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#DCFCE7" }}>
               <span className="text-2xl">✅</span>
             </div>
-            <h3 className="text-slate-900 font-bold text-lg mb-2">Thanks for the feedback!</h3>
+            <h3 className="text-[#1c1e21] font-bold text-lg mb-2">Thanks for the feedback!</h3>
             {creditsAwarded > 0 ? (
               <div className="rounded-xl px-4 py-4 mb-4" style={{ background: "#ECFDF5", border: "1px solid #BBF7D0" }}>
                 <div className="text-3xl font-black text-emerald-400 mb-1">+{creditsAwarded} Credits</div>
@@ -335,7 +335,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
             ) : (
               <p className="text-slate-600 text-sm mb-4">We read every message. This helps us build a better tool for you.</p>
             )}
-            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#0866FF" }}>
+            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#1877F2" }}>
               Done
             </button>
           </div>

@@ -80,27 +80,27 @@ function linkify(text: string) {
 function renderArticle(text: string) {
   return text.split("\n").map((line, i) => {
     if (line.startsWith("# ")) {
-      return <h1 key={i} className="mt-10 mb-4 text-3xl font-black tracking-tight text-slate-950">{linkify(line.slice(2))}</h1>;
+      return <h1 key={i} className="mt-10 mb-4 text-3xl font-black tracking-tight text-[#050505]">{linkify(line.slice(2))}</h1>;
     }
     if (line.startsWith("## ")) {
-      return <h2 key={i} className="mt-9 mb-3 text-2xl font-black tracking-tight text-slate-950">{linkify(line.slice(3))}</h2>;
+      return <h2 key={i} className="mt-9 mb-3 text-2xl font-black tracking-tight text-[#050505]">{linkify(line.slice(3))}</h2>;
     }
     if (line.startsWith("### ")) {
-      return <h3 key={i} className="mt-7 mb-2 text-lg font-bold text-slate-900">{linkify(line.slice(4))}</h3>;
+      return <h3 key={i} className="mt-7 mb-2 text-lg font-bold text-[#1c1e21]">{linkify(line.slice(4))}</h3>;
     }
     if (line.startsWith("- ") || line.startsWith("* ")) {
       return (
-        <li key={i} className="ml-5 text-base leading-8 text-slate-700" style={{ listStyleType: "disc" }}>
+        <li key={i} className="ml-5 text-base leading-8 text-[#1c1e21]" style={{ listStyleType: "disc" }}>
           {linkify(line.slice(2))}
         </li>
       );
     }
     if (line.startsWith("**") && line.endsWith("**")) {
-      return <p key={i} className="mt-5 text-base font-bold text-slate-900">{linkify(line.slice(2, -2))}</p>;
+      return <p key={i} className="mt-5 text-base font-bold text-[#1c1e21]">{linkify(line.slice(2, -2))}</p>;
     }
     if (line.trim() === "") return <div key={i} className="h-2" />;
     return (
-      <p key={i} className="text-base leading-8 text-slate-700">
+      <p key={i} className="text-base leading-8 text-[#1c1e21]">
         {linkify(line)}
       </p>
     );
@@ -122,9 +122,9 @@ export default async function BlogPostPage({
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
           <Link href="/home" className="flex items-center gap-3 transition-opacity hover:opacity-85">
             <LogoMark />
-            <span className="text-sm font-black text-slate-900">Hinilas Pro</span>
+            <span className="text-sm font-black text-[#1c1e21]">Hinilas Pro</span>
           </Link>
-          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#65676B" }}>
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-[#050505]" style={{ color: "#65676B" }}>
             All posts
           </Link>
         </div>
@@ -140,7 +140,7 @@ export default async function BlogPostPage({
               timeZone: "Asia/Manila",
             })}
           </p>
-          <h1 className="mb-4 text-4xl font-black leading-tight tracking-tight text-slate-950">
+          <h1 className="mb-4 text-4xl font-black leading-tight tracking-tight text-[#050505]">
             {post.title}
           </h1>
           {post.meta_description && (
@@ -174,7 +174,7 @@ export default async function BlogPostPage({
           >
             <div
               className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-              style={{ background: "rgba(8,102,255,0.08)", color: "#0866FF", border: "1px solid rgba(8,102,255,0.2)" }}
+              style={{ background: "rgba(24,119,242,0.08)", color: "#0866FF", border: "1px solid rgba(24,119,242,0.2)" }}
             >
               Try Hinilas Pro
             </div>
@@ -195,7 +195,7 @@ export default async function BlogPostPage({
         )}
 
         <div className="mt-10">
-          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#65676B" }}>
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-[#050505]" style={{ color: "#65676B" }}>
             Back to all posts
           </Link>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
-const BRAND_BLUE = "#0866FF";
+const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
 
 const STAR_REWARDS: Record<number, number> = { 1: 2, 2: 3, 3: 5, 4: 8, 5: 15 };
@@ -119,7 +119,7 @@ export default function TestimonialPage() {
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "#14532D" }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h2 className="text-slate-900 font-bold text-2xl mb-2">Thank you!</h2>
+          <h2 className="text-[#1c1e21] font-bold text-2xl mb-2">Thank you!</h2>
           <p className="text-sm leading-relaxed" style={{ color: "#65676B" }}>
             Your experience has been submitted. It means a lot and helps others discover what Hinilas Pro can do.
           </p>
@@ -138,7 +138,7 @@ export default function TestimonialPage() {
           <div className="mb-4">
             <HinilasIcon size="lg" accentColor={BRAND_ORANGE} />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 mb-1">Share Your Experience</h1>
+          <h1 className="text-2xl font-black text-[#1c1e21] mb-1">Share Your Experience</h1>
           <p className="text-sm" style={{ color: "#65676B" }}>Your story helps other business owners find the right tool.</p>
         </div>
 
@@ -146,7 +146,7 @@ export default function TestimonialPage() {
 
           {/* Name */}
           <div>
-            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Name</label>
+            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#8a8d91" }}>Your Name</label>
             <input
               type="text"
               placeholder="e.g. Maria Santos"
@@ -161,7 +161,7 @@ export default function TestimonialPage() {
 
           {/* Rating */}
           <div>
-            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Rating</label>
+            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#8a8d91" }}>Your Rating</label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map(star => (
                 <button
@@ -186,13 +186,13 @@ export default function TestimonialPage() {
           {/* Message */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Your Message</label>
+              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#8a8d91" }}>Your Message</label>
               {message.trim() && !improved && (
                 <>
                   <style>{`
                     @keyframes polishPulse {
-                      0%, 100% { box-shadow: 0 0 0 0 rgba(8,102,255,0.5); }
-                      50% { box-shadow: 0 0 0 6px rgba(8,102,255,0); }
+                      0%, 100% { box-shadow: 0 0 0 0 rgba(24,119,242,0.5); }
+                      50% { box-shadow: 0 0 0 6px rgba(24,119,242,0); }
                     }
                   `}</style>
                   <button
@@ -201,9 +201,9 @@ export default function TestimonialPage() {
                     disabled={improving}
                     className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                     style={{
-                      background: "rgba(8,102,255,0.15)",
+                      background: "rgba(24,119,242,0.15)",
                       color: BRAND_BLUE,
-                      border: "1px solid rgba(8,102,255,0.3)",
+                      border: "1px solid rgba(24,119,242,0.3)",
                       animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
                     }}
                   >
@@ -230,7 +230,7 @@ export default function TestimonialPage() {
           {/* Video / Image Upload */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Video or Image</label>
+              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#8a8d91" }}>Video or Image</label>
               <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>Highly Encouraged</span>
             </div>
 
@@ -239,7 +239,7 @@ export default function TestimonialPage() {
               <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>If recording a video, cover these points:</p>
               <ul className="space-y-1.5">
                 {VIDEO_GUIDE.map((point, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#94A3B8" }}>
+                  <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#8a8d91" }}>
                     <span className="font-bold shrink-0" style={{ color: BRAND_BLUE }}>{i + 1}.</span>
                     {point}
                   </li>
@@ -302,7 +302,7 @@ export default function TestimonialPage() {
             {loading ? "Submitting..." : "Submit Testimonial"}
           </button>
 
-          <p className="text-center text-xs" style={{ color: "#334155" }}>
+          <p className="text-center text-xs" style={{ color: "#65676b" }}>
             Your testimonial may be featured on the Hinilas Pro homepage.
           </p>
 

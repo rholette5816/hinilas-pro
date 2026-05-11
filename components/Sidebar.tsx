@@ -192,7 +192,7 @@ export default function Sidebar() {
               <span className="font-bold text-base" style={{ color: "#1C1E21" }}>Hinilas</span>
               <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
             </div>
-            <p className="text-sm font-semibold" style={{ color: "#0866FF" }}>Marketing intelligence</p>
+            <p className="text-sm font-semibold" style={{ color: "#1877F2" }}>Marketing intelligence</p>
           </div>
         </div>
       </div>
@@ -218,17 +218,17 @@ export default function Sidebar() {
               }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
               style={active
-                ? { background: "#1D2129", borderLeft: "2px solid #1D2129", paddingLeft: "10px" }
+                ? { background: "#e7f3ff", borderLeft: "2px solid #1877F2", paddingLeft: "10px" }
                 : isLocked
                 ? { borderLeft: "2px solid transparent", opacity: 0.45, cursor: "not-allowed" }
                 : { borderLeft: "2px solid transparent" }
               }
             >
-              <span style={{ color: active ? "#0866FF" : "#64748B" }} className="shrink-0 transition-colors">
+              <span style={{ color: active ? "#1877F2" : "#65676b" }} className="shrink-0 transition-colors">
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-base font-medium" style={{ color: active ? "#FFFFFF" : "#1C1E21" }}>{item.label}</p>
+                <p className="text-base font-medium" style={{ color: active ? "#1877F2" : "#1c1e21" }}>{item.label}</p>
                 <p className="text-sm truncate" style={{ color: "#65676B" }}>{item.desc}</p>
               </div>
               {isLocked ? (
@@ -348,7 +348,7 @@ export default function Sidebar() {
           >
             <span className="text-amber-400 text-base shrink-0">⚡</span>
             <div className="min-w-0">
-              <p className="text-slate-900 text-sm font-semibold">Leave feedback and earn credits</p>
+              <p className="text-[#1c1e21] text-sm font-semibold">Leave feedback and earn credits</p>
               <p className="text-amber-700 text-sm">One-time reward. +50 for video.</p>
             </div>
           </button>
@@ -361,12 +361,12 @@ export default function Sidebar() {
               {user.avatar ? (
                 <Image src={user.avatar} alt={user.name} width={34} height={34} className="rounded-full shrink-0" />
               ) : (
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#0866FF" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#1877F2" }}>
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <p className="text-slate-900 text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
+                <p className="text-[#1c1e21] text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="text-sm font-black px-1.5 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor, border: `1px solid ${planColor}40` }}>
                     {plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite"}
@@ -379,7 +379,7 @@ export default function Sidebar() {
               <button
                 onClick={() => { setMobileOpen(false); router.push("/admin"); }}
                 className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 mb-1.5"
-                style={{ background: "rgba(8,102,255,0.15)", color: "#0866FF", border: "1px solid rgba(8,102,255,0.3)" }}
+                style={{ background: "rgba(24,119,242,0.15)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.3)" }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Admin Dashboard
@@ -388,7 +388,7 @@ export default function Sidebar() {
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
-              style={{ background: "#F1F5F9", color: "#65676B" }}
+              style={{ background: "#f2f3f5", color: "#65676B" }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               Log Out
@@ -405,32 +405,32 @@ export default function Sidebar() {
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB" }}>
         <div className="flex items-center gap-2">
           <HinilasIcon size="sm" accentColor="#D97706" />
-          <span className="text-slate-900 font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
+          <span className="text-[#1c1e21] font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
         </div>
         <div className="flex items-center gap-1.5">
           <a
             href="/library"
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#0866FF", border: "1px solid #0866FF30" }}
+            style={{ background: "#f2f3f5", color: "#1877F2", border: "1px solid #1877F230" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           </a>
           <button
             onClick={() => setShowLeaderboard(true)}
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#D97706", border: "1px solid #D9770630" }}
+            style={{ background: "#f2f3f5", color: "#D97706", border: "1px solid #D9770630" }}
           >
             🏆 <span className="hidden xs:inline">Board</span>
           </button>
           <Link
             href="/blog"
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#65676B", border: "1px solid #E4E6EB" }}
+            style={{ background: "#f2f3f5", color: "#65676B", border: "1px solid #E4E6EB" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             Blog
           </Link>
-          <button onClick={() => setMobileOpen(true)} className="text-slate-500 hover:text-slate-900 p-1">
+          <button onClick={() => setMobileOpen(true)} className="text-[#8a8d91] hover:text-[#1c1e21] p-1">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
@@ -449,7 +449,7 @@ export default function Sidebar() {
         {/* Close button — absolute positioned so nav fills full height */}
         <button
           onClick={() => setMobileOpen(false)}
-          className="absolute top-3 right-4 z-10 text-gray-500 hover:text-slate-900 p-1"
+          className="absolute top-3 right-4 z-10 text-gray-500 hover:text-[#1c1e21] p-1"
         >✕</button>
         <div className="h-full">
           {/* eslint-disable-next-line react-hooks/static-components */}
@@ -469,8 +469,8 @@ export default function Sidebar() {
 
       {/* Lock toast */}
       {lockToast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-900 shadow-lg pointer-events-none"
-          style={{ background: "#F1F5F9", border: "1px solid #64748B", whiteSpace: "nowrap" }}>
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-xl text-sm font-semibold text-[#1c1e21] shadow-lg pointer-events-none"
+          style={{ background: "#f2f3f5", border: "1px solid #64748B", whiteSpace: "nowrap" }}>
           🔒 {lockToast}
         </div>
       )}
@@ -480,11 +480,11 @@ export default function Sidebar() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setEarnOpen(false)}>
           <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-slate-900 font-bold text-base">Earn Credits</h2>
-              <button onClick={() => setEarnOpen(false)} className="text-gray-500 hover:text-slate-900 text-lg leading-none">✕</button>
+              <h2 className="text-[#1c1e21] font-bold text-base">Earn Credits</h2>
+              <button onClick={() => setEarnOpen(false)} className="text-gray-500 hover:text-[#1c1e21] text-lg leading-none">✕</button>
             </div>
             <p className="text-gray-400 text-sm mb-4">Share your referral link. When someone signs up and buys credits, you earn automatically.</p>
-            <div className="rounded-xl p-4 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+            <div className="rounded-xl p-4 mb-4" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
               <p className="text-sm text-gray-500 mb-3 font-bold ">Your rewards</p>
               <div className="space-y-2">
                 {[
@@ -503,7 +503,7 @@ export default function Sidebar() {
             <p className="text-sm text-gray-500 mb-2">Your referral link</p>
             {referralCode ? (
               <div className="flex gap-2">
-                <div className="flex-1 rounded-lg px-3 py-2 text-sm text-slate-700 truncate" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+                <div className="flex-1 rounded-lg px-3 py-2 text-sm text-[#1c1e21] truncate" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
                   {getReferralLink()}
                 </div>
                 <button
@@ -521,7 +521,7 @@ export default function Sidebar() {
 
             {/* Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
                 <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>Top Referrers</p>
                 <div className="divide-y" style={{ borderColor: "#E4E6EB" }}>
                   {leaderboard.map((u) => (
@@ -532,7 +532,7 @@ export default function Sidebar() {
                       {u.avatar_url ? (
                         <img src={u.avatar_url} alt={u.username} className="w-6 h-6 rounded-full shrink-0 object-cover" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ background: "#0866FF" }}>
+                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ background: "#1877F2" }}>
                           {u.username.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -545,23 +545,23 @@ export default function Sidebar() {
             {referralStats && (
               <div className="mt-4">
                 <div className="grid grid-cols-2 gap-2 mb-3">
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
-                    <p className="text-lg font-bold text-slate-900">{referralStats.total}</p>
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
+                    <p className="text-lg font-bold text-[#1c1e21]">{referralStats.total}</p>
                     <p className="text-sm text-gray-500">Signups referred</p>
                   </div>
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
                     <p className="text-lg font-bold text-emerald-400">+{referralStats.credits}</p>
                     <p className="text-sm text-gray-500">Credits earned</p>
                   </div>
                 </div>
                 {referralStats.history.length > 0 && (
-                  <div className="rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+                  <div className="rounded-xl overflow-hidden" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
                     <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>History</p>
                     <div className="divide-y max-h-36 overflow-y-auto" style={{ borderColor: "#E4E6EB" }}>
                       {referralStats.history.map((h, i) => (
                         <div key={i} className="flex items-center justify-between px-3 py-2">
                           <div>
-                            <p className="text-sm text-slate-700">{h.description}</p>
+                            <p className="text-sm text-[#1c1e21]">{h.description}</p>
                             <p className="text-sm text-gray-600">{new Date(h.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</p>
                           </div>
                           <span className="text-sm font-bold text-emerald-400">+{h.amount}</span>

@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
-const BRAND_BLUE = "#0866FF";
+const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
 
 
@@ -115,14 +115,14 @@ export default function SetupPage() {
               </div>
               <div className="flex-1 h-px max-w-[60px]" style={{ background: "#E4E6EB" }} />
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "#F1F5F9", color: "#374151" }}>2</div>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "#f2f3f5", color: "#374151" }}>2</div>
                 <span className="text-sm font-medium" style={{ color: "#475569" }}>Market Analysis</span>
               </div>
             </div>
 
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-2xl font-black text-slate-900 mb-2">Business Intelligence Profile</h1>
+              <h1 className="text-2xl font-black text-[#1c1e21] mb-2">Business Intelligence Profile</h1>
               <p className="text-sm leading-relaxed" style={{ color: "#374151" }}>
                 Tell us about your business to power your AI-driven marketing engine. Our intelligence models use these details to craft high-conversion strategies.
               </p>
@@ -159,12 +159,12 @@ export default function SetupPage() {
                     placeholder="e.g. Hinilas Pro"
                     value={form.businessName}
                     onChange={e => setForm({ ...form, businessName: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl text-sm text-[#1c1e21] placeholder-gray-400 focus:outline-none transition-all"
                     style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                     onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                     onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                   />
-                  <p className="text-sm text-slate-700 mt-1">Pangalan ng iyong business o brand</p>
+                  <p className="text-sm text-[#1c1e21] mt-1">Pangalan ng iyong business o brand</p>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>Market / location</label>
@@ -173,7 +173,7 @@ export default function SetupPage() {
                     placeholder="e.g. Global, North America"
                     value={form.market}
                     onChange={e => setForm({ ...form, market: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl text-sm text-[#1c1e21] placeholder-gray-400 focus:outline-none transition-all"
                     style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                     onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                     onBlur={e => e.target.style.borderColor = "#E4E6EB"}
@@ -190,12 +190,12 @@ export default function SetupPage() {
                   placeholder="Describe your main product or offering..."
                   value={form.product}
                   onChange={e => setForm({ ...form, product: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none resize-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl text-sm text-[#1c1e21] placeholder-gray-400 focus:outline-none resize-none transition-all"
                   style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-sm text-slate-700 mt-1">Describe your product or service in simple words</p>
+                <p className="text-sm text-[#1c1e21] mt-1">Describe your product or service in simple words</p>
               </div>
 
               {/* Target Audience */}
@@ -207,12 +207,12 @@ export default function SetupPage() {
                   placeholder="Define your ideal persona (e.g. Mid-level marketers in tech)..."
                   value={form.targetAudience}
                   onChange={e => setForm({ ...form, targetAudience: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl text-sm text-[#1c1e21] placeholder-gray-400 focus:outline-none transition-all"
                   style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-sm text-slate-700 mt-1">Who usually buys from you? Age, gender, location</p>
+                <p className="text-sm text-[#1c1e21] mt-1">Who usually buys from you? Age, gender, location</p>
               </div>
 
               {/* USP */}
@@ -226,7 +226,7 @@ export default function SetupPage() {
                   placeholder="What makes you stand out from the competition?"
                   value={form.uniqueSellingOffer}
                   onChange={e => setForm({ ...form, uniqueSellingOffer: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none resize-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl text-sm text-[#1c1e21] placeholder-gray-400 focus:outline-none resize-none transition-all"
                   style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
@@ -247,13 +247,13 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, stage: opt.value as UserSetup["stage"] })}
                         className="w-full p-3.5 rounded-xl text-left flex items-center justify-between transition-all"
                         style={active
-                          ? { background: "rgba(8,102,255,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          ? { background: "rgba(24,119,242,0.12)", border: `1px solid ${BRAND_BLUE}` }
                           : { background: "#FFFFFF", border: "1px solid #E4E6EB" }
                         }
                       >
                         <div>
                           <p className="text-sm font-semibold" style={{ color: active ? "#1C1E21" : "#64748B" }}>{opt.label}</p>
-                          <p className="text-sm" style={{ color: active ? "#0866FF" : "#64748B" }}>{opt.sub}</p>
+                          <p className="text-sm" style={{ color: active ? "#1877F2" : "#64748B" }}>{opt.sub}</p>
                         </div>
                         <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center" style={{ background: active ? BRAND_BLUE : "#E4E6EB" }}>
                           {active && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
@@ -278,12 +278,12 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, language: opt.value })}
                         className="p-3 rounded-xl text-left transition-all"
                         style={active
-                          ? { background: "rgba(8,102,255,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          ? { background: "rgba(24,119,242,0.12)", border: `1px solid ${BRAND_BLUE}` }
                           : { background: "#FFFFFF", border: "1px solid #E4E6EB" }
                         }
                       >
                         <p className="text-sm font-semibold" style={{ color: active ? "#1C1E21" : "#64748B" }}>{opt.label}</p>
-                        <p className="text-sm" style={{ color: active ? "#0866FF" : "#64748B" }}>{opt.sub}</p>
+                        <p className="text-sm" style={{ color: active ? "#1877F2" : "#64748B" }}>{opt.sub}</p>
                       </button>
                     );
                   })}

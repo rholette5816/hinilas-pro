@@ -1,16 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F0F2F5;
-  --foreground: #1C1E21;
-  --brand-blue: #0866FF;
+  /* Backgrounds */
+  --bg-page: #f0f2f5;
+  --bg-surface: #ffffff;
+  --bg-hover: #f2f3f5;
+  --bg-row-hover: #f7f8fa;
+  --bg-selected: #e7f3ff;
+
+  /* Primary brand/action colors */
+  --primary: #1877f2;
+  --primary-hover: #166fe5;
+  --primary-active: #0e5ac7;
+
+  /* Text colors */
+  --text-main: #050505;
+  --text-body: #1c1e21;
+  --text-secondary: #65676b;
+  --text-muted: #8a8d91;
+  --text-disabled: #bcc0c4;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border-light: #e4e6eb;
+  --border-input: #ced0d4;
+
+  /* Status colors */
+  --success: #31a24c;
+  --error: #fa383e;
+  --warning: #f7b928;
+
+  /* Common UI hover states */
+  --secondary-button: #e4e6eb;
+  --secondary-button-hover: #d8dadf;
+  --secondary-button-active: #ccd0d5;
+
+  /* Legacy aliases kept for compatibility */
+  --background: #f0f2f5;
+  --foreground: #1c1e21;
+  --brand-blue: #1877f2;
   --brand-orange: #D97706;
-  --brand-dark: #FFFFFF;
+  --brand-dark: #ffffff;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-page);
+  color: var(--text-body);
 }
 
 html, body {
@@ -35,11 +70,12 @@ html, body {
 }
 
 @keyframes btnGlowBlue {
-  0%   { box-shadow: 0 0 12px rgba(8,102,255,0.5), 0 0 24px rgba(8,102,255,0.2); }
-  100% { box-shadow: 0 0 20px rgba(8,102,255,0.75), 0 0 40px rgba(8,102,255,0.35); }
+  0%   { box-shadow: 0 0 12px rgba(24,119,242,0.5), 0 0 24px rgba(24,119,242,0.2); }
+  100% { box-shadow: 0 0 20px rgba(24,119,242,0.75), 0 0 40px rgba(24,119,242,0.35); }
 }
 @keyframes btnGlowOrange {
   0%   { box-shadow: 0 0 12px rgba(217,119,6,0.5), 0 0 24px rgba(217,119,6,0.2); }
   100% { box-shadow: 0 0 20px rgba(217,119,6,0.75), 0 0 40px rgba(217,119,6,0.35); }
 }
-.blog-card:hover { border-color: #0866FF !important; }
+
+.blog-card:hover { border-color: #1877f2 !important; }

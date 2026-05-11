@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import GCashModal from "@/components/GCashModal";
 import { useApp } from "@/lib/context";
 
-const BRAND_BLUE = "#0866FF";
+const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
 const BRAND_RED = "#EF4444";
 
@@ -93,8 +93,8 @@ export default function PricingPage() {
         <div className="max-w-4xl mx-auto px-6 py-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Credits & Plans</h1>
-            <p className="text-slate-600 text-sm">Buy credits once. Flex and Max <span className="text-slate-900 font-medium">lock your tier for 30 days</span>. After that, tier auto-adjusts based on credits remaining.</p>
+            <h1 className="text-3xl font-bold text-[#1c1e21] mb-2">Credits & Plans</h1>
+            <p className="text-slate-600 text-sm">Buy credits once. Flex and Max <span className="text-[#1c1e21] font-medium">lock your tier for 30 days</span>. After that, tier auto-adjusts based on credits remaining.</p>
           </div>
 
           {/* Threshold bar */}
@@ -110,7 +110,7 @@ export default function PricingPage() {
                 {credits} credits - <span className="uppercase">{currentPlan}</span> tier
               </span>
             </div>
-            <div className="relative w-full bg-slate-100 rounded-full h-3">
+            <div className="relative w-full bg-[#f2f3f5] rounded-full h-3">
               <div className="absolute top-0 bottom-0 w-px bg-gray-500" style={{ left: `${(50 / 300) * 100}%` }} />
               <div
                 className="h-3 rounded-full transition-all"
@@ -120,7 +120,7 @@ export default function PricingPage() {
                 }}
               />
             </div>
-            <div className="flex justify-between mt-2 text-xs text-slate-500">
+            <div className="flex justify-between mt-2 text-xs text-[#8a8d91]">
               <span>0 - Lite</span>
               <span>50 - Flex unlocks</span>
               <span>300 - Max unlocks</span>
@@ -157,19 +157,19 @@ export default function PricingPage() {
                   )}
 
                   <div className="mb-4">
-                    <h2 className="text-slate-900 font-bold text-xl mb-0.5">
+                    <h2 className="text-[#1c1e21] font-bold text-xl mb-0.5">
                       Hinilas <span style={{ color: p.color }}>{p.name}</span>
                     </h2>
-                    <p className="text-slate-500 text-xs">{p.tagline}</p>
+                    <p className="text-[#8a8d91] text-xs">{p.tagline}</p>
                   </div>
 
                   <div className="mb-4">
                     <div className="flex items-end gap-1">
-                      <span className="text-3xl font-bold text-slate-900">{p.price}</span>
-                      {"period" in p && <span className="text-slate-500 text-sm mb-1">{p.period}</span>}
+                      <span className="text-3xl font-bold text-[#1c1e21]">{p.price}</span>
+                      {"period" in p && <span className="text-[#8a8d91] text-sm mb-1">{p.period}</span>}
                     </div>
                     <p className="text-xs mt-1" style={{ color: p.color }}>{p.credits}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{p.threshold}</p>
+                    <p className="text-xs text-[#8a8d91] mt-0.5">{p.threshold}</p>
                   </div>
 
                   {isCurrent ? (
@@ -179,7 +179,7 @@ export default function PricingPage() {
                   ) : p.key === "lite" ? (
                     <button
                       onClick={() => router.push("/")}
-                      className="mt-auto w-full py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-semibold text-[#8a8d91] hover:text-[#1c1e21] transition-colors"
                       style={{ border: "1px solid #E4E6EB" }}
                     >
                       Get Started Free
@@ -190,7 +190,7 @@ export default function PricingPage() {
                       onClick={() => currentPlan !== "max" && setGcash({ label: "Flex", credits: 150, price: 499, color: BRAND_ORANGE })}
                       className="mt-auto w-full py-2 rounded-xl text-sm font-bold transition-opacity"
                       style={{
-                        background: currentPlan === "max" ? "#F1F5F9" : BRAND_ORANGE,
+                        background: currentPlan === "max" ? "#f2f3f5" : BRAND_ORANGE,
                         color: currentPlan === "max" ? "#64748B" : "#000",
                         cursor: currentPlan === "max" ? "not-allowed" : "pointer",
                       }}
@@ -227,15 +227,15 @@ export default function PricingPage() {
             <div className="hidden md:block">
               {FEATURES.map((group) => (
                 <div key={group.category}>
-                  <div className="px-5 py-2" style={{ background: "#F1F5F9", borderBottom: "1px solid #E4E6EB" }}>
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{group.category}</p>
+                  <div className="px-5 py-2" style={{ background: "#f2f3f5", borderBottom: "1px solid #E4E6EB" }}>
+                    <p className="text-xs font-semibold text-[#8a8d91] uppercase tracking-wide">{group.category}</p>
                   </div>
                   {group.items.map((item, idx) => (
                     <div
                       key={item.label}
                       className={`grid grid-cols-4 px-5 py-3 items-center ${idx < group.items.length - 1 ? "border-b border-slate-200" : ""}`}
                     >
-                      <p className="text-slate-700 text-xs col-span-1 pr-4">{item.label}</p>
+                      <p className="text-[#1c1e21] text-xs col-span-1 pr-4">{item.label}</p>
                       <div className="text-center"><Check value={item.lite} color="#9CA3AF" /></div>
                       <div className="text-center"><Check value={item.flex} color={BRAND_ORANGE} /></div>
                       <div className="text-center"><Check value={item.max} color={BRAND_RED} /></div>
@@ -267,7 +267,7 @@ export default function PricingPage() {
                           <span className="mt-0.5 text-xs w-4 shrink-0" style={{ color: value === false ? "#64748B" : tier.color }}>
                             {value === false ? "-" : "Yes"}
                           </span>
-                          <span className={`text-xs leading-snug ${value === false ? "text-slate-500" : "text-slate-700"}`}>
+                          <span className={`text-xs leading-snug ${value === false ? "text-[#8a8d91]" : "text-[#1c1e21]"}`}>
                             {item.label}
                             {typeof value === "string" && (
                               <span className="ml-1 font-semibold" style={{ color: tier.color }}>({value})</span>
@@ -285,7 +285,7 @@ export default function PricingPage() {
           {/* Top-up tiers */}
           <div className="mt-8 mb-12">
             <div className="mb-4">
-              <h3 className="text-slate-900 font-bold text-lg mb-1">Need more credits?</h3>
+              <h3 className="text-[#1c1e21] font-bold text-lg mb-1">Need more credits?</h3>
               <p className="text-slate-600 text-sm">Top-up credits never expire. They do not lock a tier - your plan stays as it is.</p>
             </div>
 
@@ -307,11 +307,11 @@ export default function PricingPage() {
                     </span>
                   )}
                   <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: BRAND_BLUE }}>{opt.label}</p>
-                  <p className="text-slate-900 font-bold text-2xl mb-0.5">
+                  <p className="text-[#1c1e21] font-bold text-2xl mb-0.5">
                     {opt.credits} <span className="text-sm font-medium text-slate-600">credits</span>
                   </p>
-                  <p className="text-slate-700 text-sm font-semibold mb-1">P{opt.price}</p>
-                  <p className="text-slate-500 text-xs">{opt.perCredit} - never expires</p>
+                  <p className="text-[#1c1e21] text-sm font-semibold mb-1">P{opt.price}</p>
+                  <p className="text-[#8a8d91] text-xs">{opt.perCredit} - never expires</p>
                 </button>
               ))}
             </div>

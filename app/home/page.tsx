@@ -14,12 +14,12 @@ interface Feedback {
   message: string;
 }
 
-const BRAND_BLUE = "#0866FF";
+const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
 const TEXT = "#1C1E21";
 const MUTED = "#64748B";
 const BORDER = "#E4E6EB";
-const INNER = "#F1F5F9";
+const INNER = "#f2f3f5";
 
 const STEPS = [
   { num: "01", label: "Research", desc: "Understand your buyers, competitors, objections, and offer gaps before spending on ads.", color: BRAND_BLUE },
@@ -65,7 +65,7 @@ function BrandMark() {
       <HinilasIcon size="md" accentColor={BRAND_ORANGE} />
       <div className="leading-tight">
         <div className="flex items-baseline">
-          <span className="font-bold text-lg text-slate-900">Hinilas</span>
+          <span className="font-bold text-lg text-[#1c1e21]">Hinilas</span>
           <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
         </div>
       </div>
@@ -85,7 +85,7 @@ function FAQSection() {
           </button>
           {open === i && (
             <div className="px-5 pb-5">
-              <p className="text-sm leading-7 text-slate-700">{faq.a}</p>
+              <p className="text-sm leading-7 text-[#1c1e21]">{faq.a}</p>
             </div>
           )}
         </div>
@@ -179,9 +179,9 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
           <BrandMark />
           <div className="flex items-center gap-2">
-            <Link href="/blog" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 sm:inline-flex" style={{ color: MUTED }}>Blog</Link>
-            <a href="#pricing" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 sm:inline-flex" style={{ color: MUTED }}>Pricing</a>
-            <button onClick={openModal} className="rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100" style={{ color: MUTED }} type="button">Sign in</button>
+            <Link href="/blog" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5] sm:inline-flex" style={{ color: MUTED }}>Blog</Link>
+            <a href="#pricing" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5] sm:inline-flex" style={{ color: MUTED }}>Pricing</a>
+            <button onClick={openModal} className="rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5]" style={{ color: MUTED }} type="button">Sign in</button>
             <button onClick={openModal} className="rounded-xl px-4 py-2.5 text-sm font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
               Try Hinilas Pro →
             </button>
@@ -192,13 +192,13 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-10 lg:gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:pb-24 lg:pt-20">
         <div className="min-w-0">
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide" style={{ background: "#EAF4FF", border: "1px solid #BFDBFE", color: BRAND_BLUE }}>
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide" style={{ background: "#e7f3ff", border: "1px solid #BFDBFE", color: BRAND_BLUE }}>
             AI Ad Execution System for Filipino Business Owners
           </div>
-          <h1 className="max-w-xl text-3xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-xl text-3xl font-black leading-[1.05] tracking-tight text-[#050505] sm:text-5xl lg:text-6xl">
             Stop guessing.<br />Start launching.
           </h1>
-          <p className="mt-3 max-w-lg text-base leading-7 text-slate-700">
+          <p className="mt-3 max-w-lg text-base leading-7 text-[#1c1e21]">
             Research your market, find winning angles, write ad copy, and set up campaigns — all in one guided workflow built for non-techy Filipino business owners.
           </p>
 
@@ -212,9 +212,9 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-1">
                 {"★★★★★".split("").map((s, i) => <span key={i} className="text-sm" style={{ color: BRAND_ORANGE }}>{s}</span>)}
-                <span className="ml-1 text-sm font-bold text-slate-900">{avgRating}</span>
+                <span className="ml-1 text-sm font-bold text-[#1c1e21]">{avgRating}</span>
               </div>
-              <p className="text-xs text-slate-700 font-semibold">Trusted by Filipino business owners</p>
+              <p className="text-xs text-[#1c1e21] font-semibold">Trusted by Filipino business owners</p>
             </div>
           </div>
 
@@ -226,7 +226,7 @@ export default function LandingPage() {
               See how it works
             </button>
           </div>
-          <p className="mt-3 text-xs text-slate-700">30 free credits · No credit card required · Cancel anytime</p>
+          <p className="mt-3 text-xs text-[#1c1e21]">30 free credits · No credit card required · Cancel anytime</p>
         </div>
 
         {/* Product mock */}
@@ -235,23 +235,23 @@ export default function LandingPage() {
             <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: BORDER }}>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide" style={{ color: MUTED }}>Campaign workspace</p>
-                <p className="text-sm font-black text-slate-900">Skincare offer — Free Delivery</p>
+                <p className="text-sm font-black text-[#1c1e21]">Skincare offer — Free Delivery</p>
               </div>
               <span className="rounded-full px-3 py-1 text-xs font-bold" style={{ background: "#ECFDF5", color: "#059669" }}>Ready</span>
             </div>
             <div className="space-y-3 p-5">
               {["Research complete", "Winning angle selected", "Copy set generated"].map((item, i) => (
-                <div key={item} className="flex items-center gap-3 rounded-xl border p-4" style={{ background: i === 1 ? "#EFF6FF" : INNER, borderColor: i === 1 ? "#BFDBFE" : BORDER }}>
+                <div key={item} className="flex items-center gap-3 rounded-xl border p-4" style={{ background: i === 1 ? "#EFF6FF" : INNER, borderColor: i === 1 ? "#c3d9fd" : BORDER }}>
                   <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black" style={{ background: i === 1 ? BRAND_BLUE : "#FFFFFF", color: i === 1 ? "#FFFFFF" : BRAND_BLUE }}>{i + 1}</div>
                   <div>
-                    <p className="text-sm font-bold text-slate-900">{item}</p>
-                    <p className="text-xs text-slate-700">Built from your business profile</p>
+                    <p className="text-sm font-bold text-[#1c1e21]">{item}</p>
+                    <p className="text-xs text-[#1c1e21]">Built from your business profile</p>
                   </div>
                 </div>
               ))}
               <div className="rounded-xl border p-4" style={{ background: "#FFFBEB", borderColor: "#FDE68A" }}>
                 <p className="mb-1 text-xs font-black uppercase tracking-wide" style={{ color: "#B45309" }}>Suggested angle</p>
-                <p className="text-sm leading-6 text-slate-800">"Sell the confidence of knowing what to say before the first peso is spent."</p>
+                <p className="text-sm leading-6 text-[#1c1e21]">"Sell the confidence of knowing what to say before the first peso is spent."</p>
               </div>
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function LandingPage() {
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-3xl font-black" style={{ color: BRAND_BLUE }}>{s.val}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-700">{s.label}</p>
+                <p className="mt-1 text-sm font-semibold text-[#1c1e21]">{s.label}</p>
               </div>
             ))}
           </div>
@@ -282,8 +282,8 @@ export default function LandingPage() {
       <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>The system</p>
-          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">A week of prep. In one session.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-700">Every output builds on the previous step so your campaign feels connected instead of randomly generated.</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">A week of prep. In one session.</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Every output builds on the previous step so your campaign feels connected instead of randomly generated.</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step) => (
@@ -292,8 +292,8 @@ export default function LandingPage() {
                 <span className="text-2xl font-black" style={{ color: step.color }}>{step.num}</span>
                 <span className="h-2.5 w-2.5 rounded-full" style={{ background: step.color }} />
               </div>
-              <h3 className="mb-2 text-lg font-black text-slate-900">{step.label}</h3>
-              <p className="text-sm leading-7 text-slate-700">{step.desc}</p>
+              <h3 className="mb-2 text-lg font-black text-[#1c1e21]">{step.label}</h3>
+              <p className="text-sm leading-7 text-[#1c1e21]">{step.desc}</p>
             </div>
           ))}
         </div>
@@ -304,15 +304,15 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
           <div className="mb-10 text-center">
             <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Everything in one place</p>
-            <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">8-in-1 Ad Execution System</h2>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-700">No more jumping between tools. Research, angles, copy, creatives, and campaign setup — all inside one workflow.</p>
+            <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8-in-1 Ad Execution System</h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup — all inside one workflow.</p>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <div key={f.title} className="rounded-xl border bg-white p-6" style={{ borderColor: BORDER }}>
                 <span className="mb-4 inline-block text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>{f.num}</span>
-                <h3 className="mb-2 text-base font-black text-slate-900">{f.title}</h3>
-                <p className="text-sm leading-7 text-slate-700">{f.desc}</p>
+                <h3 className="mb-2 text-base font-black text-[#1c1e21]">{f.title}</h3>
+                <p className="text-sm leading-7 text-[#1c1e21]">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -323,8 +323,8 @@ export default function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: "#7C3AED" }}>Real results</p>
-          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">See What Our Users Are Making</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-700">Real ads. Real business owners. Real results from the Hinilas Pro workflow.</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">See What Our Users Are Making</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Real ads. Real business owners. Real results from the Hinilas Pro workflow.</p>
         </div>
         <div className="ugc-scroll">
           {UGC_PLACEHOLDERS.map((u, i) => (
@@ -336,19 +336,19 @@ export default function LandingPage() {
                     <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full border-2" style={{ borderColor: BORDER, background: "#FFFFFF" }}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={BRAND_BLUE} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
-                    <p className="text-xs font-bold text-slate-700">Reel coming soon</p>
-                    <p className="mt-1 text-xs text-slate-500">Drop a video link here</p>
+                    <p className="text-xs font-bold text-[#1c1e21]">Reel coming soon</p>
+                    <p className="mt-1 text-xs text-[#8a8d91]">Drop a video link here</p>
                   </div>
                 </div>
                 <div className="p-3 border-t" style={{ borderColor: BORDER }}>
-                  <p className="text-sm font-bold text-slate-900">{u.name}</p>
-                  <p className="text-xs text-slate-700">{u.biz}</p>
+                  <p className="text-sm font-bold text-[#1c1e21]">{u.name}</p>
+                  <p className="text-xs text-[#1c1e21]">{u.biz}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <p className="mt-6 text-center text-xs text-slate-500">Are you a Hinilas Pro user? <button onClick={() => {}} className="font-bold underline" style={{ color: BRAND_BLUE }}>Submit your reel</button></p>
+        <p className="mt-6 text-center text-xs text-[#8a8d91]">Are you a Hinilas Pro user? <button onClick={() => {}} className="font-bold underline" style={{ color: BRAND_BLUE }}>Submit your reel</button></p>
       </section>
 
       {/* TESTIMONIALS */}
@@ -357,10 +357,10 @@ export default function LandingPage() {
           <div className="mx-auto max-w-6xl px-5 py-20">
             <div className="mb-10 text-center">
               <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: "#10B981" }}>What they say</p>
-              <h2 className="text-3xl font-black tracking-tight text-slate-950">Users who stopped guessing</h2>
+              <h2 className="text-3xl font-black tracking-tight text-[#050505]">Users who stopped guessing</h2>
               <div className="mt-3 flex items-center justify-center gap-2">
                 {"★★★★★".split("").map((s, i) => <span key={i} style={{ color: BRAND_ORANGE }}>{s}</span>)}
-                <span className="text-sm font-bold text-slate-900">{avgRating} from {feedbacks.length} users</span>
+                <span className="text-sm font-bold text-[#1c1e21]">{avgRating} from {feedbacks.length} users</span>
               </div>
             </div>
             <div className="testimonial-scroll">
@@ -373,13 +373,13 @@ export default function LandingPage() {
                       <div className="grid h-10 w-10 rounded-full text-sm font-black text-white" style={{ background: BRAND_BLUE, placeItems: "center" }}>{f.user_name.charAt(0).toUpperCase()}</div>
                     )}
                     <div>
-                      <p className="text-sm font-bold text-slate-900">{f.user_name}</p>
+                      <p className="text-sm font-bold text-[#1c1e21]">{f.user_name}</p>
                       <div className="flex items-center gap-1">
                         {"★★★★★".split("").slice(0, f.rating).map((s, i) => <span key={i} className="text-xs" style={{ color: BRAND_ORANGE }}>{s}</span>)}
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm leading-7 text-slate-800">"{f.message.length > 160 ? `${f.message.slice(0, 160)}...` : f.message}"</p>
+                  <p className="text-sm leading-7 text-[#1c1e21]">"{f.message.length > 160 ? `${f.message.slice(0, 160)}...` : f.message}"</p>
                 </div>
               ))}
             </div>
@@ -398,15 +398,15 @@ export default function LandingPage() {
             {/* Copy */}
             <div className="p-6 lg:p-12">
               <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Built by a practitioner</p>
-              <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">Kevin Rholette T. Allego RN</h2>
+              <h2 className="text-2xl font-black text-[#050505] sm:text-3xl">Kevin Rholette T. Allego RN</h2>
               <p className="mt-1 text-base font-semibold" style={{ color: BRAND_ORANGE }}>Meta Ads Strategist, eCommerce Operator, Founder</p>
-              <div className="mt-6 space-y-4 text-base leading-8 text-slate-800">
+              <div className="mt-6 space-y-4 text-base leading-8 text-[#1c1e21]">
                 <p>I built Hinilas Pro because I kept seeing the same problem — business owners spending money on ads without a real system. They guessed the angle. They copied captions. They boosted posts and hoped.</p>
                 <p>I wanted a tool that forces the right thinking before the first peso is spent. Research first. Angle next. Copy follows. Campaign last. That is the system.</p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
                 {["Meta Ads Strategist", "Multi-Brand eCommerce Operator", "KRA Digitals AI Automation Founder"].map((badge) => (
-                  <span key={badge} className="rounded-full px-4 py-1.5 text-xs font-bold" style={{ background: "#EAF4FF", color: BRAND_BLUE, border: "1px solid #BFDBFE" }}>{badge}</span>
+                  <span key={badge} className="rounded-full px-4 py-1.5 text-xs font-bold" style={{ background: "#e7f3ff", color: BRAND_BLUE, border: "1px solid #BFDBFE" }}>{badge}</span>
                 ))}
               </div>
             </div>
@@ -418,8 +418,8 @@ export default function LandingPage() {
       <section id="pricing" className="border-y bg-white" style={{ borderColor: BORDER }}>
         <div className="mx-auto max-w-6xl px-4 py-12 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
-          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">₱499/mo. No guesswork fees.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-700">Start free with 30 credits. Upgrade when you are ready. Top up anytime with ₱249 credit packs. Less than the cost of one wrong boosted post.</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">₱499/mo. No guesswork fees.</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime with ₱249 credit packs. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
               Start free — 30 credits →
@@ -428,7 +428,7 @@ export default function LandingPage() {
               See full pricing
             </a>
           </div>
-          <p className="mt-4 text-xs text-slate-700">FREE · CANCEL ANYTIME · NO CREDIT CARD REQUIRED</p>
+          <p className="mt-4 text-xs text-[#1c1e21]">FREE · CANCEL ANYTIME · NO CREDIT CARD REQUIRED</p>
         </div>
       </section>
 
@@ -436,8 +436,8 @@ export default function LandingPage() {
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:gap-10 lg:py-20 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>FAQ</p>
-          <h2 className="text-3xl font-black tracking-tight text-slate-950">Common questions</h2>
-          <p className="mt-4 text-base leading-7 text-slate-700">Straight answers before you create an account.</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#050505]">Common questions</h2>
+          <p className="mt-4 text-base leading-7 text-[#1c1e21]">Straight answers before you create an account.</p>
         </div>
         <FAQSection />
       </section>
@@ -451,7 +451,7 @@ export default function LandingPage() {
           <button onClick={openModal} className="mt-8 rounded-xl px-8 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
             Create My Free Ad Kit →
           </button>
-          <p className="mt-4 text-xs" style={{ color: "#94A3B8" }}>30 free credits · No credit card · Cancel anytime</p>
+          <p className="mt-4 text-xs" style={{ color: "#8a8d91" }}>30 free credits · No credit card · Cancel anytime</p>
         </div>
       </section>
 
@@ -460,9 +460,9 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row">
           <BrandMark />
           <div className="flex items-center gap-5 text-sm font-semibold" style={{ color: MUTED }}>
-            <a href="/privacy" className="transition-colors hover:text-slate-900">Privacy</a>
-            <a href="/terms" className="transition-colors hover:text-slate-900">Terms</a>
-            <a href="/blog" className="transition-colors hover:text-slate-900">Blog</a>
+            <a href="/privacy" className="transition-colors hover:text-[#1c1e21]">Privacy</a>
+            <a href="/terms" className="transition-colors hover:text-[#1c1e21]">Terms</a>
+            <a href="/blog" className="transition-colors hover:text-[#1c1e21]">Blog</a>
             <span>© 2026 Hinilas Pro</span>
           </div>
         </div>

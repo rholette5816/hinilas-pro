@@ -7,7 +7,7 @@ import { useCommunityMessages } from "@/lib/use-community-messages";
 function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
   if (avatar) return <img src={avatar} alt={name} className="w-7 h-7 rounded-full object-cover shrink-0" />;
   return (
-    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#0866FF" }}>
+    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#1877F2" }}>
       {name.charAt(0).toUpperCase()}
     </div>
   );
@@ -129,18 +129,18 @@ export default function FloatingChat() {
             animation: "slideUp 0.2s ease-out",
           }}
         >
-          <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#F1F5F9", borderBottom: "1px solid #E4E6EB" }}>
+          <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#f2f3f5", borderBottom: "1px solid #E4E6EB" }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-slate-900 text-sm font-bold">Mga Hilason</span>
-              <span className="text-slate-500 text-xs">{messages.length} messages</span>
+              <span className="text-[#1c1e21] text-sm font-bold">Mga Hilason</span>
+              <span className="text-[#8a8d91] text-xs">{messages.length} messages</span>
             </div>
-            <button onClick={closeChat} className="text-gray-500 hover:text-slate-900 text-base">×</button>
+            <button onClick={closeChat} className="text-gray-500 hover:text-[#1c1e21] text-base">×</button>
           </div>
 
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
             {messages.length === 0 && (
-              <p className="text-center text-slate-500 text-xs pt-8">No messages yet. Say something!</p>
+              <p className="text-center text-[#8a8d91] text-xs pt-8">No messages yet. Say something!</p>
             )}
             {messages.map((msg, idx) => {
               const isMe = msg.user_id === currentUser?.id;
@@ -151,16 +151,16 @@ export default function FloatingChat() {
                   <div className={`max-w-[75%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                     {!sameUser && (
                       <div className={`flex items-baseline gap-1.5 mb-0.5 ${isMe ? "flex-row-reverse" : ""}`}>
-                        <span className="text-xs font-semibold text-slate-700">{isMe ? "You" : msg.user_name}</span>
-                        <span className="text-slate-500 text-xs">{formatTime(msg.created_at)}</span>
+                        <span className="text-xs font-semibold text-[#1c1e21]">{isMe ? "You" : msg.user_name}</span>
+                        <span className="text-[#8a8d91] text-xs">{formatTime(msg.created_at)}</span>
                       </div>
                     )}
                     <div
                       className="px-3 py-2 text-xs leading-relaxed"
                       style={{
-                        background: isMe ? "#0866FF" : "#F1F5F9",
+                        background: isMe ? "#1877F2" : "#f2f3f5",
                         color: isMe ? "#fff" : "#1C1E21",
-                        border: isMe ? "1px solid #0866FF" : "1px solid #E4E6EB",
+                        border: isMe ? "1px solid #1877F2" : "1px solid #E4E6EB",
                         borderRadius: isMe ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                       }}
                     >
@@ -181,14 +181,14 @@ export default function FloatingChat() {
                 onKeyDown={handleKeyDown}
                 placeholder="Message everyone..."
                 rows={1}
-                className="flex-1 rounded-xl px-3 py-2 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="flex-1 rounded-xl px-3 py-2 text-[#1c1e21] placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", maxHeight: "80px" }}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || sending}
                 className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 shrink-0 transition-opacity hover:opacity-90"
-                style={{ background: "#0866FF" }}
+                style={{ background: "#1877F2" }}
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M22 2L11 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -208,7 +208,7 @@ export default function FloatingChat() {
             width: "48px",
             height: "48px",
             borderRadius: "10px 10px 0 0",
-            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #0866FF)",
+            background: open ? "#f2f3f5" : "linear-gradient(135deg, #7C3AED, #1877F2)",
             border: open ? "1px solid #E4E6EB" : "none",
             boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
             animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",

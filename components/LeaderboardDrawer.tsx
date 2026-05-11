@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const BADGE_COLORS: Record<string, string> = {
   "Hilas Dominator": "#D97706",
   "Ad Machine": "#8B5CF6",
-  "Consistent Operator": "#0866FF",
+  "Consistent Operator": "#1877F2",
   "Starter Launcher": "#10B981",
 };
 
@@ -65,11 +65,11 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
           <div className="flex items-center gap-2">
             <span className="text-lg">🏆</span>
             <div>
-              <p className="text-slate-900 font-bold text-sm">Ads Launched</p>
-              <p className="text-slate-500 text-xs">Real operators. Verified campaigns.</p>
+              <p className="text-[#1c1e21] font-bold text-sm">Ads Launched</p>
+              <p className="text-[#8a8d91] text-xs">Real operators. Verified campaigns.</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-900 p-1 transition-colors">✕</button>
+          <button onClick={onClose} className="text-[#8a8d91] hover:text-[#1c1e21] p-1 transition-colors">✕</button>
         </div>
 
         {/* Period toggle */}
@@ -80,9 +80,9 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
               onClick={() => setPeriod(p)}
               className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: period === p ? "#0866FF" : "#F1F5F9",
+                background: period === p ? "#1877F2" : "#f2f3f5",
                 color: period === p ? "#fff" : "#64748B",
-                border: `1px solid ${period === p ? "#0866FF" : "#E4E6EB"}`,
+                border: `1px solid ${period === p ? "#1877F2" : "#E4E6EB"}`,
               }}
             >
               {p === "alltime" ? "All Time" : "This Month"}
@@ -101,8 +101,8 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
           ) : data.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-3xl mb-3">🚀</p>
-              <p className="text-slate-900 font-semibold text-sm mb-1">No launches yet</p>
-              <p className="text-slate-500 text-xs">Be the first to submit your campaign proof.</p>
+              <p className="text-[#1c1e21] font-semibold text-sm mb-1">No launches yet</p>
+              <p className="text-[#8a8d91] text-xs">Be the first to submit your campaign proof.</p>
             </div>
           ) : (
             data.map((entry) => {
@@ -115,7 +115,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
                   key={entry.rank}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl"
                   style={{
-                    background: entry.rank <= 3 ? `${rankColor}08` : "#F1F5F9",
+                    background: entry.rank <= 3 ? `${rankColor}08` : "#f2f3f5",
                     border: `1px solid ${entry.rank <= 3 ? rankColor + "25" : "#E4E6EB"}`,
                   }}
                 >
@@ -147,7 +147,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
 
                   {/* Name + badge */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-slate-900 font-semibold text-sm truncate">{entry.username}</p>
+                    <p className="text-[#1c1e21] font-semibold text-sm truncate">{entry.username}</p>
                     {entry.badge && (
                       <span
                         className="text-xs font-bold px-1.5 py-0.5 rounded-full"
@@ -160,8 +160,8 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
 
                   {/* Count */}
                   <div className="text-right flex-shrink-0">
-                    <p className="text-slate-900 font-black text-base">{entry.launches}</p>
-                    <p className="text-slate-500 text-xs">launched</p>
+                    <p className="text-[#1c1e21] font-black text-base">{entry.launches}</p>
+                    <p className="text-[#8a8d91] text-xs">launched</p>
                   </div>
                 </div>
               );

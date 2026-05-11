@@ -1,4 +1,4 @@
-interface FunnelProgressProps {
+﻿interface FunnelProgressProps {
   currentStep: 1 | 2 | 3 | 4 | 5;
 }
 
@@ -42,7 +42,7 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all md:h-9 md:w-9 md:text-sm"
                   style={{
-                    background: isCompleted ? "#0866FF" : isActive ? "#D97706" : "#E4E6EB",
+                    background: isCompleted ? "#1877F2" : isActive ? "#D97706" : "#E4E6EB",
                     color: isUpcoming ? "#64748B" : "#FFFFFF",
                     boxShadow: isActive ? "0 0 18px rgba(217,119,6,0.45)" : "none",
                   }}
@@ -57,7 +57,7 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 </span>
               </div>
               {index < STEPS.length - 1 && (
-                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#0866FF" : "#E4E6EB" }} />
+                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#1877F2" : "#E4E6EB" }} />
               )}
             </div>
           );

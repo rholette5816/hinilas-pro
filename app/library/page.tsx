@@ -107,10 +107,10 @@ export default function LibraryPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
               <span className="text-xs font-medium" style={{ color: "#65676B" }}>🗂 Media Library</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">Your Generated Media</h1>
+            <h1 className="text-2xl font-bold text-[#1c1e21] mb-1">Your Generated Media</h1>
             <p className="text-slate-600 text-sm">All your images and video clips — saved permanently.</p>
           </div>
 
@@ -120,7 +120,7 @@ export default function LibraryPage() {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${filter === tab ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:text-slate-900"}`}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${filter === tab ? "bg-blue-600 text-white" : "bg-[#f2f3f5] text-slate-600 hover:text-[#1c1e21]"}`}
               >
                 {tab === "all" ? `All (${items.length})` : tab === "image" ? `Images (${imageCount})` : `Videos (${videoCount})`}
               </button>
@@ -142,10 +142,10 @@ export default function LibraryPage() {
           {!loading && filtered.length === 0 && (
             <div className="text-center py-24">
               <div className="text-4xl mb-4">{filter === "video" ? "🎬" : "🖼"}</div>
-              <p className="text-slate-900 font-semibold text-sm mb-1">
+              <p className="text-[#1c1e21] font-semibold text-sm mb-1">
                 {filter === "all" ? "No media yet" : filter === "image" ? "No images yet" : "No videos yet"}
               </p>
-              <p className="text-slate-500 text-xs mb-5">
+              <p className="text-[#8a8d91] text-xs mb-5">
                 {filter === "all" ? "Generate your first image or video in Creative." : `Generate ${filter}s in the Creative tab.`}
               </p>
               <button
@@ -167,7 +167,7 @@ export default function LibraryPage() {
                   style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                 >
                   {/* Thumbnail */}
-                  <div className="relative aspect-square bg-slate-100 overflow-hidden">
+                  <div className="relative aspect-square bg-[#f2f3f5] overflow-hidden">
                     {item.type === "image" ? (
                       <img
                         src={item.url}
@@ -216,11 +216,11 @@ export default function LibraryPage() {
 
                   {/* Info strip */}
                   <div className="px-3 py-2.5">
-                    <p className="text-slate-900 text-xs font-semibold truncate">{item.label || "Ad Creative"}</p>
+                    <p className="text-[#1c1e21] text-xs font-semibold truncate">{item.label || "Ad Creative"}</p>
                     {item.angle && (
-                      <p className="text-slate-500 text-xs truncate mt-0.5">{item.angle}</p>
+                      <p className="text-[#8a8d91] text-xs truncate mt-0.5">{item.angle}</p>
                     )}
-                    <p className="text-slate-500 text-xs mt-1">{formatDate(item.created_at)}</p>
+                    <p className="text-[#8a8d91] text-xs mt-1">{formatDate(item.created_at)}</p>
                   </div>
                 </div>
               ))}

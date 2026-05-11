@@ -12,21 +12,21 @@ export default function DataDeletionPage({
           </svg>
         </div>
 
-        <h1 className="text-slate-950 text-2xl font-black mb-3">Data Deletion Confirmed</h1>
+        <h1 className="text-[#050505] text-2xl font-black mb-3">Data Deletion Confirmed</h1>
         <p className="text-slate-600 text-sm leading-relaxed mb-6">
           Your request to delete all personal data associated with your Facebook account on Hinilas Pro has been received and processed.
         </p>
 
         {searchParams.code && (
-          <div className="rounded-xl px-4 py-3 mb-6 text-left" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
-            <p className="text-slate-500 text-xs mb-1">Confirmation Code</p>
-            <p className="text-slate-700 text-xs font-mono break-all">{searchParams.code}</p>
+          <div className="rounded-xl px-4 py-3 mb-6 text-left" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
+            <p className="text-[#8a8d91] text-xs mb-1">Confirmation Code</p>
+            <p className="text-[#1c1e21] text-xs font-mono break-all">{searchParams.code}</p>
           </div>
         )}
 
-        <p className="text-slate-500 text-xs">
+        <p className="text-[#8a8d91] text-xs">
           If you have questions, contact us at{" "}
-          <span className="font-semibold text-slate-700">support@hinilas.pro</span>
+          <span className="font-semibold text-[#1c1e21]">support@hinilas.pro</span>
         </p>
       </div>
     </div>

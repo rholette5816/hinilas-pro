@@ -99,17 +99,17 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
           <div>
-            <p className="text-slate-900 font-bold text-sm">Pay via GCash</p>
+            <p className="text-[#1c1e21] font-bold text-sm">Pay via GCash</p>
             <p className="text-xs mt-0.5 font-medium" style={{ color }}>{label} — {credits} credits · ₱{price.toLocaleString()}</p>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-900 text-lg leading-none">✕</button>
+          <button onClick={onClose} className="text-[#8a8d91] hover:text-[#1c1e21] text-lg leading-none">✕</button>
         </div>
 
         {!done ? (
           <div className="p-5 space-y-4">
             {/* GCash QR */}
             <div className="rounded-xl overflow-hidden border border-slate-200 bg-blue-600 flex flex-col items-center py-5 px-4">
-              <span className="text-slate-900 font-bold text-lg mb-4">GCash</span>
+              <span className="text-[#1c1e21] font-bold text-lg mb-4">GCash</span>
               <div className="bg-white rounded-xl p-3 mb-4">
                 <img
                   src="/gcash-qr.jpg"
@@ -123,29 +123,29 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
                 />
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-slate-900 font-bold text-base">Donna Lim</p>
+                <p className="text-[#1c1e21] font-bold text-base">Donna Lim</p>
                 <button
                   onClick={() => navigator.clipboard.writeText("Donna Lim")}
-                  className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400/40 hover:border-blue-400/80 transition-all"
+                  className="text-blue-200 hover:text-[#1c1e21] text-xs px-2 py-0.5 rounded border border-blue-400/40 hover:border-blue-400/80 transition-all"
                 >Copy</button>
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-blue-200 text-sm">0956 160 3751</p>
                 <button
                   onClick={() => navigator.clipboard.writeText("09561603751")}
-                  className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400/40 hover:border-blue-400/80 transition-all"
+                  className="text-blue-200 hover:text-[#1c1e21] text-xs px-2 py-0.5 rounded border border-blue-400/40 hover:border-blue-400/80 transition-all"
                 >Copy</button>
               </div>
               <p className="text-blue-100 text-xs mt-3">Transfer fees may apply.</p>
             </div>
 
             {/* Amount summary */}
-            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
               <div>
-                <p className="text-slate-900 font-bold text-sm">{label} — {credits} credits</p>
-                <p className="text-slate-500 text-xs">Never expires · adds to balance</p>
+                <p className="text-[#1c1e21] font-bold text-sm">{label} — {credits} credits</p>
+                <p className="text-[#8a8d91] text-xs">Never expires · adds to balance</p>
               </div>
-              <p className="text-slate-900 font-bold">₱{price.toLocaleString()}</p>
+              <p className="text-[#1c1e21] font-bold">₱{price.toLocaleString()}</p>
             </div>
 
             {/* Screenshot upload */}
@@ -154,7 +154,7 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
               <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
               {screenshotPreview ? (
                 <div className="relative rounded-xl overflow-hidden border border-slate-200">
-                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-slate-100" />
+                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-[#f2f3f5]" />
                   <button
                     onClick={() => { setScreenshot(null); setScreenshotPreview(null); if (fileRef.current) fileRef.current.value = ""; }}
                     className="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg"
@@ -164,8 +164,8 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
               ) : (
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="w-full py-4 rounded-xl border border-dashed text-slate-600 hover:text-slate-900 text-sm transition-colors flex flex-col items-center gap-1"
-                  style={{ background: "#F1F5F9" }}
+                  className="w-full py-4 rounded-xl border border-dashed text-slate-600 hover:text-[#1c1e21] text-sm transition-colors flex flex-col items-center gap-1"
+                  style={{ background: "#f2f3f5" }}
                 >
                   <span className="text-2xl">📎</span>
                   <span>Tap to upload screenshot</span>
@@ -183,20 +183,20 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
               {submitting ? "Uploading..." : "Submit Payment"}
             </button>
 
-            <p className="text-slate-500 text-xs text-center">Credits added after we verify your payment. Usually within a few hours.</p>
+            <p className="text-[#8a8d91] text-xs text-center">Credits added after we verify your payment. Usually within a few hours.</p>
           </div>
         ) : (
           <div className="p-8 text-center space-y-3">
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-2" style={{ background: "#22c55e20" }}>
               <span className="text-3xl">✓</span>
             </div>
-            <p className="text-slate-900 font-bold text-base">Request Submitted</p>
-            <p className="text-slate-600 text-sm">We received your payment for <strong className="text-slate-900">{credits} credits</strong>. Credits will be added after verification.</p>
-            <p className="text-slate-500 text-xs">Usually within a few hours during business hours.</p>
+            <p className="text-[#1c1e21] font-bold text-base">Request Submitted</p>
+            <p className="text-slate-600 text-sm">We received your payment for <strong className="text-[#1c1e21]">{credits} credits</strong>. Credits will be added after verification.</p>
+            <p className="text-[#8a8d91] text-xs">Usually within a few hours during business hours.</p>
             <button
               onClick={onClose}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#0866FF" }}
+              style={{ background: "#1877F2" }}
             >
               Done
             </button>

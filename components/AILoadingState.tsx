@@ -92,7 +92,7 @@ export default function AILoadingState({
         <div className="mb-6 min-h-[3rem] px-3 md:min-h-[3.5rem]">
           <p
             key={currentIndex}
-            className="text-sm font-semibold text-slate-900 md:text-base"
+            className="text-sm font-semibold text-[#1c1e21] md:text-base"
             style={{ animation: "loadingMessageFade 2.5s ease-in-out both" }}
           >
             {currentMessage}

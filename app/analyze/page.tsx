@@ -50,7 +50,7 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-7 pr-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-7 pr-3 text-[#1c1e21] placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
     </div>
@@ -354,7 +354,7 @@ export default function AnalyzePage() {
     // Cover slide
     slidesHTML += `
     <div class="slide active" id="slide-${slideIdx++}">
-      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g1)"/><defs><radialGradient id="g1"><stop offset="0%" stop-color="#0866FF" stop-opacity="0.25"/><stop offset="100%" stop-color="#0866FF" stop-opacity="0"/></radialGradient></defs></svg>
+      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g1)"/><defs><radialGradient id="g1"><stop offset="0%" stop-color="#1877F2" stop-opacity="0.25"/><stop offset="100%" stop-color="#1877F2" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g2)"/><defs><radialGradient id="g2"><stop offset="0%" stop-color="#7C3AED" stop-opacity="0.2"/><stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-grid" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1C1E21" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(#grid)"/></svg>
       <div class="cover-layout">
@@ -375,7 +375,7 @@ export default function AnalyzePage() {
             <circle cx="110" cy="110" r="60" fill="none" stroke="#7C3AED" stroke-width="12" stroke-dasharray="251" stroke-dashoffset="100" stroke-linecap="round" opacity="0.5" transform="rotate(-90 110 110)"/>
             <text x="110" y="105" text-anchor="middle" fill="#fff" font-size="22" font-weight="800" font-family="Arial">ADS</text>
             <text x="110" y="128" text-anchor="middle" fill="#64748B" font-size="11" font-family="Arial">ANALYSIS</text>
-            <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0866FF"/><stop offset="100%" stop-color="#38BDF8"/></linearGradient></defs>
+            <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1877F2"/><stop offset="100%" stop-color="#38BDF8"/></linearGradient></defs>
           </svg>
         </div>
       </div>
@@ -393,7 +393,7 @@ export default function AnalyzePage() {
         </div>`).join("");
       slidesHTML += `
       <div class="slide" id="slide-${si}">
-        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3b)"/><defs><radialGradient id="g3b"><stop offset="0%" stop-color="#0866FF" stop-opacity="0.1"/><stop offset="100%" stop-color="#0866FF" stop-opacity="0"/></radialGradient></defs></svg>
+        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3b)"/><defs><radialGradient id="g3b"><stop offset="0%" stop-color="#1877F2" stop-opacity="0.1"/><stop offset="100%" stop-color="#1877F2" stop-opacity="0"/></radialGradient></defs></svg>
         <div class="slide-header">
           <div class="slide-header-left">
             <div class="slide-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
@@ -429,7 +429,7 @@ export default function AnalyzePage() {
       const icon = getIcon(s.title);
       slidesHTML += `
       <div class="slide" id="slide-${si}">
-        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3)"/><defs><radialGradient id="g3"><stop offset="0%" stop-color="#0866FF" stop-opacity="0.1"/><stop offset="100%" stop-color="#0866FF" stop-opacity="0"/></radialGradient></defs></svg>
+        <svg class="bg-orb orb3" viewBox="0 0 500 500"><circle cx="250" cy="250" r="250" fill="url(#g3)"/><defs><radialGradient id="g3"><stop offset="0%" stop-color="#1877F2" stop-opacity="0.1"/><stop offset="100%" stop-color="#1877F2" stop-opacity="0"/></radialGradient></defs></svg>
         <div class="slide-header">
           <div class="slide-header-left">
             <div class="slide-icon">${icon}</div>
@@ -450,7 +450,7 @@ export default function AnalyzePage() {
     const closingIdx = slideIdx++;
     slidesHTML += `
     <div class="slide" id="slide-${closingIdx}">
-      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g4)"/><defs><radialGradient id="g4"><stop offset="0%" stop-color="#0866FF" stop-opacity="0.3"/><stop offset="100%" stop-color="#0866FF" stop-opacity="0"/></radialGradient></defs></svg>
+      <svg class="bg-orb orb1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="200" fill="url(#g4)"/><defs><radialGradient id="g4"><stop offset="0%" stop-color="#1877F2" stop-opacity="0.3"/><stop offset="100%" stop-color="#1877F2" stop-opacity="0"/></radialGradient></defs></svg>
       <svg class="bg-orb orb2" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150" fill="url(#g5)"/><defs><radialGradient id="g5"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></radialGradient></defs></svg>
       <div class="closing-layout">
         <div class="closing-label">CONCLUSION</div>
@@ -487,24 +487,24 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 /* Cover */
 .cover-layout{flex:1;display:flex;align-items:center;padding:0 80px;gap:60px;position:relative;z-index:1}
 .cover-left{flex:1}
-.cover-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#0866FF;background:rgba(8,102,255,0.12);border:1px solid rgba(8,102,255,0.3);padding:6px 14px;border-radius:20px;margin-bottom:28px}
+.cover-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#1877F2;background:rgba(24,119,242,0.12);border:1px solid rgba(24,119,242,0.3);padding:6px 14px;border-radius:20px;margin-bottom:28px}
 .cover-h1{font-size:64px;font-weight:900;color:#fff;line-height:1.0;margin-bottom:32px}
-.cover-h1-accent{background:linear-gradient(90deg,#0866FF,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.cover-divider{width:64px;height:3px;background:linear-gradient(90deg,#0866FF,#38BDF8);border-radius:2px;margin-bottom:28px}
+.cover-h1-accent{background:linear-gradient(90deg,#1877F2,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cover-divider{width:64px;height:3px;background:linear-gradient(90deg,#1877F2,#38BDF8);border-radius:2px;margin-bottom:28px}
 .cover-meta-name{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
 .cover-meta-date{font-size:13px;color:#475569}
 .cover-right{flex:0 0 240px;display:flex;align-items:center;justify-content:center}
-.cover-chart-svg{width:220px;height:220px;filter:drop-shadow(0 0 32px rgba(8,102,255,0.35))}
+.cover-chart-svg{width:220px;height:220px;filter:drop-shadow(0 0 32px rgba(24,119,242,0.35))}
 
 /* Slide header */
 .slide-header{display:flex;align-items:center;justify-content:space-between;padding:28px 60px 0;flex-shrink:0;position:relative;z-index:1}
 .slide-header-left{display:flex;align-items:center;gap:16px}
-.slide-icon{width:44px;height:44px;background:rgba(8,102,255,0.15);border:1px solid rgba(8,102,255,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#0866FF;flex-shrink:0}
+.slide-icon{width:44px;height:44px;background:rgba(24,119,242,0.15);border:1px solid rgba(24,119,242,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#1877F2;flex-shrink:0}
 .slide-icon svg{width:22px;height:22px}
 .slide-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#475569;margin-bottom:3px}
 .slide-title{font-size:24px;font-weight:800;color:#fff}
 .slide-num-header{font-size:12px;color:#64748B;font-weight:600}
-.slide-rule{height:1px;background:linear-gradient(90deg,#0866FF,transparent);margin:16px 60px;flex-shrink:0}
+.slide-rule{height:1px;background:linear-gradient(90deg,#1877F2,transparent);margin:16px 60px;flex-shrink:0}
 .slide-body{flex:1;padding:0 60px 0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
 .slide-footer-bar{padding:14px 60px;font-size:11px;color:#64748B;font-weight:500;flex-shrink:0;border-top:1px solid #0F1E2E}
 .slide-num{position:absolute;bottom:18px;right:60px;font-size:12px;color:#64748B;font-weight:600;z-index:1}
@@ -524,11 +524,11 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .badge{font-size:11px;font-weight:800;letter-spacing:0.1em;padding:4px 12px;border-radius:20px;text-transform:uppercase;flex-shrink:0}
 
 /* Funnel */
-.funnel-row{display:flex;align-items:center;gap:8px;margin-bottom:24px;background:rgba(8,102,255,0.06);border:1px solid rgba(8,102,255,0.15);border-radius:14px;padding:20px 24px}
+.funnel-row{display:flex;align-items:center;gap:8px;margin-bottom:24px;background:rgba(24,119,242,0.06);border:1px solid rgba(24,119,242,0.15);border-radius:14px;padding:20px 24px}
 .funnel-step{flex:1;text-align:center}
 .funnel-val{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
 .funnel-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475569}
-.funnel-arrow{font-size:28px;color:#0866FF;font-weight:300;flex-shrink:0}
+.funnel-arrow{font-size:28px;color:#1877F2;font-weight:300;flex-shrink:0}
 
 /* Callout */
 .callout-block{display:flex;flex-direction:column;gap:10px}
@@ -538,10 +538,10 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 
 /* Closing */
 .closing-layout{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 80px;position:relative;z-index:1}
-.closing-label{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#0866FF;margin-bottom:20px}
+.closing-label{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#1877F2;margin-bottom:20px}
 .closing-l1{font-size:62px;font-weight:900;color:#fff;line-height:1.05;margin-bottom:4px}
-.closing-l2{font-size:62px;font-weight:900;background:linear-gradient(90deg,#0866FF,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.05;margin-bottom:36px}
-.closing-divider{width:64px;height:3px;background:linear-gradient(90deg,#0866FF,#38BDF8);border-radius:2px;margin-bottom:24px}
+.closing-l2{font-size:62px;font-weight:900;background:linear-gradient(90deg,#1877F2,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.05;margin-bottom:36px}
+.closing-divider{width:64px;height:3px;background:linear-gradient(90deg,#1877F2,#38BDF8);border-radius:2px;margin-bottom:24px}
 .closing-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
 .closing-date{font-size:12px;color:#475569}
 
@@ -564,7 +564,7 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);padding:8px;border-radius:16px;border:1px solid #E4E6EB}
 .nav button{background:transparent;border:none;color:#475569;font-size:16px;width:40px;height:40px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:600}
 .nav button:hover{background:#E4E6EB;color:#1C1E21}
-.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#0866FF,#38BDF8);transition:width 0.4s cubic-bezier(.4,0,.2,1);z-index:200}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#1877F2,#38BDF8);transition:width 0.4s cubic-bezier(.4,0,.2,1);z-index:200}
 </style>
 </head>
 <body>
@@ -763,7 +763,7 @@ show(0);
             <div className="inline-flex items-center gap-2 bg-yellow-950 border border-yellow-800 rounded-full px-3 py-1 mb-4">
               <span className="text-yellow-300 text-xs font-medium">📊 Audit Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">Audit Your Ad Results</h1>
+            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Audit Your Ad Results</h1>
             <p className="text-gray-400 text-sm">Choose your analysis type below.</p>
           </div>
 
@@ -774,12 +774,12 @@ show(0);
               className="rounded-xl border p-5 text-left transition-all"
               style={{
                 background: mode === "basic" ? "#FFFFFF" : "#F0F2F5",
-                borderColor: mode === "basic" ? "#0866FF" : "#1F2937",
-                boxShadow: mode === "basic" ? "0 0 16px #0866FF30" : "none",
+                borderColor: mode === "basic" ? "#1877F2" : "#1F2937",
+                boxShadow: mode === "basic" ? "0 0 16px #1877F230" : "none",
               }}
             >
               <div className="text-2xl mb-2">📸</div>
-              <p className="text-slate-900 font-bold text-sm mb-1">Basic Analysis</p>
+              <p className="text-[#1c1e21] font-bold text-sm mb-1">Basic Analysis</p>
               <p className="text-gray-500 text-xs">Messaging Ads — upload a screenshot</p>
             </button>
             <button
@@ -792,7 +792,7 @@ show(0);
               }}
             >
               <div className="text-2xl mb-2">📄</div>
-              <p className="text-slate-900 font-bold text-sm mb-1">Advanced Analysis</p>
+              <p className="text-[#1c1e21] font-bold text-sm mb-1">Advanced Analysis</p>
               <p className="text-gray-500 text-xs">Purchase Ads — upload exported CSV</p>
             </button>
           </div>
@@ -804,7 +804,7 @@ show(0);
               <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
-                  <p className="text-slate-900 text-sm font-semibold">Watch before analyzing</p>
+                  <p className="text-[#1c1e21] text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
                 {videos.analyze_basic.unlocked ? (
@@ -818,10 +818,10 @@ show(0);
                   </>
                 ) : (
                   <div className="px-6 py-10 text-center">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#0866FF20" }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0866FF" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#1877F220" }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1877F2" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
-                    <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-[#1c1e21] text-sm font-semibold mb-1">Unlock this tutorial video</p>
                     <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                     {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                     {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
@@ -829,7 +829,7 @@ show(0);
                       onClick={() => unlockVideo("analyze_basic")}
                       disabled={unlockingVideo === "analyze_basic"}
                       className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
-                      style={{ background: "#0866FF" }}
+                      style={{ background: "#1877F2" }}
                     >
                       {unlockingVideo === "analyze_basic" ? "Unlocking..." : "Unlock — 1 credit"}
                     </button>
@@ -844,7 +844,7 @@ show(0);
                 <ol className="space-y-1 mb-3">
                   {BASIC_COLUMNS.map((col, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#1E3A5F", color: "#0866FF" }}>{i + 1}</span>
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#1E3A5F", color: "#1877F2" }}>{i + 1}</span>
                       {col}
                     </li>
                   ))}
@@ -894,7 +894,7 @@ show(0);
                   <div>
                     <label className="block text-xs font-medium text-gray-400 mb-1">Number of Sales</label>
                     <input type="number" value={numSales} onChange={e => setNumSales(e.target.value)} placeholder="e.g. 5"
-                      className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-[#1c1e21] placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   </div>
                 </div>
               </div>
@@ -908,7 +908,7 @@ show(0);
               <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
-                  <p className="text-slate-900 text-sm font-semibold">Watch before analyzing</p>
+                  <p className="text-[#1c1e21] text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
                 {videos.analyze_advanced.unlocked ? (
@@ -925,7 +925,7 @@ show(0);
                     <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#D9770620" }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
-                    <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-[#1c1e21] text-sm font-semibold mb-1">Unlock this tutorial video</p>
                     <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                     {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                     {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
@@ -965,7 +965,7 @@ show(0);
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📄</span>
                       <div>
-                        <p className="text-slate-700 text-sm font-medium">{csvFileName}</p>
+                        <p className="text-[#1c1e21] text-sm font-medium">{csvFileName}</p>
                         <p className="text-gray-500 text-xs">File loaded — ready to analyze</p>
                       </div>
                     </div>
@@ -992,7 +992,7 @@ show(0);
                     <label className="block text-xs font-medium text-gray-400 mb-1">Estimated RTS % (Return to Sender)</label>
                     <div className="relative">
                       <input type="number" value={rtsPercent} onChange={e => setRtsPercent(e.target.value)} placeholder="e.g. 20"
-                        className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-3 pr-7 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-3 pr-7 text-[#1c1e21] placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">%</span>
                     </div>
                   </div>
@@ -1007,7 +1007,7 @@ show(0);
               onClick={analyze}
               disabled={loading || (mode === "basic" ? !screenshot : !csvText)}
               className="w-full text-white py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40 mb-6"
-              style={{ background: mode === "advanced" ? "#D97706" : "#0866FF", color: mode === "advanced" ? "#000" : "#fff", animation: mode === "advanced" ? "btnGlowOrange 2s ease-in-out infinite alternate" : "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: mode === "advanced" ? "#D97706" : "#1877F2", color: mode === "advanced" ? "#000" : "#fff", animation: mode === "advanced" ? "btnGlowOrange 2s ease-in-out infinite alternate" : "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Analyzing..." : mode === "advanced" ? "Run Advanced Analysis — 2 credits" : "Analyze My Results — 1 credit"}
             </button>
@@ -1042,7 +1042,7 @@ show(0);
                   <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Analysis Result</span>
                   <button
                     onClick={() => navigator.clipboard.writeText(output)}
-                    className="text-xs px-3 py-1 rounded-lg border border-slate-200 hover:border-gray-500 text-slate-500 hover:text-slate-900 transition-colors"
+                    className="text-xs px-3 py-1 rounded-lg border border-slate-200 hover:border-gray-500 text-[#8a8d91] hover:text-[#1c1e21] transition-colors"
                   >
                     Copy
                   </button>
@@ -1058,7 +1058,7 @@ show(0);
               <button
                 onClick={downloadHTMLDeck}
                 className="flex-1 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
-                style={{ background: "#0866FF", color: "#fff" }}
+                style={{ background: "#1877F2", color: "#fff" }}
               >
                 <span>🖥️</span> Get Report Presentation
               </button>

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const PACKAGES = [
-  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#0866FF" },
+  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#1877F2" },
   { id: "pro_150", label: "Flex", credits: 150, price: 999, tag: "150 credits", color: "#8B5CF6" },
   { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "500 credits", color: "#D97706" },
 ];
@@ -120,8 +120,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
-          <p className="text-slate-900 font-bold text-sm">Top Up / Upgrade</p>
-          <button onClick={() => { reset(); onClose(); }} className="text-slate-500 hover:text-slate-900 text-lg leading-none">✕</button>
+          <p className="text-[#1c1e21] font-bold text-sm">Top Up / Upgrade</p>
+          <button onClick={() => { reset(); onClose(); }} className="text-[#8a8d91] hover:text-[#1c1e21] text-lg leading-none">✕</button>
         </div>
 
         {step === "select" && (
@@ -133,7 +133,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                   onClick={() => setSelected(pkg)}
                   className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-left"
                   style={{
-                    background: selected.id === pkg.id ? `${pkg.color}12` : "#F1F5F9",
+                    background: selected.id === pkg.id ? `${pkg.color}12` : "#f2f3f5",
                     borderColor: selected.id === pkg.id ? pkg.color : "#E4E6EB",
                   }}
                 >
@@ -141,13 +141,13 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                     <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: selected.id === pkg.id ? pkg.color : "#64748B" }} />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-slate-900 font-bold text-sm">{pkg.label}</span>
+                        <span className="text-[#1c1e21] font-bold text-sm">{pkg.label}</span>
                         <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: `${pkg.color}20`, color: pkg.color }}>{pkg.tag}</span>
                       </div>
-                      <span className="text-slate-500 text-xs">{pkg.credits} credits</span>
+                      <span className="text-[#8a8d91] text-xs">{pkg.credits} credits</span>
                     </div>
                   </div>
-                  <span className="text-slate-900 font-bold text-sm">₱{pkg.price.toLocaleString()}</span>
+                  <span className="text-[#1c1e21] font-bold text-sm">₱{pkg.price.toLocaleString()}</span>
                 </button>
               ))}
             </div>
@@ -165,7 +165,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
           <div className="p-5 space-y-4">
             {/* GCash QR */}
             <div className="rounded-xl overflow-hidden border border-slate-200 bg-blue-600 flex flex-col items-center py-5 px-4">
-              <span className="text-slate-900 font-bold text-lg mb-4">GCash</span>
+              <span className="text-[#1c1e21] font-bold text-lg mb-4">GCash</span>
               <div className="bg-white rounded-xl p-3 mb-4">
                 <img
                   src="/gcash-qr.jpg"
@@ -184,22 +184,22 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               </div>
               <p className="text-blue-100 text-xs mb-1">Transfer fees may apply.</p>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-slate-900 font-bold text-base">Donna Lim</p>
-                <button onClick={() => navigator.clipboard.writeText("Donna Lim")} className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
+                <p className="text-[#1c1e21] font-bold text-base">Donna Lim</p>
+                <button onClick={() => navigator.clipboard.writeText("Donna Lim")} className="text-blue-200 hover:text-[#1c1e21] text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-blue-200 text-sm">0956 160 3751</p>
-                <button onClick={() => navigator.clipboard.writeText("09561603751")} className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
+                <button onClick={() => navigator.clipboard.writeText("09561603751")} className="text-blue-200 hover:text-[#1c1e21] text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
             </div>
 
             {/* Amount */}
-            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
               <div>
-                <p className="text-slate-900 font-bold text-sm">{selected.label} — {selected.credits} credits</p>
-                <p className="text-slate-500 text-xs">{selected.tag}</p>
+                <p className="text-[#1c1e21] font-bold text-sm">{selected.label} — {selected.credits} credits</p>
+                <p className="text-[#8a8d91] text-xs">{selected.tag}</p>
               </div>
-              <p className="text-slate-900 font-bold">₱{selected.price.toLocaleString()}</p>
+              <p className="text-[#1c1e21] font-bold">₱{selected.price.toLocaleString()}</p>
             </div>
 
             {/* Screenshot upload */}
@@ -214,7 +214,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               />
               {screenshotPreview ? (
                 <div className="relative rounded-xl overflow-hidden border border-slate-200">
-                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-slate-100" />
+                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-[#f2f3f5]" />
                   <button
                     onClick={() => { setScreenshot(null); setScreenshotPreview(null); if (fileRef.current) fileRef.current.value = ""; }}
                     className="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg"
@@ -226,8 +226,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               ) : (
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="w-full py-4 rounded-xl border border-dashed text-slate-600 hover:text-slate-900 text-sm transition-colors flex flex-col items-center gap-1"
-                  style={{ background: "#F1F5F9" }}
+                  className="w-full py-4 rounded-xl border border-dashed text-slate-600 hover:text-[#1c1e21] text-sm transition-colors flex flex-col items-center gap-1"
+                  style={{ background: "#f2f3f5" }}
                 >
                   <span className="text-2xl">📎</span>
                   <span>Tap to upload screenshot</span>
@@ -239,7 +239,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep("select")}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:text-[#1c1e21] transition-colors"
                 style={{ border: "1px solid #E4E6EB" }}
               >
                 Back
@@ -254,7 +254,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               </button>
             </div>
 
-            <p className="text-slate-500 text-xs text-center">Credits will be added after we verify your payment. Usually within a few hours.</p>
+            <p className="text-[#8a8d91] text-xs text-center">Credits will be added after we verify your payment. Usually within a few hours.</p>
           </div>
         )}
 
@@ -263,13 +263,13 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-2" style={{ background: "#22c55e20" }}>
               <span className="text-3xl">✓</span>
             </div>
-            <p className="text-slate-900 font-bold text-base">Request Submitted</p>
-            <p className="text-slate-600 text-sm">We received your top-up request for <strong className="text-slate-900">{selected.credits} credits</strong>. Credits will be added after payment is verified.</p>
-            <p className="text-slate-500 text-xs">Usually within a few hours during business hours.</p>
+            <p className="text-[#1c1e21] font-bold text-base">Request Submitted</p>
+            <p className="text-slate-600 text-sm">We received your top-up request for <strong className="text-[#1c1e21]">{selected.credits} credits</strong>. Credits will be added after payment is verified.</p>
+            <p className="text-[#8a8d91] text-xs">Usually within a few hours during business hours.</p>
             <button
               onClick={() => { reset(); onClose(); }}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#0866FF" }}
+              style={{ background: "#1877F2" }}
             >
               Done
             </button>
