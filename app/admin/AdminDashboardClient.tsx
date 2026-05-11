@@ -353,7 +353,7 @@ function FunnelTable({ steps }: { steps: ActivationStep[] }) {
 function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onCopy: () => void; copyLabel: string }) {
   return (
     <Card className="overflow-hidden">
-      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ bordercolor: "#1c1e21" }}>
+      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "#e4e6eb" }}>
         <div>
           <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#D97706" }}>Generated Report</p>
           <h2 className="text-white font-black text-lg">Report & Analysis</h2>
@@ -673,7 +673,7 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ bordercolor: "#1c1e21" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
                 <SectionHeader title="Live Activity" sub="Last 20 credit transactions" />
               </div>
               <div className="max-h-80 overflow-auto">
@@ -719,7 +719,7 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ bordercolor: "#1c1e21" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
                 <SectionHeader title="Top 10 Power Users" sub="Highest credit consumption - strongest upsell and testimonial candidates" />
               </div>
               <div className="overflow-auto">
@@ -851,7 +851,7 @@ export default function AdminDashboardClient() {
             </Card>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ bordercolor: "#1c1e21" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
                 <SectionHeader title="Token Breakdown" sub="Input, output, and estimated cost" />
               </div>
               <div className="overflow-auto">
@@ -888,7 +888,7 @@ export default function AdminDashboardClient() {
         {activeTab === "users" && (
           <div className="space-y-6">
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ bordercolor: "#1c1e21" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
                 <SectionHeader title="All Users" sub="Sortable user list" />
               </div>
               <div className="overflow-auto max-h-[700px]">
