@@ -295,39 +295,33 @@ export default function SetupPage() {
         </main>
 
         {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-60 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)" }}>
-          <div className="flex items-center gap-2 text-sm" style={{ color: "#374151" }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Your data is encrypted and used only for strategy generation.</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleClearData}
-              disabled={clearing}
-              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-              style={{ background: "#FFFFFF", border: "1px solid #EF444440", color: "#EF4444" }}
-            >
-              Clear Data
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveDraft}
-              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#374151" }}
-            >
-              Save Draft
-            </button>
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all hover:brightness-110"
-              style={{ background: BRAND_BLUE, color: "#fff" }}
-            >
-              Generate Strategy
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            </button>
-          </div>
+        <div className="fixed bottom-0 left-0 right-0 md:left-60 px-4 py-3 flex items-center gap-3 z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)" }}>
+          <button
+            type="button"
+            onClick={handleClearData}
+            disabled={clearing}
+            className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+            style={{ background: "#FFFFFF", border: "1px solid #EF444440", color: "#EF4444" }}
+          >
+            Clear Data
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveDraft}
+            className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
+            style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#374151" }}
+          >
+            Save Draft
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all hover:brightness-110"
+            style={{ background: BRAND_BLUE, color: "#fff" }}
+          >
+            Generate Strategy
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </button>
         </div>
 
       </div>
