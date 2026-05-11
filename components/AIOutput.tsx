@@ -13,7 +13,7 @@ function renderInline(text: string) {
     if (part.startsWith("**") && part.endsWith("**"))
       return <strong key={i} className="text-slate-900 font-semibold">{part.slice(2, -2)}</strong>;
     if (part.startsWith("*") && part.endsWith("*"))
-      return <em key={i} className="text-gray-200">{part.slice(1, -1)}</em>;
+      return <em key={i} className="text-slate-800">{part.slice(1, -1)}</em>;
     return part;
   });
 }
@@ -58,14 +58,14 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
 
           // H3
           if (line.startsWith("### "))
-            return <h3 key={i} className="text-gray-200 font-semibold mt-3 mb-1">{renderInline(line.slice(4))}</h3>;
+            return <h3 key={i} className="text-slate-800 font-semibold mt-3 mb-1">{renderInline(line.slice(4))}</h3>;
 
           // Bullet
           if (line.startsWith("- "))
             return (
               <div key={i} className="flex gap-2.5 pl-1">
                 <span className="text-blue-400 mt-0.5 shrink-0">•</span>
-                <span className="text-gray-300">{renderInline(line.slice(2))}</span>
+                <span className="text-slate-700">{renderInline(line.slice(2))}</span>
               </div>
             );
 
@@ -76,7 +76,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
             return (
               <div key={i} className="flex gap-2.5 pl-1 mt-1">
                 <span className="text-blue-400 font-bold shrink-0 w-5 text-right">{num}.</span>
-                <span className="text-gray-300">{renderInline(text)}</span>
+                <span className="text-slate-700">{renderInline(text)}</span>
               </div>
             );
           }
@@ -91,7 +91,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
 
           // Plain text (with inline bold support)
           return (
-            <p key={i} className="text-gray-300 leading-relaxed">
+            <p key={i} className="text-slate-800 leading-relaxed">
               {renderInline(line)}
             </p>
           );

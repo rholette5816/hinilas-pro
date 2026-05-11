@@ -335,7 +335,7 @@ export default function AnglesPage() {
                           <p className="text-xs font-semibold mb-1" style={{ color }}>
                             Hook Line
                           </p>
-                          <p className="text-gray-300 text-sm italic">&quot;{angle.hookLine}&quot;</p>
+                          <p className="text-slate-800 text-sm italic">&quot;{angle.hookLine}&quot;</p>
                         </div>
                       )}
 
@@ -344,13 +344,13 @@ export default function AnglesPage() {
                           {angle.uso && (
                             <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
                               <p className="text-xs font-semibold text-slate-700 mb-1">Unique Selling Offer</p>
-                              <p className="text-gray-300 text-xs leading-relaxed">{angle.uso}</p>
+                              <p className="text-slate-800 text-xs leading-relaxed">{angle.uso}</p>
                             </div>
                           )}
                           {angle.whyItWorks && (
                             <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
                               <p className="text-xs font-semibold text-slate-700 mb-1">Why It Works</p>
-                              <p className="text-gray-300 text-xs leading-relaxed">{angle.whyItWorks}</p>
+                              <p className="text-slate-800 text-xs leading-relaxed">{angle.whyItWorks}</p>
                             </div>
                           )}
                         </div>

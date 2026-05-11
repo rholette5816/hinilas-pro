@@ -638,7 +638,7 @@ export default function CampaignSetupPage() {
                             {launchFile ? (
                               <div className="bg-white border border-slate-200 rounded-lg p-3 flex items-center gap-3 mb-4">
                                 <span className="text-green-400 text-lg">✓</span>
-                                <p className="text-gray-300 text-xs flex-1 truncate">{launchFile.name}</p>
+                                <p className="text-slate-800 text-xs flex-1 truncate">{launchFile.name}</p>
                                 <button onClick={() => setLaunchFile(null)} className="text-slate-700 hover:text-red-400 text-xs">Remove</button>
                               </div>
                             ) : (
@@ -697,7 +697,7 @@ export default function CampaignSetupPage() {
                             >
                               {idx + 1}
                             </span>
-                            <p className="text-gray-200 text-sm leading-relaxed">{item}</p>
+                            <p className="text-slate-800 text-sm leading-relaxed">{item}</p>
                           </div>
                         );
                       }
