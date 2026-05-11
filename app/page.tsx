@@ -115,7 +115,7 @@ export default function SetupPage() {
               </div>
               <div className="flex-1 h-px max-w-[60px]" style={{ background: "#E4E6EB" }} />
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "#F1F5F9", color: "#65676B" }}>2</div>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "#F1F5F9", color: "#374151" }}>2</div>
                 <span className="text-sm font-medium" style={{ color: "#475569" }}>Market Analysis</span>
               </div>
             </div>
@@ -123,17 +123,17 @@ export default function SetupPage() {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-2xl font-black text-slate-900 mb-2">Business Intelligence Profile</h1>
-              <p className="text-sm leading-relaxed" style={{ color: "#65676B" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "#374151" }}>
                 Tell us about your business to power your AI-driven marketing engine. Our intelligence models use these details to craft high-conversion strategies.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", borderRadius: "12px", padding: "28px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
 
               {/* Industry */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Industry</label>
-                <p className="text-sm mb-3" style={{ color: "#65676B" }}>Helps the AI generate creatives that match your industry&apos;s visual style.</p>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>Industry</label>
+                <p className="text-sm mb-3" style={{ color: "#374151" }}>Helps the AI generate creatives that match your industry&apos;s visual style.</p>
                 <select
                   value={form.industry || ""}
                   onChange={e => setForm({ ...form, industry: e.target.value })}
@@ -142,7 +142,7 @@ export default function SetupPage() {
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 >
-                  <option value="" style={{ background: "#FFFFFF", color: "#65676B" }}>Select your industry...</option>
+                  <option value="" style={{ background: "#FFFFFF", color: "#374151" }}>Select your industry...</option>
                   {PH_INDUSTRIES.map(ind => (
                     <option key={ind.value} value={ind.value} style={{ background: "#FFFFFF", color: "#1C1E21" }}>{ind.label}</option>
                   ))}
@@ -152,7 +152,7 @@ export default function SetupPage() {
               {/* Business Name + Market */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Business name</label>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>Business name</label>
                   <input
                     type="text"
                     required
@@ -164,10 +164,10 @@ export default function SetupPage() {
                     onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                     onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                   />
-                  <p className="text-sm text-slate-400 mt-1">Pangalan ng iyong business o brand</p>
+                  <p className="text-sm text-slate-700 mt-1">Pangalan ng iyong business o brand</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Market / location</label>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>Market / location</label>
                   <input
                     type="text"
                     placeholder="e.g. Global, North America"
@@ -183,7 +183,7 @@ export default function SetupPage() {
 
               {/* Product */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>What are you selling?</label>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>What are you selling?</label>
                 <textarea
                   required
                   rows={2}
@@ -195,12 +195,12 @@ export default function SetupPage() {
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-sm text-slate-400 mt-1">Describe your product or service in simple words</p>
+                <p className="text-sm text-slate-700 mt-1">Describe your product or service in simple words</p>
               </div>
 
               {/* Target Audience */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Target customer</label>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#374151" }}>Target customer</label>
                 <input
                   type="text"
                   required
@@ -212,13 +212,13 @@ export default function SetupPage() {
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-sm text-slate-400 mt-1">Who usually buys from you? Age, gender, location</p>
+                <p className="text-sm text-slate-700 mt-1">Who usually buys from you? Age, gender, location</p>
               </div>
 
               {/* USP */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-semibold" style={{ color: "#65676B" }}>Unique selling offer (USP)</label>
+                  <label className="block text-sm font-semibold" style={{ color: "#374151" }}>Unique selling offer (USP)</label>
                   <span className="text-sm font-bold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>AI optimized</span>
                 </div>
                 <textarea
@@ -231,12 +231,12 @@ export default function SetupPage() {
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
                   onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-sm mt-1.5" style={{ color: "#65676B" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
+                <p className="text-sm mt-1.5" style={{ color: "#374151" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
               </div>
 
               {/* Stage */}
               <div>
-                <label className="block text-sm font-semibold mb-3" style={{ color: "#65676B" }}>Your current stage</label>
+                <label className="block text-sm font-semibold mb-3" style={{ color: "#374151" }}>Your current stage</label>
                 <div className="space-y-2">
                   {STAGES.map(opt => {
                     const active = form.stage === opt.value as UserSetup["stage"];
@@ -266,8 +266,8 @@ export default function SetupPage() {
 
               {/* Language */}
               <div>
-                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#65676B" }}>Language / dialect</label>
-                <p className="text-sm mb-3" style={{ color: "#65676B" }}>How the AI responds and how ad copy sounds to your target market.</p>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#374151" }}>Language / dialect</label>
+                <p className="text-sm mb-3" style={{ color: "#374151" }}>How the AI responds and how ad copy sounds to your target market.</p>
                 <div className="grid grid-cols-2 gap-2">
                   {LANGUAGES.map(opt => {
                     const active = form.language === opt.value;
@@ -296,7 +296,7 @@ export default function SetupPage() {
 
         {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
         <div className="fixed bottom-0 left-0 right-0 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)", borderRadius: "0 0 0 0" }}>
-          <div className="flex items-center gap-2 text-sm" style={{ color: "#65676B" }}>
+          <div className="flex items-center gap-2 text-sm" style={{ color: "#374151" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Your data is encrypted and used only for strategy generation.</span>
           </div>
@@ -314,7 +314,7 @@ export default function SetupPage() {
               type="button"
               onClick={handleSaveDraft}
               className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#65676B" }}
+              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#374151" }}
             >
               Save Draft
             </button>

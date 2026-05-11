@@ -77,7 +77,7 @@ export default function ResearchPage() {
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-gray-400 mb-4">Set up your business profile first.</p>
+            <p className="text-slate-700 mb-4">Set up your business profile first.</p>
             <button
               onClick={() => router.push("/")}
               className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium"
@@ -103,7 +103,7 @@ export default function ResearchPage() {
               !
             </div>
             <h2 className="text-slate-900 font-bold text-lg mb-2">Not enough credits</h2>
-            <p className="text-gray-400 text-sm mb-6">Research costs 1 credit. Top up to continue.</p>
+            <p className="text-slate-700 text-sm mb-6">Research costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a
                 href="/pricing"
@@ -112,7 +112,7 @@ export default function ResearchPage() {
               >
                 View Plans
               </a>
-              <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">
+              <button onClick={() => setNoCredits(false)} className="text-slate-700 text-sm hover:text-slate-700">
                 Cancel
               </button>
             </div>
@@ -128,16 +128,16 @@ export default function ResearchPage() {
               <span className="text-emerald-300 text-xs font-medium">Research Department</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900 mb-2">AI Market Research</h1>
-            <p className="text-gray-400 text-sm">
+            <p className="text-slate-700 text-sm">
               Understand your market before you run a single ad. This research powers your strategy and copy.
             </p>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 mb-6">
-            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-2">Researching for</p>
+            <p className="text-slate-700 text-xs font-medium uppercase tracking-wider mb-2">Researching for</p>
             <p className="text-slate-900 font-semibold">{setup.businessName}</p>
-            <p className="text-gray-400 text-sm mt-1">{setup.product}</p>
-            <p className="text-gray-500 text-xs mt-1">Target: {setup.targetAudience}</p>
+            <p className="text-slate-700 text-sm mt-1">{setup.product}</p>
+            <p className="text-slate-700 text-xs mt-1">Target: {setup.targetAudience}</p>
           </div>
 
           {!researchOutput && (
@@ -152,7 +152,7 @@ export default function ResearchPage() {
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-2">
                     <CheckIcon className="h-4 w-4 shrink-0 text-blue-400 mt-0.5" />
-                    <p className="text-xs text-gray-400">{item}</p>
+                    <p className="text-xs text-slate-700">{item}</p>
                   </div>
                 ))}
               </div>
@@ -200,7 +200,7 @@ export default function ResearchPage() {
                 </div>
                 <p className="text-slate-700 font-semibold text-sm">Step 2 done - Now let&apos;s find your angle</p>
               </div>
-              <p className="text-xs text-gray-400 mb-4">Use these insights to craft angles that convert.</p>
+              <p className="text-xs text-slate-700 mb-4">Use these insights to craft angles that convert.</p>
               <button
                 onClick={() => router.push("/angles")}
                 className="w-full py-3.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"

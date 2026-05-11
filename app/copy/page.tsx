@@ -141,7 +141,7 @@ export default function CopyPage() {
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-gray-400 mb-4">Set up your business profile first.</p>
+            <p className="text-slate-700 mb-4">Set up your business profile first.</p>
             <button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium">Go to Setup</button>
           </div>
         </main>
@@ -157,10 +157,10 @@ export default function CopyPage() {
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
             <div className="text-4xl mb-4">⚡</div>
             <h2 className="text-slate-900 font-bold text-lg mb-2">Not enough credits</h2>
-            <p className="text-gray-400 text-sm mb-6">Copy generation costs 1 credit. Top up to continue.</p>
+            <p className="text-slate-700 text-sm mb-6">Copy generation costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>View Plans</a>
-              <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
+              <button onClick={() => setNoCredits(false)} className="text-slate-700 text-sm hover:text-slate-700">Cancel</button>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function CopyPage() {
               <span className="text-purple-300 text-xs font-medium">✍ Caption Department</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900 mb-2">Write Your Captions</h1>
-            <p className="text-gray-400 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
+            <p className="text-slate-700 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
           </div>
 
           {/* Ad image reference */}
@@ -197,7 +197,7 @@ export default function CopyPage() {
                   <img src={activeImage} alt="Ad image reference" className="w-full object-cover" />
                 </div>
                 <div className="flex items-center gap-3 mt-2">
-                  <p className="text-gray-500 text-xs">
+                  <p className="text-slate-700 text-xs">
                     {uploadedImage ? "Uploaded image" : "Generated from Creative"} - copy will be based on this.
                   </p>
                   {uploadedImage && (
@@ -212,7 +212,7 @@ export default function CopyPage() {
               </div>
             ) : (
               <div className="bg-white border border-dashed border-slate-300 rounded-xl px-5 py-6 text-center">
-                <p className="text-gray-400 text-sm mb-3">No image yet. Upload one or generate from Creative.</p>
+                <p className="text-slate-700 text-sm mb-3">No image yet. Upload one or generate from Creative.</p>
                 <div className="flex items-center justify-center gap-3">
                   <button
                     onClick={() => uploadRef.current?.click()}
@@ -244,7 +244,7 @@ export default function CopyPage() {
                   className="p-2.5 rounded-lg border text-left transition-all"
                   style={language === opt.value
                     ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
-                    : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#65676B" }
+                    : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#374151" }
                   }
                 >
                   <p className="text-xs font-medium">{opt.label}</p>
@@ -258,7 +258,7 @@ export default function CopyPage() {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-300">Choose Formulas</label>
-              <span className="text-xs text-gray-500">{selectedFormulas.length}/2 selected</span>
+              <span className="text-xs text-slate-700">{selectedFormulas.length}/2 selected</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {FORMULAS.map(f => {
@@ -276,7 +276,7 @@ export default function CopyPage() {
                         ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
                         : disabled
                         ? { background: "#F8FAFC", borderColor: "#E4E6EB", color: "#94A3B8", cursor: "not-allowed" }
-                        : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#65676B" }
+                        : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#374151" }
                     }
                   >
                     <p className="text-sm font-bold">{f.label}</p>
@@ -287,7 +287,7 @@ export default function CopyPage() {
               })}
             </div>
             {selectedFormulas.length === 0 && (
-              <p className="text-gray-600 text-xs mt-2">No selection defaults to PAS and BAB.</p>
+              <p className="text-slate-700 text-xs mt-2">No selection defaults to PAS and BAB.</p>
             )}
           </div>
 
@@ -348,7 +348,7 @@ export default function CopyPage() {
                     </div>
                     {/* Caption */}
                     <div className="px-4 py-3 border-b border-gray-800">
-                      <p className="text-xs font-semibold text-gray-500 mb-2">CAPTION</p>
+                      <p className="text-xs font-semibold text-slate-700 mb-2">CAPTION</p>
                       <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line">{v.caption}</p>
                     </div>
                     {/* Headline + CTA */}
@@ -356,7 +356,7 @@ export default function CopyPage() {
                       {v.headline && (
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <p className="text-xs font-semibold text-gray-500 mb-1">HEADLINE</p>
+                            <p className="text-xs font-semibold text-slate-700 mb-1">HEADLINE</p>
                             <p className="text-slate-700 text-sm font-medium">{v.headline}</p>
                           </div>
                           <CopyButton text={v.headline} label="Copy" />
@@ -364,7 +364,7 @@ export default function CopyPage() {
                       )}
                       {v.cta && (
                         <div>
-                          <p className="text-xs font-semibold text-gray-500 mb-1">CTA BUTTON</p>
+                          <p className="text-xs font-semibold text-slate-700 mb-1">CTA BUTTON</p>
                           <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#0866FF20", color: "#0866FF", border: "1px solid #0866FF40" }}>
                             {v.cta}
                           </span>

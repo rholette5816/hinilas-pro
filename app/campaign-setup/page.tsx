@@ -371,7 +371,7 @@ export default function CampaignSetupPage() {
           </div>
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-slate-900 mb-1">Campaign Setup</h1>
-            <p className="text-gray-400 text-sm">Step-by-step ad campaign guides</p>
+            <p className="text-slate-700 text-sm">Step-by-step ad campaign guides</p>
           </div>
 
           <div className="flex gap-2 mb-6">
@@ -403,8 +403,8 @@ export default function CampaignSetupPage() {
                 <span className="text-indigo-300 text-xs font-semibold">Coming Soon</span>
               </div>
               <h2 className="text-slate-900 font-bold text-xl mb-2">Conversion Setup - Upcoming</h2>
-              <p className="text-gray-400 text-sm mb-1">This guide covers Facebook Pixel setup, website conversion campaigns, and purchase-optimized ad sets.</p>
-              <p className="text-gray-500 text-xs mb-6">Currently in production.</p>
+              <p className="text-slate-700 text-sm mb-1">This guide covers Facebook Pixel setup, website conversion campaigns, and purchase-optimized ad sets.</p>
+              <p className="text-slate-700 text-xs mb-6">Currently in production.</p>
               <p className="text-indigo-400 text-xs">Stay tuned - we&apos;ll notify you when it drops.</p>
             </div>
           )}
@@ -413,7 +413,7 @@ export default function CampaignSetupPage() {
             <>
               {!done && (
                 <div className="mb-6">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1.5">
+                  <div className="flex justify-between text-xs text-slate-700 mb-1.5">
                     <span>Step {currentStep + 1} of {TOTAL}</span>
                     <span>{progress}% complete</span>
                   </div>
@@ -452,7 +452,7 @@ export default function CampaignSetupPage() {
                     <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                       <div className="w-2 h-2 rounded-full" style={{ background: step.color }} />
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: step.color }}>{step.level} Level</span>
-                      <span className="text-xs text-gray-600 ml-1">- Tutorial Video</span>
+                      <span className="text-xs text-slate-700 ml-1">- Tutorial Video</span>
                     </div>
                     {videoUrl ? (
                       isUnlocked ? (
@@ -467,7 +467,7 @@ export default function CampaignSetupPage() {
                             />
                           </div>
                           {expiresAt && (
-                            <p className="text-center text-gray-600 text-xs py-2">
+                            <p className="text-center text-slate-700 text-xs py-2">
                               Access expires {new Date(expiresAt).toLocaleString()}
                             </p>
                           )}
@@ -478,7 +478,7 @@ export default function CampaignSetupPage() {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                           </div>
                           <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
-                          <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
+                          <p className="text-xs text-slate-700 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                           {noCredits && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                           {!noCredits && <div className="mb-3" />}
                           <button
@@ -497,7 +497,7 @@ export default function CampaignSetupPage() {
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                         </div>
                         <p className="text-sm font-semibold" style={{ color: step.color }}>{step.level} Level Tutorial</p>
-                        <p className="text-xs text-gray-600 mt-1">Video coming soon</p>
+                        <p className="text-xs text-slate-700 mt-1">Video coming soon</p>
                       </div>
                     )}
                   </div>
@@ -510,14 +510,14 @@ export default function CampaignSetupPage() {
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                     <span className="text-base">🎯</span>
                     <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Targeting Suggestions</span>
-                    <span className="text-xs text-gray-600 ml-1">from your research</span>
+                    <span className="text-xs text-slate-700 ml-1">from your research</span>
                   </div>
                   <div className="px-4 py-4">
                     {researchOutput ? (() => {
                       const interests = parseInterests(researchOutput);
                       return interests.length > 0 ? (
                         <>
-                          <p className="text-xs text-gray-500 mb-3">Tap any interest to copy - paste directly into Detailed Targeting in Meta Ads Manager.</p>
+                          <p className="text-xs text-slate-700 mb-3">Tap any interest to copy - paste directly into Detailed Targeting in Meta Ads Manager.</p>
                           <div className="flex flex-wrap gap-2">
                             {interests.map((interest, i) => (
                               <button
@@ -535,11 +535,11 @@ export default function CampaignSetupPage() {
                           </div>
                         </>
                       ) : (
-                        <p className="text-xs text-gray-500">No interest suggestions found in your research. Try re-running research for more detailed targeting ideas.</p>
+                        <p className="text-xs text-slate-700">No interest suggestions found in your research. Try re-running research for more detailed targeting ideas.</p>
                       );
                     })() : (
                       <div className="flex items-center justify-between gap-4">
-                        <p className="text-xs text-gray-500">Run market research first to get interest targeting suggestions specific to your product.</p>
+                        <p className="text-xs text-slate-700">Run market research first to get interest targeting suggestions specific to your product.</p>
                         <a
                           href="/research"
                           className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-90"
@@ -559,7 +559,7 @@ export default function CampaignSetupPage() {
                     <span className="text-4xl">OK</span>
                   </div>
                   <h2 className="text-slate-900 font-bold text-xl mb-2">Campaign Ready to Publish!</h2>
-                  <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
+                  <p className="text-slate-700 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
                   <div className="space-y-3 mb-8">
                     {[
                       { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#0866FF" },
@@ -572,7 +572,7 @@ export default function CampaignSetupPage() {
                         </div>
                         <div className="text-left">
                           <p className="text-slate-700 font-semibold text-sm">{item.label}</p>
-                          <p className="text-gray-500 text-xs">{item.sub}</p>
+                          <p className="text-slate-700 text-xs">{item.sub}</p>
                         </div>
                         <span className="ml-auto text-xs font-bold" style={{ color: item.color }}>Done</span>
                       </div>
@@ -581,7 +581,7 @@ export default function CampaignSetupPage() {
                   {/* Launch proof CTA */}
                   <div className="mb-6 p-4 rounded-xl" style={{ background: "#FFFFFF", border: "1px solid #D9770630" }}>
                     <p className="text-yellow-400 font-bold text-sm mb-1">🚀 Claim Your Launch Reward</p>
-                    <p className="text-gray-400 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-slate-900 font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
+                    <p className="text-slate-700 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-slate-900 font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
                     <button
                       onClick={() => { setShowLaunchModal(true); setLaunchDone(false); setLaunchFile(null); setLaunchError(""); }}
                       className="w-full py-2.5 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -592,7 +592,7 @@ export default function CampaignSetupPage() {
                   </div>
 
                   <div className="flex gap-3 justify-center">
-                    <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-slate-200 text-slate-500 hover:text-slate-900 transition-colors">
+                    <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-slate-200 text-slate-700 hover:text-slate-900 transition-colors">
                       Back
                     </button>
                     <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#0866FF" }}>
@@ -608,14 +608,14 @@ export default function CampaignSetupPage() {
                           <div className="text-center py-4">
                             <div className="text-5xl mb-4">🎉</div>
                             <h3 className="text-slate-900 font-bold text-lg mb-2">Proof Submitted!</h3>
-                            <p className="text-gray-400 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
+                            <p className="text-slate-700 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
                             <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#0866FF" }}>Done</button>
                           </div>
                         ) : (
                           <>
                             <div className="flex items-center justify-between mb-4">
                               <h3 className="text-slate-900 font-bold text-base">Submit Campaign Proof</h3>
-                              <button onClick={() => setShowLaunchModal(false)} className="text-slate-500 hover:text-slate-700 text-sm">✕</button>
+                              <button onClick={() => setShowLaunchModal(false)} className="text-slate-700 hover:text-slate-700 text-sm">✕</button>
                             </div>
                             <div className="bg-yellow-950 border border-yellow-800 rounded-lg px-4 py-3 mb-4">
                               <p className="text-yellow-300 text-xs font-medium mb-1">Screenshot requirements:</p>
@@ -639,15 +639,15 @@ export default function CampaignSetupPage() {
                               <div className="bg-white border border-slate-200 rounded-lg p-3 flex items-center gap-3 mb-4">
                                 <span className="text-green-400 text-lg">✓</span>
                                 <p className="text-gray-300 text-xs flex-1 truncate">{launchFile.name}</p>
-                                <button onClick={() => setLaunchFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
+                                <button onClick={() => setLaunchFile(null)} className="text-slate-700 hover:text-red-400 text-xs">Remove</button>
                               </div>
                             ) : (
                               <button
                                 onClick={() => launchInputRef.current?.click()}
                                 className="w-full bg-white border border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-gray-500 transition-colors mb-4"
                               >
-                                <p className="text-gray-400 text-sm">Upload screenshot</p>
-                                <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
+                                <p className="text-slate-700 text-sm">Upload screenshot</p>
+                                <p className="text-slate-700 text-xs mt-0.5">PNG, JPG</p>
                               </button>
                             )}
 
@@ -679,7 +679,7 @@ export default function CampaignSetupPage() {
                       >
                         {step.level} Level
                       </span>
-                      <span className="text-gray-600 text-xs">
+                      <span className="text-slate-700 text-xs">
                         {currentStep === 0 ? "Pre-Step" : `Step ${currentStep}`}
                       </span>
                     </div>
@@ -725,7 +725,7 @@ export default function CampaignSetupPage() {
                     <button
                       onClick={back}
                       disabled={currentStep === 0}
-                      className="flex-1 py-3 rounded-xl text-sm font-semibold border border-slate-200 text-slate-500 hover:text-slate-900 disabled:opacity-30 transition-colors"
+                      className="flex-1 py-3 rounded-xl text-sm font-semibold border border-slate-200 text-slate-700 hover:text-slate-900 disabled:opacity-30 transition-colors"
                     >
                       Back
                     </button>
