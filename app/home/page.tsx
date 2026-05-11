@@ -38,10 +38,10 @@ const FEATURES = [
 ];
 
 const UGC_VIDEOS = [
-  { src: "/videos/restaurant-owner.mp4", name: "Local Restaurant Owner", handle: "@restolord_ph", caption: "Kinaya ng AI ang ads namin 🔥 Solid results gamit Hinilas Pro!", likes: "14.2K", shares: "3.8K", comments: "912" },
-  { src: "/videos/realestate-broker.mp4", name: "Real Estate Broker", handle: "@kenbroker_realty", caption: "Grabe ang lead quality pagkatapos gamitin ito. Hindi pa ako nag-hire ng copywriter 💯", likes: "21.5K", shares: "6.1K", comments: "1.4K" },
-  { src: "/videos/hardware-owner.mp4", name: "Local Hardware Owner", handle: "@hardwaremarcelo", caption: "Sa loob ng 10 minuto may ad na ako. Walang agency needed 🛠️", likes: "9.7K", shares: "2.3K", comments: "541" },
-  { src: "/videos/spa-wellness-owner.mp4", name: "Spa & Wellness Owner", handle: "@serenityspa_davao", caption: "Ang gaan gamitin kahit hindi ako tech-savvy. Booking namin nag-double! ✨", likes: "18.3K", shares: "5.2K", comments: "1.1K" },
+  { src: "https://statics.pancake.vn/web-media-262/04/c9/93/a5/d9f4e3eb3abd59331a6039c08d12f1fb1c1eec5a90842a5d28011f31-w:720-h:1280-l:26850465-t:video/mp4.mp4", name: "Local Restaurant Owner", handle: "@restolord_ph", caption: "Kinaya ng AI ang ads namin 🔥 Solid results gamit Hinilas Pro!", likes: "14.2K", shares: "3.8K", comments: "912" },
+  { src: "https://statics.pancake.vn/web-media-262/1b/8a/cd/2c/b04bab24ff3e321812808b46c4292b343ac61f044c66d17799b10fe7-w:720-h:1280-l:27350353-t:video/mp4.mp4", name: "Local Hardware Owner", handle: "@hardwaremarcelo", caption: "Sa loob ng 10 minuto may ad na ako. Walang agency needed 🛠️", likes: "9.7K", shares: "2.3K", comments: "541" },
+  { src: "https://statics.pancake.vn/web-media-262/39/f9/47/6d/5fcf9d102f499cf10336f25c0356028c62910078599575da488ce578-w:720-h:1280-l:27227598-t:video/mp4.mp4", name: "Real Estate Broker", handle: "@kenbroker_realty", caption: "Grabe ang lead quality pagkatapos gamitin ito. Hindi pa ako nag-hire ng copywriter 💯", likes: "21.5K", shares: "6.1K", comments: "1.4K" },
+  { src: "https://statics.pancake.vn/web-media-262/0a/0d/bb/45/dd8a737d51cc14591ccd2eea83b09c3d517febc369c8bc9a04a2d880-w:720-h:1280-l:27369124-t:video/mp4.mp4", name: "Spa & Wellness Owner", handle: "@serenityspa_davao", caption: "Ang gaan gamitin kahit hindi ako tech-savvy. Booking namin nag-double! ✨", likes: "18.3K", shares: "5.2K", comments: "1.1K" },
 ];
 
 const FAQS = [
