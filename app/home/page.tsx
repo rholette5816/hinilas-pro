@@ -81,14 +81,14 @@ function ReelCard({ src, name, handle, caption, likes, shares, comments }: { src
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { el.play().catch(() => {}); }
       else { el.pause(); }
-    }, { threshold: 0.5 });
+    }, { threshold: 0.3 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
   return (
     <div className="ugc-card">
       <div className="relative rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "9/16" }}>
-        <video ref={videoRef} src={src} loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ transform: "scale(1.08)", transformOrigin: "center center" }} />
+        <video ref={videoRef} src={src} loop muted playsInline autoPlay preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{ transform: "scale(1.08)", transformOrigin: "center center" }} />
         {/* gradient overlay bottom */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 50%)" }} />
         {/* right side actions */}
@@ -208,10 +208,10 @@ export default function LandingPage() {
     <div className="min-h-screen overflow-x-hidden" style={{ background: "#F0F2F5", color: TEXT }}>
       <style>{`
         @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .ugc-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .ugc-scroll { display: flex; gap: 0; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .ugc-scroll::-webkit-scrollbar { display: none; }
-        .ugc-card { flex: 0 0 220px; scroll-snap-align: start; }
-        @media (min-width: 1024px) { .ugc-scroll { display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: visible; gap: 16px; } .ugc-card { flex: none; } }
+        .ugc-card { flex: 0 0 100%; scroll-snap-align: center; padding: 0 12px; box-sizing: border-box; }
+        @media (min-width: 1024px) { .ugc-scroll { display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: visible; gap: 16px; } .ugc-card { flex: none; padding: 0; } }
         .reel-action-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: default; }
         .reel-action-btn svg { filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
         .reel-action-label { font-size: 11px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
