@@ -819,7 +819,7 @@ show(0);
                 ) : (
                   <div>
                     <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo("analyze_basic")}>
-                      <img src="https://cdn.loom.com/sessions/thumbnails/33bbe4f3b6dc41de9d2487eace51e9e5-with-play.gif" alt="Basic audit tutorial preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #1877F218 0%, #1877F238 100%)", borderBottom: "3px solid #1877F2" }} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
                         <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
                           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>
@@ -935,7 +935,7 @@ show(0);
                 ) : (
                   <div>
                     <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo("analyze_advanced")}>
-                      <img src="https://cdn.loom.com/sessions/thumbnails/633b09b4378d4f4e863bead19f51b1a3-with-play.gif" alt="Advanced audit tutorial preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #D9770618 0%, #D9770638 100%)", borderBottom: "3px solid #D97706" }} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
                         <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
                           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>

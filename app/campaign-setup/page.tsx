@@ -28,11 +28,6 @@ const LEVEL_VIDEOS: Record<Level, string> = {
   Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2",
 };
 
-const LEVEL_THUMBNAILS: Record<Level, string> = {
-  Campaign: "https://cdn.loom.com/sessions/thumbnails/e594f91be4314832b75e295791f70ea0-with-play.gif",
-  "Ad Set": "https://cdn.loom.com/sessions/thumbnails/7f598578f67540f0a33c2ff45015e116-with-play.gif",
-  Ads: "https://cdn.loom.com/sessions/thumbnails/2268db0a4a84402a95eb9c7f0fd7aba2-with-play.gif",
-};
 
 const LEVEL_VIDEO_KEYS: Record<Level, VideoKey> = {
   Campaign: "campaign",
@@ -455,7 +450,7 @@ export default function CampaignSetupPage() {
 
                 return (
                   <div className="mb-5 rounded-2xl overflow-hidden border border-slate-200" style={{ background: "#F0F2F5" }}>
-                    <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200" style={{ background: "#FFFFFF" }}>
                       <div className="w-2 h-2 rounded-full" style={{ background: step.color }} />
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: step.color }}>{step.level} Level</span>
                       <span className="text-xs text-[#1c1e21] ml-1">- Tutorial Video</span>
@@ -482,11 +477,7 @@ export default function CampaignSetupPage() {
                         <div>
                           {/* Thumbnail with lock overlay */}
                           <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo(currentVideoKey)}>
-                            <img
-                              src={LEVEL_THUMBNAILS[step.level]}
-                              alt={`${step.level} tutorial preview`}
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
+                            <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${step.color}18 0%, ${step.color}38 100%)`, borderBottom: `3px solid ${step.color}` }} />
                             {/* Dark overlay */}
                             <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
                               <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
@@ -534,7 +525,7 @@ export default function CampaignSetupPage() {
               {/* Targeting suggestions - only on Audience Targeting step */}
               {!done && step.label === "Audience Targeting" && (
                 <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#F0F2F5" }}>
-                  <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200" style={{ background: "#FFFFFF" }}>
                     <span className="text-base">🎯</span>
                     <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Targeting Suggestions</span>
                     <span className="text-xs text-[#1c1e21] ml-1">from your research</span>
@@ -698,7 +689,7 @@ export default function CampaignSetupPage() {
                 </div>
               ) : (
                 <div className="rounded-2xl border border-slate-200 overflow-hidden" style={{ background: "#F0F2F5" }}>
-                  <div className="px-6 py-4 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
+                  <div className="px-6 py-4 border-b border-slate-200" style={{ background: "#FFFFFF" }}>
                     <div className="flex items-center gap-2 mb-1">
                       <span
                         className="text-xs font-bold px-2 py-0.5 rounded-full"
@@ -748,7 +739,7 @@ export default function CampaignSetupPage() {
                     })}
                   </div>
 
-                  <div className="px-6 py-4 border-t border-gray-800 flex gap-3">
+                  <div className="px-6 py-4 border-t border-slate-200 flex gap-3">
                     <button
                       onClick={back}
                       disabled={currentStep === 0}
