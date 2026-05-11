@@ -386,20 +386,20 @@ export default function CreativePage() {
           {activeTab === "video" && (
             <div>
               {!selectedAngle ? (
-                <div className="bg-orange-950 border border-orange-800 rounded-xl p-6 text-center mb-6">
-                  <p className="text-orange-300 text-sm font-semibold mb-1">Angle required</p>
-                  <p className="text-orange-400 text-xs mb-4">You need a marketing angle before generating video clips. Go to Angles first.</p>
+                <div className="rounded-xl p-6 text-center mb-6" style={{ background: "#FFF7ED", border: "1px solid #FED7AA" }}>
+                  <p className="text-sm font-semibold mb-1" style={{ color: "#D97706" }}>Angle required</p>
+                  <p className="text-xs mb-4" style={{ color: "#92400E" }}>You need a marketing angle before generating video clips. Go to Angles first.</p>
                   <button onClick={() => router.push("/angles")} className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-semibold">
                     Go to Angles
                   </button>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-start gap-2 bg-orange-950 border border-orange-800 rounded-lg px-4 py-3 mb-6 text-sm">
-                    <span className="text-orange-400 mt-0.5">🎯</span>
+                  <div className="flex items-start gap-2 rounded-lg px-4 py-3 mb-6 text-sm" style={{ background: "#EFF4FF", border: "1px solid #C7D7FD" }}>
+                    <span className="mt-0.5" style={{ color: "#0866FF" }}>🎯</span>
                     <div>
-                      <p className="text-orange-300 text-xs font-medium mb-0.5">Angle loaded</p>
-                      <p className="text-orange-200 text-xs line-clamp-2">{selectedAngle}</p>
+                      <p className="text-sm font-semibold mb-0.5" style={{ color: "#0866FF" }}>Angle loaded</p>
+                      <p className="text-sm text-slate-800 line-clamp-2">{selectedAngle}</p>
                     </div>
                   </div>
 
@@ -550,11 +550,11 @@ export default function CreativePage() {
 
           {/* Angle context */}
           {selectedAngle && (
-            <div className="flex items-start gap-2 bg-orange-950 border border-orange-800 rounded-lg px-4 py-3 mb-6 text-sm">
-              <span className="text-orange-400 mt-0.5">🎯</span>
+            <div className="flex items-start gap-2 rounded-lg px-4 py-3 mb-6 text-sm" style={{ background: "#EFF4FF", border: "1px solid #C7D7FD" }}>
+              <span className="mt-0.5" style={{ color: "#0866FF" }}>🎯</span>
               <div>
-                <p className="text-orange-300 text-xs font-medium mb-0.5">Angle loaded</p>
-                <p className="text-orange-200 text-xs line-clamp-2">{selectedAngle}</p>
+                <p className="text-sm font-semibold mb-0.5" style={{ color: "#0866FF" }}>Angle loaded</p>
+                <p className="text-sm text-slate-800 line-clamp-2">{selectedAngle}</p>
               </div>
             </div>
           )}
