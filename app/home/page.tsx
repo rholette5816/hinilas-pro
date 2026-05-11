@@ -472,7 +472,7 @@ export default function LandingPage() {
         <div className="rounded-2xl border bg-white overflow-hidden" style={{ borderColor: BORDER }}>
           <div className="grid lg:grid-cols-[380px_1fr]">
             {/* Photo */}
-            <div className="relative min-h-[240px] lg:min-h-0" style={{ background: INNER }}>
+            <div className="relative aspect-square lg:aspect-auto lg:min-h-0" style={{ background: INNER }}>
               <Image src="/ken.jpg" alt="Kevin Allego, Hinilas Pro founder" fill className="object-cover" style={{ objectPosition: "center 30%" }} />
             </div>
             {/* Copy */}
