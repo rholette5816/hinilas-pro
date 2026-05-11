@@ -10,7 +10,7 @@ function Avatar({ name, avatar, size = 8 }: { name: string; avatar?: string | nu
   return (
     <div
       className={`w-${size} h-${size} rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0`}
-      style={{ background: "#1E3A8A" }}
+      style={{ background: "#0866FF" }}
     >
       {name.charAt(0).toUpperCase()}
     </div>
@@ -73,13 +73,13 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
       <Sidebar />
       <main className="flex-1 flex flex-col pt-14 md:pt-0 overflow-hidden">
-        <div className="px-6 py-4 shrink-0" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0" }}>
+        <div className="px-6 py-4 shrink-0" style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB" }}>
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
-              <span className="text-xs font-medium" style={{ color: "#64748B" }}>💬 Community</span>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+              <span className="text-xs font-medium" style={{ color: "#65676B" }}>💬 Community</span>
             </div>
             <span className="text-slate-500 text-xs">{messages.length} messages</span>
           </div>
@@ -115,9 +115,9 @@ export default function CommunityPage() {
                   <div
                     className="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
                     style={{
-                      background: isMe ? "#1E3A8A" : "#F1F5F9",
-                      color: isMe ? "#fff" : "#0F172A",
-                      border: isMe ? "1px solid #1E3A8A" : "1px solid #E2E8F0",
+                      background: isMe ? "#0866FF" : "#F1F5F9",
+                      color: isMe ? "#fff" : "#1C1E21",
+                      border: isMe ? "1px solid #0866FF" : "1px solid #E4E6EB",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -130,7 +130,7 @@ export default function CommunityPage() {
           <div ref={bottomRef} />
         </div>
 
-        <div className="px-4 py-4 shrink-0" style={{ background: "#FFFFFF", borderTop: "1px solid #E2E8F0" }}>
+        <div className="px-4 py-4 shrink-0" style={{ background: "#FFFFFF", borderTop: "1px solid #E4E6EB" }}>
           {currentUser ? (
             <div className="flex items-end gap-3 max-w-3xl mx-auto">
               <Avatar name={currentUser.name} avatar={currentUser.avatar} size={8} />
@@ -142,13 +142,13 @@ export default function CommunityPage() {
                   placeholder="Write a message... (Enter to send)"
                   rows={1}
                   className="w-full rounded-2xl px-4 py-3 pr-12 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", maxHeight: "120px" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", maxHeight: "120px" }}
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!input.trim() || sending}
                   className="absolute right-3 bottom-3 w-7 h-7 rounded-full flex items-center justify-center disabled:opacity-30 transition-opacity hover:opacity-90"
-                  style={{ background: "#1E3A8A" }}
+                  style={{ background: "#0866FF" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
-const BRAND_BLUE = "#1E3A8A";
+const BRAND_BLUE = "#0866FF";
 const BRAND_ORANGE = "#D97706";
 
 const STAR_REWARDS: Record<number, number> = { 1: 2, 2: 3, 3: 5, 4: 8, 5: 15 };
@@ -120,7 +120,7 @@ export default function TestimonialPage() {
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <h2 className="text-white font-bold text-2xl mb-2">Thank you!</h2>
-          <p className="text-sm leading-relaxed" style={{ color: "#64748B" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "#65676B" }}>
             Your experience has been submitted. It means a lot and helps others discover what Hinilas Pro can do.
           </p>
           <p className="text-xs mt-4 font-semibold" style={{ color: BRAND_BLUE }}>— Basta Mag Ads Hilas</p>
@@ -139,7 +139,7 @@ export default function TestimonialPage() {
             <HinilasIcon size="lg" accentColor={BRAND_ORANGE} />
           </div>
           <h1 className="text-2xl font-black text-white mb-1">Share Your Experience</h1>
-          <p className="text-sm" style={{ color: "#64748B" }}>Your story helps other business owners find the right tool.</p>
+          <p className="text-sm" style={{ color: "#65676B" }}>Your story helps other business owners find the right tool.</p>
         </div>
 
         <div className="space-y-5">
@@ -153,7 +153,7 @@ export default function TestimonialPage() {
               value={name}
               onChange={e => setName(e.target.value)}
               className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none transition-all"
-              style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
+              style={{ background: "#1C1E21", border: "1px solid #1E2D45" }}
               onFocus={e => e.target.style.borderColor = BRAND_BLUE}
               onBlur={e => e.target.style.borderColor = "#1E2D45"}
             />
@@ -191,8 +191,8 @@ export default function TestimonialPage() {
                 <>
                   <style>{`
                     @keyframes polishPulse {
-                      0%, 100% { box-shadow: 0 0 0 0 rgba(30,58,138,0.5); }
-                      50% { box-shadow: 0 0 0 6px rgba(30,58,138,0); }
+                      0%, 100% { box-shadow: 0 0 0 0 rgba(8,102,255,0.5); }
+                      50% { box-shadow: 0 0 0 6px rgba(8,102,255,0); }
                     }
                   `}</style>
                   <button
@@ -201,9 +201,9 @@ export default function TestimonialPage() {
                     disabled={improving}
                     className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                     style={{
-                      background: "rgba(30,58,138,0.15)",
+                      background: "rgba(8,102,255,0.15)",
                       color: BRAND_BLUE,
-                      border: "1px solid rgba(30,58,138,0.3)",
+                      border: "1px solid rgba(8,102,255,0.3)",
                       animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
                     }}
                   >
@@ -221,7 +221,7 @@ export default function TestimonialPage() {
               value={message}
               onChange={e => handleMessageChange(e.target.value)}
               className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none resize-none transition-all"
-              style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
+              style={{ background: "#1C1E21", border: "1px solid #1E2D45" }}
               onFocus={e => e.target.style.borderColor = BRAND_BLUE}
               onBlur={e => e.target.style.borderColor = "#1E2D45"}
             />
@@ -235,7 +235,7 @@ export default function TestimonialPage() {
             </div>
 
             {/* Video guide */}
-            <div className="rounded-xl px-4 py-3 mb-3" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+            <div className="rounded-xl px-4 py-3 mb-3" style={{ background: "#1C1E21", border: "1px solid #1E2D45" }}>
               <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>If recording a video, cover these points:</p>
               <ul className="space-y-1.5">
                 {VIDEO_GUIDE.map((point, i) => (
@@ -251,7 +251,7 @@ export default function TestimonialPage() {
             <input ref={cameraRef} type="file" accept="video/*,image/*" capture="environment" onChange={handleMediaChange} className="hidden" />
 
             {media ? (
-              <div className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+              <div className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#1C1E21" }}>
                 {isVideo ? (
                   <video src={mediaPreview!} controls className="w-full max-h-48 object-cover" />
                 ) : (
@@ -274,18 +274,18 @@ export default function TestimonialPage() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed transition-colors hover:border-gray-400"
-                  style={{ background: "#0F172A", borderColor: "#1E2D45" }}
+                  style={{ background: "#1C1E21", borderColor: "#1E2D45" }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  <span className="text-xs font-medium" style={{ color: "#64748B" }}>Upload File</span>
+                  <span className="text-xs font-medium" style={{ color: "#65676B" }}>Upload File</span>
                 </button>
                 <button
                   onClick={() => cameraRef.current?.click()}
                   className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed transition-colors hover:border-gray-400"
-                  style={{ background: "#0F172A", borderColor: "#1E2D45" }}
+                  style={{ background: "#1C1E21", borderColor: "#1E2D45" }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                  <span className="text-xs font-medium" style={{ color: "#64748B" }}>Use Camera</span>
+                  <span className="text-xs font-medium" style={{ color: "#65676B" }}>Use Camera</span>
                 </button>
               </div>
             )}

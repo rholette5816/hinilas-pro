@@ -46,13 +46,13 @@ export async function generateMetadata({
 function LogoMark() {
   return (
     <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="48" height="48" rx="10" fill="#0F172A" />
-      <line x1="14" y1="10" x2="14" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="34" y1="10" x2="34" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
-      <line x1="14" y1="24" x2="34" y2="24" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <rect width="48" height="48" rx="10" fill="#1C1E21" />
+      <line x1="14" y1="10" x2="14" y2="38" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="34" y1="10" x2="34" y2="38" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="14" y1="24" x2="34" y2="24" stroke="#0866FF" strokeWidth="3.5" strokeLinecap="round" />
       <circle cx="14" cy="10" r="3" fill="#D97706" />
-      <circle cx="14" cy="38" r="3" fill="#1E3A8A" />
-      <circle cx="34" cy="10" r="3" fill="#1E3A8A" />
+      <circle cx="14" cy="38" r="3" fill="#0866FF" />
+      <circle cx="34" cy="10" r="3" fill="#0866FF" />
       <circle cx="34" cy="38" r="3" fill="#D97706" />
     </svg>
   );
@@ -69,7 +69,7 @@ function linkify(text: string) {
         target="_blank"
         rel="noopener noreferrer"
         className="underline decoration-blue-300 underline-offset-4 transition-colors hover:text-blue-800"
-        style={{ color: "#1E3A8A" }}
+        style={{ color: "#0866FF" }}
       >
         {part}
       </a>
@@ -117,14 +117,14 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <main className="min-h-screen" style={{ background: "#F8FAFC", color: "#0F172A" }}>
-      <div className="border-b bg-white" style={{ borderColor: "#E2E8F0" }}>
+    <main className="min-h-screen" style={{ background: "#F0F2F5", color: "#1C1E21" }}>
+      <div className="border-b bg-white" style={{ borderColor: "#E4E6EB" }}>
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
           <Link href="/home" className="flex items-center gap-3 transition-opacity hover:opacity-85">
             <LogoMark />
             <span className="text-sm font-black text-slate-900">Hinilas Pro</span>
           </Link>
-          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#64748B" }}>
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#65676B" }}>
             All posts
           </Link>
         </div>
@@ -132,7 +132,7 @@ export default async function BlogPostPage({
 
       <div className="mx-auto max-w-3xl px-6 py-14">
         <div className="mb-8">
-          <p className="mb-4 text-xs font-bold uppercase tracking-wide" style={{ color: "#64748B" }}>
+          <p className="mb-4 text-xs font-bold uppercase tracking-wide" style={{ color: "#65676B" }}>
             {new Date(post.published_at).toLocaleDateString("en-PH", {
               year: "numeric",
               month: "long",
@@ -144,14 +144,14 @@ export default async function BlogPostPage({
             {post.title}
           </h1>
           {post.meta_description && (
-            <p className="text-lg leading-8" style={{ color: "#64748B" }}>
+            <p className="text-lg leading-8" style={{ color: "#65676B" }}>
               {post.meta_description}
             </p>
           )}
         </div>
 
         {post.hero_image_url && (
-          <div className="mb-10 overflow-hidden rounded-2xl border bg-white" style={{ borderColor: "#E2E8F0" }}>
+          <div className="mb-10 overflow-hidden rounded-2xl border bg-white" style={{ borderColor: "#E4E6EB" }}>
             <img
               src={post.hero_image_url}
               alt={post.title}
@@ -161,7 +161,7 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        <article className="rounded-2xl border bg-white p-6 sm:p-8" style={{ borderColor: "#E2E8F0" }}>
+        <article className="rounded-2xl border bg-white p-6 sm:p-8" style={{ borderColor: "#E4E6EB" }}>
           <div className="flex flex-col gap-3">
             {renderArticle(post.article)}
           </div>
@@ -170,11 +170,11 @@ export default async function BlogPostPage({
         {post.cta && (
           <div
             className="mt-10 rounded-2xl p-8"
-            style={{ background: "#0F172A", color: "#FFFFFF" }}
+            style={{ background: "#1C1E21", color: "#FFFFFF" }}
           >
             <div
               className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-              style={{ background: "rgba(30,58,138,0.18)", color: "#93C5FD", border: "1px solid rgba(147,197,253,0.25)" }}
+              style={{ background: "rgba(8,102,255,0.18)", color: "#93C5FD", border: "1px solid rgba(147,197,253,0.25)" }}
             >
               Try Hinilas Pro
             </div>
@@ -195,7 +195,7 @@ export default async function BlogPostPage({
         )}
 
         <div className="mt-10">
-          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#64748B" }}>
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#65676B" }}>
             Back to all posts
           </Link>
         </div>

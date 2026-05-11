@@ -43,12 +43,12 @@ export default function LoadingScreen() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center"
-      style={{ background: "#F8FAFC" }}
+      style={{ background: "#F0F2F5" }}
     >
       {/* Glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(30,58,138,0.12) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(8,102,255,0.12) 0%, transparent 70%)" }}
       />
 
       {/* Logo */}
@@ -59,7 +59,7 @@ export default function LoadingScreen() {
             <span className="text-slate-900 font-bold text-2xl">Hinilas</span>
             <span className="font-bold text-2xl" style={{ color: "#D97706" }}>Pro</span>
           </div>
-          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#1E3A8A" }}>
+          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#0866FF" }}>
             AI Driven. Results Focused.
           </p>
         </div>
@@ -70,14 +70,14 @@ export default function LoadingScreen() {
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            border: "2px solid rgba(30,58,138,0.15)",
+            border: "2px solid rgba(8,102,255,0.15)",
           }}
         />
         <div
           className="absolute inset-0 rounded-full animate-spin"
           style={{
             border: "2px solid transparent",
-            borderTopColor: "#1E3A8A",
+            borderTopColor: "#0866FF",
             borderRightColor: "#D97706",
           }}
         />
@@ -91,7 +91,7 @@ export default function LoadingScreen() {
         key={msgIndex}
         className="text-sm font-medium mb-3"
         style={{
-          color: "#0F172A",
+          color: "#1C1E21",
           animation: "fadeUp 0.4s ease forwards",
         }}
       >
@@ -105,7 +105,7 @@ export default function LoadingScreen() {
             key={i}
             className="w-1.5 h-1.5 rounded-full"
             style={{
-              background: "#1E3A8A",
+              background: "#0866FF",
               animation: `bounce 1.2s ease-in-out ${i * 0.15}s infinite`,
               opacity: 0.6,
             }}

@@ -10,7 +10,7 @@ import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
 const ANGLE_COLORS: Record<string, string> = {
   Problem: "#EF4444",
-  Solution: "#1E3A8A",
+  Solution: "#0866FF",
   Transformation: "#8B5CF6",
   Story: "#D97706",
   Testimonial: "#10B981",
@@ -199,9 +199,9 @@ export default function AnglesPage() {
           {researchOutput && (
             <div
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 mb-5 text-sm"
-              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
             >
-              <span className="text-[#1E3A8A]">
+              <span className="text-[#0866FF]">
                 <CheckIcon />
               </span>
               <span className="text-[#64748B]">Research loaded - angles will be based on your customer insights</span>
@@ -213,7 +213,7 @@ export default function AnglesPage() {
               onClick={() => generateAngles()}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#1E3A8A", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#0866FF", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles - 1 credit" : "Generate Angles - 1 credit"}
             </button>
@@ -267,7 +267,7 @@ export default function AnglesPage() {
 
           {!loading && angles.length > 0 && (
             <>
-              <div className="rounded-xl p-4 mb-4" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+              <div className="rounded-xl p-4 mb-4" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
                 <p className="text-sm text-white font-semibold">Pick the angle that feels right. We&apos;ll use it for your image and copy.</p>
                 <p className="text-xs text-gray-400 mt-1">Choose the angle that best matches how you want to sell this offer.</p>
               </div>
@@ -330,7 +330,7 @@ export default function AnglesPage() {
                       {angle.hookLine && (
                         <div
                           className="mx-5 mb-4 rounded-lg px-4 py-3 border"
-                          style={{ background: "#F8FAFC", borderColor: `${color}30` }}
+                          style={{ background: "#F0F2F5", borderColor: `${color}30` }}
                         >
                           <p className="text-xs font-semibold mb-1" style={{ color }}>
                             Hook Line
@@ -342,13 +342,13 @@ export default function AnglesPage() {
                       {(angle.uso || angle.whyItWorks) && (
                         <div className="px-5 pb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                           {angle.uso && (
-                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F8FAFC" }}>
+                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
                               <p className="text-xs font-semibold text-gray-500 mb-1">Unique Selling Offer</p>
                               <p className="text-gray-300 text-xs leading-relaxed">{angle.uso}</p>
                             </div>
                           )}
                           {angle.whyItWorks && (
-                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F8FAFC" }}>
+                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F0F2F5" }}>
                               <p className="text-xs font-semibold text-gray-500 mb-1">Why It Works</p>
                               <p className="text-gray-300 text-xs leading-relaxed">{angle.whyItWorks}</p>
                             </div>

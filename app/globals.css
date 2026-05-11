@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #0F172A;
-  --brand-blue: #1E3A8A;
+  --background: #F0F2F5;
+  --foreground: #1C1E21;
+  --brand-blue: #0866FF;
   --brand-orange: #D97706;
   --brand-dark: #FFFFFF;
 }
@@ -35,11 +35,11 @@ html, body {
 }
 
 @keyframes btnGlowBlue {
-  0%   { box-shadow: 0 0 12px rgba(30,58,138,0.5), 0 0 24px rgba(30,58,138,0.2); }
-  100% { box-shadow: 0 0 20px rgba(30,58,138,0.75), 0 0 40px rgba(30,58,138,0.35); }
+  0%   { box-shadow: 0 0 12px rgba(8,102,255,0.5), 0 0 24px rgba(8,102,255,0.2); }
+  100% { box-shadow: 0 0 20px rgba(8,102,255,0.75), 0 0 40px rgba(8,102,255,0.35); }
 }
 @keyframes btnGlowOrange {
   0%   { box-shadow: 0 0 12px rgba(217,119,6,0.5), 0 0 24px rgba(217,119,6,0.2); }
   100% { box-shadow: 0 0 20px rgba(217,119,6,0.75), 0 0 40px rgba(217,119,6,0.35); }
 }
-.blog-card:hover { border-color: #1E3A8A !important; }
+.blog-card:hover { border-color: #0866FF !important; }

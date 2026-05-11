@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
-const BRAND_BLUE = "#1E3A8A";
+const BRAND_BLUE = "#0866FF";
 const BRAND_ORANGE = "#D97706";
 
 
@@ -110,12 +110,12 @@ export default function SetupPage() {
             {/* Step indicator */}
             <div className="flex items-center gap-3 mb-8">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: BRAND_BLUE }}>1</div>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ background: BRAND_BLUE }}>1</div>
                 <span className="text-sm font-semibold" style={{ color: BRAND_BLUE }}>Intelligence Setup</span>
               </div>
-              <div className="flex-1 h-px max-w-[60px]" style={{ background: "#E2E8F0" }} />
+              <div className="flex-1 h-px max-w-[60px]" style={{ background: "#E4E6EB" }} />
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "#F1F5F9", color: "#64748B" }}>2</div>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "#F1F5F9", color: "#65676B" }}>2</div>
                 <span className="text-sm font-medium" style={{ color: "#475569" }}>Market Analysis</span>
               </div>
             </div>
@@ -123,7 +123,7 @@ export default function SetupPage() {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-2xl font-black text-slate-900 mb-2">Business Intelligence Profile</h1>
-              <p className="text-sm leading-relaxed" style={{ color: "#64748B" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "#65676B" }}>
                 Tell us about your business to power your AI-driven marketing engine. Our intelligence models use these details to craft high-conversion strategies.
               </p>
             </div>
@@ -132,19 +132,19 @@ export default function SetupPage() {
 
               {/* Industry */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: "#64748B" }}>Industry</label>
-                <p className="text-xs mb-3" style={{ color: "#64748B" }}>Helps the AI generate creatives that match your industry&apos;s visual style.</p>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Industry</label>
+                <p className="text-sm mb-3" style={{ color: "#65676B" }}>Helps the AI generate creatives that match your industry&apos;s visual style.</p>
                 <select
                   value={form.industry || ""}
                   onChange={e => setForm({ ...form, industry: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none transition-all appearance-none"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: form.industry ? "#0F172A" : "#64748B" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: form.industry ? "#1C1E21" : "#64748B" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                  onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                  onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 >
-                  <option value="" style={{ background: "#FFFFFF", color: "#64748B" }}>Select your industry...</option>
+                  <option value="" style={{ background: "#FFFFFF", color: "#65676B" }}>Select your industry...</option>
                   {PH_INDUSTRIES.map(ind => (
-                    <option key={ind.value} value={ind.value} style={{ background: "#FFFFFF", color: "#0F172A" }}>{ind.label}</option>
+                    <option key={ind.value} value={ind.value} style={{ background: "#FFFFFF", color: "#1C1E21" }}>{ind.label}</option>
                   ))}
                 </select>
               </div>
@@ -152,7 +152,7 @@ export default function SetupPage() {
               {/* Business Name + Market */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold mb-2" style={{ color: "#64748B" }}>Business name</label>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Business name</label>
                   <input
                     type="text"
                     required
@@ -160,30 +160,30 @@ export default function SetupPage() {
                     value={form.businessName}
                     onChange={e => setForm({ ...form, businessName: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
-                    style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                    style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                     onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                    onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                    onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                   />
-                  <p className="text-xs text-slate-400 mt-1">Pangalan ng iyong business o brand</p>
+                  <p className="text-sm text-slate-400 mt-1">Pangalan ng iyong business o brand</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-2" style={{ color: "#64748B" }}>Market / location</label>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Market / location</label>
                   <input
                     type="text"
                     placeholder="e.g. Global, North America"
                     value={form.market}
                     onChange={e => setForm({ ...form, market: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
-                    style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                    style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                     onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                    onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                    onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                   />
                 </div>
               </div>
 
               {/* Product */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: "#64748B" }}>What are you selling?</label>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>What are you selling?</label>
                 <textarea
                   required
                   rows={2}
@@ -191,16 +191,16 @@ export default function SetupPage() {
                   value={form.product}
                   onChange={e => setForm({ ...form, product: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none resize-none transition-all"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                  onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                  onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-xs text-slate-400 mt-1">Describe your product or service in simple words</p>
+                <p className="text-sm text-slate-400 mt-1">Describe your product or service in simple words</p>
               </div>
 
               {/* Target Audience */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: "#64748B" }}>Target customer</label>
+                <label className="block text-sm font-semibold mb-2" style={{ color: "#65676B" }}>Target customer</label>
                 <input
                   type="text"
                   required
@@ -208,18 +208,18 @@ export default function SetupPage() {
                   value={form.targetAudience}
                   onChange={e => setForm({ ...form, targetAudience: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none transition-all"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                  onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                  onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-xs text-slate-400 mt-1">Who usually buys from you? Age, gender, location</p>
+                <p className="text-sm text-slate-400 mt-1">Who usually buys from you? Age, gender, location</p>
               </div>
 
               {/* USP */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs font-semibold" style={{ color: "#64748B" }}>Unique selling offer (USP)</label>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>AI optimized</span>
+                  <label className="block text-sm font-semibold" style={{ color: "#65676B" }}>Unique selling offer (USP)</label>
+                  <span className="text-sm font-bold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>AI optimized</span>
                 </div>
                 <textarea
                   rows={3}
@@ -227,16 +227,16 @@ export default function SetupPage() {
                   value={form.uniqueSellingOffer}
                   onChange={e => setForm({ ...form, uniqueSellingOffer: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl text-sm text-slate-900 placeholder-gray-400 focus:outline-none resize-none transition-all"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                   onFocus={e => e.target.style.borderColor = BRAND_BLUE}
-                  onBlur={e => e.target.style.borderColor = "#E2E8F0"}
+                  onBlur={e => e.target.style.borderColor = "#E4E6EB"}
                 />
-                <p className="text-xs mt-1.5" style={{ color: "#64748B" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
+                <p className="text-sm mt-1.5" style={{ color: "#65676B" }}>Include price, freebies, guarantee, urgency — anything that makes them act.</p>
               </div>
 
               {/* Stage */}
               <div>
-                <label className="block text-xs font-semibold mb-3" style={{ color: "#64748B" }}>Your current stage</label>
+                <label className="block text-sm font-semibold mb-3" style={{ color: "#65676B" }}>Your current stage</label>
                 <div className="space-y-2">
                   {STAGES.map(opt => {
                     const active = form.stage === opt.value as UserSetup["stage"];
@@ -247,15 +247,15 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, stage: opt.value as UserSetup["stage"] })}
                         className="w-full p-3.5 rounded-xl text-left flex items-center justify-between transition-all"
                         style={active
-                          ? { background: "rgba(30,58,138,0.12)", border: `1px solid ${BRAND_BLUE}` }
-                          : { background: "#FFFFFF", border: "1px solid #E2E8F0" }
+                          ? { background: "rgba(8,102,255,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          : { background: "#FFFFFF", border: "1px solid #E4E6EB" }
                         }
                       >
                         <div>
-                          <p className="text-sm font-semibold" style={{ color: active ? "#0F172A" : "#64748B" }}>{opt.label}</p>
-                          <p className="text-xs" style={{ color: active ? "#1E3A8A" : "#64748B" }}>{opt.sub}</p>
+                          <p className="text-sm font-semibold" style={{ color: active ? "#1C1E21" : "#64748B" }}>{opt.label}</p>
+                          <p className="text-sm" style={{ color: active ? "#0866FF" : "#64748B" }}>{opt.sub}</p>
                         </div>
-                        <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center" style={{ background: active ? BRAND_BLUE : "#E2E8F0" }}>
+                        <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center" style={{ background: active ? BRAND_BLUE : "#E4E6EB" }}>
                           {active && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
                         </div>
                       </button>
@@ -266,8 +266,8 @@ export default function SetupPage() {
 
               {/* Language */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: "#64748B" }}>Language / dialect</label>
-                <p className="text-xs mb-3" style={{ color: "#64748B" }}>How the AI responds and how ad copy sounds to your target market.</p>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#65676B" }}>Language / dialect</label>
+                <p className="text-sm mb-3" style={{ color: "#65676B" }}>How the AI responds and how ad copy sounds to your target market.</p>
                 <div className="grid grid-cols-2 gap-2">
                   {LANGUAGES.map(opt => {
                     const active = form.language === opt.value;
@@ -278,12 +278,12 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, language: opt.value })}
                         className="p-3 rounded-xl text-left transition-all"
                         style={active
-                          ? { background: "rgba(30,58,138,0.12)", border: `1px solid ${BRAND_BLUE}` }
-                          : { background: "#FFFFFF", border: "1px solid #E2E8F0" }
+                          ? { background: "rgba(8,102,255,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          : { background: "#FFFFFF", border: "1px solid #E4E6EB" }
                         }
                       >
-                        <p className="text-xs font-semibold" style={{ color: active ? "#0F172A" : "#64748B" }}>{opt.label}</p>
-                        <p className="text-xs" style={{ color: active ? "#1E3A8A" : "#64748B" }}>{opt.sub}</p>
+                        <p className="text-sm font-semibold" style={{ color: active ? "#1C1E21" : "#64748B" }}>{opt.label}</p>
+                        <p className="text-sm" style={{ color: active ? "#0866FF" : "#64748B" }}>{opt.sub}</p>
                       </button>
                     );
                   })}
@@ -295,8 +295,8 @@ export default function SetupPage() {
         </main>
 
         {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E2E8F0", backdropFilter: "blur(12px)", borderRadius: "0 0 0 0" }}>
-          <div className="flex items-center gap-2 text-xs" style={{ color: "#64748B" }}>
+        <div className="fixed bottom-0 left-0 right-0 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)", borderRadius: "0 0 0 0" }}>
+          <div className="flex items-center gap-2 text-sm" style={{ color: "#65676B" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Your data is encrypted and used only for strategy generation.</span>
           </div>
@@ -314,7 +314,7 @@ export default function SetupPage() {
               type="button"
               onClick={handleSaveDraft}
               className="px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#64748B" }}
+              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#65676B" }}
             >
               Save Draft
             </button>

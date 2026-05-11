@@ -622,7 +622,7 @@ export default function CreativePage() {
                   <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>
                     Upgrade to Flex - ₱499
                   </a>
-                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#1E3A8A" }}>
+                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#0866FF" }}>
                     Get 50 Credits - ₱249
                   </a>
                   <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>

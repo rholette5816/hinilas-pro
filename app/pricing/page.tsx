@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import GCashModal from "@/components/GCashModal";
 import { useApp } from "@/lib/context";
 
-const BRAND_BLUE = "#1E3A8A";
+const BRAND_BLUE = "#0866FF";
 const BRAND_ORANGE = "#D97706";
 const BRAND_RED = "#EF4444";
 
@@ -87,7 +87,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-4xl mx-auto px-6 py-10">
@@ -98,7 +98,7 @@ export default function PricingPage() {
           </div>
 
           {/* Threshold bar */}
-          <div className="rounded-2xl px-6 py-5 mb-8" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+          <div className="rounded-2xl px-6 py-5 mb-8" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-slate-600">Your credits</p>
               <span
@@ -137,7 +137,7 @@ export default function PricingPage() {
                   className="rounded-2xl border p-5 flex flex-col relative"
                   style={{
                     background: "#FFFFFF",
-                    borderColor: isCurrent ? p.color : "#E2E8F0",
+                    borderColor: isCurrent ? p.color : "#E4E6EB",
                     boxShadow: isCurrent ? `0 0 20px ${p.color}20` : "none",
                   }}
                 >
@@ -180,7 +180,7 @@ export default function PricingPage() {
                     <button
                       onClick={() => router.push("/")}
                       className="mt-auto w-full py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
-                      style={{ border: "1px solid #E2E8F0" }}
+                      style={{ border: "1px solid #E4E6EB" }}
                     >
                       Get Started Free
                     </button>
@@ -212,9 +212,9 @@ export default function PricingPage() {
           </div>
 
           {/* Feature comparison table - mobile: stacked cards, desktop: grid */}
-          <div className="rounded-2xl overflow-hidden mb-8" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+          <div className="rounded-2xl overflow-hidden mb-8" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
             {/* Desktop header */}
-            <div className="hidden md:grid grid-cols-4 px-5 py-3" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0" }}>
+            <div className="hidden md:grid grid-cols-4 px-5 py-3" style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB" }}>
               <div className="col-span-1" />
               {plans.map((p) => (
                 <div key={p.key} className="text-center">
@@ -227,7 +227,7 @@ export default function PricingPage() {
             <div className="hidden md:block">
               {FEATURES.map((group) => (
                 <div key={group.category}>
-                  <div className="px-5 py-2" style={{ background: "#F1F5F9", borderBottom: "1px solid #E2E8F0" }}>
+                  <div className="px-5 py-2" style={{ background: "#F1F5F9", borderBottom: "1px solid #E4E6EB" }}>
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{group.category}</p>
                   </div>
                   {group.items.map((item, idx) => (
@@ -299,7 +299,7 @@ export default function PricingPage() {
                   key={opt.label}
                   onClick={() => setGcash({ label: opt.modalLabel, credits: opt.credits, price: opt.price, color: BRAND_BLUE })}
                   className="relative hover:border-blue-500 rounded-xl p-4 text-left transition-colors"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                 >
                   {opt.best && (
                     <span className="absolute -top-2 right-3 rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white" style={{ background: BRAND_BLUE }}>

@@ -141,7 +141,7 @@ export default function ResearchPage() {
           </div>
 
           {!researchOutput && (
-            <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+            <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
               <h2 className="text-white font-semibold text-sm mb-3">What you&apos;ll get</h2>
               <div className="space-y-2">
                 {[
@@ -164,7 +164,7 @@ export default function ResearchPage() {
               onClick={runResearch}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#1E3A8A", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#0866FF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Researching..." : researchOutput ? "Re-run Research - 1 credit" : "Run Market Research - 1 credit"}
             </button>
@@ -189,12 +189,12 @@ export default function ResearchPage() {
           {researchOutput && !loading && (
             <div
               className="rounded-2xl p-6 mt-6"
-              style={{ background: "rgba(30,58,138,0.08)", border: "1px solid rgba(30,58,138,0.3)" }}
+              style={{ background: "rgba(8,102,255,0.08)", border: "1px solid rgba(8,102,255,0.3)" }}
             >
               <div className="flex items-center gap-3 mb-2">
                 <div
                   className="flex h-5 w-5 items-center justify-center rounded-full"
-                  style={{ background: "rgba(30,58,138,0.18)", color: "#1E3A8A" }}
+                  style={{ background: "rgba(8,102,255,0.18)", color: "#0866FF" }}
                 >
                   <CheckIcon />
                 </div>

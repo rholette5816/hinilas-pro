@@ -21,7 +21,7 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
     <button
       onClick={copy}
       className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-      style={{ background: copied ? "#22c55e20" : "#1E293B", color: copied ? "#22c55e" : "#9CA3AF", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
+      style={{ background: copied ? "#22c55e20" : "#1C1E21", color: copied ? "#22c55e" : "#9CA3AF", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
     >
       {copied ? "Copied!" : label}
     </button>
@@ -217,7 +217,7 @@ export default function CopyPage() {
                   <button
                     onClick={() => uploadRef.current?.click()}
                     className="text-white px-4 py-2 rounded-lg text-xs font-semibold"
-                    style={{ background: "#1E3A8A" }}
+                    style={{ background: "#0866FF" }}
                   >
                     Upload Image
                   </button>
@@ -243,8 +243,8 @@ export default function CopyPage() {
                   onClick={() => setLanguage(opt.value)}
                   className="p-2.5 rounded-lg border text-left transition-all"
                   style={language === opt.value
-                    ? { background: "#1E3A8A", borderColor: "#1E3A8A", color: "white" }
-                    : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                    ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
+                    : { background: "#1C1E21", borderColor: "#374151", color: "#9CA3AF" }
                   }
                 >
                   <p className="text-xs font-medium">{opt.label}</p>
@@ -273,10 +273,10 @@ export default function CopyPage() {
                     className="p-3 rounded-lg border text-left transition-all cursor-pointer"
                     style={
                       selected
-                        ? { background: "#1E3A8A", borderColor: "#1E3A8A", color: "white" }
+                        ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
                         : disabled
                         ? { background: "#111827", borderColor: "#1F2937", color: "#4B5563", cursor: "not-allowed" }
-                        : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                        : { background: "#1C1E21", borderColor: "#374151", color: "#9CA3AF" }
                     }
                   >
                     <p className="text-sm font-bold">{f.label}</p>
@@ -297,7 +297,7 @@ export default function CopyPage() {
               onClick={generateCopy}
               disabled={loading || !activeImage}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#1E3A8A", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#0866FF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Writing..." : output ? "Rewrite Captions - 1 credit" : "Generate Captions - 1 credit"}
             </button>
@@ -342,7 +342,7 @@ export default function CopyPage() {
                 {variations.map((v, idx) => (
                   <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#FFFFFF" }}>
                     {/* Card header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#F8FAFC" }}>
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#F0F2F5" }}>
                       <span className="text-blue-400 text-xs font-bold uppercase tracking-wide">{v.title}</span>
                       <CopyButton text={`${v.caption}\n\nHeadline: ${v.headline}\nCTA: ${v.cta}`} label="Copy" />
                     </div>
@@ -365,7 +365,7 @@ export default function CopyPage() {
                       {v.cta && (
                         <div>
                           <p className="text-xs font-semibold text-gray-500 mb-1">CTA BUTTON</p>
-                          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#1E3A8A20", color: "#1E3A8A", border: "1px solid #1E3A8A40" }}>
+                          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#0866FF20", color: "#0866FF", border: "1px solid #0866FF40" }}>
                             {v.cta}
                           </span>
                         </div>

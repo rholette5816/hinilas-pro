@@ -184,15 +184,15 @@ export default function Sidebar() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Logo */}
-      <div className="px-5 py-4 shrink-0 pr-10" style={{ borderBottom: "1px solid #E2E8F0" }}>
+      <div className="px-5 py-4 shrink-0 pr-10" style={{ borderBottom: "1px solid #E4E6EB" }}>
         <div className="flex items-center gap-3">
           <HinilasIcon size="md" accentColor={planColor} />
           <div>
             <div className="flex items-baseline gap-0">
-              <span className="font-bold text-base" style={{ color: "#0F172A" }}>Hinilas</span>
+              <span className="font-bold text-base" style={{ color: "#1C1E21" }}>Hinilas</span>
               <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
             </div>
-            <p className="text-xs font-semibold" style={{ color: "#1E3A8A" }}>Marketing intelligence</p>
+            <p className="text-sm font-semibold" style={{ color: "#0866FF" }}>Marketing intelligence</p>
           </div>
         </div>
       </div>
@@ -218,18 +218,18 @@ export default function Sidebar() {
               }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
               style={active
-                ? { background: "rgba(30,58,138,0.1)", borderLeft: "2px solid #1E3A8A", paddingLeft: "10px" }
+                ? { background: "rgba(8,102,255,0.1)", borderLeft: "2px solid #0866FF", paddingLeft: "10px" }
                 : isLocked
                 ? { borderLeft: "2px solid transparent", opacity: 0.45, cursor: "not-allowed" }
                 : { borderLeft: "2px solid transparent" }
               }
             >
-              <span style={{ color: active ? "#1E3A8A" : "#64748B" }} className="shrink-0 transition-colors">
+              <span style={{ color: active ? "#0866FF" : "#64748B" }} className="shrink-0 transition-colors">
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium" style={{ color: "#0F172A" }}>{item.label}</p>
-                <p className="text-xs truncate" style={{ color: "#64748B" }}>{item.desc}</p>
+                <p className="text-base font-medium" style={{ color: "#1C1E21" }}>{item.label}</p>
+                <p className="text-sm truncate" style={{ color: "#65676B" }}>{item.desc}</p>
               </div>
               {isLocked ? (
                 <div className="shrink-0">
@@ -245,21 +245,21 @@ export default function Sidebar() {
         })}
 
         {/* Divider */}
-        <div className="my-2" style={{ borderTop: "1px solid #E2E8F0" }} />
+        <div className="my-2" style={{ borderTop: "1px solid #E4E6EB" }} />
 
         {/* Consultation — Coming Soon */}
         <div
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed opacity-50"
           style={{ borderLeft: "2px solid transparent" }}
         >
-          <span style={{ color: "#64748B" }} className="shrink-0">
+          <span style={{ color: "#65676B" }} className="shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </span>
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-medium" style={{ color: "#0F172A" }}>Consultation</p>
-            <p className="text-xs" style={{ color: "#64748B" }}>100 credits / session</p>
+            <p className="text-base font-medium" style={{ color: "#1C1E21" }}>Consultation</p>
+            <p className="text-sm" style={{ color: "#65676B" }}>100 credits / session</p>
           </div>
-          <span className="shrink-0 text-xs font-bold px-1.5 py-0.5 rounded-full" style={{ background: "#E2E8F0", color: "#64748B" }}>Soon</span>
+          <span className="shrink-0 text-sm font-bold px-1.5 py-0.5 rounded-full" style={{ background: "#E4E6EB", color: "#65676B" }}>Soon</span>
         </div>
 
         {/* Feedback button */}
@@ -268,41 +268,41 @@ export default function Sidebar() {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
           style={{ borderLeft: "2px solid transparent" }}
         >
-          <span style={{ color: "#64748B" }} className="shrink-0 transition-colors">
+          <span style={{ color: "#65676B" }} className="shrink-0 transition-colors">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </span>
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-medium" style={{ color: "#0F172A" }}>Feedback</p>
-            <p className="text-xs" style={{ color: "#64748B" }}>Share thoughts</p>
+            <p className="text-base font-medium" style={{ color: "#1C1E21" }}>Feedback</p>
+            <p className="text-sm" style={{ color: "#65676B" }}>Share thoughts</p>
           </div>
-          <span className="shrink-0 text-xs font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.3)" }}>+2-65 cr</span>
+          <span className="shrink-0 text-sm font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.3)" }}>+2-65 cr</span>
         </button>
       </nav>
 
       {/* Footer */}
-      <div className="px-4 pb-4 pt-3 shrink-0" style={{ borderTop: "1px solid #E2E8F0" }}>
+      <div className="px-4 pb-4 pt-3 shrink-0" style={{ borderTop: "1px solid #E4E6EB" }}>
 
         {/* Usage */}
         <div className="mb-3 relative">
           <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold" style={{ color: "#64748B" }}>Usage</span>
+              <span className="text-sm font-semibold" style={{ color: "#65676B" }}>Usage</span>
               <button
                 type="button"
                 onClick={() => setCreditTooltipOpen(open => !open)}
                 aria-label="Show credit costs"
-                className="w-4 h-4 rounded-full text-xs font-bold leading-none flex items-center justify-center"
-                style={{ color: "#64748B", border: "1px solid #CBD5E1", background: "#FFFFFF" }}
+                className="w-4 h-4 rounded-full text-sm font-bold leading-none flex items-center justify-center"
+                style={{ color: "#65676B", border: "1px solid #CBD5E1", background: "#FFFFFF" }}
               >
                 ?
               </button>
             </div>
-            <span className="text-xs font-bold" style={{ color: planColor }}>{credits} credits</span>
+            <span className="text-sm font-bold" style={{ color: planColor }}>{credits} credits</span>
           </div>
           {creditTooltipOpen && (
             <div
-              className="absolute bottom-full left-0 mb-2 w-44 rounded-lg px-3 py-2 text-xs shadow-lg z-20"
-              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#0F172A" }}
+              className="absolute bottom-full left-0 mb-2 w-44 rounded-lg px-3 py-2 text-sm shadow-lg z-20"
+              style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#1C1E21" }}
             >
               <div className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
                 <span>Research</span><span>1 credit</span>
@@ -313,12 +313,12 @@ export default function Sidebar() {
               </div>
             </div>
           )}
-          <div className="w-full rounded-full h-1.5 mb-1" style={{ background: "#E2E8F0" }}>
+          <div className="w-full rounded-full h-1.5 mb-1" style={{ background: "#E4E6EB" }}>
             <div className="h-1.5 rounded-full transition-all" style={{ width: `${creditPct}%`, background: planColor }} />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-xs" style={{ color: "#64748B" }}>0</span>
-            <span className="text-xs" style={{ color: "#64748B" }}>{creditsTotal} total</span>
+            <span className="text-sm" style={{ color: "#65676B" }}>0</span>
+            <span className="text-sm" style={{ color: "#65676B" }}>{creditsTotal} total</span>
           </div>
         </div>
 
@@ -326,14 +326,14 @@ export default function Sidebar() {
         <div className="flex gap-1.5 mb-3">
           <button
             onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
-            className="flex-1 text-center text-xs font-bold py-1.5 rounded-lg transition-all hover:brightness-110"
+            className="flex-1 text-center text-sm font-bold py-1.5 rounded-lg transition-all hover:brightness-110"
             style={{ background: planColor, color: "#000" }}
           >
             Top Up
           </button>
           <button
             onClick={openEarn}
-            className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg transition-all hover:opacity-90"
+            className="flex-1 text-center text-sm font-semibold py-1.5 rounded-lg transition-all hover:opacity-90"
             style={{ background: "#ECFDF5", color: "#16A34A", border: "1px solid #22c55e50", boxShadow: "0 0 8px rgba(34,197,94,0.15)" }}
           >
             Earn Credits
@@ -348,38 +348,38 @@ export default function Sidebar() {
           >
             <span className="text-amber-400 text-base shrink-0">⚡</span>
             <div className="min-w-0">
-              <p className="text-slate-900 text-xs font-semibold">Leave feedback and earn credits</p>
-              <p className="text-amber-700 text-xs">One-time reward. +50 for video.</p>
+              <p className="text-slate-900 text-sm font-semibold">Leave feedback and earn credits</p>
+              <p className="text-amber-700 text-sm">One-time reward. +50 for video.</p>
             </div>
           </button>
         )}
 
         {/* User profile */}
         {user && (
-          <div className="rounded-xl px-3 py-3" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+          <div className="rounded-xl px-3 py-3" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
             <div className="flex items-center gap-2.5 mb-2.5">
               {user.avatar ? (
                 <Image src={user.avatar} alt={user.name} width={34} height={34} className="rounded-full shrink-0" />
               ) : (
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#1E3A8A" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#0866FF" }}>
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-slate-900 text-sm font-semibold truncate">{user.name.split(" ")[0]}</p>
                 <div className="flex items-center gap-1 mt-0.5">
-                  <span className="text-xs font-black px-1.5 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor, border: `1px solid ${planColor}40` }}>
+                  <span className="text-sm font-black px-1.5 py-0.5 rounded-full" style={{ background: `${planColor}20`, color: planColor, border: `1px solid ${planColor}40` }}>
                     {plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite"}
                   </span>
-                  <span className="text-xs" style={{ color: "#64748B" }}>{credits} cr</span>
+                  <span className="text-sm" style={{ color: "#65676B" }}>{credits} cr</span>
                 </div>
               </div>
             </div>
             {isOwner && (
               <button
                 onClick={() => { setMobileOpen(false); router.push("/admin"); }}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 mb-1.5"
-                style={{ background: "rgba(30,58,138,0.15)", color: "#1E3A8A", border: "1px solid rgba(30,58,138,0.3)" }}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 mb-1.5"
+                style={{ background: "rgba(8,102,255,0.15)", color: "#0866FF", border: "1px solid rgba(8,102,255,0.3)" }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Admin Dashboard
@@ -387,8 +387,8 @@ export default function Sidebar() {
             )}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-              style={{ background: "#F1F5F9", color: "#64748B" }}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
+              style={{ background: "#F1F5F9", color: "#65676B" }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               Log Out
@@ -402,7 +402,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0" }}>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB" }}>
         <div className="flex items-center gap-2">
           <HinilasIcon size="sm" accentColor="#D97706" />
           <span className="text-slate-900 font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
@@ -410,22 +410,22 @@ export default function Sidebar() {
         <div className="flex items-center gap-1.5">
           <a
             href="/library"
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#1E3A8A", border: "1px solid #1E3A8A30" }}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
+            style={{ background: "#F1F5F9", color: "#0866FF", border: "1px solid #0866FF30" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           </a>
           <button
             onClick={() => setShowLeaderboard(true)}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
             style={{ background: "#F1F5F9", color: "#D97706", border: "1px solid #D9770630" }}
           >
             🏆 <span className="hidden xs:inline">Board</span>
           </button>
           <Link
             href="/blog"
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#64748B", border: "1px solid #E2E8F0" }}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-bold transition-all hover:brightness-110"
+            style={{ background: "#F1F5F9", color: "#65676B", border: "1px solid #E4E6EB" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             Blog
@@ -444,7 +444,7 @@ export default function Sidebar() {
       {/* Mobile drawer */}
       <aside
         className={`md:hidden fixed top-0 left-0 z-50 h-full w-72 transform transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{ background: "rgba(248,250,252,0.92)", backdropFilter: "blur(12px)", borderRight: "1px solid #E2E8F0" }}
+        style={{ background: "rgba(248,250,252,0.92)", backdropFilter: "blur(12px)", borderRight: "1px solid #E4E6EB" }}
       >
         {/* Close button — absolute positioned so nav fills full height */}
         <button
@@ -458,7 +458,7 @@ export default function Sidebar() {
       </aside>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-60 flex-col h-full shrink-0" style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(12px)", borderRight: "1px solid #E2E8F0" }}>
+      <aside className="hidden md:flex w-60 flex-col h-full shrink-0" style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(12px)", borderRight: "1px solid #E4E6EB" }}>
         {/* eslint-disable-next-line react-hooks/static-components */}
         <SidebarContent />
       </aside>
@@ -478,14 +478,14 @@ export default function Sidebar() {
       {/* Earn Credits modal */}
       {earnOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setEarnOpen(false)}>
-          <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-slate-900 font-bold text-base">Earn Credits</h2>
               <button onClick={() => setEarnOpen(false)} className="text-gray-500 hover:text-slate-900 text-lg leading-none">✕</button>
             </div>
             <p className="text-gray-400 text-sm mb-4">Share your referral link. When someone signs up and buys credits, you earn automatically.</p>
-            <div className="rounded-xl p-4 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
-              <p className="text-xs text-gray-500 mb-3 font-bold ">Your rewards</p>
+            <div className="rounded-xl p-4 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+              <p className="text-sm text-gray-500 mb-3 font-bold ">Your rewards</p>
               <div className="space-y-2">
                 {[
                   ["Referral signs up", "+12 credits"],
@@ -494,49 +494,49 @@ export default function Sidebar() {
                   ["Referral buys Top-up (₱249)", "+10 credits"],
                 ].map(([label, val]) => (
                   <div key={label} className="flex justify-between items-center">
-                    <span className="text-slate-600 text-xs">{label}</span>
-                    <span className="text-emerald-400 text-xs font-bold">{val}</span>
+                    <span className="text-slate-600 text-sm">{label}</span>
+                    <span className="text-emerald-400 text-sm font-bold">{val}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-xs text-gray-500 mb-2">Your referral link</p>
+            <p className="text-sm text-gray-500 mb-2">Your referral link</p>
             {referralCode ? (
               <div className="flex gap-2">
-                <div className="flex-1 rounded-lg px-3 py-2 text-xs text-slate-700 truncate" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+                <div className="flex-1 rounded-lg px-3 py-2 text-sm text-slate-700 truncate" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
                   {getReferralLink()}
                 </div>
                 <button
                   onClick={copyLink}
-                  className="shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+                  className="shrink-0 px-4 py-2 rounded-lg text-sm font-bold transition-all"
                   style={{ background: copied ? "#22c55e20" : "#22c55e", color: copied ? "#22c55e" : "#000", border: copied ? "1px solid #22c55e40" : "none" }}
                 >
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
             ) : (
-              <div className="text-xs text-gray-500 py-2">Loading your link...</div>
+              <div className="text-sm text-gray-500 py-2">Loading your link...</div>
             )}
-            <p className="text-xs text-gray-600 mt-3">Signup credits are added instantly. Purchase rewards are added after their first top-up.</p>
+            <p className="text-sm text-gray-600 mt-3">Signup credits are added instantly. Purchase rewards are added after their first top-up.</p>
 
             {/* Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
-                <p className="text-xs text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E2E8F0" }}>Top Referrers</p>
-                <div className="divide-y" style={{ borderColor: "#E2E8F0" }}>
+              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+                <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>Top Referrers</p>
+                <div className="divide-y" style={{ borderColor: "#E4E6EB" }}>
                   {leaderboard.map((u) => (
                     <div key={u.rank} className="flex items-center gap-2.5 px-3 py-2">
-                      <span className="text-xs font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#D97706" : u.rank === 2 ? "#64748B" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
+                      <span className="text-sm font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#D97706" : u.rank === 2 ? "#64748B" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
                         #{u.rank}
                       </span>
                       {u.avatar_url ? (
                         <img src={u.avatar_url} alt={u.username} className="w-6 h-6 rounded-full shrink-0 object-cover" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ background: "#1E3A8A" }}>
+                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ background: "#0866FF" }}>
                           {u.username.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="text-xs font-bold text-emerald-400 ml-auto">+{u.credits} cr</span>
+                      <span className="text-sm font-bold text-emerald-400 ml-auto">+{u.credits} cr</span>
                     </div>
                   ))}
                 </div>
@@ -545,26 +545,26 @@ export default function Sidebar() {
             {referralStats && (
               <div className="mt-4">
                 <div className="grid grid-cols-2 gap-2 mb-3">
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
                     <p className="text-lg font-bold text-slate-900">{referralStats.total}</p>
-                    <p className="text-xs text-gray-500">Signups referred</p>
+                    <p className="text-sm text-gray-500">Signups referred</p>
                   </div>
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
                     <p className="text-lg font-bold text-emerald-400">+{referralStats.credits}</p>
-                    <p className="text-xs text-gray-500">Credits earned</p>
+                    <p className="text-sm text-gray-500">Credits earned</p>
                   </div>
                 </div>
                 {referralStats.history.length > 0 && (
-                  <div className="rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
-                    <p className="text-xs text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E2E8F0" }}>History</p>
-                    <div className="divide-y max-h-36 overflow-y-auto" style={{ borderColor: "#E2E8F0" }}>
+                  <div className="rounded-xl overflow-hidden" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+                    <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>History</p>
+                    <div className="divide-y max-h-36 overflow-y-auto" style={{ borderColor: "#E4E6EB" }}>
                       {referralStats.history.map((h, i) => (
                         <div key={i} className="flex items-center justify-between px-3 py-2">
                           <div>
-                            <p className="text-xs text-slate-700">{h.description}</p>
-                            <p className="text-xs text-gray-600">{new Date(h.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</p>
+                            <p className="text-sm text-slate-700">{h.description}</p>
+                            <p className="text-sm text-gray-600">{new Date(h.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</p>
                           </div>
-                          <span className="text-xs font-bold text-emerald-400">+{h.amount}</span>
+                          <span className="text-sm font-bold text-emerald-400">+{h.amount}</span>
                         </div>
                       ))}
                     </div>

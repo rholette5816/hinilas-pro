@@ -7,7 +7,7 @@ import { useCommunityMessages } from "@/lib/use-community-messages";
 function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
   if (avatar) return <img src={avatar} alt={name} className="w-7 h-7 rounded-full object-cover shrink-0" />;
   return (
-    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#1E3A8A" }}>
+    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#0866FF" }}>
       {name.charAt(0).toUpperCase()}
     </div>
   );
@@ -124,12 +124,12 @@ export default function FloatingChat() {
           className="fixed bottom-12 right-3 z-50 w-72 md:w-80 rounded-t-2xl rounded-bl-2xl shadow-2xl flex flex-col overflow-hidden"
           style={{
             background: "#FFFFFF",
-            border: "1px solid #E2E8F0",
+            border: "1px solid #E4E6EB",
             height: "400px",
             animation: "slideUp 0.2s ease-out",
           }}
         >
-          <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#F1F5F9", borderBottom: "1px solid #E2E8F0" }}>
+          <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#F1F5F9", borderBottom: "1px solid #E4E6EB" }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-slate-900 text-sm font-bold">Mga Hilason</span>
@@ -158,9 +158,9 @@ export default function FloatingChat() {
                     <div
                       className="px-3 py-2 text-xs leading-relaxed"
                       style={{
-                        background: isMe ? "#1E3A8A" : "#F1F5F9",
-                        color: isMe ? "#fff" : "#0F172A",
-                        border: isMe ? "1px solid #1E3A8A" : "1px solid #E2E8F0",
+                        background: isMe ? "#0866FF" : "#F1F5F9",
+                        color: isMe ? "#fff" : "#1C1E21",
+                        border: isMe ? "1px solid #0866FF" : "1px solid #E4E6EB",
                         borderRadius: isMe ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                       }}
                     >
@@ -173,7 +173,7 @@ export default function FloatingChat() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="px-3 py-3 shrink-0" style={{ borderTop: "1px solid #E2E8F0" }}>
+          <div className="px-3 py-3 shrink-0" style={{ borderTop: "1px solid #E4E6EB" }}>
             <div className="flex items-end gap-2">
               <textarea
                 value={input}
@@ -182,13 +182,13 @@ export default function FloatingChat() {
                 placeholder="Message everyone..."
                 rows={1}
                 className="flex-1 rounded-xl px-3 py-2 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", maxHeight: "80px" }}
+                style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", maxHeight: "80px" }}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || sending}
                 className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 shrink-0 transition-opacity hover:opacity-90"
-                style={{ background: "#1E3A8A" }}
+                style={{ background: "#0866FF" }}
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M22 2L11 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -208,8 +208,8 @@ export default function FloatingChat() {
             width: "48px",
             height: "48px",
             borderRadius: "10px 10px 0 0",
-            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #1E3A8A)",
-            border: open ? "1px solid #E2E8F0" : "none",
+            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #0866FF)",
+            border: open ? "1px solid #E4E6EB" : "none",
             boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
             animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",
           }}

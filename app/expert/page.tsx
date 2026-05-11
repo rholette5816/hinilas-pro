@@ -78,7 +78,7 @@ export default function ExpertPage() {
 
   if (confirmed) {
     return (
-      <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
+      <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
         <Sidebar />
         <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
           <div className="max-w-xl mx-auto px-6 py-16 text-center">
@@ -87,7 +87,7 @@ export default function ExpertPage() {
             <p className="text-slate-600 text-sm mb-8">
               Your consultation has been submitted. Ken will review your request and send a <strong className="text-slate-900">Google Meet link to your email</strong> approximately <strong className="text-slate-900">1 hour before</strong> your scheduled time.
             </p>
-            <div className="rounded-xl px-6 py-5 mb-8 text-left" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+            <div className="rounded-xl px-6 py-5 mb-8 text-left" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
               <p className="text-xs text-slate-500 uppercase tracking-widest mb-4">Booking Details</p>
               <div className="space-y-3">
                 <div className="flex justify-between">
@@ -115,7 +115,7 @@ export default function ExpertPage() {
             <button
               onClick={() => router.push("/creative")}
               className="text-sm font-semibold px-6 py-3 rounded-lg text-white transition-opacity hover:opacity-90"
-              style={{ background: "#1E3A8A" }}
+              style={{ background: "#0866FF" }}
             >
               Back to Dashboard
             </button>
@@ -126,7 +126,7 @@ export default function ExpertPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-xl mx-auto px-6 py-10">
@@ -153,7 +153,7 @@ export default function ExpertPage() {
               <button
                 onClick={() => router.push("/pricing")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
-                style={{ background: "#1E3A8A" }}
+                style={{ background: "#0866FF" }}
               >
                 Upgrade
               </button>
@@ -195,7 +195,7 @@ export default function ExpertPage() {
                   onChange={e => setCustomTopic(e.target.value)}
                   placeholder="Describe your topic..."
                   className="mt-2 w-full rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                 />
               )}
             </div>

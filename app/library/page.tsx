@@ -100,15 +100,15 @@ export default function LibraryPage() {
   const videoCount = items.filter(i => i.type === "video").length;
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
 
           {/* Header */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
-              <span className="text-xs font-medium" style={{ color: "#64748B" }}>🗂 Media Library</span>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
+              <span className="text-xs font-medium" style={{ color: "#65676B" }}>🗂 Media Library</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900 mb-1">Your Generated Media</h1>
             <p className="text-slate-600 text-sm">All your images and video clips — saved permanently.</p>
@@ -164,7 +164,7 @@ export default function LibraryPage() {
                 <div
                   key={item.id}
                   className="group rounded-xl overflow-hidden border transition-all hover:border-blue-700"
-                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}
                 >
                   {/* Thumbnail */}
                   <div className="relative aspect-square bg-slate-100 overflow-hidden">

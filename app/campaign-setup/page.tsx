@@ -17,7 +17,7 @@ interface Step {
 }
 
 const LEVEL_COLORS: Record<Level, string> = {
-  Campaign: "#1E3A8A",
+  Campaign: "#0866FF",
   "Ad Set": "#D97706",
   Ads: "#8B5CF6",
 };
@@ -38,7 +38,7 @@ const STEPS: Step[] = [
   {
     label: "Access Ads Manager",
     level: "Campaign",
-    color: "#1E3A8A",
+    color: "#0866FF",
     instructions: [
       "Go to business.facebook.com",
       "On the top interface, locate the business logo with a dropdown menu",
@@ -53,7 +53,7 @@ const STEPS: Step[] = [
   {
     label: "Create Campaign",
     level: "Campaign",
-    color: "#1E3A8A",
+    color: "#0866FF",
     instructions: [
       "Click Create",
       "Select Engagement as your campaign objective",
@@ -63,7 +63,7 @@ const STEPS: Step[] = [
   {
     label: "Campaign Setup",
     level: "Campaign",
-    color: "#1E3A8A",
+    color: "#0866FF",
     instructions: [
       "Set a clear campaign name",
       { type: "example", text: "Real Estate - Condo Project A\nSkincare - Whitening Serum" },
@@ -379,7 +379,7 @@ export default function CampaignSetupPage() {
               onClick={() => setActiveTab("messenger")}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
               style={activeTab === "messenger"
-                ? { background: "#1E3A8A", color: "#fff" }
+                ? { background: "#0866FF", color: "#fff" }
                 : { background: "#FFFFFF", color: "#6B7280", border: "1px solid #1F2937" }
               }
             >
@@ -448,7 +448,7 @@ export default function CampaignSetupPage() {
                 const isLoadingReward = unlockingVideo === currentVideoKey;
 
                 return (
-                  <div className="mb-5 rounded-2xl overflow-hidden border border-gray-700" style={{ background: "#F8FAFC" }}>
+                  <div className="mb-5 rounded-2xl overflow-hidden border border-gray-700" style={{ background: "#F0F2F5" }}>
                     <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                       <div className="w-2 h-2 rounded-full" style={{ background: step.color }} />
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: step.color }}>{step.level} Level</span>
@@ -506,7 +506,7 @@ export default function CampaignSetupPage() {
 
               {/* Targeting suggestions - only on Audience Targeting step */}
               {!done && step.label === "Audience Targeting" && (
-                <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#F8FAFC" }}>
+                <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#F0F2F5" }}>
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                     <span className="text-base">🎯</span>
                     <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Targeting Suggestions</span>
@@ -554,7 +554,7 @@ export default function CampaignSetupPage() {
               )}
 
               {done ? (
-                <div className="rounded-2xl border border-gray-700 p-8 text-center" style={{ background: "#F8FAFC" }}>
+                <div className="rounded-2xl border border-gray-700 p-8 text-center" style={{ background: "#F0F2F5" }}>
                   <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#22c55e20" }}>
                     <span className="text-4xl">OK</span>
                   </div>
@@ -562,7 +562,7 @@ export default function CampaignSetupPage() {
                   <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
                   <div className="space-y-3 mb-8">
                     {[
-                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#1E3A8A" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#0866FF" },
                       { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>, label: "1 Ad Set", sub: "Angle-based targeting", color: "#D97706" },
                       { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>, label: "3 Ads", sub: "Different creatives", color: "#8B5CF6" },
                     ].map(item => (
@@ -595,7 +595,7 @@ export default function CampaignSetupPage() {
                     <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white transition-colors">
                       Back
                     </button>
-                    <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#1E3A8A" }}>
+                    <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#0866FF" }}>
                       Start Over
                     </button>
                   </div>
@@ -609,7 +609,7 @@ export default function CampaignSetupPage() {
                             <div className="text-5xl mb-4">🎉</div>
                             <h3 className="text-white font-bold text-lg mb-2">Proof Submitted!</h3>
                             <p className="text-gray-400 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
-                            <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#1E3A8A" }}>Done</button>
+                            <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#0866FF" }}>Done</button>
                           </div>
                         ) : (
                           <>
@@ -670,7 +670,7 @@ export default function CampaignSetupPage() {
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#F8FAFC" }}>
+                <div className="rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#F0F2F5" }}>
                   <div className="px-6 py-4 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                     <div className="flex items-center gap-2 mb-1">
                       <span
@@ -714,7 +714,7 @@ export default function CampaignSetupPage() {
                       }
 
                       return (
-                        <div key={idx} className="ml-9 rounded-xl px-4 py-3" style={{ background: "#0A1628", border: "1px solid #1E3A8A30" }}>
+                        <div key={idx} className="ml-9 rounded-xl px-4 py-3" style={{ background: "#0A1628", border: "1px solid #0866FF30" }}>
                           <p className="text-blue-300 text-sm">{item.text}</p>
                         </div>
                       );

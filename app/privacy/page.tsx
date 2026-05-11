@@ -2,8 +2,8 @@
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen px-6 py-12" style={{ background: "#F8FAFC" }}>
-      <div className="mx-auto max-w-2xl rounded-2xl border bg-white p-8" style={{ borderColor: "#E2E8F0" }}>
+    <div className="min-h-screen px-6 py-12" style={{ background: "#F0F2F5" }}>
+      <div className="mx-auto max-w-2xl rounded-2xl border bg-white p-8" style={{ borderColor: "#E4E6EB" }}>
         <div className="mb-10">
           <h1 className="mb-2 text-3xl font-black text-slate-950">Privacy Policy</h1>
           <p className="text-sm text-slate-500">Last updated: April 2025</p>

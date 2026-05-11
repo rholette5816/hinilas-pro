@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const PACKAGES = [
-  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#1E3A8A" },
+  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#0866FF" },
   { id: "pro_150", label: "Flex", credits: 150, price: 999, tag: "150 credits", color: "#8B5CF6" },
   { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "500 credits", color: "#D97706" },
 ];
@@ -116,7 +116,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4" style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(8px)" }} onClick={e => { if (e.target === e.currentTarget) { reset(); onClose(); } }}>
-      <div className="w-full md:max-w-md rounded-t-2xl md:rounded-2xl overflow-y-auto max-h-[92vh] shadow-2xl" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+      <div className="w-full md:max-w-md rounded-t-2xl md:rounded-2xl overflow-y-auto max-h-[92vh] shadow-2xl" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
@@ -134,7 +134,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                   className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-left"
                   style={{
                     background: selected.id === pkg.id ? `${pkg.color}12` : "#F1F5F9",
-                    borderColor: selected.id === pkg.id ? pkg.color : "#E2E8F0",
+                    borderColor: selected.id === pkg.id ? pkg.color : "#E4E6EB",
                   }}
                 >
                   <div className="flex items-center gap-3">
@@ -194,7 +194,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             </div>
 
             {/* Amount */}
-            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#F1F5F9", border: "1px solid #E4E6EB" }}>
               <div>
                 <p className="text-slate-900 font-bold text-sm">{selected.label} — {selected.credits} credits</p>
                 <p className="text-slate-500 text-xs">{selected.tag}</p>
@@ -218,7 +218,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                   <button
                     onClick={() => { setScreenshot(null); setScreenshotPreview(null); if (fileRef.current) fileRef.current.value = ""; }}
                     className="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg"
-                    style={{ background: "#FFFFFF", color: "#0F172A", border: "1px solid #E2E8F0" }}
+                    style={{ background: "#FFFFFF", color: "#1C1E21", border: "1px solid #E4E6EB" }}
                   >
                     Remove
                   </button>
@@ -240,7 +240,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               <button
                 onClick={() => setStep("select")}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
-                style={{ border: "1px solid #E2E8F0" }}
+                style={{ border: "1px solid #E4E6EB" }}
               >
                 Back
               </button>
@@ -269,7 +269,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <button
               onClick={() => { reset(); onClose(); }}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#1E3A8A" }}
+              style={{ background: "#0866FF" }}
             >
               Done
             </button>

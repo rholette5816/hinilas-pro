@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
 
   if (request.status === "approved") {
     return new NextResponse(`
-      <html><body style="font-family:Arial;text-align:center;padding:60px;background:#0F172A;color:#fff">
+      <html><body style="font-family:Arial;text-align:center;padding:60px;background:#1C1E21;color:#fff">
         <h2 style="color:#D97706">Already Approved</h2>
         <p style="color:#94A3B8">This top-up request was already approved.</p>
       </body></html>
@@ -143,10 +143,10 @@ export async function GET(req: NextRequest) {
       to: request.user_email,
       subject: "Your credits have been added — Hinilas Pro",
       html: `
-        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#0F172A;color:#fff;border-radius:12px">
-          <h2 style="color:#1E3A8A;margin-bottom:8px">Credits Added</h2>
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#1C1E21;color:#fff;border-radius:12px">
+          <h2 style="color:#0866FF;margin-bottom:8px">Credits Added</h2>
           <p style="color:#94A3B8;margin-bottom:24px">Your payment has been verified and your credits are now live.</p>
-          <div style="background:#1E293B;border-radius:10px;padding:20px;margin-bottom:24px">
+          <div style="background:#1C1E21;border-radius:10px;padding:20px;margin-bottom:24px">
             <div style="font-size:36px;font-weight:900;color:#22c55e;margin-bottom:4px">+${request.credits_requested} credits</div>
             <div style="font-size:13px;color:#64748B">${request.package} — ₱${request.amount_paid}</div>
           </div>
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
   }
 
   return new NextResponse(`
-    <html><body style="font-family:Arial;text-align:center;padding:60px;background:#0F172A;color:#fff">
+    <html><body style="font-family:Arial;text-align:center;padding:60px;background:#1C1E21;color:#fff">
       <div style="font-size:48px;margin-bottom:16px">✅</div>
       <h2 style="color:#22c55e">Approved!</h2>
       <p style="color:#94A3B8">${request.user_email} has been given <strong style="color:#fff">${request.credits_requested} credits</strong>.</p>

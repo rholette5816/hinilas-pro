@@ -13,11 +13,11 @@ interface Feedback {
   message: string;
 }
 
-const BRAND_BLUE = "#1E3A8A";
+const BRAND_BLUE = "#0866FF";
 const BRAND_ORANGE = "#D97706";
-const TEXT = "#0F172A";
+const TEXT = "#1C1E21";
 const MUTED = "#64748B";
-const BORDER = "#E2E8F0";
+const BORDER = "#E4E6EB";
 const INNER = "#F1F5F9";
 
 const STEPS = [
@@ -87,7 +87,7 @@ function BrandMark({ dark = false }: { dark?: boolean }) {
           <span className={`font-bold text-lg ${dark ? "text-white" : "text-slate-900"}`}>Hinilas</span>
           <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
         </div>
-        <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: BRAND_BLUE }}>
+        <p className="text-sm font-bold tracking-widest uppercase" style={{ color: BRAND_BLUE }}>
           AI Driven. Results Focused.
         </p>
       </div>
@@ -225,7 +225,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
           Facebook login coming soon
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-semibold" style={{ color: MUTED }}>
+        <div className="mt-6 grid grid-cols-3 gap-2 text-center text-sm font-semibold" style={{ color: MUTED }}>
           <span>SSL encrypted</span>
           <span>Free to start</span>
           <span>No spam</span>
@@ -277,7 +277,7 @@ export default function LandingPage() {
     : "5.0";
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: "#F8FAFC", color: TEXT }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: "#F0F2F5", color: TEXT }}>
       <style>{`
         @keyframes modalIn {
           from { opacity: 0; transform: translateY(20px) scale(0.98); }
@@ -285,7 +285,7 @@ export default function LandingPage() {
         }
         .hp-shell {
           background:
-            linear-gradient(180deg, rgba(30,58,138,0.08) 0%, rgba(248,250,252,0) 45%),
+            linear-gradient(180deg, rgba(8,102,255,0.08) 0%, rgba(248,250,252,0) 45%),
             radial-gradient(circle at 82% 8%, rgba(217,119,6,0.14), transparent 28%);
         }
       `}</style>

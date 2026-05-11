@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const BADGE_COLORS: Record<string, string> = {
   "Hilas Dominator": "#D97706",
   "Ad Machine": "#8B5CF6",
-  "Consistent Operator": "#1E3A8A",
+  "Consistent Operator": "#0866FF",
   "Starter Launcher": "#10B981",
 };
 
@@ -55,13 +55,13 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
         className="fixed top-0 right-0 z-50 h-full w-80 transform transition-transform duration-300"
         style={{
           background: "rgba(255,255,255,0.97)",
-          borderLeft: "1px solid #E2E8F0",
+          borderLeft: "1px solid #E4E6EB",
           backdropFilter: "blur(20px)",
           transform: open ? "translateX(0)" : "translateX(100%)",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #E2E8F0" }}>
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #E4E6EB" }}>
           <div className="flex items-center gap-2">
             <span className="text-lg">🏆</span>
             <div>
@@ -73,16 +73,16 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
         </div>
 
         {/* Period toggle */}
-        <div className="flex gap-2 px-5 py-3" style={{ borderBottom: "1px solid #E2E8F0" }}>
+        <div className="flex gap-2 px-5 py-3" style={{ borderBottom: "1px solid #E4E6EB" }}>
           {(["alltime", "month"] as const).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: period === p ? "#1E3A8A" : "#F1F5F9",
+                background: period === p ? "#0866FF" : "#F1F5F9",
                 color: period === p ? "#fff" : "#64748B",
-                border: `1px solid ${period === p ? "#1E3A8A" : "#E2E8F0"}`,
+                border: `1px solid ${period === p ? "#0866FF" : "#E4E6EB"}`,
               }}
             >
               {p === "alltime" ? "All Time" : "This Month"}
@@ -116,12 +116,12 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
                   className="flex items-center gap-3 px-4 py-3 rounded-xl"
                   style={{
                     background: entry.rank <= 3 ? `${rankColor}08` : "#F1F5F9",
-                    border: `1px solid ${entry.rank <= 3 ? rankColor + "25" : "#E2E8F0"}`,
+                    border: `1px solid ${entry.rank <= 3 ? rankColor + "25" : "#E4E6EB"}`,
                   }}
                 >
                   {/* Medal / rank */}
                   <div className="w-7 h-7 flex items-center justify-center flex-shrink-0 text-base">
-                    {entry.rank <= 3 ? RANK_MEDALS[entry.rank - 1] : <span className="text-xs font-bold" style={{ color: "#64748B" }}>#{entry.rank}</span>}
+                    {entry.rank <= 3 ? RANK_MEDALS[entry.rank - 1] : <span className="text-xs font-bold" style={{ color: "#65676B" }}>#{entry.rank}</span>}
                   </div>
 
                   {/* Avatar */}
@@ -130,7 +130,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
                       src={entry.avatar_url}
                       alt={entry.username}
                       className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-                      style={{ border: `2px solid ${entry.rank <= 3 ? rankColor + "50" : "#E2E8F0"}` }}
+                      style={{ border: `2px solid ${entry.rank <= 3 ? rankColor + "50" : "#E4E6EB"}` }}
                     />
                   ) : (
                     <div

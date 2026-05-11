@@ -17,15 +17,15 @@ export default function TopBar() {
     <>
       <div
         className="hidden md:flex items-center justify-between gap-2 px-6 py-3 fixed top-0 right-0 z-20"
-        style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0", left: "240px" }}
+        style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB", left: "240px" }}
       >
         {/* Left - Library */}
         <Link
           href="/library"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
           style={pathname === "/library"
-            ? { background: "rgba(30,58,138,0.2)", color: "#1E3A8A", border: "1px solid rgba(30,58,138,0.4)" }
-            : { background: "#F1F5F9", color: "#64748B", border: "1px solid #E2E8F0" }}
+            ? { background: "rgba(8,102,255,0.2)", color: "#0866FF", border: "1px solid rgba(8,102,255,0.4)" }
+            : { background: "#F1F5F9", color: "#65676B", border: "1px solid #E4E6EB" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           Media Library
@@ -36,7 +36,7 @@ export default function TopBar() {
           <Link
             href="/blog"
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#64748B", border: "1px solid #E2E8F0" }}
+            style={{ background: "#F1F5F9", color: "#65676B", border: "1px solid #E4E6EB" }}
           >
             Blog
           </Link>

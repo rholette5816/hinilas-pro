@@ -15,7 +15,7 @@ export default function ReferralRedirect() {
   }, [code, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen" style={{ background: "#0F172A" }}>
+    <div className="flex items-center justify-center min-h-screen" style={{ background: "#1C1E21" }}>
       <p className="text-gray-400 text-sm">Redirecting...</p>
     </div>
   );

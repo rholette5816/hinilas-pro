@@ -67,7 +67,7 @@ export default function AILoadingState({
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center justify-center px-4 text-center">
         <div
           className="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold md:text-sm"
-          style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#64748B" }}
+          style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", color: "#65676B" }}
         >
           <span style={{ color: "#D97706" }}>
             <ClockIcon />
@@ -101,7 +101,7 @@ export default function AILoadingState({
 
         <div
           className="relative h-2.5 w-full max-w-md overflow-hidden rounded-full"
-          style={{ background: "#E2E8F0" }}
+          style={{ background: "#E4E6EB" }}
         >
           <div
             className="absolute inset-y-0 left-0 w-1/2 rounded-full"

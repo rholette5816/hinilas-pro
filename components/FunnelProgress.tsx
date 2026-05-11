@@ -42,7 +42,7 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all md:h-9 md:w-9 md:text-sm"
                   style={{
-                    background: isCompleted ? "#1E3A8A" : isActive ? "#D97706" : "#E2E8F0",
+                    background: isCompleted ? "#0866FF" : isActive ? "#D97706" : "#E4E6EB",
                     color: isUpcoming ? "#64748B" : "#FFFFFF",
                     boxShadow: isActive ? "0 0 18px rgba(217,119,6,0.45)" : "none",
                   }}
@@ -51,13 +51,13 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 </div>
                 <span
                   className={`${isActive ? "block" : "hidden md:block"} mt-2 max-w-[80px] break-words text-xs font-semibold leading-tight md:max-w-none`}
-                  style={{ color: isUpcoming ? "#64748B" : "#0F172A" }}
+                  style={{ color: isUpcoming ? "#64748B" : "#1C1E21" }}
                 >
                   {label}
                 </span>
               </div>
               {index < STEPS.length - 1 && (
-                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#1E3A8A" : "#E2E8F0" }} />
+                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#0866FF" : "#E4E6EB" }} />
               )}
             </div>
           );
