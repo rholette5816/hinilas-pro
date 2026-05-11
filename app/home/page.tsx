@@ -257,7 +257,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-10 lg:gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:pb-24 lg:pt-20">
+      <section className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-6 lg:gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:pb-24 lg:pt-20">
         <div className="min-w-0">
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide" style={{ background: "#e7f3ff", border: "1px solid #BFDBFE", color: BRAND_BLUE }}>
             AI Ad Execution System for Filipino Business Owners
@@ -327,7 +327,7 @@ export default function LandingPage() {
 
       {/* TRUSTED BY STRIP */}
       <section className="border-y bg-white" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-6xl px-5 py-10">
+        <div className="mx-auto max-w-6xl px-5 py-6 lg:py-10">
           <p className="mb-6 text-center text-xs font-black uppercase tracking-widest" style={{ color: MUTED }}>Trusted by Filipino business owners across these industries</p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
@@ -346,8 +346,8 @@ export default function LandingPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
-        <div className="mb-10 text-center">
+      <section id="how-it-works" className="mx-auto max-w-6xl px-4 py-8 lg:py-20">
+        <div className="mb-6 text-center">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>The system</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">A week of prep. In one session.</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Every output builds on the previous step so your campaign feels connected instead of randomly generated.</p>
@@ -368,8 +368,8 @@ export default function LandingPage() {
 
       {/* FEATURES */}
       <section className="border-y bg-white" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
-          <div className="mb-10 text-center">
+        <div className="mx-auto max-w-6xl px-4 py-8 lg:py-20">
+          <div className="mb-6 text-center">
             <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Everything in one place</p>
             <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8-in-1 Ad Execution System</h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup — all inside one workflow.</p>
@@ -387,8 +387,8 @@ export default function LandingPage() {
       </section>
 
       {/* UGC REELS SECTION */}
-      <section className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
-        <div className="mb-10 text-center">
+      <section className="mx-auto max-w-6xl px-4 py-8 lg:py-20">
+        <div className="mb-6 text-center">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: "#7C3AED" }}>Real results</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">See What Our Users Are Making</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Real ads. Real business owners. Real results from the Hinilas Pro workflow.</p>
@@ -403,8 +403,8 @@ export default function LandingPage() {
       {/* TESTIMONIALS */}
       {feedbacks.length > 0 && (
         <section className="border-y bg-white" style={{ borderColor: BORDER }}>
-          <div className="mx-auto max-w-6xl px-5 py-20">
-            <div className="mb-10 text-center">
+          <div className="mx-auto max-w-6xl px-5 py-8 lg:py-20">
+            <div className="mb-6 text-center">
               <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: "#10B981" }}>What they say</p>
               <h2 className="text-3xl font-black tracking-tight text-[#050505]">Users who stopped guessing</h2>
               <div className="mt-3 flex items-center justify-center gap-2">
@@ -437,11 +437,11 @@ export default function LandingPage() {
       )}
 
       {/* KEN'S CREDIBILITY */}
-      <section className="mx-auto max-w-6xl px-4 py-12 lg:py-20">
+      <section className="mx-auto max-w-6xl px-4 py-8 lg:py-20">
         <div className="rounded-2xl border bg-white overflow-hidden" style={{ borderColor: BORDER }}>
           <div className="grid lg:grid-cols-[380px_1fr]">
             {/* Photo */}
-            <div className="relative min-h-[340px] lg:min-h-0" style={{ background: INNER }}>
+            <div className="relative min-h-[240px] lg:min-h-0" style={{ background: INNER }}>
               <Image src="/ken.jpg" alt="Kevin Allego — Hinilas Pro founder" fill className="object-cover object-top" />
             </div>
             {/* Copy */}
@@ -465,7 +465,7 @@ export default function LandingPage() {
 
       {/* PRICING TEASE */}
       <section id="pricing" className="border-y bg-white" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-6xl px-4 py-12 text-center lg:py-16">
+        <div className="mx-auto max-w-6xl px-4 py-8 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">₱499/mo. No guesswork fees.</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime with ₱249 credit packs. Less than the cost of one wrong boosted post.</p>
@@ -482,7 +482,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-4 py-12 lg:py-20 text-center">
+      <section className="mx-auto max-w-3xl px-4 py-8 lg:py-20 text-center">
         <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>FAQ</p>
         <h2 className="text-3xl font-black tracking-tight text-[#050505]">Common questions</h2>
         <p className="mt-4 mb-8 text-base leading-7 text-[#1c1e21]">Straight answers before you create an account.</p>
@@ -490,8 +490,8 @@ export default function LandingPage() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="mx-auto max-w-6xl px-4 pb-8 lg:pb-10">
-        <div className="rounded-2xl px-6 py-12 text-center sm:px-12 sm:py-16" style={{ background: "linear-gradient(135deg, #1877F2 0%, #0d5dbf 100%)", color: "#FFFFFF" }}>
+      <section className="mx-auto max-w-6xl px-4 pb-6 lg:pb-10">
+        <div className="rounded-2xl px-5 py-10 text-center sm:px-12 sm:py-16" style={{ background: "linear-gradient(135deg, #1877F2 0%, #0d5dbf 100%)", color: "#FFFFFF" }}>
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Start today</p>
           <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-tight sm:text-4xl">Build your first ad kit in the next 10 minutes.</h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7" style={{ color: "#CBD5E1" }}>No agency, no workshop, no guessing. Just your business details and a system that tells you exactly what to say.</p>
