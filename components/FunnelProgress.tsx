@@ -42,9 +42,9 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all md:h-9 md:w-9 md:text-sm"
                   style={{
-                    background: isCompleted ? "#2B7EC9" : isActive ? "#F5A623" : "#E2E8F0",
+                    background: isCompleted ? "#1E3A8A" : isActive ? "#D97706" : "#E2E8F0",
                     color: isUpcoming ? "#64748B" : "#FFFFFF",
-                    boxShadow: isActive ? "0 0 18px rgba(245,166,35,0.45)" : "none",
+                    boxShadow: isActive ? "0 0 18px rgba(217,119,6,0.45)" : "none",
                   }}
                 >
                   {isCompleted ? <CheckIcon /> : stepNumber}
@@ -57,7 +57,7 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 </span>
               </div>
               {index < STEPS.length - 1 && (
-                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#2B7EC9" : "#E2E8F0" }} />
+                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#1E3A8A" : "#E2E8F0" }} />
               )}
             </div>
           );

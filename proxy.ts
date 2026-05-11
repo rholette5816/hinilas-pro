@@ -7,8 +7,10 @@ export async function proxy(request: NextRequest) {
   // Skip auth routes and public pages
   if (
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/blog") ||
     pathname === "/home" ||
     pathname === "/privacy" ||
+    pathname === "/terms" ||
     pathname === "/data-deletion"
   ) {
     return NextResponse.next();

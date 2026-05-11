@@ -85,17 +85,17 @@ export default function TutorialOverlay({ show }: Props) {
         {/* Header — correct logo */}
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "#E2E8F0" }}>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(43,126,201,0.15)", border: "1px solid rgba(43,126,201,0.3)" }}>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(30,58,138,0.15)", border: "1px solid rgba(30,58,138,0.3)" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#2B7EC9" />
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#1E3A8A" />
               </svg>
             </div>
             <div className="leading-tight">
               <div className="flex items-baseline">
                 <span className="text-slate-900 font-bold text-sm">Hinilas</span>
-                <span className="font-bold text-sm" style={{ color: "#2B7EC9" }}>Pro</span>
+                <span className="font-bold text-sm" style={{ color: "#1E3A8A" }}>Pro</span>
               </div>
-              <p className="text-xs font-semibold" style={{ color: "#2B7EC9" }}>Quick start guide</p>
+              <p className="text-xs font-semibold" style={{ color: "#1E3A8A" }}>Quick start guide</p>
             </div>
           </div>
           <button onClick={dismiss} className="text-gray-500 hover:text-slate-900 text-base leading-none transition-colors">✕</button>
@@ -115,7 +115,7 @@ export default function TutorialOverlay({ show }: Props) {
             {step.message}
           </p>
           {step.highlight && (
-            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}>
+            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: "rgba(30,58,138,0.15)", color: "#1E3A8A", border: "1px solid rgba(30,58,138,0.3)" }}>
               → {step.highlight}
             </div>
           )}
@@ -132,7 +132,7 @@ export default function TutorialOverlay({ show }: Props) {
                 style={{
                   width: i === current ? 18 : 6,
                   height: 6,
-                  background: i === current ? "#2B7EC9" : "#CBD5E1",
+                  background: i === current ? "#1E3A8A" : "#CBD5E1",
                 }}
               />
             ))}
@@ -147,7 +147,7 @@ export default function TutorialOverlay({ show }: Props) {
               <button
                 onClick={goSetup}
                 className="px-5 py-2 rounded-xl text-xs font-bold text-white transition-all hover:brightness-110"
-                style={{ background: "#2B7EC9", boxShadow: "0 0 16px rgba(43,126,201,0.4)" }}
+                style={{ background: "#1E3A8A", boxShadow: "0 0 16px rgba(30,58,138,0.4)" }}
               >
                 Start Setup →
               </button>
@@ -155,7 +155,7 @@ export default function TutorialOverlay({ show }: Props) {
               <button
                 onClick={next}
                 className="px-5 py-2 rounded-xl text-xs font-bold text-white transition-opacity hover:opacity-90"
-                style={{ background: "#2B7EC9" }}
+                style={{ background: "#1E3A8A" }}
               >
                 Next →
               </button>

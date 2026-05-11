@@ -6,8 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import GCashModal from "@/components/GCashModal";
 import { useApp } from "@/lib/context";
 
-const BRAND_BLUE = "#2B7EC9";
-const BRAND_ORANGE = "#F5A623";
+const BRAND_BLUE = "#1E3A8A";
+const BRAND_ORANGE = "#D97706";
 const BRAND_RED = "#EF4444";
 
 const FEATURES = [

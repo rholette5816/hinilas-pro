@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const PACKAGES = [
-  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#2B7EC9" },
+  { id: "topup_50", label: "Top-Up", credits: 50, price: 499, tag: "50 credits", color: "#1E3A8A" },
   { id: "pro_150", label: "Flex", credits: 150, price: 999, tag: "150 credits", color: "#8B5CF6" },
-  { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "500 credits", color: "#F5A623" },
+  { id: "max_500", label: "Max", credits: 500, price: 2499, tag: "500 credits", color: "#D97706" },
 ];
 
 interface Props {
@@ -269,7 +269,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <button
               onClick={() => { reset(); onClose(); }}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#2B7EC9" }}
+              style={{ background: "#1E3A8A" }}
             >
               Done
             </button>

@@ -132,7 +132,7 @@ const DEPT_LABELS: Record<string, string> = {
 
 const DEPT_COLORS: Record<string, string> = {
   research: "#10B981",
-  angles: "#F5A623",
+  angles: "#D97706",
   creative: "#EC4899",
   copy: "#8B5CF6",
   analyze: "#FBBF24",
@@ -143,7 +143,7 @@ const DEPT_COLORS: Record<string, string> = {
 const ALERT_STYLES: Record<AlertLevel, { bg: string; border: string; color: string; label: string }> = {
   good: { bg: "rgba(34,197,94,0.10)", border: "rgba(34,197,94,0.30)", color: "#22C55E", label: "Good" },
   info: { bg: "rgba(56,189,248,0.10)", border: "rgba(56,189,248,0.30)", color: "#38BDF8", label: "Info" },
-  warning: { bg: "rgba(245,166,35,0.12)", border: "rgba(245,166,35,0.35)", color: "#F5A623", label: "Watch" },
+  warning: { bg: "rgba(217,119,6,0.12)", border: "rgba(217,119,6,0.35)", color: "#D97706", label: "Watch" },
   critical: { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.35)", color: "#EF4444", label: "Urgent" },
 };
 
@@ -185,7 +185,7 @@ function wowLabel(curr: number, prev: number) {
 
 function scoreColor(score: number) {
   if (score >= 75) return "#22C55E";
-  if (score >= 50) return "#F5A623";
+  if (score >= 50) return "#D97706";
   return "#EF4444";
 }
 
@@ -200,7 +200,7 @@ function Card({ children, className = "" }: { children: ReactNode; className?: s
 function KPICard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: string }) {
   return (
     <Card className="p-4">
-      <p className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#64748B" }}>{label}</p>
+      <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#64748B" }}>{label}</p>
       <p className="text-2xl md:text-3xl font-black text-white leading-tight">{value}</p>
       {sub && <p className="text-xs mt-2" style={{ color: tone || "#64748B" }}>{sub}</p>}
     </Card>
@@ -216,7 +216,7 @@ function SectionHeader({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
-function LineChart({ data, color = "#2B7EC9" }: { data: { label: string; value: number }[]; color?: string }) {
+function LineChart({ data, color = "#1E3A8A" }: { data: { label: string; value: number }[]; color?: string }) {
   const width = 680;
   const height = 220;
   const padding = { top: 24, right: 24, bottom: 38, left: 42 };
@@ -297,7 +297,7 @@ function HorizontalBar({ label, value, max, color, sub }: { label: string; value
         <span className="text-xs font-medium text-white truncate">{label}</span>
         <div className="text-right shrink-0">
           <span className="text-xs font-bold text-white">{formatNumber(value)}</span>
-          {sub && <span className="text-[10px] ml-2" style={{ color: "#64748B" }}>{sub}</span>}
+          {sub && <span className="text-xs ml-2" style={{ color: "#64748B" }}>{sub}</span>}
         </div>
       </div>
       <div className="w-full rounded-full h-2" style={{ background: "#1E293B" }}>
@@ -313,7 +313,7 @@ function AlertCard({ alert }: { alert: AdminStats["alerts"][number] }) {
     <div className="rounded-xl p-4" style={{ background: style.bg, border: `1px solid ${style.border}` }}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: style.color }}>{style.label}</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: style.color }}>{style.label}</p>
           <p className="text-white text-sm font-bold">{alert.title}</p>
         </div>
       </div>
@@ -334,14 +334,14 @@ function FunnelTable({ steps }: { steps: ActivationStep[] }) {
             <div className="flex items-center justify-between gap-3 mb-1">
               <div>
                 <p className="text-sm font-semibold text-white">{step.label}</p>
-                <p className="text-[10px]" style={{ color: "#64748B" }}>
+                <p className="text-xs" style={{ color: "#64748B" }}>
                   {step.rateFromPrevious === null ? "baseline" : `${step.rateFromPrevious}% from previous`} - {step.rateFromSignup ?? 0}% of signups
                 </p>
               </div>
               <p className="text-sm font-black text-white">{formatNumber(step.count)}</p>
             </div>
             <div className="h-2 rounded-full" style={{ background: "#1E293B" }}>
-              <div className="h-2 rounded-full" style={{ width: `${Math.max((step.count / max) * 100, step.count > 0 ? 3 : 0)}%`, background: step.key === "paid" ? "#22C55E" : "#2B7EC9" }} />
+              <div className="h-2 rounded-full" style={{ width: `${Math.max((step.count / max) * 100, step.count > 0 ? 3 : 0)}%`, background: step.key === "paid" ? "#22C55E" : "#1E3A8A" }} />
             </div>
           </div>
         ))}
@@ -355,7 +355,7 @@ function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onC
     <Card className="overflow-hidden">
       <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "#1E2D45" }}>
         <div>
-          <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#F5A623" }}>Generated Report</p>
+          <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#D97706" }}>Generated Report</p>
           <h2 className="text-white font-black text-lg">Report & Analysis</h2>
           <p className="text-xs mt-1" style={{ color: "#64748B" }}>{report.generatedAt}</p>
         </div>
@@ -371,10 +371,10 @@ function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onC
         <div className="p-5 space-y-4" style={{ borderRight: "1px solid #1E2D45" }}>
           <KPICard label="Health Score" value={`${report.summary.healthScore}/100`} tone={scoreColor(report.summary.healthScore)} />
           <KPICard label="Critical Alerts" value={formatNumber(report.summary.criticalAlerts)} tone={report.summary.criticalAlerts ? "#EF4444" : "#22C55E"} />
-          <KPICard label="Watch Alerts" value={formatNumber(report.summary.warningAlerts)} tone={report.summary.warningAlerts ? "#F5A623" : "#22C55E"} />
+          <KPICard label="Watch Alerts" value={formatNumber(report.summary.warningAlerts)} tone={report.summary.warningAlerts ? "#D97706" : "#22C55E"} />
           {report.summary.weakestFunnelStep && (
             <div className="rounded-xl p-4" style={{ background: "#111827", border: "1px solid #1E2D45" }}>
-              <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#64748B" }}>Weakest Funnel Step</p>
+              <p className="text-xs uppercase font-bold tracking-widest" style={{ color: "#64748B" }}>Weakest Funnel Step</p>
               <p className="text-white font-bold mt-1">{report.summary.weakestFunnelStep}</p>
             </div>
           )}
@@ -546,7 +546,7 @@ export default function AdminDashboardClient() {
 
         <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "#2B7EC9" }}>Owner Dashboard</p>
+            <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#1E3A8A" }}>Owner Dashboard</p>
             <h1 className="text-3xl font-black text-white">Command Center</h1>
             <p className="text-sm mt-1" style={{ color: "#64748B" }}>Live app awareness - refreshes every 60s while active</p>
           </div>
@@ -555,7 +555,7 @@ export default function AdminDashboardClient() {
               onClick={handleGenerateReport}
               disabled={reportLoading}
               className="px-4 py-2.5 rounded-xl text-xs font-black transition-all hover:brightness-110 disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #F5A623, #EC4899)", color: "#fff" }}
+              style={{ background: "linear-gradient(135deg, #D97706, #EC4899)", color: "#fff" }}
             >
               {reportLoading ? "Generating..." : "Generate Report & Analysis"}
             </button>
@@ -564,7 +564,7 @@ export default function AdminDashboardClient() {
               Back to App
             </Link>
             <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
-              <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>Last Refresh</p>
+              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>Last Refresh</p>
               <p className="text-sm text-white mt-1">{timeAgo(stats.fetchedAt)}</p>
             </div>
           </div>
@@ -578,7 +578,7 @@ export default function AdminDashboardClient() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 mb-6">
           <Card className="p-5">
-            <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>App Health</p>
+            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>App Health</p>
             <div className="flex items-end gap-2 mt-2">
               <p className="text-5xl font-black" style={{ color: scoreColor(stats.healthScore) }}>{stats.healthScore}</p>
               <p className="text-sm mb-2" style={{ color: "#64748B" }}>/ 100</p>
@@ -602,7 +602,7 @@ export default function AdminDashboardClient() {
               onClick={() => setActiveTab(tab.key)}
               className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
               style={activeTab === tab.key
-                ? { background: "#2B7EC9", color: "#fff" }
+                ? { background: "#1E3A8A", color: "#fff" }
                 : { background: "#0F172A", color: "#64748B", border: "1px solid #1E2D45" }}
             >
               {tab.label}
@@ -626,10 +626,10 @@ export default function AdminDashboardClient() {
                   <Card key={row.label} className="p-4">
                     <p className="text-white font-bold text-sm">{row.label}</p>
                     <div className="grid grid-cols-2 gap-3 mt-4">
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.signups)}</p><p className="text-[10px]" style={{ color: "#64748B" }}>signups</p></div>
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.activeUsers)}</p><p className="text-[10px]" style={{ color: "#64748B" }}>active</p></div>
-                      <div><p className="text-xl font-black text-white">{formatPhp(row.data.revenuePhp)}</p><p className="text-[10px]" style={{ color: "#64748B" }}>revenue</p></div>
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.creditsConsumed)}</p><p className="text-[10px]" style={{ color: "#64748B" }}>credits used</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.signups)}</p><p className="text-xs" style={{ color: "#64748B" }}>signups</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.activeUsers)}</p><p className="text-xs" style={{ color: "#64748B" }}>active</p></div>
+                      <div><p className="text-xl font-black text-white">{formatPhp(row.data.revenuePhp)}</p><p className="text-xs" style={{ color: "#64748B" }}>revenue</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.creditsConsumed)}</p><p className="text-xs" style={{ color: "#64748B" }}>credits used</p></div>
                     </div>
                   </Card>
                 ))}
@@ -650,14 +650,14 @@ export default function AdminDashboardClient() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Card className="p-5">
                 <SectionHeader title="Signup Trend - Last 14 Days" sub="New users per day" />
-                <LineChart data={signupTrend.map(d => ({ label: d.label, value: d.count }))} color="#2B7EC9" />
+                <LineChart data={signupTrend.map(d => ({ label: d.label, value: d.count }))} color="#1E3A8A" />
               </Card>
               <Card className="p-5">
                 <SectionHeader title="Recommended Actions" sub="Generated from current alerts" />
                 <div className="space-y-3">
                   {stats.recommendedActions.slice(0, 5).map((action, i) => (
                     <div key={action} className="flex gap-3">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0" style={{ background: "#1E293B", color: "#F5A623" }}>{i + 1}</span>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#1E293B", color: "#D97706" }}>{i + 1}</span>
                       <p className="text-sm" style={{ color: "#CBD5E1" }}>{action}</p>
                     </div>
                   ))}
@@ -667,9 +667,9 @@ export default function AdminDashboardClient() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <KPICard label="Approved Revenue" value={formatPhp(revenue.approvedRevenuePhp)} sub={`${revenue.approvedTopupCount} topups`} tone="#22C55E" />
-              <KPICard label="Pending Revenue" value={formatPhp(revenue.pendingRevenuePhp)} sub={`${revenue.pendingTopupCount} requests`} tone={revenue.pendingTopupCount ? "#F5A623" : "#64748B"} />
+              <KPICard label="Pending Revenue" value={formatPhp(revenue.pendingRevenuePhp)} sub={`${revenue.pendingTopupCount} requests`} tone={revenue.pendingTopupCount ? "#D97706" : "#64748B"} />
               <KPICard label="Free To Paid" value={`${revenue.freeToPaidRate}%`} sub={`${revenue.paidUsers} paid users`} />
-              <KPICard label="Feedback Rating" value={`${feedback.averageRating.toFixed(1)}/5`} sub={`${feedback.total} feedbacks`} tone={feedback.averageRating >= 4 ? "#22C55E" : "#F5A623"} />
+              <KPICard label="Feedback Rating" value={`${feedback.averageRating.toFixed(1)}/5`} sub={`${feedback.total} feedbacks`} tone={feedback.averageRating >= 4 ? "#22C55E" : "#D97706"} />
             </div>
 
             <Card className="overflow-hidden">
@@ -756,7 +756,7 @@ export default function AdminDashboardClient() {
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <KPICard label="Approved Revenue" value={formatPhp(revenue.approvedRevenuePhp)} sub={`${revenue.approvedTopupCount} approved`} tone="#22C55E" />
-              <KPICard label="Pending Revenue" value={formatPhp(revenue.pendingRevenuePhp)} sub={`${revenue.pendingTopupCount} pending`} tone={revenue.pendingTopupCount ? "#F5A623" : "#64748B"} />
+              <KPICard label="Pending Revenue" value={formatPhp(revenue.pendingRevenuePhp)} sub={`${revenue.pendingTopupCount} pending`} tone={revenue.pendingTopupCount ? "#D97706" : "#64748B"} />
               <KPICard label="Approval Rate" value={`${revenue.approvalRate}%`} sub={`${revenue.rejectedTopupCount} rejected`} />
               <KPICard label="Average Order" value={formatPhp(revenue.avgOrderValuePhp)} sub={revenue.topPackage} />
             </div>
@@ -766,9 +766,9 @@ export default function AdminDashboardClient() {
                 <SectionHeader title="Credit Sources" sub="Where credits are issued from" />
                 {[
                   { label: "Top-up paid", value: creditActivity.grantBreakdown.topup, color: "#22C55E" },
-                  { label: "Signup bonus", value: creditActivity.grantBreakdown.signup, color: "#2B7EC9" },
+                  { label: "Signup bonus", value: creditActivity.grantBreakdown.signup, color: "#1E3A8A" },
                   { label: "Referral rewards", value: creditActivity.grantBreakdown.referral, color: "#8B5CF6" },
-                  { label: "Feedback rewards", value: creditActivity.grantBreakdown.feedback, color: "#F5A623" },
+                  { label: "Feedback rewards", value: creditActivity.grantBreakdown.feedback, color: "#D97706" },
                   { label: "Campaign launch", value: creditActivity.grantBreakdown.campaignLaunch, color: "#EC4899" },
                   { label: "Other", value: creditActivity.grantBreakdown.other, color: "#64748B" },
                 ].map(row => <HorizontalBar key={row.label} label={row.label} value={row.value} max={grantMax} color={row.color} />)}
@@ -780,7 +780,7 @@ export default function AdminDashboardClient() {
                   { label: "Creative images", value: creditActivity.usageBreakdown.creative, color: "#EC4899" },
                   { label: "Advanced audit", value: creditActivity.usageBreakdown.analyzeAdvanced, color: "#FBBF24" },
                   { label: "Research", value: creditActivity.usageBreakdown.research, color: "#10B981" },
-                  { label: "Angles", value: creditActivity.usageBreakdown.angles, color: "#F5A623" },
+                  { label: "Angles", value: creditActivity.usageBreakdown.angles, color: "#D97706" },
                   { label: "Copy", value: creditActivity.usageBreakdown.copy, color: "#8B5CF6" },
                   { label: "Video generation", value: creditActivity.usageBreakdown.videoGeneration, color: "#38BDF8" },
                   { label: "Consultation", value: creditActivity.usageBreakdown.consultation, color: "#22C55E" },
@@ -794,7 +794,7 @@ export default function AdminDashboardClient() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <KPICard label="Credits Sold" value={formatNumber(revenue.approvedTopupCredits)} sub="approved top-up credits" />
                 <KPICard label="Credits Burned" value={formatNumber(creditActivity.totalCreditsConsumed)} sub={`${pct(creditActivity.totalCreditsConsumed, creditActivity.totalCreditsIssued)} of issued credits`} />
-                <KPICard label="Free To Paid" value={`${revenue.freeToPaidRate}%`} sub={`${revenue.paidUsers} paid users`} tone={revenue.freeToPaidRate > 0 ? "#22C55E" : "#F5A623"} />
+                <KPICard label="Free To Paid" value={`${revenue.freeToPaidRate}%`} sub={`${revenue.paidUsers} paid users`} tone={revenue.freeToPaidRate > 0 ? "#22C55E" : "#D97706"} />
               </div>
             </Card>
           </div>
@@ -804,7 +804,7 @@ export default function AdminDashboardClient() {
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <KPICard label="Total Feedback" value={formatNumber(feedback.total)} />
-              <KPICard label="Average Rating" value={`${feedback.averageRating.toFixed(1)}/5`} tone={feedback.averageRating >= 4 ? "#22C55E" : "#F5A623"} />
+              <KPICard label="Average Rating" value={`${feedback.averageRating.toFixed(1)}/5`} tone={feedback.averageRating >= 4 ? "#22C55E" : "#D97706"} />
               <KPICard label="Testimonial Candidates" value={formatNumber(feedback.testimonialCandidates)} sub="4 to 5 star users" />
               <KPICard label="Prompt Conversion" value={feedback.promptToFeedbackRate === null ? "N/A" : `${feedback.promptToFeedbackRate}%`} sub={`${feedback.promptShownCount} prompts shown`} />
             </div>
@@ -814,7 +814,7 @@ export default function AdminDashboardClient() {
                 <SectionHeader title="Feedback Health" sub="Quality and reward economics" />
                 <HorizontalBar label="High rating feedback" value={feedback.highRatingCount} max={Math.max(feedback.total, 1)} color="#22C55E" />
                 <HorizontalBar label="Low rating feedback" value={feedback.lowRatingCount} max={Math.max(feedback.total, 1)} color="#EF4444" />
-                <HorizontalBar label="Feedback reward credits" value={feedback.rewardCreditsIssued} max={Math.max(creditActivity.totalCreditsIssued, 1)} color="#F5A623" />
+                <HorizontalBar label="Feedback reward credits" value={feedback.rewardCreditsIssued} max={Math.max(creditActivity.totalCreditsIssued, 1)} color="#D97706" />
               </Card>
               <Card className="p-5">
                 <SectionHeader title="Feedback Interpretation" sub="How to read this section" />
@@ -874,7 +874,7 @@ export default function AdminDashboardClient() {
                           <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatNumber(m.prompt)}</td>
                           <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatNumber(m.completion)}</td>
                           <td className="px-4 py-3 text-white font-bold">{formatNumber(m.total)}</td>
-                          <td className="px-4 py-3 font-bold" style={{ color: "#F5A623" }}>${cost.toFixed(5)}</td>
+                          <td className="px-4 py-3 font-bold" style={{ color: "#D97706" }}>${cost.toFixed(5)}</td>
                         </tr>
                       );
                     })}
@@ -909,7 +909,7 @@ export default function AdminDashboardClient() {
                           onClick={() => handleSort(col.key as SortKey)}
                         >
                           {col.label}
-                          {sortKey === col.key && <span style={{ color: "#2B7EC9" }}> {sortDirection === "asc" ? "up" : "down"}</span>}
+                          {sortKey === col.key && <span style={{ color: "#1E3A8A" }}> {sortDirection === "asc" ? "up" : "down"}</span>}
                         </th>
                       ))}
                     </tr>
@@ -934,7 +934,7 @@ export default function AdminDashboardClient() {
                 <SectionHeader title="Data Quality Warnings" sub="Optional data that could not be loaded" />
                 <div className="space-y-2">
                   {stats.dataQuality.warnings.map(w => (
-                    <p key={w} className="text-xs" style={{ color: "#F5A623" }}>{w}</p>
+                    <p key={w} className="text-xs" style={{ color: "#D97706" }}>{w}</p>
                   ))}
                 </div>
               </Card>
@@ -952,7 +952,7 @@ export default function AdminDashboardClient() {
                 >
                   {resetting ? "Resetting..." : "Reset Topup Data"}
                 </button>
-                {resetMsg && <p className="text-[10px] mt-2" style={{ color: "#94A3B8" }}>{resetMsg}</p>}
+                {resetMsg && <p className="text-xs mt-2" style={{ color: "#94A3B8" }}>{resetMsg}</p>}
               </div>
             </details>
           </div>
@@ -967,8 +967,8 @@ function PlanPill({ plan }: { plan: string }) {
     <span
       className="text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"
       style={{
-        background: plan === "Max" ? "rgba(239,68,68,0.15)" : plan === "Flex" ? "rgba(245,166,35,0.15)" : "rgba(156,163,175,0.15)",
-        color: plan === "Max" ? "#EF4444" : plan === "Flex" ? "#F5A623" : "#9CA3AF",
+        background: plan === "Max" ? "rgba(239,68,68,0.15)" : plan === "Flex" ? "rgba(217,119,6,0.15)" : "rgba(156,163,175,0.15)",
+        color: plan === "Max" ? "#EF4444" : plan === "Flex" ? "#D97706" : "#9CA3AF",
       }}
     >
       {plan}

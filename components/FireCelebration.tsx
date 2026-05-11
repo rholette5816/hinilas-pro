@@ -34,7 +34,7 @@ export default function FireCelebration({ show }: FireCelebrationProps) {
   ];
 
   return (
-    <div className="mt-6 w-full overflow-hidden rounded-2xl p-5 md:p-8 relative" style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.15), rgba(239,68,68,0.15))", border: "1px solid rgba(239,68,68,0.35)", boxShadow: "0 0 28px rgba(239,68,68,0.12)" }}>
+    <div className="mt-6 w-full overflow-hidden rounded-2xl p-5 md:p-8 relative" style={{ background: "linear-gradient(135deg, rgba(217,119,6,0.15), rgba(239,68,68,0.15))", border: "1px solid rgba(239,68,68,0.35)", boxShadow: "0 0 28px rgba(239,68,68,0.12)" }}>
       <style jsx>{`
         @keyframes fireEmojiPulse {
           0% { transform: scale(0.94) rotate(-3deg); }
@@ -42,8 +42,8 @@ export default function FireCelebration({ show }: FireCelebrationProps) {
         }
 
         @keyframes fireBannerGlow {
-          0% { box-shadow: 0 0 18px rgba(245,166,35,0.12), inset 0 0 0 rgba(239,68,68,0.1); }
-          100% { box-shadow: 0 0 34px rgba(239,68,68,0.22), inset 0 0 16px rgba(245,166,35,0.08); }
+          0% { box-shadow: 0 0 18px rgba(217,119,6,0.12), inset 0 0 0 rgba(239,68,68,0.1); }
+          100% { box-shadow: 0 0 34px rgba(239,68,68,0.22), inset 0 0 16px rgba(217,119,6,0.08); }
         }
 
         @keyframes fireParticleFloat {
@@ -80,8 +80,8 @@ export default function FireCelebration({ show }: FireCelebrationProps) {
             <div
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl"
               style={{
-                background: "rgba(245,166,35,0.18)",
-                border: "1px solid rgba(245,166,35,0.35)",
+                background: "rgba(217,119,6,0.18)",
+                border: "1px solid rgba(217,119,6,0.35)",
                 animation: "fireEmojiPulse 1.7s ease-in-out infinite alternate",
               }}
             >

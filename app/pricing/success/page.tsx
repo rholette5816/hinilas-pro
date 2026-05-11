@@ -33,7 +33,7 @@ function SuccessContent() {
           <button
             onClick={() => router.push("/creative")}
             className="w-full text-white py-3 rounded-lg text-sm font-semibold"
-            style={{ background: "#F5A623" }}
+            style={{ background: "#D97706" }}
           >
             Start Generating →
           </button>

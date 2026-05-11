@@ -3,8 +3,8 @@
 import { useState, useRef } from "react";
 import { HinilasIcon } from "@/components/HinilasLogo";
 
-const BRAND_BLUE = "#2B7EC9";
-const BRAND_ORANGE = "#F5A623";
+const BRAND_BLUE = "#1E3A8A";
+const BRAND_ORANGE = "#D97706";
 
 const STAR_REWARDS: Record<number, number> = { 1: 2, 2: 3, 3: 5, 4: 8, 5: 15 };
 
@@ -191,8 +191,8 @@ export default function TestimonialPage() {
                 <>
                   <style>{`
                     @keyframes polishPulse {
-                      0%, 100% { box-shadow: 0 0 0 0 rgba(43,126,201,0.5); }
-                      50% { box-shadow: 0 0 0 6px rgba(43,126,201,0); }
+                      0%, 100% { box-shadow: 0 0 0 0 rgba(30,58,138,0.5); }
+                      50% { box-shadow: 0 0 0 6px rgba(30,58,138,0); }
                     }
                   `}</style>
                   <button
@@ -201,9 +201,9 @@ export default function TestimonialPage() {
                     disabled={improving}
                     className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                     style={{
-                      background: "rgba(43,126,201,0.15)",
+                      background: "rgba(30,58,138,0.15)",
                       color: BRAND_BLUE,
-                      border: "1px solid rgba(43,126,201,0.3)",
+                      border: "1px solid rgba(30,58,138,0.3)",
                       animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
                     }}
                   >
@@ -231,7 +231,7 @@ export default function TestimonialPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Video or Image</label>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ background: "rgba(245,166,35,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>Highly Encouraged</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>Highly Encouraged</span>
             </div>
 
             {/* Video guide */}

@@ -30,7 +30,7 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return { title: "Not Found" };
   return {
-    title: `${post.title} | Kuya Ken`,
+    title: `${post.title} | Hinilas Pro`,
     description: post.meta_description,
     openGraph: {
       title: post.title,
@@ -43,14 +43,34 @@ export async function generateMetadata({
   };
 }
 
+function LogoMark() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="48" height="48" rx="10" fill="#0F172A" />
+      <line x1="14" y1="10" x2="14" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="34" y1="10" x2="34" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="14" y1="24" x2="34" y2="24" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <circle cx="14" cy="10" r="3" fill="#D97706" />
+      <circle cx="14" cy="38" r="3" fill="#1E3A8A" />
+      <circle cx="34" cy="10" r="3" fill="#1E3A8A" />
+      <circle cx="34" cy="38" r="3" fill="#D97706" />
+    </svg>
+  );
+}
+
 function linkify(text: string) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const parts = text.split(urlRegex);
   return parts.map((part, i) =>
     urlRegex.test(part) ? (
-      <a key={i} href={part} target="_blank" rel="noopener noreferrer"
-        className="underline hover:opacity-80 transition-opacity"
-        style={{ color: "#2B7EC9" }}>
+      <a
+        key={i}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline decoration-blue-300 underline-offset-4 transition-colors hover:text-blue-800"
+        style={{ color: "#1E3A8A" }}
+      >
         {part}
       </a>
     ) : part
@@ -59,23 +79,28 @@ function linkify(text: string) {
 
 function renderArticle(text: string) {
   return text.split("\n").map((line, i) => {
-    if (line.startsWith("# "))
-      return <h1 key={i} className="text-3xl font-bold text-white mt-10 mb-4">{linkify(line.slice(2))}</h1>;
-    if (line.startsWith("## "))
-      return <h2 key={i} className="text-2xl font-bold text-white mt-8 mb-3">{linkify(line.slice(3))}</h2>;
-    if (line.startsWith("### "))
-      return <h3 key={i} className="text-lg font-semibold text-white mt-6 mb-2">{linkify(line.slice(4))}</h3>;
-    if (line.startsWith("- ") || line.startsWith("* "))
+    if (line.startsWith("# ")) {
+      return <h1 key={i} className="mt-10 mb-4 text-3xl font-black tracking-tight text-slate-950">{linkify(line.slice(2))}</h1>;
+    }
+    if (line.startsWith("## ")) {
+      return <h2 key={i} className="mt-9 mb-3 text-2xl font-black tracking-tight text-slate-950">{linkify(line.slice(3))}</h2>;
+    }
+    if (line.startsWith("### ")) {
+      return <h3 key={i} className="mt-7 mb-2 text-lg font-bold text-slate-900">{linkify(line.slice(4))}</h3>;
+    }
+    if (line.startsWith("- ") || line.startsWith("* ")) {
       return (
-        <li key={i} className="ml-5 text-sm leading-relaxed" style={{ color: "#94A3B8", listStyleType: "disc" }}>
+        <li key={i} className="ml-5 text-base leading-8 text-slate-700" style={{ listStyleType: "disc" }}>
           {linkify(line.slice(2))}
         </li>
       );
-    if (line.startsWith("**") && line.endsWith("**"))
-      return <p key={i} className="font-semibold text-white mt-4">{linkify(line.slice(2, -2))}</p>;
-    if (line.trim() === "") return <div key={i} className="h-3" />;
+    }
+    if (line.startsWith("**") && line.endsWith("**")) {
+      return <p key={i} className="mt-5 text-base font-bold text-slate-900">{linkify(line.slice(2, -2))}</p>;
+    }
+    if (line.trim() === "") return <div key={i} className="h-2" />;
     return (
-      <p key={i} className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
+      <p key={i} className="text-base leading-8 text-slate-700">
         {linkify(line)}
       </p>
     );
@@ -92,33 +117,22 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <main className="min-h-screen" style={{ background: "#0B1120" }}>
-      {/* Header */}
-      <div className="border-b" style={{ borderColor: "#1E2D45" }}>
-        <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="48" height="48" rx="10" fill="#0F172A" />
-              <line x1="14" y1="10" x2="14" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <line x1="34" y1="10" x2="34" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <line x1="14" y1="24" x2="34" y2="24" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <circle cx="14" cy="10" r="3" fill="#F5A623" />
-              <circle cx="14" cy="38" r="3" fill="#2B7EC9" />
-              <circle cx="34" cy="10" r="3" fill="#2B7EC9" />
-              <circle cx="34" cy="38" r="3" fill="#F5A623" />
-            </svg>
-            <span className="text-white font-semibold text-sm">Hinilas Pro</span>
+    <main className="min-h-screen" style={{ background: "#F8FAFC", color: "#0F172A" }}>
+      <div className="border-b bg-white" style={{ borderColor: "#E2E8F0" }}>
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+          <Link href="/home" className="flex items-center gap-3 transition-opacity hover:opacity-85">
+            <LogoMark />
+            <span className="text-sm font-black text-slate-900">Hinilas Pro</span>
           </Link>
-          <Link href="/blog" className="text-xs hover:text-white transition-colors" style={{ color: "#64748B" }}>
-            ← All Posts
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#64748B" }}>
+            All posts
           </Link>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-14">
-        {/* Meta */}
+      <div className="mx-auto max-w-3xl px-6 py-14">
         <div className="mb-8">
-          <p className="text-xs mb-3" style={{ color: "#64748B" }}>
+          <p className="mb-4 text-xs font-bold uppercase tracking-wide" style={{ color: "#64748B" }}>
             {new Date(post.published_at).toLocaleDateString("en-PH", {
               year: "numeric",
               month: "long",
@@ -126,19 +140,18 @@ export default async function BlogPostPage({
               timeZone: "Asia/Manila",
             })}
           </p>
-          <h1 className="text-3xl font-bold text-white leading-snug mb-4">
+          <h1 className="mb-4 text-4xl font-black leading-tight tracking-tight text-slate-950">
             {post.title}
           </h1>
           {post.meta_description && (
-            <p className="text-base" style={{ color: "#64748B" }}>
+            <p className="text-lg leading-8" style={{ color: "#64748B" }}>
               {post.meta_description}
             </p>
           )}
         </div>
 
-        {/* Hero Image */}
         {post.hero_image_url && (
-          <div className="mb-10 rounded-xl overflow-hidden border" style={{ borderColor: "#1E2D45" }}>
+          <div className="mb-10 overflow-hidden rounded-2xl border bg-white" style={{ borderColor: "#E2E8F0" }}>
             <img
               src={post.hero_image_url}
               alt={post.title}
@@ -148,46 +161,42 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* Divider */}
-        <div className="mb-10 h-px" style={{ background: "#1E2D45" }} />
-
-        {/* Article */}
-        <article className="flex flex-col gap-3">
-          {renderArticle(post.article)}
+        <article className="rounded-2xl border bg-white p-6 sm:p-8" style={{ borderColor: "#E2E8F0" }}>
+          <div className="flex flex-col gap-3">
+            {renderArticle(post.article)}
+          </div>
         </article>
 
-        {/* CTA Block */}
         {post.cta && (
           <div
-            className="mt-14 rounded-2xl p-8"
-            style={{ background: "rgba(43,126,201,0.08)", border: "1px solid rgba(43,126,201,0.3)" }}
+            className="mt-10 rounded-2xl p-8"
+            style={{ background: "#0F172A", color: "#FFFFFF" }}
           >
             <div
-              className="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-4"
-              style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
+              className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+              style={{ background: "rgba(30,58,138,0.18)", color: "#93C5FD", border: "1px solid rgba(147,197,253,0.25)" }}
             >
               Try Hinilas Pro
             </div>
-            <p className="text-white font-semibold text-lg mb-2">Gusto mo ng shortcut?</p>
-            <p className="text-sm mb-6 leading-relaxed" style={{ color: "#94A3B8" }}>
+            <p className="mb-2 text-xl font-black">Want a faster path from idea to campaign?</p>
+            <p className="mb-6 text-sm leading-7" style={{ color: "#CBD5E1" }}>
               {post.cta.replace(/Try it (now )?at https?:\/\/[^\s]+/gi, "").trim()}
             </p>
             <a
-              href="https://www.hinilas.pro"
+              href="https://www.hinilas.pro/home"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block font-semibold px-6 py-3 rounded-xl text-white text-sm transition-opacity hover:opacity-90"
-              style={{ background: "#2B7EC9" }}
+              className="inline-block rounded-xl px-6 py-3 text-sm font-black transition-all hover:brightness-105"
+              style={{ background: "#D97706", color: "#111827" }}
             >
-              Try Hinilas Pro — Free
+              Try Hinilas Pro free
             </a>
           </div>
         )}
 
-        {/* Back link */}
         <div className="mt-10">
-          <Link href="/blog" className="text-xs transition-colors hover:text-white" style={{ color: "#64748B" }}>
-            ← Back to all posts
+          <Link href="/blog" className="text-xs font-bold transition-colors hover:text-slate-950" style={{ color: "#64748B" }}>
+            Back to all posts
           </Link>
         </div>
       </div>

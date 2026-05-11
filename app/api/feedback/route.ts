@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       subject: `[Hinilas Feedback] ${category} - ${rating} star${rating !== 1 ? "s" : ""}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #F5A623;">New Feedback - Hinilas Pro</h2>
+          <h2 style="color: #D97706;">New Feedback - Hinilas Pro</h2>
           <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0; color: #666; width: 120px;">Rating</td><td style="padding: 8px 0; font-weight: bold;">${"★".repeat(rating)}${"☆".repeat(5 - rating)} (${rating}/5)</td></tr>
             <tr><td style="padding: 8px 0; color: #666;">Category</td><td style="padding: 8px 0; font-weight: bold;">${category}</td></tr>

@@ -159,7 +159,7 @@ export default function CopyPage() {
             <h2 className="text-white font-bold text-lg mb-2">Not enough credits</h2>
             <p className="text-gray-400 text-sm mb-6">Copy generation costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
-              <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>View Plans</a>
+              <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>View Plans</a>
               <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function CopyPage() {
                   <button
                     onClick={() => uploadRef.current?.click()}
                     className="text-white px-4 py-2 rounded-lg text-xs font-semibold"
-                    style={{ background: "#2B7EC9" }}
+                    style={{ background: "#1E3A8A" }}
                   >
                     Upload Image
                   </button>
@@ -243,7 +243,7 @@ export default function CopyPage() {
                   onClick={() => setLanguage(opt.value)}
                   className="p-2.5 rounded-lg border text-left transition-all"
                   style={language === opt.value
-                    ? { background: "#2B7EC9", borderColor: "#2B7EC9", color: "white" }
+                    ? { background: "#1E3A8A", borderColor: "#1E3A8A", color: "white" }
                     : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
                   }
                 >
@@ -273,7 +273,7 @@ export default function CopyPage() {
                     className="p-3 rounded-lg border text-left transition-all cursor-pointer"
                     style={
                       selected
-                        ? { background: "#2B7EC9", borderColor: "#2B7EC9", color: "white" }
+                        ? { background: "#1E3A8A", borderColor: "#1E3A8A", color: "white" }
                         : disabled
                         ? { background: "#111827", borderColor: "#1F2937", color: "#4B5563", cursor: "not-allowed" }
                         : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
@@ -297,7 +297,7 @@ export default function CopyPage() {
               onClick={generateCopy}
               disabled={loading || !activeImage}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#1E3A8A", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Writing..." : output ? "Rewrite Captions - 1 credit" : "Generate Captions - 1 credit"}
             </button>
@@ -305,7 +305,7 @@ export default function CopyPage() {
               <button
                 onClick={() => router.push("/campaign-setup")}
                 className="flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 text-white"
-                style={{ background: "#F5A623", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
+                style={{ background: "#D97706", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 Proceed to Campaign Setup →
               </button>
@@ -365,7 +365,7 @@ export default function CopyPage() {
                       {v.cta && (
                         <div>
                           <p className="text-xs font-semibold text-gray-500 mb-1">CTA BUTTON</p>
-                          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#2B7EC920", color: "#2B7EC9", border: "1px solid #2B7EC940" }}>
+                          <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "#1E3A8A20", color: "#1E3A8A", border: "1px solid #1E3A8A40" }}>
                             {v.cta}
                           </span>
                         </div>

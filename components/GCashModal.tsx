@@ -196,7 +196,7 @@ export default function GCashModal({ isOpen, onClose, label, credits, price, col
             <button
               onClick={onClose}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#2B7EC9" }}
+              style={{ background: "#1E3A8A" }}
             >
               Done
             </button>

@@ -55,7 +55,7 @@ function getEmailHtml(firstName?: string) {
       <p style="font-size: 16px; line-height: 1.6;"><strong>1 minuto lang.</strong> Generate na natin yung copy mo. Naka-base na sa angle at image mo.</p>
 
       <p style="margin: 32px 0;">
-        <a href="${APP_URL}/copy" style="display: inline-block; background: #F5A623; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Write My Copy &rarr;</a>
+        <a href="${APP_URL}/copy" style="display: inline-block; background: #D97706; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Write My Copy &rarr;</a>
       </p>
 
       <p style="font-size: 16px; line-height: 1.6;">Kung may tanong ka, reply ka lang dito. Sagot ko personally.</p>

@@ -10,9 +10,9 @@ import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
 const ANGLE_COLORS: Record<string, string> = {
   Problem: "#EF4444",
-  Solution: "#2B7EC9",
+  Solution: "#1E3A8A",
   Transformation: "#8B5CF6",
-  Story: "#F5A623",
+  Story: "#D97706",
   Testimonial: "#10B981",
 };
 
@@ -161,7 +161,7 @@ export default function AnglesPage() {
           <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
             <div
               className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full text-lg"
-              style={{ border: "1px solid rgba(245,166,35,0.4)", color: "#F5A623" }}
+              style={{ border: "1px solid rgba(217,119,6,0.4)", color: "#D97706" }}
             >
               !
             </div>
@@ -171,7 +171,7 @@ export default function AnglesPage() {
               <a
                 href="/pricing"
                 className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
-                style={{ background: "#F5A623" }}
+                style={{ background: "#D97706" }}
               >
                 View Plans
               </a>
@@ -201,7 +201,7 @@ export default function AnglesPage() {
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 mb-5 text-sm"
               style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
             >
-              <span className="text-[#2B7EC9]">
+              <span className="text-[#1E3A8A]">
                 <CheckIcon />
               </span>
               <span className="text-[#64748B]">Research loaded - angles will be based on your customer insights</span>
@@ -213,7 +213,7 @@ export default function AnglesPage() {
               onClick={() => generateAngles()}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#2B7EC9", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#1E3A8A", color: "#FFFFFF", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Generating..." : angles.length > 0 ? "Regenerate Angles - 1 credit" : "Generate Angles - 1 credit"}
             </button>
@@ -245,7 +245,7 @@ export default function AnglesPage() {
                 onClick={() => generateAngles(adjustNote)}
                 disabled={!adjustNote.trim() || loading}
                 className="text-sm font-semibold px-5 py-2.5 rounded-lg disabled:opacity-40 transition-opacity hover:opacity-90"
-                style={{ background: "#F5A623", color: "#000000" }}
+                style={{ background: "#D97706", color: "#000000" }}
               >
                 Regenerate with Adjustment - 1 credit
               </button>
@@ -274,7 +274,7 @@ export default function AnglesPage() {
 
               <div className="space-y-4">
                 {angles.map((angle, idx) => {
-                  const color = ANGLE_COLORS[angle.type] || "#F5A623";
+                  const color = ANGLE_COLORS[angle.type] || "#D97706";
                   const isSelected = selectedCard === idx;
 
                   return (
@@ -364,7 +364,7 @@ export default function AnglesPage() {
                 <button
                   onClick={() => router.push("/creative")}
                   className="w-full mt-6 py-3.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
-                  style={{ background: "#F5A623", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
+                  style={{ background: "#D97706", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
                 >
                   Next: Make Your Ad Image &rarr;
                 </button>

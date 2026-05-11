@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 
 const BADGE_COLORS: Record<string, string> = {
-  "Hilas Dominator": "#F5A623",
+  "Hilas Dominator": "#D97706",
   "Ad Machine": "#8B5CF6",
-  "Consistent Operator": "#2B7EC9",
+  "Consistent Operator": "#1E3A8A",
   "Starter Launcher": "#10B981",
 };
 
@@ -80,9 +80,9 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
               onClick={() => setPeriod(p)}
               className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: period === p ? "#2B7EC9" : "#F1F5F9",
+                background: period === p ? "#1E3A8A" : "#F1F5F9",
                 color: period === p ? "#fff" : "#64748B",
-                border: `1px solid ${period === p ? "#2B7EC9" : "#E2E8F0"}`,
+                border: `1px solid ${period === p ? "#1E3A8A" : "#E2E8F0"}`,
               }}
             >
               {p === "alltime" ? "All Time" : "This Month"}
@@ -107,7 +107,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
           ) : (
             data.map((entry) => {
               const badgeColor = BADGE_COLORS[entry.badge] || "#64748B";
-              const rankColor = entry.rank === 1 ? "#F5A623" : entry.rank === 2 ? "#64748B" : entry.rank === 3 ? "#CD7F32" : "#64748B";
+              const rankColor = entry.rank === 1 ? "#D97706" : entry.rank === 2 ? "#64748B" : entry.rank === 3 ? "#CD7F32" : "#64748B";
               const initial = entry.username.charAt(0).toUpperCase();
 
               return (

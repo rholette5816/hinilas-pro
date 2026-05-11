@@ -168,7 +168,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
             <div className="text-3xl mb-3">⭐</div>
             <h3 className="text-slate-900 font-bold text-base mb-2">Already submitted</h3>
             <p className="text-slate-600 text-sm mb-4">You already used your one-time feedback reward.</p>
-            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
+            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#1E3A8A" }}>
               Close
             </button>
           </div>
@@ -190,7 +190,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(s => (
                     <div key={s} className="text-center">
-                      <p className="text-sm leading-none" style={{ color: s <= (hovered || rating) ? "#F5A623" : "#E2E8F0" }}>★</p>
+                      <p className="text-sm leading-none" style={{ color: s <= (hovered || rating) ? "#D97706" : "#E2E8F0" }}>★</p>
                       <p className="text-xs font-bold mt-0.5" style={{ color: s <= (hovered || rating) ? "#22c55e" : "#64748B" }}>+{STAR_REWARDS[s]}</p>
                     </div>
                   ))}
@@ -211,7 +211,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                       onMouseLeave={() => setHovered(0)}
                       className="text-xl transition-transform hover:scale-110"
                     >
-                      <span style={{ color: star <= (hovered || rating) ? "#F5A623" : "#E2E8F0" }}>★</span>
+                      <span style={{ color: star <= (hovered || rating) ? "#D97706" : "#E2E8F0" }}>★</span>
                     </button>
                   ))}
                   {rating > 0 && (
@@ -240,8 +240,8 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                     <>
                       <style>{`
                         @keyframes polishPulse {
-                          0%, 100% { box-shadow: 0 0 0 0 rgba(43,126,201,0.5); }
-                          50% { box-shadow: 0 0 0 6px rgba(43,126,201,0); }
+                          0%, 100% { box-shadow: 0 0 0 0 rgba(30,58,138,0.5); }
+                          50% { box-shadow: 0 0 0 6px rgba(30,58,138,0); }
                         }
                       `}</style>
                       <button
@@ -250,9 +250,9 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                         disabled={improving}
                         className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                         style={{
-                          background: "rgba(43,126,201,0.15)",
-                          color: "#2B7EC9",
-                          border: "1px solid rgba(43,126,201,0.3)",
+                          background: "rgba(30,58,138,0.15)",
+                          color: "#1E3A8A",
+                          border: "1px solid rgba(30,58,138,0.3)",
                           animation: pulsing && !improving ? "polishPulse 2s ease-in-out infinite" : "none",
                         }}
                       >
@@ -312,7 +312,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
                 onClick={submit}
                 disabled={!message.trim() || rating === 0 || loading}
                 className="w-full py-2.5 rounded-lg text-sm font-bold disabled:opacity-40 transition-opacity hover:opacity-90"
-                style={{ background: "#F5A623", color: "#000" }}
+                style={{ background: "#D97706", color: "#000" }}
               >
                 {loading ? "Sending..." : "Send Feedback"}
               </button>
@@ -335,7 +335,7 @@ export default function FloatingFeedback({ isOpen, onClose }: Props) {
             ) : (
               <p className="text-slate-600 text-sm mb-4">We read every message. This helps us build a better tool for you.</p>
             )}
-            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
+            <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#1E3A8A" }}>
               Done
             </button>
           </div>

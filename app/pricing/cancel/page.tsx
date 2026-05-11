@@ -15,7 +15,7 @@ export default function CancelPage() {
           <button
             onClick={() => router.push("/pricing")}
             className="w-full text-white py-3 rounded-lg text-sm font-semibold"
-            style={{ background: "#2B7EC9" }}
+            style={{ background: "#1E3A8A" }}
           >
             Back to Pricing
           </button>

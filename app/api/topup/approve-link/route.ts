@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
   if (request.status === "approved") {
     return new NextResponse(`
       <html><body style="font-family:Arial;text-align:center;padding:60px;background:#0F172A;color:#fff">
-        <h2 style="color:#F5A623">Already Approved</h2>
+        <h2 style="color:#D97706">Already Approved</h2>
         <p style="color:#94A3B8">This top-up request was already approved.</p>
       </body></html>
     `, { status: 200, headers: { "Content-Type": "text/html" } });
@@ -144,7 +144,7 @@ export async function GET(req: NextRequest) {
       subject: "Your credits have been added — Hinilas Pro",
       html: `
         <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#0F172A;color:#fff;border-radius:12px">
-          <h2 style="color:#2B7EC9;margin-bottom:8px">Credits Added</h2>
+          <h2 style="color:#1E3A8A;margin-bottom:8px">Credits Added</h2>
           <p style="color:#94A3B8;margin-bottom:24px">Your payment has been verified and your credits are now live.</p>
           <div style="background:#1E293B;border-radius:10px;padding:20px;margin-bottom:24px">
             <div style="font-size:36px;font-weight:900;color:#22c55e;margin-bottom:4px">+${request.credits_requested} credits</div>

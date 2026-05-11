@@ -17,8 +17,8 @@ interface Step {
 }
 
 const LEVEL_COLORS: Record<Level, string> = {
-  Campaign: "#2B7EC9",
-  "Ad Set": "#F5A623",
+  Campaign: "#1E3A8A",
+  "Ad Set": "#D97706",
   Ads: "#8B5CF6",
 };
 
@@ -38,7 +38,7 @@ const STEPS: Step[] = [
   {
     label: "Access Ads Manager",
     level: "Campaign",
-    color: "#2B7EC9",
+    color: "#1E3A8A",
     instructions: [
       "Go to business.facebook.com",
       "On the top interface, locate the business logo with a dropdown menu",
@@ -53,7 +53,7 @@ const STEPS: Step[] = [
   {
     label: "Create Campaign",
     level: "Campaign",
-    color: "#2B7EC9",
+    color: "#1E3A8A",
     instructions: [
       "Click Create",
       "Select Engagement as your campaign objective",
@@ -63,7 +63,7 @@ const STEPS: Step[] = [
   {
     label: "Campaign Setup",
     level: "Campaign",
-    color: "#2B7EC9",
+    color: "#1E3A8A",
     instructions: [
       "Set a clear campaign name",
       { type: "example", text: "Real Estate - Condo Project A\nSkincare - Whitening Serum" },
@@ -76,7 +76,7 @@ const STEPS: Step[] = [
   {
     label: "Ad Set Setup",
     level: "Ad Set",
-    color: "#F5A623",
+    color: "#D97706",
     instructions: [
       "Name your ad set based on the angle",
       { type: "example", text: "Affordable Offer\nLuxury Living\nLimited Slots" },
@@ -90,7 +90,7 @@ const STEPS: Step[] = [
   {
     label: "Budget & Schedule",
     level: "Ad Set",
-    color: "#F5A623",
+    color: "#D97706",
     instructions: [
       "Budget Strategy: select Daily Budget",
       "Input your desired daily amount",
@@ -102,7 +102,7 @@ const STEPS: Step[] = [
   {
     label: "Audience Targeting",
     level: "Ad Set",
-    color: "#F5A623",
+    color: "#D97706",
     instructions: [
       "Location: set your desired country, city, or specific area",
       "Age and Gender: leave as default",
@@ -379,7 +379,7 @@ export default function CampaignSetupPage() {
               onClick={() => setActiveTab("messenger")}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
               style={activeTab === "messenger"
-                ? { background: "#2B7EC9", color: "#fff" }
+                ? { background: "#1E3A8A", color: "#fff" }
                 : { background: "#FFFFFF", color: "#6B7280", border: "1px solid #1F2937" }
               }
             >
@@ -509,7 +509,7 @@ export default function CampaignSetupPage() {
                 <div className="mb-5 rounded-2xl border border-yellow-900/50 overflow-hidden" style={{ background: "#F8FAFC" }}>
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                     <span className="text-base">🎯</span>
-                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#F5A623" }}>Targeting Suggestions</span>
+                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Targeting Suggestions</span>
                     <span className="text-xs text-gray-600 ml-1">from your research</span>
                   </div>
                   <div className="px-4 py-4">
@@ -526,7 +526,7 @@ export default function CampaignSetupPage() {
                                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 active:scale-95"
                                 style={copiedInterest === interest
                                   ? { background: "#052e16", color: "#22c55e", border: "1px solid #22c55e60" }
-                                  : { background: "rgba(245,166,35,0.1)", color: "#F5A623", border: "1px solid rgba(245,166,35,0.3)" }
+                                  : { background: "rgba(217,119,6,0.1)", color: "#D97706", border: "1px solid rgba(217,119,6,0.3)" }
                                 }
                               >
                                 {copiedInterest === interest ? "✓ Copied" : interest}
@@ -543,7 +543,7 @@ export default function CampaignSetupPage() {
                         <a
                           href="/research"
                           className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-90"
-                          style={{ background: "rgba(245,166,35,0.15)", color: "#F5A623", border: "1px solid rgba(245,166,35,0.3)" }}
+                          style={{ background: "rgba(217,119,6,0.15)", color: "#D97706", border: "1px solid rgba(217,119,6,0.3)" }}
                         >
                           Run Research →
                         </a>
@@ -562,8 +562,8 @@ export default function CampaignSetupPage() {
                   <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
                   <div className="space-y-3 mb-8">
                     {[
-                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#2B7EC9" },
-                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>, label: "1 Ad Set", sub: "Angle-based targeting", color: "#F5A623" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>, label: "1 Campaign", sub: "Engagement objective", color: "#1E3A8A" },
+                      { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>, label: "1 Ad Set", sub: "Angle-based targeting", color: "#D97706" },
                       { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>, label: "3 Ads", sub: "Different creatives", color: "#8B5CF6" },
                     ].map(item => (
                       <div key={item.label} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: "#FFFFFF", border: `1px solid ${item.color}30` }}>
@@ -579,13 +579,13 @@ export default function CampaignSetupPage() {
                     ))}
                   </div>
                   {/* Launch proof CTA */}
-                  <div className="mb-6 p-4 rounded-xl" style={{ background: "#FFFFFF", border: "1px solid #F5A62330" }}>
+                  <div className="mb-6 p-4 rounded-xl" style={{ background: "#FFFFFF", border: "1px solid #D9770630" }}>
                     <p className="text-yellow-400 font-bold text-sm mb-1">🚀 Claim Your Launch Reward</p>
                     <p className="text-gray-400 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-white font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
                     <button
                       onClick={() => { setShowLaunchModal(true); setLaunchDone(false); setLaunchFile(null); setLaunchError(""); }}
                       className="w-full py-2.5 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
-                      style={{ background: "linear-gradient(135deg, #F5A623, #ee6b0e)" }}
+                      style={{ background: "linear-gradient(135deg, #D97706, #ee6b0e)" }}
                     >
                       Submit Campaign Proof
                     </button>
@@ -595,7 +595,7 @@ export default function CampaignSetupPage() {
                     <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white transition-colors">
                       Back
                     </button>
-                    <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#2B7EC9" }}>
+                    <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#1E3A8A" }}>
                       Start Over
                     </button>
                   </div>
@@ -603,13 +603,13 @@ export default function CampaignSetupPage() {
                   {/* Launch proof modal */}
                   {showLaunchModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(7,11,20,0.85)", backdropFilter: "blur(12px)" }}>
-                      <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #F5A62340" }}>
+                      <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #D9770640" }}>
                         {launchDone ? (
                           <div className="text-center py-4">
                             <div className="text-5xl mb-4">🎉</div>
                             <h3 className="text-white font-bold text-lg mb-2">Proof Submitted!</h3>
                             <p className="text-gray-400 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
-                            <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#2B7EC9" }}>Done</button>
+                            <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#1E3A8A" }}>Done</button>
                           </div>
                         ) : (
                           <>
@@ -659,7 +659,7 @@ export default function CampaignSetupPage() {
                               onClick={submitLaunchProof}
                               disabled={!launchFile || launchSubmitting}
                               className="w-full py-3 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                              style={{ background: "linear-gradient(135deg, #F5A623, #ee6b0e)" }}
+                              style={{ background: "linear-gradient(135deg, #D97706, #ee6b0e)" }}
                             >
                               {launchSubmitting ? "Submitting..." : "Submit for Review - +20 cr"}
                             </button>
@@ -714,7 +714,7 @@ export default function CampaignSetupPage() {
                       }
 
                       return (
-                        <div key={idx} className="ml-9 rounded-xl px-4 py-3" style={{ background: "#0A1628", border: "1px solid #2B7EC930" }}>
+                        <div key={idx} className="ml-9 rounded-xl px-4 py-3" style={{ background: "#0A1628", border: "1px solid #1E3A8A30" }}>
                           <p className="text-blue-300 text-sm">{item.text}</p>
                         </div>
                       );

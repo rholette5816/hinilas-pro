@@ -150,7 +150,7 @@ export default function Sidebar() {
   }
 
   const creditPct = Math.min((credits / Math.max(creditsTotal, 1)) * 100, 100);
-  const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#F5A623" : "#9CA3AF";
+  const planColor = plan === "max" ? "#EF4444" : plan === "flex" ? "#D97706" : "#9CA3AF";
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const planLabel = plan === "max" ? "Max Plan" : plan === "flex" ? "Flex Plan" : "Lite Plan";
   const planSuffix = plan === "max" ? "Max" : plan === "flex" ? "Flex" : "Lite";
@@ -192,7 +192,7 @@ export default function Sidebar() {
               <span className="font-bold text-base" style={{ color: "#FFFFFF" }}>Hinilas</span>
               <span className="font-bold text-base" style={{ color: planColor }}>{planSuffix}</span>
             </div>
-            <p className="text-xs font-semibold" style={{ color: "#2B7EC9" }}>Marketing intelligence</p>
+            <p className="text-xs font-semibold" style={{ color: "#1E3A8A" }}>Marketing intelligence</p>
           </div>
         </div>
       </div>
@@ -218,13 +218,13 @@ export default function Sidebar() {
               }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
               style={active
-                ? { background: "rgba(43,126,201,0.1)", borderLeft: "2px solid #2B7EC9", paddingLeft: "10px" }
+                ? { background: "rgba(30,58,138,0.1)", borderLeft: "2px solid #1E3A8A", paddingLeft: "10px" }
                 : isLocked
                 ? { borderLeft: "2px solid transparent", opacity: 0.45, cursor: "not-allowed" }
                 : { borderLeft: "2px solid transparent" }
               }
             >
-              <span style={{ color: active ? "#2B7EC9" : "#64748B" }} className="shrink-0 transition-colors">
+              <span style={{ color: active ? "#1E3A8A" : "#64748B" }} className="shrink-0 transition-colors">
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
@@ -361,7 +361,7 @@ export default function Sidebar() {
               {user.avatar ? (
                 <Image src={user.avatar} alt={user.name} width={34} height={34} className="rounded-full shrink-0" />
               ) : (
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: "#1E3A8A" }}>
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -379,7 +379,7 @@ export default function Sidebar() {
               <button
                 onClick={() => { setMobileOpen(false); router.push("/admin"); }}
                 className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 mb-1.5"
-                style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
+                style={{ background: "rgba(30,58,138,0.15)", color: "#1E3A8A", border: "1px solid rgba(30,58,138,0.3)" }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Admin Dashboard
@@ -404,21 +404,21 @@ export default function Sidebar() {
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0" }}>
         <div className="flex items-center gap-2">
-          <HinilasIcon size="sm" accentColor="#F5A623" />
+          <HinilasIcon size="sm" accentColor="#D97706" />
           <span className="text-slate-900 font-bold text-sm">Hinilas<span style={{ color: planColor }}>{planSuffix}</span></span>
         </div>
         <div className="flex items-center gap-1.5">
           <a
             href="/library"
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#2B7EC9", border: "1px solid #2B7EC930" }}
+            style={{ background: "#F1F5F9", color: "#1E3A8A", border: "1px solid #1E3A8A30" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           </a>
           <button
             onClick={() => setShowLeaderboard(true)}
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#F5A623", border: "1px solid #F5A62330" }}
+            style={{ background: "#F1F5F9", color: "#D97706", border: "1px solid #D9770630" }}
           >
             🏆 <span className="hidden xs:inline">Board</span>
           </button>
@@ -526,13 +526,13 @@ export default function Sidebar() {
                 <div className="divide-y" style={{ borderColor: "#E2E8F0" }}>
                   {leaderboard.map((u) => (
                     <div key={u.rank} className="flex items-center gap-2.5 px-3 py-2">
-                      <span className="text-xs font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#F5A623" : u.rank === 2 ? "#64748B" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
+                      <span className="text-xs font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#D97706" : u.rank === 2 ? "#64748B" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
                         #{u.rank}
                       </span>
                       {u.avatar_url ? (
                         <img src={u.avatar_url} alt={u.username} className="w-6 h-6 rounded-full shrink-0 object-cover" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ background: "#2B7EC9" }}>
+                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ background: "#1E3A8A" }}>
                           {u.username.charAt(0).toUpperCase()}
                         </div>
                       )}

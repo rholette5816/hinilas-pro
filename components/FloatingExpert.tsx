@@ -89,7 +89,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
             <p className="text-xs mb-6" style={{ color: "#64748B" }}>You have {credits} credits remaining. Top up to book a session.</p>
             <div className="flex gap-3">
               <button onClick={close} className="flex-1 py-2.5 rounded-xl text-sm" style={{ border: "1px solid #E2E8F0", color: "#64748B" }}>Cancel</button>
-              <a href="/pricing#topup" onClick={close} className="flex-1 py-2.5 rounded-xl text-center text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
+              <a href="/pricing#topup" onClick={close} className="flex-1 py-2.5 rounded-xl text-center text-sm font-semibold text-white" style={{ background: "#1E3A8A" }}>
                 Get Credits
               </a>
             </div>
@@ -142,7 +142,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                       onClick={() => setTime(t)}
                       className="py-2 rounded-lg text-xs font-medium border transition-all"
                       style={time === t
-                        ? { background: "#F5A623", borderColor: "#F5A623", color: "#000" }
+                        ? { background: "#D97706", borderColor: "#D97706", color: "#000" }
                         : { background: "#F1F5F9", borderColor: "#E2E8F0", color: "#64748B" }
                       }
                     >
@@ -164,7 +164,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                 onClick={() => setStep("confirm")}
                 disabled={!topic.trim() || !date || !time}
                 className="w-full py-3 rounded-xl text-sm font-bold transition-opacity disabled:opacity-40"
-                style={{ background: "#F5A623", color: "#000" }}
+                style={{ background: "#D97706", color: "#000" }}
               >
                 Review Booking
               </button>
@@ -197,7 +197,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                 </div>
                 <div>
                   <p className="text-xs" style={{ color: "#64748B" }}>Cost</p>
-                  <p className="text-sm mt-0.5 font-semibold" style={{ color: "#F5A623" }}>100 credits</p>
+                  <p className="text-sm mt-0.5 font-semibold" style={{ color: "#D97706" }}>100 credits</p>
                 </div>
               </div>
               <p className="text-xs" style={{ color: "#64748B" }}>Ken will confirm your slot via the platform. Credits are deducted immediately upon booking.</p>
@@ -207,7 +207,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                   onClick={confirmBooking}
                   disabled={loading}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50"
-                  style={{ background: "#F5A623", color: "#000" }}
+                  style={{ background: "#D97706", color: "#000" }}
                 >
                   {loading ? "Booking..." : "Confirm & Pay 20 Credits"}
                 </button>
@@ -227,7 +227,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
             <p className="text-xs mb-1" style={{ color: "#64748B" }}>{date} · {time} GMT+8</p>
             <p className="text-slate-600 text-xs mb-2">A <strong className="text-slate-900">Google Meet link</strong> will be sent to your email approximately <strong className="text-slate-900">1 hour before</strong> your session.</p>
             <p className="text-amber-600 text-xs mb-6">If you don&apos;t see it, please check your spam or junk folder.</p>
-            <button onClick={close} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
+            <button onClick={close} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#1E3A8A" }}>
               Done
             </button>
           </div>

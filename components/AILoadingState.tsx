@@ -69,7 +69,7 @@ export default function AILoadingState({
           className="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold md:text-sm"
           style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#64748B" }}
         >
-          <span style={{ color: "#F5A623" }}>
+          <span style={{ color: "#D97706" }}>
             <ClockIcon />
           </span>
           <span>{estimatedTime}</span>
@@ -78,9 +78,9 @@ export default function AILoadingState({
         <div
           className="mb-5 flex h-20 w-20 items-center justify-center rounded-full text-4xl md:h-24 md:w-24 md:text-5xl"
           style={{
-            background: "rgba(245,166,35,0.12)",
-            border: "1px solid rgba(245,166,35,0.3)",
-            boxShadow: "0 0 28px rgba(245,166,35,0.18)",
+            background: "rgba(217,119,6,0.12)",
+            border: "1px solid rgba(217,119,6,0.3)",
+            boxShadow: "0 0 28px rgba(217,119,6,0.18)",
             animation: "loadingIconPulse 1.8s ease-in-out infinite alternate",
           }}
         >
@@ -106,7 +106,7 @@ export default function AILoadingState({
           <div
             className="absolute inset-y-0 left-0 w-1/2 rounded-full"
             style={{
-              background: "linear-gradient(90deg, rgba(245,166,35,0) 0%, #F5A623 50%, rgba(245,166,35,0) 100%)",
+              background: "linear-gradient(90deg, rgba(217,119,6,0) 0%, #D97706 50%, rgba(217,119,6,0) 100%)",
               animation: "loadingTrackGlow 1.7s linear infinite",
             }}
           />

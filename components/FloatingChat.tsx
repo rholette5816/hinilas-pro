@@ -7,7 +7,7 @@ import { useCommunityMessages } from "@/lib/use-community-messages";
 function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
   if (avatar) return <img src={avatar} alt={name} className="w-7 h-7 rounded-full object-cover shrink-0" />;
   return (
-    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#2B7EC9" }}>
+    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#1E3A8A" }}>
       {name.charAt(0).toUpperCase()}
     </div>
   );
@@ -158,9 +158,9 @@ export default function FloatingChat() {
                     <div
                       className="px-3 py-2 text-xs leading-relaxed"
                       style={{
-                        background: isMe ? "#2B7EC9" : "#F1F5F9",
+                        background: isMe ? "#1E3A8A" : "#F1F5F9",
                         color: isMe ? "#fff" : "#0F172A",
-                        border: isMe ? "1px solid #2B7EC9" : "1px solid #E2E8F0",
+                        border: isMe ? "1px solid #1E3A8A" : "1px solid #E2E8F0",
                         borderRadius: isMe ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                       }}
                     >
@@ -188,7 +188,7 @@ export default function FloatingChat() {
                 onClick={sendMessage}
                 disabled={!input.trim() || sending}
                 className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 shrink-0 transition-opacity hover:opacity-90"
-                style={{ background: "#2B7EC9" }}
+                style={{ background: "#1E3A8A" }}
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path d="M22 2L11 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -208,7 +208,7 @@ export default function FloatingChat() {
             width: "48px",
             height: "48px",
             borderRadius: "10px 10px 0 0",
-            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #2B7EC9)",
+            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #1E3A8A)",
             border: open ? "1px solid #E2E8F0" : "none",
             boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
             animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",

@@ -4,12 +4,19 @@ import { Metadata } from "next";
 
 export const revalidate = 60;
 
+interface BlogPost {
+  slug: string;
+  title: string;
+  meta_description: string | null;
+  published_at: string | null;
+}
+
 export const metadata: Metadata = {
-  title: "Blog | Kuya Ken",
-  description: "Meta Ads strategy, eCommerce tips, and business insights from Kuya Ken — operator, strategist, Filipino entrepreneur.",
+  title: "Blog | Hinilas Pro",
+  description: "Meta Ads strategy, eCommerce tips, and business insights for Filipino sellers and ad operators.",
 };
 
-async function getPosts() {
+async function getPosts(): Promise<BlogPost[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return [];
@@ -26,91 +33,103 @@ async function getPosts() {
   }
 }
 
+function LogoMark() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="48" height="48" rx="10" fill="#0F172A" />
+      <line x1="14" y1="10" x2="14" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="34" y1="10" x2="34" y2="38" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <line x1="14" y1="24" x2="34" y2="24" stroke="#1E3A8A" strokeWidth="3.5" strokeLinecap="round" />
+      <circle cx="14" cy="10" r="3" fill="#D97706" />
+      <circle cx="14" cy="38" r="3" fill="#1E3A8A" />
+      <circle cx="34" cy="10" r="3" fill="#1E3A8A" />
+      <circle cx="34" cy="38" r="3" fill="#D97706" />
+    </svg>
+  );
+}
+
 export default async function BlogPage() {
   const posts = await getPosts();
 
   return (
-    <main className="min-h-screen" style={{ background: "#0B1120" }}>
-      {/* Header */}
-      <div className="border-b" style={{ borderColor: "#1E2D45" }}>
-        <div className="max-w-4xl mx-auto px-6 py-5 flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="48" height="48" rx="10" fill="#0F172A" />
-              <line x1="14" y1="10" x2="14" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <line x1="34" y1="10" x2="34" y2="38" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <line x1="14" y1="24" x2="34" y2="24" stroke="#2B7EC9" strokeWidth="3.5" strokeLinecap="round" />
-              <circle cx="14" cy="10" r="3" fill="#F5A623" />
-              <circle cx="14" cy="38" r="3" fill="#2B7EC9" />
-              <circle cx="34" cy="10" r="3" fill="#2B7EC9" />
-              <circle cx="34" cy="38" r="3" fill="#F5A623" />
-            </svg>
-            <span className="text-white font-semibold text-sm">Hinilas Pro</span>
+    <main className="min-h-screen" style={{ background: "#F8FAFC", color: "#0F172A" }}>
+      <div className="border-b bg-white" style={{ borderColor: "#E2E8F0" }}>
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+          <Link href="/home" className="flex items-center gap-3 transition-opacity hover:opacity-85">
+            <LogoMark />
+            <div className="leading-tight">
+              <span className="text-sm font-black text-slate-900">Hinilas Pro</span>
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#1E3A8A" }}>Marketing library</p>
+            </div>
+          </Link>
+          <Link
+            href="/home"
+            className="rounded-xl px-4 py-2 text-xs font-bold transition-colors hover:bg-blue-700"
+            style={{ background: "#1E3A8A", color: "#FFFFFF" }}
+          >
+            Start free
           </Link>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        {/* Hero */}
-        <div className="mb-14">
+      <div className="mx-auto max-w-5xl px-6 py-16">
+        <div className="mb-12 max-w-2xl">
           <div
-            className="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-4"
-            style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.3)" }}
+            className="mb-4 inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+            style={{ background: "#EAF4FF", color: "#1E3A8A", border: "1px solid #BFDBFE" }}
           >
-            Kuya Ken — Blog
+            Hinilas Pro Blog
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">
-            Real talk. No fluff.
+          <h1 className="mb-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+            Clear Meta Ads thinking for serious sellers.
           </h1>
-          <p style={{ color: "#94A3B8" }} className="text-base max-w-lg">
-            Meta Ads strategy, eCommerce, and business insights from the operator himself.
+          <p className="max-w-xl text-base leading-7" style={{ color: "#64748B" }}>
+            Practical notes on offers, angles, creative direction, and business strategy from the Hinilas Pro team.
           </p>
         </div>
 
-        {/* Posts */}
         {posts.length === 0 ? (
           <div
-            className="rounded-2xl p-10 text-center"
-            style={{ background: "#0A0F1A", border: "1px solid #1E2D45" }}
+            className="rounded-2xl border bg-white p-10 text-center"
+            style={{ borderColor: "#E2E8F0" }}
           >
-            <p style={{ color: "#64748B" }}>No posts yet. Check back soon.</p>
+            <p className="text-sm font-semibold" style={{ color: "#64748B" }}>
+              No posts yet. Check back soon.
+            </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            {posts.map((post: any, i: number) => (
+          <div className="grid grid-cols-1 gap-4">
+            {posts.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group block rounded-2xl p-6 transition-all blog-card"
-                style={{
-                  background: "#0A0F1A",
-                  border: "1px solid #1E2D45",
-                }}
+                className="group block rounded-2xl border bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-200/70"
+                style={{ borderColor: "#E2E8F0" }}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <p className="text-xs mb-2" style={{ color: "#64748B" }}>
-                      {new Date(post.published_at).toLocaleDateString("en-PH", {
+                <div className="flex items-start justify-between gap-6">
+                  <div className="min-w-0 flex-1">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748B" }}>
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString("en-PH", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                         timeZone: "Asia/Manila",
-                      })}
+                      }) : "Unpublished"}
                     </p>
-                    <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                    <h2 className="mb-2 text-xl font-black tracking-tight text-slate-900 transition-colors group-hover:text-blue-700">
                       {post.title}
                     </h2>
                     {post.meta_description && (
-                      <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
+                      <p className="text-sm leading-7" style={{ color: "#64748B" }}>
                         {post.meta_description}
                       </p>
                     )}
                   </div>
                   <div
-                    className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
-                    style={{ background: "rgba(43,126,201,0.15)", color: "#2B7EC9" }}
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black transition-colors group-hover:bg-blue-600 group-hover:text-white"
+                    style={{ background: "#EAF4FF", color: "#1E3A8A" }}
                   >
-                    →
+                    Go
                   </div>
                 </div>
               </Link>
@@ -118,22 +137,21 @@ export default async function BlogPage() {
           </div>
         )}
 
-        {/* Bottom CTA */}
         <div
-          className="mt-16 rounded-2xl p-8 text-center"
-          style={{ background: "rgba(43,126,201,0.08)", border: "1px solid rgba(43,126,201,0.25)" }}
+          className="mt-16 rounded-2xl px-8 py-10 text-center"
+          style={{ background: "#0F172A", color: "#FFFFFF" }}
         >
-          <p className="text-white font-semibold text-lg mb-2">Gusto mo ng shortcut?</p>
-          <p className="text-sm mb-6" style={{ color: "#94A3B8" }}>
-            Hinilas Pro — the AI tool built for Filipino Meta Ads operators and sellers.
+          <p className="mb-2 text-xl font-black">Want a faster ad workflow?</p>
+          <p className="mx-auto mb-6 max-w-xl text-sm leading-7" style={{ color: "#CBD5E1" }}>
+            Hinilas Pro turns your business profile into research, ad angles, sales copy, and creative direction.
           </p>
-          <a
-            href="https://www.hinilas.pro"
-            className="inline-block font-semibold px-6 py-3 rounded-xl text-white transition-opacity hover:opacity-90"
-            style={{ background: "#2B7EC9" }}
+          <Link
+            href="/home"
+            className="inline-block rounded-xl px-6 py-3 text-sm font-black transition-all hover:brightness-105"
+            style={{ background: "#D97706", color: "#111827" }}
           >
-            Try Hinilas Pro — Free
-          </a>
+            Try Hinilas Pro free
+          </Link>
         </div>
       </div>
     </main>

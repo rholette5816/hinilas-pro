@@ -64,7 +64,7 @@ function getEmailHtml(firstName?: string) {
       <p style="font-size: 16px; line-height: 1.6;"><strong>Yung 30 credits mo - bonus yan.</strong> Hindi mo na kailangan magbayad para malaman kung anong angles ang pwedeng kumita sa product mo.</p>
 
       <p style="margin: 32px 0;">
-        <a href="${APP_URL}" style="display: inline-block; background: #F5A623; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Start Setup Now &rarr;</a>
+        <a href="${APP_URL}" style="display: inline-block; background: #D97706; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Start Setup Now &rarr;</a>
       </p>
 
       <p style="font-size: 16px; line-height: 1.6;">Kung may tanong ka or stuck ka kahit saan, reply ka lang dito. Sagot ko personally.</p>

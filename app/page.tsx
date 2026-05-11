@@ -6,8 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
-const BRAND_BLUE = "#2B7EC9";
-const BRAND_ORANGE = "#F5A623";
+const BRAND_BLUE = "#1E3A8A";
+const BRAND_ORANGE = "#D97706";
 
 
 const PH_INDUSTRIES = [
@@ -219,7 +219,7 @@ export default function SetupPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-semibold" style={{ color: "#64748B" }}>Unique selling offer (USP)</label>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(245,166,35,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>AI optimized</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(217,119,6,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>AI optimized</span>
                 </div>
                 <textarea
                   rows={3}
@@ -247,13 +247,13 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, stage: opt.value as UserSetup["stage"] })}
                         className="w-full p-3.5 rounded-xl text-left flex items-center justify-between transition-all"
                         style={active
-                          ? { background: "rgba(43,126,201,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          ? { background: "rgba(30,58,138,0.12)", border: `1px solid ${BRAND_BLUE}` }
                           : { background: "#FFFFFF", border: "1px solid #E2E8F0" }
                         }
                       >
                         <div>
                           <p className="text-sm font-semibold" style={{ color: active ? "#0F172A" : "#64748B" }}>{opt.label}</p>
-                          <p className="text-xs" style={{ color: active ? "#2B7EC9" : "#64748B" }}>{opt.sub}</p>
+                          <p className="text-xs" style={{ color: active ? "#1E3A8A" : "#64748B" }}>{opt.sub}</p>
                         </div>
                         <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center" style={{ background: active ? BRAND_BLUE : "#E2E8F0" }}>
                           {active && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
@@ -278,12 +278,12 @@ export default function SetupPage() {
                         onClick={() => setForm({ ...form, language: opt.value })}
                         className="p-3 rounded-xl text-left transition-all"
                         style={active
-                          ? { background: "rgba(43,126,201,0.12)", border: `1px solid ${BRAND_BLUE}` }
+                          ? { background: "rgba(30,58,138,0.12)", border: `1px solid ${BRAND_BLUE}` }
                           : { background: "#FFFFFF", border: "1px solid #E2E8F0" }
                         }
                       >
                         <p className="text-xs font-semibold" style={{ color: active ? "#0F172A" : "#64748B" }}>{opt.label}</p>
-                        <p className="text-xs" style={{ color: active ? "#2B7EC9" : "#64748B" }}>{opt.sub}</p>
+                        <p className="text-xs" style={{ color: active ? "#1E3A8A" : "#64748B" }}>{opt.sub}</p>
                       </button>
                     );
                   })}

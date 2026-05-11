@@ -619,10 +619,10 @@ export default function CreativePage() {
                 <h2 className="text-white font-bold text-lg mb-2">You&apos;re out of credits</h2>
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
-                  <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#F5A623" }}>
+                  <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>
                     Upgrade to Flex - ₱499
                   </a>
-                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#2B7EC9" }}>
+                  <a href="/pricing#topup" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#1E3A8A" }}>
                     Get 50 Credits - ₱249
                   </a>
                   <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">Cancel</button>
@@ -700,7 +700,7 @@ export default function CreativePage() {
                           onClick={card.onGen}
                           disabled={card.loading || card.disabled}
                           className="w-full whitespace-nowrap text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-                          style={{ background: "#F5A623" }}
+                          style={{ background: "#D97706" }}
                         >
                           {"↻"} Regenerate - 2 cr
                         </button>
@@ -723,7 +723,7 @@ export default function CreativePage() {
                         onClick={card.onGen}
                         disabled={card.loading || card.disabled}
                         className="w-full whitespace-nowrap text-white py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-                        style={{ background: card.loading ? "#4B5563" : "#F5A623" }}
+                        style={{ background: card.loading ? "#4B5563" : "#D97706" }}
                       >
                         {card.loading ? "Generating..." : "Generate - 2 cr"}
                       </button>

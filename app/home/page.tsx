@@ -3,6 +3,7 @@
 import { HinilasIcon } from "@/components/HinilasLogo";
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 interface Feedback {
   id: string;
@@ -12,57 +13,112 @@ interface Feedback {
   message: string;
 }
 
+const BRAND_BLUE = "#1E3A8A";
+const BRAND_ORANGE = "#D97706";
+const TEXT = "#0F172A";
+const MUTED = "#64748B";
+const BORDER = "#E2E8F0";
+const INNER = "#F1F5F9";
+
 const STEPS = [
-  { num: "01", label: "Research", icon: "🔍", desc: "Deep market intelligence — understand your buyers, competitors, and market gaps before spending a single cent.", color: "#2B7EC9" },
-  { num: "02", label: "Strategize", icon: "🎯", desc: "AI-generated angles and hooks built around your unique offer and target audience.", color: "#F5A623" },
-  { num: "03", label: "Generate", icon: "⚡", desc: "High-converting ad copy and creatives in seconds — not hours.", color: "#8B5CF6" },
-  { num: "04", label: "Launch", icon: "🚀", desc: "Campaign-ready assets structured for Meta Ads. Set up and go live with confidence.", color: "#10B981" },
+  {
+    num: "01",
+    label: "Research",
+    desc: "Understand your buyers, competitors, objections, and offer gaps before spending on ads.",
+    color: BRAND_BLUE,
+  },
+  {
+    num: "02",
+    label: "Position",
+    desc: "Turn raw research into sharp ad angles, hooks, and reasons people should buy now.",
+    color: BRAND_ORANGE,
+  },
+  {
+    num: "03",
+    label: "Create",
+    desc: "Generate ad copy and creative prompts that are ready for review, editing, and launch.",
+    color: "#7C3AED",
+  },
+  {
+    num: "04",
+    label: "Launch",
+    desc: "Follow a structured Meta Ads setup flow so campaigns go live with fewer blind spots.",
+    color: "#10B981",
+  },
 ];
 
 const FEATURES = [
-  { icon: "📊", title: "Market Research", desc: "Competitor analysis, buyer psychology, market gaps — all automated." },
-  { icon: "🧠", title: "Ad Angle Builder", desc: "Multiple proven angles tailored to your product and audience." },
-  { icon: "✍️", title: "Copy Generator", desc: "Primary text, headlines, CTAs — ready to paste into Ads Manager." },
-  { icon: "🎨", title: "Creative Studio", desc: "AI-generated ad images and variations at the click of a button." },
-  { icon: "📋", title: "Campaign Setup Guide", desc: "Step-by-step Messenger and conversion campaign setup." },
-  { icon: "💬", title: "AI Chat Assistant", desc: "Ask anything about your ads, strategy, or product positioning." },
+  { title: "Market Research", desc: "Buyer psychology, competitor gaps, and campaign direction in one guided flow." },
+  { title: "Ad Angle Builder", desc: "Fresh positioning options tailored to your product, audience, and offer." },
+  { title: "Copy Generator", desc: "Primary text, headlines, CTAs, and sales frameworks built for Meta Ads." },
+  { title: "Creative Studio", desc: "Ad image prompts and visual variations connected to the angle you choose." },
+  { title: "Campaign Guide", desc: "A practical launch checklist for Messenger, traffic, and conversion campaigns." },
+  { title: "AI Assistant", desc: "Ask follow-up questions when you need a clearer hook, offer, or next move." },
 ];
 
 const FAQS = [
   {
     q: "How does Hinilas Pro work?",
-    a: "You fill in your business profile, and the AI takes it from there. It runs market research, builds marketing angles, generates ad creatives, and writes sales copy — a complete campaign workflow in one session. No jumping between tools.",
+    a: "You enter your business profile once. Hinilas Pro uses it to guide market research, build ad angles, write copy, and prepare campaign assets in a structured workflow.",
   },
   {
-    q: "Who is Hinilas Pro for?",
-    a: "Beginners and operators who want faster ad decisions and a guided process for running Meta Ads without the guesswork. If you want better angles, better ads, and a faster path to launch, this tool is built for you.",
+    q: "Who is this for?",
+    a: "It is built for Filipino sellers, business owners, and ad operators who need faster decisions and cleaner campaign assets without jumping between multiple tools.",
   },
   {
-    q: "Who is Hinilas Pro NOT for?",
-    a: "People looking for a magic button with zero effort. Hinilas Pro helps you move faster with better research, angles, creatives, and copy, but you still need to review the output and run the campaign.",
+    q: "Is it a magic button?",
+    a: "No. It gives you better research, clearer angles, and faster drafts. You still review the output, adjust it to your offer, and run the campaign responsibly.",
   },
 ];
 
+const LOGIN_MESSAGES = [
+  "Preparing your workspace...",
+  "Loading market intelligence...",
+  "Setting up your ad workflow...",
+  "Almost ready...",
+];
+
+function BrandMark({ dark = false }: { dark?: boolean }) {
+  return (
+    <div className="flex items-center gap-3">
+      <HinilasIcon size="md" accentColor={BRAND_ORANGE} />
+      <div className="leading-tight">
+        <div className="flex items-baseline">
+          <span className={`font-bold text-lg ${dark ? "text-white" : "text-slate-900"}`}>Hinilas</span>
+          <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
+        </div>
+        <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: BRAND_BLUE }}>
+          AI Driven. Results Focused.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function FAQSection() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<number | null>(0);
+
   return (
     <div className="space-y-3">
       {FAQS.map((faq, i) => (
         <div
-          key={i}
-          className="rounded-2xl border overflow-hidden transition-all"
-          style={{ background: "#0A0F1A", borderColor: open === i ? "#2B7EC9" : "#1E2D45" }}
+          key={faq.q}
+          className="overflow-hidden rounded-xl border transition-colors"
+          style={{ background: "#FFFFFF", borderColor: open === i ? BRAND_BLUE : BORDER }}
         >
           <button
             onClick={() => setOpen(open === i ? null : i)}
-            className="w-full flex items-center justify-between px-6 py-4 text-left"
+            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+            type="button"
           >
-            <span className="text-white font-semibold text-sm pr-4">{faq.q}</span>
-            <span className="shrink-0 text-gray-500 transition-transform" style={{ transform: open === i ? "rotate(45deg)" : "rotate(0deg)", fontSize: 20, lineHeight: 1 }}>+</span>
+            <span className="text-sm font-bold" style={{ color: TEXT }}>{faq.q}</span>
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-bold" style={{ background: INNER, color: BRAND_BLUE }}>
+              {open === i ? "-" : "+"}
+            </span>
           </button>
           {open === i && (
-            <div className="px-6 pb-5">
-              <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>{faq.a}</p>
+            <div className="px-5 pb-5">
+              <p className="text-sm leading-7" style={{ color: MUTED }}>{faq.a}</p>
             </div>
           )}
         </div>
@@ -71,14 +127,6 @@ function FAQSection() {
   );
 }
 
-const LOGIN_MESSAGES = [
-  "Cooking your workspace...",
-  "Firing up the AI engine...",
-  "Preparing your ad arsenal...",
-  "Loading market intelligence...",
-  "Almost ready, Sir...",
-];
-
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
@@ -86,7 +134,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (!loading) return;
     const interval = setInterval(() => {
-      setMsgIndex(prev => (prev + 1) % LOGIN_MESSAGES.length);
+      setMsgIndex((prev) => (prev + 1) % LOGIN_MESSAGES.length);
     }, 900);
     return () => clearInterval(interval);
   }, [loading]);
@@ -100,9 +148,11 @@ function LoginModal({ onClose }: { onClose: () => void }) {
     });
   }
 
-  // Close on Escape
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -110,53 +160,47 @@ function LoginModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: "rgba(7, 11, 20, 0.85)", backdropFilter: "blur(12px)" }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={{ background: "rgba(15,23,42,0.45)", backdropFilter: "blur(14px)" }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-
-      {/* Modal card */}
       <div
-        className="relative w-full max-w-sm rounded-2xl p-8"
+        className="relative w-full max-w-sm rounded-2xl p-7"
         style={{
-          background: "rgba(15, 23, 42, 0.92)",
-          border: "1px solid rgba(43,126,201,0.3)",
-          backdropFilter: "blur(24px)",
-          boxShadow: "0 0 80px rgba(43,126,201,0.2), 0 0 0 1px rgba(43,126,201,0.1)",
-          animation: "modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards",
+          background: "#FFFFFF",
+          border: `1px solid ${BORDER}`,
+          boxShadow: "0 24px 80px rgba(15,23,42,0.18)",
+          animation: "modalIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards",
         }}
       >
-        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full text-gray-500 hover:text-white transition-colors"
-          style={{ background: "#1E2D45" }}
+          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-sm font-bold transition-colors hover:bg-slate-200"
+          style={{ background: INNER, color: MUTED }}
+          type="button"
+          aria-label="Close"
         >
-          ✕
+          X
         </button>
 
-        {/* Logo */}
-        <div className="flex items-center gap-3 mb-7">
-          <HinilasIcon size="md" accentColor="#F5A623" />
-          <div className="leading-tight">
-            <div className="flex items-baseline">
-              <span className="text-white font-bold text-lg">Hinilas</span>
-              <span className="font-bold text-lg" style={{ color: "#F5A623" }}>Pro</span>
-            </div>
-            <p className="text-[9px] font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>AI Driven. Results Focused.</p>
-          </div>
+        <div className="mb-7">
+          <BrandMark />
         </div>
 
-        <h2 className="text-white text-xl font-bold mb-1">Start Free with 30 Credits</h2>
-        <p className="text-sm mb-7" style={{ color: "#64748B" }}>
-          Guided market research in 1 click. Get the best angle that sells, then use it to generate ads in about 5 minutes.
+        <h2 className="mb-2 text-2xl font-black tracking-tight" style={{ color: TEXT }}>
+          Start with 30 free credits
+        </h2>
+        <p className="mb-7 text-sm leading-6" style={{ color: MUTED }}>
+          Create your business profile, run guided research, and generate your first Meta Ads assets in minutes.
         </p>
 
         <button
           type="button"
           onClick={handleGoogle}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-bold transition-all hover:brightness-110 disabled:opacity-60"
-          style={{ background: "#2B7EC9", color: "#fff" }}
+          className="flex w-full items-center justify-center gap-3 rounded-xl py-3.5 text-sm font-bold transition-all hover:brightness-105 disabled:opacity-70"
+          style={{ background: BRAND_BLUE, color: "#FFFFFF" }}
         >
           {loading ? (
             <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -164,47 +208,27 @@ function LoginModal({ onClose }: { onClose: () => void }) {
               <path d="M12 2a10 10 0 0 1 10 10" />
             </svg>
           ) : (
-            <svg width="18" height="18" viewBox="0 0 48 48">
-              <path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.4 13.6 17.7 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9z"/>
-              <path fill="#FBBC05" d="M10.7 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6l-7-5.4A23.8 23.8 0 0 0 .5 24c0 3.9.9 7.5 2.7 10.7l7.5-6.1z"/>
-              <path fill="#34A853" d="M24 47c5.5 0 10.2-1.8 13.6-4.9l-7.4-5.7c-1.8 1.2-4.1 1.9-6.2 1.9-6.3 0-11.6-4.2-13.5-9.9l-7.5 6.1C7 42.3 14.8 47 24 47z"/>
+            <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.6 1 24 1 14.8 1 7 6.7 3.7 14.6l7 5.4C12.4 13.6 17.7 9.5 24 9.5z" />
+              <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9z" />
+              <path fill="#FBBC05" d="M10.7 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6l-7-5.4A23.8 23.8 0 0 0 .5 24c0 3.9.9 7.5 2.7 10.7l7.5-6.1z" />
+              <path fill="#34A853" d="M24 47c5.5 0 10.2-1.8 13.6-4.9l-7.4-5.7c-1.8 1.2-4.1 1.9-6.2 1.9-6.3 0-11.6-4.2-13.5-9.9l-7.5 6.1C7 42.3 14.8 47 24 47z" />
             </svg>
           )}
-          <span key={msgIndex} style={{ animation: loading ? "fadeUp 0.4s ease forwards" : "none" }}>
-            {loading ? LOGIN_MESSAGES[msgIndex] : "Continue with Google"}
-          </span>
-          <style>{`
-            @keyframes fadeUp {
-              from { opacity: 0; transform: translateY(4px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-          `}</style>
+          <span>{loading ? LOGIN_MESSAGES[msgIndex] : "Continue with Google"}</span>
         </button>
 
         <div
-          className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-sm font-medium mt-3 cursor-not-allowed opacity-30"
-          style={{ background: "#1E2D45", border: "1px solid #2B3D55", color: "#E2E8F0" }}
+          className="mt-3 flex w-full cursor-not-allowed items-center justify-center rounded-xl py-3.5 text-sm font-semibold opacity-60"
+          style={{ background: INNER, border: `1px solid ${BORDER}`, color: MUTED }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#E2E8F0">
-            <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
-          </svg>
-          Facebook Login — Coming Soon
+          Facebook login coming soon
         </div>
 
-        <div className="flex items-center justify-center gap-5 mt-6 text-xs" style={{ color: "#334155" }}>
-          <div className="flex items-center gap-1.5">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            SSL Encrypted
-          </div>
-          <div className="flex items-center gap-1.5">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
-            Free to start
-          </div>
-          <div className="flex items-center gap-1.5">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            No spam
-          </div>
+        <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-semibold" style={{ color: MUTED }}>
+          <span>SSL encrypted</span>
+          <span>Free to start</span>
+          <span>No spam</span>
         </div>
       </div>
     </div>
@@ -217,8 +241,9 @@ export default function LandingPage() {
 
   useEffect(() => {
     fetch("/api/feedback")
-      .then(r => r.json())
-      .then(d => setFeedbacks(d.feedbacks || []));
+      .then((r) => r.json())
+      .then((d) => setFeedbacks(d.feedbacks || []))
+      .catch(() => setFeedbacks([]));
   }, []);
 
   useEffect(() => {
@@ -252,276 +277,251 @@ export default function LandingPage() {
     : "5.0";
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#0B1120", color: "#fff" }}>
-
+    <div className="min-h-screen overflow-x-hidden" style={{ background: "#F8FAFC", color: TEXT }}>
       <style>{`
-        @keyframes modalIn { from { opacity: 0; transform: translateY(32px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-up { animation: fadeUp 0.6s ease forwards; }
-        .fade-up-d1 { animation: fadeUp 0.6s ease 0.15s forwards; opacity: 0; }
-        .fade-up-d2 { animation: fadeUp 0.6s ease 0.3s forwards; opacity: 0; }
-        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-        @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 16px 2px rgba(245,166,35,0.5), 0 0 32px 4px rgba(245,166,35,0.2); } 50% { box-shadow: 0 0 28px 6px rgba(245,166,35,0.7), 0 0 56px 10px rgba(245,166,35,0.3); } }
-        @keyframes glowPulseBlue { 0%, 100% { box-shadow: 0 0 16px 2px rgba(43,126,201,0.5), 0 0 32px 4px rgba(43,126,201,0.2); } 50% { box-shadow: 0 0 28px 6px rgba(43,126,201,0.7), 0 0 56px 10px rgba(43,126,201,0.3); } }
-        .cta-btn {
-          position: relative;
-          overflow: hidden;
-          animation: glowPulse 2.5s ease-in-out infinite;
+        @keyframes modalIn {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .cta-btn::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.35) 50%, transparent 75%);
-          background-size: 200% 100%;
-          animation: shimmer 2.2s linear infinite;
-          border-radius: inherit;
-          pointer-events: none;
+        .hp-shell {
+          background:
+            linear-gradient(180deg, rgba(30,58,138,0.08) 0%, rgba(248,250,252,0) 45%),
+            radial-gradient(circle at 82% 8%, rgba(217,119,6,0.14), transparent 28%);
         }
       `}</style>
 
-      {/* Background — static dot grid only */}
-      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, #1E3A5F 1px, transparent 1px)", backgroundSize: "36px 36px", opacity: 0.4 }} />
-      </div>
-
-      <div style={{ position: "relative", zIndex: 1 }}>
-
-        {/* NAV */}
-        <nav style={{ borderBottom: "1px solid #1E2D45" }}>
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <HinilasIcon size="md" accentColor="#F5A623" />
-              <div className="leading-tight">
-                <div className="flex items-baseline">
-                  <span className="text-white font-bold text-lg">Hinilas</span>
-                  <span className="font-bold text-lg" style={{ color: "#F5A623" }}>Pro</span>
-                </div>
-                <p className="text-[9px] font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>AI Driven. Results Focused.</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button onClick={openModal} className="text-sm font-medium px-3 py-1.5 rounded-lg transition-opacity hover:opacity-80 whitespace-nowrap" style={{ color: "#94A3B8" }}>
-                Sign In
+      <div className="hp-shell">
+        <nav className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-xl" style={{ borderColor: BORDER }}>
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+            <BrandMark />
+            <div className="flex items-center gap-2">
+              <Link
+                href="/blog"
+                className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100 sm:inline-flex"
+                style={{ color: MUTED }}
+              >
+                Blog
+              </Link>
+              <button
+                onClick={openModal}
+                className="rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-slate-100"
+                style={{ color: MUTED }}
+                type="button"
+              >
+                Sign in
               </button>
-              <button onClick={openModal} className="cta-btn text-xs font-bold px-3 py-1.5 rounded-xl transition-all hover:brightness-110 whitespace-nowrap" style={{ background: "#2B7EC9", color: "#fff", animationName: "glowPulseBlue" }}>
-                Get Started Free
+              <button
+                onClick={openModal}
+                className="rounded-xl px-4 py-2 text-sm font-bold transition-all hover:brightness-105"
+                style={{ background: BRAND_BLUE, color: "#FFFFFF" }}
+                type="button"
+              >
+                Start free
               </button>
             </div>
           </div>
         </nav>
 
-        {/* HERO */}
-        <section className="max-w-6xl mx-auto px-6 pt-20 pb-16 flex flex-col lg:flex-row items-center gap-12">
-          <div className="flex-1 fade-up">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 text-xs font-semibold" style={{ background: "rgba(43,126,201,0.15)", border: "1px solid rgba(43,126,201,0.3)", color: "#2B7EC9" }}>
-              ⚡ AI-Powered Marketing System
+        <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-16 lg:grid-cols-[1.02fr_0.98fr] lg:pb-24 lg:pt-20">
+          <div className="min-w-0">
+            <div
+              className="mb-6 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide"
+              style={{ background: "#EAF4FF", border: "1px solid #BFDBFE", color: BRAND_BLUE }}
+            >
+              Meta Ads AI for Filipino sellers
             </div>
-            <h1 className="font-black leading-tight mb-5" style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)" }}>
-              Stop Running Ads<br />
-              <span style={{ color: "#F5A623" }}>Blindly.</span>
+            <h1 className="max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+              Build ads with strategy, not guesswork.
             </h1>
-            <p className="text-lg mb-8" style={{ color: "#94A3B8", lineHeight: 1.7, maxWidth: 520 }}>
-              Stop guessing. Gumawa ng ads na talagang gumagana - in 5 minutes, free.
+            <p className="mt-6 max-w-xl text-base leading-8 sm:text-lg" style={{ color: MUTED }}>
+              Hinilas Pro helps you research your market, find stronger angles, write better copy, and prepare campaign assets before you spend on Meta Ads.
             </p>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={openModal}
-                className="cta-btn px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:brightness-110"
-                style={{ background: "#F5A623", color: "#000" }}
+                className="rounded-xl px-6 py-3.5 text-sm font-black transition-all hover:brightness-105"
+                style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }}
+                type="button"
               >
-                Get Started Free →
+                Start with 30 free credits
               </button>
               <button
                 onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-7 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-80"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid #1E2D45", color: "#94A3B8" }}
+                className="rounded-xl border bg-white px-6 py-3.5 text-sm font-bold transition-colors hover:bg-slate-50"
+                style={{ borderColor: BORDER, color: TEXT }}
+                type="button"
               >
-                See How It Works
+                See the workflow
               </button>
             </div>
+            <div className="mt-8 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                ["30", "free credits"],
+                ["4", "guided modules"],
+                [avgRating, "average rating"],
+              ].map(([value, label]) => (
+                <div key={label} className="rounded-xl border bg-white p-4" style={{ borderColor: BORDER }}>
+                  <p className="text-2xl font-black" style={{ color: BRAND_BLUE }}>{value}</p>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide" style={{ color: MUTED }}>{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* App mockup */}
-          <div className="flex-1 fade-up-d1 flex justify-center">
-            <div className="w-full max-w-md rounded-2xl overflow-hidden" style={{ border: "1px solid #1E2D45", background: "rgba(15,23,42,0.8)", backdropFilter: "blur(20px)", boxShadow: "0 0 80px rgba(43,126,201,0.15)" }}>
-              <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: "1px solid #1E2D45" }}>
-                <div className="w-3 h-3 rounded-full" style={{ background: "#FF5F57" }} />
-                <div className="w-3 h-3 rounded-full" style={{ background: "#FFBD2E" }} />
-                <div className="w-3 h-3 rounded-full" style={{ background: "#28C840" }} />
-                <span className="text-xs ml-2" style={{ color: "#475569" }}>hinilas.pro</span>
+          <div className="relative min-w-0">
+            <div className="w-full max-w-full overflow-hidden rounded-2xl border bg-white shadow-2xl shadow-slate-200/70" style={{ borderColor: BORDER }}>
+              <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: BORDER }}>
+                <div className="min-w-0 pr-3">
+                  <p className="text-xs font-bold uppercase tracking-wide" style={{ color: MUTED }}>Campaign workspace</p>
+                  <p className="text-sm font-black text-slate-900">Skin care offer analysis</p>
+                </div>
+                <span className="rounded-full px-3 py-1 text-xs font-bold" style={{ background: "#ECFDF5", color: "#059669" }}>
+                  Ready
+                </span>
               </div>
-              <div className="p-6 space-y-3">
-                {["Market Research", "Ad Angles", "Copy Generation", "Creative Studio"].map((item, i) => (
-                  <div key={item} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ background: i === 1 ? "rgba(43,126,201,0.15)" : "#0F172A", border: `1px solid ${i === 1 ? "#2B7EC940" : "#1E2D45"}` }}>
-                    <div className="w-2 h-2 rounded-full" style={{ background: ["#2B7EC9", "#F5A623", "#8B5CF6", "#10B981"][i] }} />
-                    <span className="text-sm font-medium" style={{ color: i === 1 ? "#fff" : "#64748B" }}>{item}</span>
-                    {i === 1 && <span className="ml-auto text-xs font-bold" style={{ color: "#F5A623" }}>Active</span>}
-                    {i < 1 && <span className="ml-auto text-xs" style={{ color: "#10B981" }}>✓ Done</span>}
+              <div className="space-y-4 p-5">
+                {["Research complete", "Winning angle selected", "Copy set generated"].map((item, i) => (
+                  <div key={item} className="min-w-0 overflow-hidden rounded-xl border p-4 sm:flex sm:items-center sm:gap-3" style={{ background: i === 1 ? "#EFF6FF" : INNER, borderColor: i === 1 ? "#BFDBFE" : BORDER }}>
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black" style={{ background: i === 1 ? BRAND_BLUE : "#FFFFFF", color: i === 1 ? "#FFFFFF" : BRAND_BLUE }}>
+                      {i + 1}
+                    </div>
+                    <div className="mt-3 min-w-0 sm:mt-0">
+                      <p className="text-sm font-bold text-slate-900">{item}</p>
+                      <p className="truncate text-xs" style={{ color: MUTED }}>Built from your business profile and target customer.</p>
+                    </div>
                   </div>
                 ))}
-                <div className="rounded-xl p-4 mt-2" style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.2)" }}>
-                  <p className="text-xs font-semibold mb-1" style={{ color: "#F5A623" }}>AI Generated Angle</p>
-                  <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>&quot;Most sellers run ads and hope. You&apos;ll know exactly why your customer buys — before the first peso is spent.&quot;</p>
+                <div className="rounded-xl border p-5" style={{ background: "#FFFBEB", borderColor: "#FDE68A" }}>
+                  <p className="mb-2 text-xs font-black uppercase tracking-wide" style={{ color: "#B45309" }}>Suggested angle</p>
+                  <p className="text-sm leading-7 text-slate-800">
+                    Sell the confidence of knowing what to say before the first peso is spent on ads.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
+      </div>
 
-        {/* STATS STRIP */}
-        <section style={{ borderTop: "1px solid #1E2D45", borderBottom: "1px solid #1E2D45" }}>
-          <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[
-              { value: avgRating, suffix: "/5 ★", label: "Average Rating" },
-              { value: "4", suffix: " Steps", label: "Core Modules" },
-              { value: "30", suffix: " Credits", label: "Free on Signup" },
-              { value: "∞", suffix: "", label: "Unlimited Text Generation" },
-            ].map(stat => (
-              <div key={stat.label}>
-                <div className="text-3xl font-black mb-1" style={{ color: "#F5A623" }}>
-                  {stat.value}<span className="text-lg font-bold" style={{ color: "#94A3B8" }}>{stat.suffix}</span>
+      <section id="how-it-works" className="border-y bg-white" style={{ borderColor: BORDER }}>
+        <div className="mx-auto max-w-6xl px-5 py-20">
+          <div className="mb-10 max-w-2xl">
+            <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>The system</p>
+            <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">A clean workflow from research to launch.</h2>
+            <p className="mt-4 text-base leading-7" style={{ color: MUTED }}>
+              Every output builds on the previous step, so the campaign feels connected instead of randomly generated.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+            {STEPS.map((step) => (
+              <div key={step.label} className="rounded-xl border bg-white p-5" style={{ borderColor: BORDER }}>
+                <div className="mb-5 flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-widest" style={{ color: step.color }}>{step.num}</span>
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: step.color }} />
                 </div>
-                <p className="text-xs font-medium" style={{ color: "#64748B" }}>{stat.label}</p>
+                <h3 className="mb-2 text-lg font-black text-slate-900">{step.label}</h3>
+                <p className="text-sm leading-7" style={{ color: MUTED }}>{step.desc}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* HOW IT WORKS */}
-        <section id="how-it-works" className="max-w-6xl mx-auto px-6 py-20">
-          <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#2B7EC9" }}>The System</p>
-            <h2 className="text-3xl font-black mb-3">Marketing Intelligence Flow</h2>
-            <p className="text-base" style={{ color: "#64748B" }}>A structured process — not random content. Every step feeds the next.</p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            {STEPS.map((step, i) => (
-              <div key={step.label} className="relative">
-                <div className="rounded-2xl p-6 h-full" style={{ background: "rgba(15,23,42,0.8)", border: `1px solid ${step.color}30`, backdropFilter: "blur(8px)" }}>
-                  <div className="text-2xl mb-3">{step.icon}</div>
-                  <div className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: step.color }}>{step.num}</div>
-                  <h3 className="text-white font-bold text-lg mb-2">{step.label}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "#64748B" }}>{step.desc}</p>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className="hidden lg:flex absolute top-1/2 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center text-xs" style={{ background: "#0B1120", color: "#334155", border: "1px solid #1E2D45" }}>→</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FEATURES */}
-        <section style={{ borderTop: "1px solid #1E2D45" }}>
-          <div className="max-w-6xl mx-auto px-6 py-20">
-            <div className="text-center mb-12">
-              <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#F5A623" }}>Everything You Need</p>
-              <h2 className="text-3xl font-black mb-3">Built for Serious Marketers</h2>
-              <p className="text-base" style={{ color: "#64748B" }}>Every tool you need to go from idea to running campaign — in one platform.</p>
+      <section className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mb-10 text-center">
+          <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Everything connected</p>
+          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">One workspace for better ad decisions.</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7" style={{ color: MUTED }}>
+            The product is built to help you move faster without making the campaign feel careless.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="rounded-xl border bg-white p-5" style={{ borderColor: BORDER }}>
+              <div className="mb-4 h-1.5 w-10 rounded-full" style={{ background: BRAND_BLUE }} />
+              <h3 className="mb-2 text-base font-black text-slate-900">{f.title}</h3>
+              <p className="text-sm leading-7" style={{ color: MUTED }}>{f.desc}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {FEATURES.map(f => (
-                <div key={f.title} className="rounded-xl p-5" style={{ background: "rgba(15,23,42,0.7)", border: "1px solid #1E2D45", backdropFilter: "blur(8px)" }}>
-                  <div className="text-2xl mb-3">{f.icon}</div>
-                  <h3 className="text-white font-bold text-sm mb-1.5">{f.title}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: "#64748B" }}>{f.desc}</p>
+          ))}
+        </div>
+      </section>
+
+      {feedbacks.length > 0 && (
+        <section className="border-y bg-white" style={{ borderColor: BORDER }}>
+          <div className="mx-auto max-w-6xl px-5 py-20">
+            <div className="mb-10 text-center">
+              <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: "#10B981" }}>User feedback</p>
+              <h2 className="text-3xl font-black tracking-tight text-slate-950">What users are saying</h2>
+              <p className="mt-3 text-sm font-semibold" style={{ color: MUTED }}>{avgRating} out of 5 from {feedbacks.length} users</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {feedbacks.slice(0, 6).map((f) => (
+                <div key={f.id} className="rounded-xl border bg-white p-5" style={{ borderColor: BORDER }}>
+                  <div className="mb-4 flex items-center gap-3">
+                    {f.user_avatar ? (
+                      <img src={f.user_avatar} alt={f.user_name} className="h-10 w-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="grid h-10 w-10 rounded-full text-sm font-black text-white" style={{ background: BRAND_BLUE, placeItems: "center" }}>
+                        {f.user_name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">{f.user_name}</p>
+                      <p className="text-xs font-semibold" style={{ color: BRAND_ORANGE }}>{f.rating}/5 rating</p>
+                    </div>
+                  </div>
+                  <p className="text-sm leading-7" style={{ color: MUTED }}>
+                    &quot;{f.message.length > 150 ? `${f.message.slice(0, 150)}...` : f.message}&quot;
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
+      )}
 
-        {/* TESTIMONIALS */}
-        {feedbacks.length > 0 && (
-          <section style={{ borderTop: "1px solid #1E2D45" }}>
-            <div className="max-w-6xl mx-auto px-6 py-20">
-              <div className="text-center mb-12">
-                <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#10B981" }}>Real Results</p>
-                <h2 className="text-3xl font-black mb-2">What Marketers Are Saying</h2>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="text-amber-400">{"★".repeat(5)}</span>
-                  <span className="text-white font-bold">{avgRating}/5</span>
-                  <span style={{ color: "#475569" }}>from {feedbacks.length}+ users</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {feedbacks.slice(0, 6).map(f => (
-                  <div key={f.id} className="rounded-xl p-5" style={{ background: "rgba(15,23,42,0.7)", border: "1px solid #1E2D45", backdropFilter: "blur(8px)" }}>
-                    <div className="flex items-center gap-2 mb-3">
-                      {f.user_avatar ? (
-                        <img src={f.user_avatar} alt={f.user_name} className="w-8 h-8 rounded-full object-cover" />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ background: "#2B7EC9" }}>
-                          {f.user_name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-white text-sm font-semibold">{f.user_name}</p>
-                        <span className="text-amber-400 text-xs">{"★".repeat(f.rating)}</span>
-                      </div>
-                    </div>
-                    <p className="text-xs leading-relaxed italic" style={{ color: "#94A3B8" }}>
-                      &quot;{f.message.length > 150 ? f.message.slice(0, 150) + "..." : f.message}&quot;
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+      <section className="mx-auto grid max-w-6xl gap-10 px-5 py-20 lg:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>FAQ</p>
+          <h2 className="text-3xl font-black tracking-tight text-slate-950">Common questions</h2>
+          <p className="mt-4 text-base leading-7" style={{ color: MUTED }}>
+            Straight answers before you create an account.
+          </p>
+        </div>
+        <FAQSection />
+      </section>
 
-        {/* FAQ */}
-        <section style={{ borderTop: "1px solid #1E2D45" }}>
-          <div className="max-w-3xl mx-auto px-6 py-20">
-            <div className="text-center mb-12">
-              <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#2B7EC9" }}>FAQ</p>
-              <h2 className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)" }}>Common Questions</h2>
-            </div>
-            <FAQSection />
+      <section className="mx-auto max-w-6xl px-5 pb-10">
+        <div className="rounded-2xl px-6 py-12 text-center sm:px-10" style={{ background: TEXT, color: "#FFFFFF" }}>
+          <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Start today</p>
+          <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-tight sm:text-4xl">
+            Build your first strategy-backed ad workflow for free.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-7" style={{ color: "#CBD5E1" }}>
+            Create a profile, generate research, choose an angle, and turn it into campaign-ready copy.
+          </p>
+          <button
+            onClick={openModal}
+            className="mt-8 rounded-xl px-7 py-3.5 text-sm font-black transition-all hover:brightness-105"
+            style={{ background: BRAND_ORANGE, color: "#111827" }}
+            type="button"
+          >
+            Start free
+          </button>
+        </div>
+      </section>
+
+      <footer className="border-t bg-white" style={{ borderColor: BORDER }}>
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row">
+          <BrandMark />
+          <div className="flex items-center gap-5 text-xs font-semibold" style={{ color: MUTED }}>
+            <a href="/privacy" className="transition-colors hover:text-slate-900">Privacy</a>
+            <a href="/terms" className="transition-colors hover:text-slate-900">Terms</a>
+            <span>2026 Hinilas Pro</span>
           </div>
-        </section>
+        </div>
+      </footer>
 
-        {/* FINAL CTA */}
-        <section style={{ borderTop: "1px solid #1E2D45" }}>
-          <div className="max-w-6xl mx-auto px-6 py-24 text-center">
-            <div className="rounded-3xl px-8 py-16 mx-auto max-w-3xl" style={{ background: "rgba(15,23,42,0.8)", border: "1px solid #1E2D45", backdropFilter: "blur(20px)", boxShadow: "0 0 80px rgba(43,126,201,0.1)" }}>
-              <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: "#2B7EC9" }}>Start Today</p>
-              <h2 className="font-black mb-4" style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)" }}>
-                Ready to Level Up<br />
-                <span style={{ color: "#F5A623" }}>Your Marketing?</span>
-              </h2>
-              <p className="text-base mb-8 mx-auto max-w-lg" style={{ color: "#64748B" }}>
-                Research, strategize, generate, and launch — all in one platform. Built for marketers who want results, not guesswork.
-              </p>
-              <button
-                onClick={openModal}
-                className="cta-btn px-10 py-4 rounded-xl text-base font-bold transition-all hover:brightness-110"
-                style={{ background: "#F5A623", color: "#000" }}
-              >
-                Get Started Free →
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* FOOTER */}
-        <footer style={{ borderTop: "1px solid #1E2D45" }}>
-          <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <HinilasIcon size="sm" accentColor="#F5A623" />
-              <span className="text-sm font-bold text-white">HinilasPro</span>
-            </div>
-            <div className="flex items-center gap-6 text-xs" style={{ color: "#475569" }}>
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-              <span>© 2025 Hinilas Pro</span>
-            </div>
-          </div>
-        </footer>
-
-      </div>
-
-      {/* Login Modal */}
       {showModal && <LoginModal onClose={closeModal} />}
     </div>
   );

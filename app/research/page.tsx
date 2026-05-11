@@ -98,7 +98,7 @@ export default function ResearchPage() {
           <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
             <div
               className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full text-lg"
-              style={{ border: "1px solid rgba(245,166,35,0.4)", color: "#F5A623" }}
+              style={{ border: "1px solid rgba(217,119,6,0.4)", color: "#D97706" }}
             >
               !
             </div>
@@ -108,7 +108,7 @@ export default function ResearchPage() {
               <a
                 href="/pricing"
                 className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
-                style={{ background: "#F5A623" }}
+                style={{ background: "#D97706" }}
               >
                 View Plans
               </a>
@@ -164,7 +164,7 @@ export default function ResearchPage() {
               onClick={runResearch}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#1E3A8A", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Researching..." : researchOutput ? "Re-run Research - 1 credit" : "Run Market Research - 1 credit"}
             </button>
@@ -189,12 +189,12 @@ export default function ResearchPage() {
           {researchOutput && !loading && (
             <div
               className="rounded-2xl p-6 mt-6"
-              style={{ background: "rgba(43,126,201,0.08)", border: "1px solid rgba(43,126,201,0.3)" }}
+              style={{ background: "rgba(30,58,138,0.08)", border: "1px solid rgba(30,58,138,0.3)" }}
             >
               <div className="flex items-center gap-3 mb-2">
                 <div
                   className="flex h-5 w-5 items-center justify-center rounded-full"
-                  style={{ background: "rgba(43,126,201,0.18)", color: "#2B7EC9" }}
+                  style={{ background: "rgba(30,58,138,0.18)", color: "#1E3A8A" }}
                 >
                   <CheckIcon />
                 </div>
@@ -204,7 +204,7 @@ export default function ResearchPage() {
               <button
                 onClick={() => router.push("/angles")}
                 className="w-full py-3.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
-                style={{ background: "#F5A623", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
+                style={{ background: "#D97706", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 Next: Find Your Angle &rarr;
               </button>

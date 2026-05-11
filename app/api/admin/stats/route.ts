@@ -95,10 +95,21 @@ type FeedbackPromptRow = {
   feedback_prompt_shown_at?: string | null;
 };
 
+type AuthUserRow = {
+  id: string;
+  email?: string | null;
+  created_at?: string | null;
+  user_metadata?: {
+    full_name?: string | null;
+    name?: string | null;
+  } | null;
+};
+
 type WindowKey = "today" | "sevenDays" | "thirtyDays" | "allTime";
 
 const WINDOW_KEYS: WindowKey[] = ["today", "sevenDays", "thirtyDays", "allTime"];
 const STATS_CACHE_MS = 60_000;
+const AUTH_PAGE_SIZE = 1000;
 
 let statsCache: { createdAt: number; payload: Record<string, unknown> } | null = null;
 
@@ -203,6 +214,30 @@ async function safeRows<T>(
   return data || [];
 }
 
+async function fetchAllAuthUsers(admin: ReturnType<typeof adminClient>) {
+  const users: AuthUserRow[] = [];
+  let page = 1;
+
+  while (true) {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page,
+      perPage: AUTH_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to list auth users: ${error.message}`);
+    }
+
+    const pageUsers = (data.users || []) as AuthUserRow[];
+    users.push(...pageUsers);
+
+    if (pageUsers.length < AUTH_PAGE_SIZE) break;
+    page += 1;
+  }
+
+  return users;
+}
+
 function uniqueUsers(rows: Array<{ user_id?: string | null }>) {
   return new Set(rows.map(row => row.user_id).filter(Boolean) as string[]).size;
 }
@@ -233,6 +268,14 @@ export async function GET() {
 
   const admin = adminClient();
   const warnings: string[] = [];
+  let authUsers: AuthUserRow[] = [];
+
+  try {
+    authUsers = await fetchAllAuthUsers(admin);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown auth.users error";
+    warnings.push(`auth.users: ${message}`);
+  }
 
   const [
     { data: userDataRows, error: userDataError },
@@ -299,8 +342,16 @@ export async function GET() {
   const consultations = consultationRows as ConsultationRow[];
   const emails = emailRows as EmailLogRow[];
   const promptShown = promptRows as FeedbackPromptRow[];
+  const authUsersById = new Map(authUsers.map((authUser) => [authUser.id, authUser]));
 
   const emailByUserId = new Map<string, string>();
+  for (const authUser of authUsers) {
+    const email = authUser.email?.trim();
+    if (email) {
+      emailByUserId.set(authUser.id, email);
+    }
+  }
+
   for (const row of [...topups, ...feedbacks, ...consultations]) {
     if (row.user_id && row.user_email && !emailByUserId.has(row.user_id)) {
       emailByUserId.set(row.user_id, row.user_email);
@@ -329,11 +380,13 @@ export async function GET() {
   const planBreakdown: Record<Tier, number> = { Lite: 0, Flex: 0, Max: 0 };
 
   const userTable = users.map(row => {
-    const signupDate = trueSignupDate.get(row.user_id) || row.updated_at || null;
+    const authUser = authUsersById.get(row.user_id);
+    const email = emailByUserId.get(row.user_id) || "";
+    const signupDate = trueSignupDate.get(row.user_id) || authUser?.created_at || row.updated_at || null;
     const creditsRemaining = row.credits_remaining ?? 0;
     const plan = deriveTier(creditsRemaining, row.locked_tier, row.tier_expires_at);
-    const email = emailByUserId.get(row.user_id) || "";
-    const username = row.username || email.split("@")[0] || "User";
+    const authName = authUser?.user_metadata?.full_name || authUser?.user_metadata?.name || null;
+    const username = row.username || authName || email.split("@")[0] || "User";
 
     if (signupDate) {
       const t = new Date(signupDate).getTime();

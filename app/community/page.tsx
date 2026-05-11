@@ -10,7 +10,7 @@ function Avatar({ name, avatar, size = 8 }: { name: string; avatar?: string | nu
   return (
     <div
       className={`w-${size} h-${size} rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0`}
-      style={{ background: "#2B7EC9" }}
+      style={{ background: "#1E3A8A" }}
     >
       {name.charAt(0).toUpperCase()}
     </div>
@@ -115,9 +115,9 @@ export default function CommunityPage() {
                   <div
                     className="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
                     style={{
-                      background: isMe ? "#2B7EC9" : "#F1F5F9",
+                      background: isMe ? "#1E3A8A" : "#F1F5F9",
                       color: isMe ? "#fff" : "#0F172A",
-                      border: isMe ? "1px solid #2B7EC9" : "1px solid #E2E8F0",
+                      border: isMe ? "1px solid #1E3A8A" : "1px solid #E2E8F0",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -148,7 +148,7 @@ export default function CommunityPage() {
                   onClick={sendMessage}
                   disabled={!input.trim() || sending}
                   className="absolute right-3 bottom-3 w-7 h-7 rounded-full flex items-center justify-center disabled:opacity-30 transition-opacity hover:opacity-90"
-                  style={{ background: "#2B7EC9" }}
+                  style={{ background: "#1E3A8A" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

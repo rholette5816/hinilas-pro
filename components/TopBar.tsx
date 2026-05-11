@@ -24,7 +24,7 @@ export default function TopBar() {
           href="/library"
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
           style={pathname === "/library"
-            ? { background: "rgba(43,126,201,0.2)", color: "#2B7EC9", border: "1px solid rgba(43,126,201,0.4)" }
+            ? { background: "rgba(30,58,138,0.2)", color: "#1E3A8A", border: "1px solid rgba(30,58,138,0.4)" }
             : { background: "#F1F5F9", color: "#64748B", border: "1px solid #E2E8F0" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -43,7 +43,7 @@ export default function TopBar() {
           <button
             onClick={() => setShowLeaderboard(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#F1F5F9", color: "#F5A623", border: "1px solid #F5A62330" }}
+            style={{ background: "#F1F5F9", color: "#D97706", border: "1px solid #D9770630" }}
           >
             Leaderboard
           </button>

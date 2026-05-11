@@ -216,7 +216,7 @@ function getWelcomeEmailHtml(firstName?: string) {
       <p style="font-size: 16px; line-height: 1.6;">Pag tapos mo yung 4 steps, may complete campaign assets ka na - ready i-launch sa Meta Ads.</p>
 
       <p style="margin: 32px 0;">
-        <a href="${APP_URL}" style="display: inline-block; background: #F5A623; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Start Setup Now &rarr;</a>
+        <a href="${APP_URL}" style="display: inline-block; background: #D97706; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 14px;">Start Setup Now &rarr;</a>
       </p>
 
       <p style="font-size: 16px; line-height: 1.6;">Kung may tanong ka, reply ka lang dito. Sagot ko personally.</p>

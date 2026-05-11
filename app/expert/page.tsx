@@ -115,7 +115,7 @@ export default function ExpertPage() {
             <button
               onClick={() => router.push("/creative")}
               className="text-sm font-semibold px-6 py-3 rounded-lg text-white transition-opacity hover:opacity-90"
-              style={{ background: "#2B7EC9" }}
+              style={{ background: "#1E3A8A" }}
             >
               Back to Dashboard
             </button>
@@ -153,7 +153,7 @@ export default function ExpertPage() {
               <button
                 onClick={() => router.push("/pricing")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
-                style={{ background: "#2B7EC9" }}
+                style={{ background: "#1E3A8A" }}
               >
                 Upgrade
               </button>
@@ -162,7 +162,7 @@ export default function ExpertPage() {
               <button
                 onClick={() => router.push("/pricing#topup")}
                 className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
-                style={{ background: "#F5A623" }}
+                style={{ background: "#D97706" }}
               >
                 Get Credits
               </button>
@@ -182,7 +182,7 @@ export default function ExpertPage() {
                     onClick={() => setTopic(t)}
                     disabled={!canBook}
                     className={`text-left text-sm px-4 py-3 rounded-xl border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${topic === t ? "border-amber-500 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"}`}
-                    style={{ background: topic === t ? "rgba(245,166,35,0.1)" : "#F1F5F9" }}
+                    style={{ background: topic === t ? "rgba(217,119,6,0.1)" : "#F1F5F9" }}
                   >
                     {t}
                   </button>
@@ -223,7 +223,7 @@ export default function ExpertPage() {
                     onClick={() => setPreferredTime(t)}
                     disabled={!canBook}
                     className={`text-sm px-3 py-2 rounded-lg border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${preferredTime === t ? "border-amber-500 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"}`}
-                    style={{ background: preferredTime === t ? "rgba(245,166,35,0.1)" : "#F1F5F9" }}
+                    style={{ background: preferredTime === t ? "rgba(217,119,6,0.1)" : "#F1F5F9" }}
                   >
                     {t}
                   </button>
@@ -238,7 +238,7 @@ export default function ExpertPage() {
               onClick={handleBook}
               disabled={!canBook || loading || !finalTopic || !preferredDate || !preferredTime}
               className="w-full py-3 rounded-xl text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: "#F5A623", color: "#000" }}
+              style={{ background: "#D97706", color: "#000" }}
             >
               {loading ? "Booking..." : "Confirm Booking — 100 Credits"}
             </button>

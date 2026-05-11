@@ -3,8 +3,8 @@
 :root {
   --background: #F8FAFC;
   --foreground: #0F172A;
-  --brand-blue: #2B7EC9;
-  --brand-orange: #F5A623;
+  --brand-blue: #1E3A8A;
+  --brand-orange: #D97706;
   --brand-dark: #FFFFFF;
 }
 
@@ -35,11 +35,11 @@ html, body {
 }
 
 @keyframes btnGlowBlue {
-  0%   { box-shadow: 0 0 12px rgba(43,126,201,0.5), 0 0 24px rgba(43,126,201,0.2); }
-  100% { box-shadow: 0 0 20px rgba(43,126,201,0.75), 0 0 40px rgba(43,126,201,0.35); }
+  0%   { box-shadow: 0 0 12px rgba(30,58,138,0.5), 0 0 24px rgba(30,58,138,0.2); }
+  100% { box-shadow: 0 0 20px rgba(30,58,138,0.75), 0 0 40px rgba(30,58,138,0.35); }
 }
 @keyframes btnGlowOrange {
-  0%   { box-shadow: 0 0 12px rgba(245,166,35,0.5), 0 0 24px rgba(245,166,35,0.2); }
-  100% { box-shadow: 0 0 20px rgba(245,166,35,0.75), 0 0 40px rgba(245,166,35,0.35); }
+  0%   { box-shadow: 0 0 12px rgba(217,119,6,0.5), 0 0 24px rgba(217,119,6,0.2); }
+  100% { box-shadow: 0 0 20px rgba(217,119,6,0.75), 0 0 40px rgba(217,119,6,0.35); }
 }
-.blog-card:hover { border-color: #2B7EC9 !important; }
+.blog-card:hover { border-color: #1E3A8A !important; }
