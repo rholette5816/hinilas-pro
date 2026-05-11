@@ -295,7 +295,7 @@ export default function SetupPage() {
         </main>
 
         {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)", borderRadius: "0 0 0 0" }}>
+        <div className="fixed bottom-0 left-0 right-16 md:left-60 md:right-24 px-6 py-3 flex items-center justify-between z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)" }}>
           <div className="flex items-center gap-2 text-sm" style={{ color: "#374151" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Your data is encrypted and used only for strategy generation.</span>
