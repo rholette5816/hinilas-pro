@@ -199,12 +199,12 @@ export default function AnglesPage() {
           {researchOutput && (
             <div
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 mb-5 text-sm"
-              style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
+              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
             >
               <span className="text-[#2B7EC9]">
                 <CheckIcon />
               </span>
-              <span className="text-[#94A3B8]">Research loaded - angles will be based on your customer insights</span>
+              <span className="text-[#64748B]">Research loaded - angles will be based on your customer insights</span>
             </div>
           )}
 
@@ -229,7 +229,7 @@ export default function AnglesPage() {
           </div>
 
           {showAdjust && (
-            <div className="rounded-xl border border-gray-700 p-4 mb-6" style={{ background: "#0F172A" }}>
+            <div className="rounded-xl border border-gray-700 p-4 mb-6" style={{ background: "#FFFFFF" }}>
               <p className="text-sm font-medium text-white mb-2">Tell me what to change</p>
               <p className="text-gray-500 text-xs mb-3">
                 e.g. &quot;More aggressive tone&quot;, &quot;Focus on testimonial&quot;, &quot;Target moms aged 25&ndash;35&quot;
@@ -267,7 +267,7 @@ export default function AnglesPage() {
 
           {!loading && angles.length > 0 && (
             <>
-              <div className="rounded-xl p-4 mb-4" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+              <div className="rounded-xl p-4 mb-4" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
                 <p className="text-sm text-white font-semibold">Pick the angle that feels right. We&apos;ll use it for your image and copy.</p>
                 <p className="text-xs text-gray-400 mt-1">Choose the angle that best matches how you want to sell this offer.</p>
               </div>
@@ -282,7 +282,7 @@ export default function AnglesPage() {
                       key={idx}
                       className="rounded-xl border overflow-hidden transition-all"
                       style={{
-                        background: "#0F172A",
+                        background: "#FFFFFF",
                         borderColor: isSelected ? color : "#374151",
                         boxShadow: isSelected ? `0 0 16px ${color}30` : "none",
                       }}
@@ -330,7 +330,7 @@ export default function AnglesPage() {
                       {angle.hookLine && (
                         <div
                           className="mx-5 mb-4 rounded-lg px-4 py-3 border"
-                          style={{ background: "#0A0F1A", borderColor: `${color}30` }}
+                          style={{ background: "#F8FAFC", borderColor: `${color}30` }}
                         >
                           <p className="text-xs font-semibold mb-1" style={{ color }}>
                             Hook Line
@@ -342,13 +342,13 @@ export default function AnglesPage() {
                       {(angle.uso || angle.whyItWorks) && (
                         <div className="px-5 pb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                           {angle.uso && (
-                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#0A0F1A" }}>
+                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F8FAFC" }}>
                               <p className="text-xs font-semibold text-gray-500 mb-1">Unique Selling Offer</p>
                               <p className="text-gray-300 text-xs leading-relaxed">{angle.uso}</p>
                             </div>
                           )}
                           {angle.whyItWorks && (
-                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#0A0F1A" }}>
+                            <div className="rounded-lg px-3 py-2.5" style={{ background: "#F8FAFC" }}>
                               <p className="text-xs font-semibold text-gray-500 mb-1">Why It Works</p>
                               <p className="text-gray-300 text-xs leading-relaxed">{angle.whyItWorks}</p>
                             </div>

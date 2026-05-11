@@ -340,9 +340,9 @@ export default function CopyPage() {
               <div className="space-y-4">
                 <FireCelebration show={true} />
                 {variations.map((v, idx) => (
-                  <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+                  <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#FFFFFF" }}>
                     {/* Card header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#0A0F1A" }}>
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#F8FAFC" }}>
                       <span className="text-blue-400 text-xs font-bold uppercase tracking-wide">{v.title}</span>
                       <CopyButton text={`${v.caption}\n\nHeadline: ${v.headline}\nCTA: ${v.cta}`} label="Copy" />
                     </div>

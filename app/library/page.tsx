@@ -73,6 +73,7 @@ export default function LibraryPage() {
     setLoading(false);
   }, [router]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load(); }, [load]);
 
   async function handleDelete(item: MediaItem) {
@@ -99,18 +100,18 @@ export default function LibraryPage() {
   const videoCount = items.filter(i => i.type === "video").length;
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
 
           {/* Header */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#0F1E35", border: "1px solid #1E2D45" }}>
-              <span className="text-blue-300 text-xs font-medium">🗂 Media Library</span>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+              <span className="text-xs font-medium" style={{ color: "#64748B" }}>🗂 Media Library</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1">Your Generated Media</h1>
-            <p className="text-gray-400 text-sm">All your images and video clips — saved permanently.</p>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">Your Generated Media</h1>
+            <p className="text-slate-600 text-sm">All your images and video clips — saved permanently.</p>
           </div>
 
           {/* Filter tabs */}
@@ -119,7 +120,7 @@ export default function LibraryPage() {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${filter === tab ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${filter === tab ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:text-slate-900"}`}
               >
                 {tab === "all" ? `All (${items.length})` : tab === "image" ? `Images (${imageCount})` : `Videos (${videoCount})`}
               </button>
@@ -141,10 +142,10 @@ export default function LibraryPage() {
           {!loading && filtered.length === 0 && (
             <div className="text-center py-24">
               <div className="text-4xl mb-4">{filter === "video" ? "🎬" : "🖼"}</div>
-              <p className="text-white font-semibold text-sm mb-1">
+              <p className="text-slate-900 font-semibold text-sm mb-1">
                 {filter === "all" ? "No media yet" : filter === "image" ? "No images yet" : "No videos yet"}
               </p>
-              <p className="text-gray-500 text-xs mb-5">
+              <p className="text-slate-500 text-xs mb-5">
                 {filter === "all" ? "Generate your first image or video in Creative." : `Generate ${filter}s in the Creative tab.`}
               </p>
               <button
@@ -163,10 +164,10 @@ export default function LibraryPage() {
                 <div
                   key={item.id}
                   className="group rounded-xl overflow-hidden border transition-all hover:border-blue-700"
-                  style={{ background: "#0F172A", border: "1px solid #1E2D45" }}
+                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
                 >
                   {/* Thumbnail */}
-                  <div className="relative aspect-square bg-gray-900 overflow-hidden">
+                  <div className="relative aspect-square bg-slate-100 overflow-hidden">
                     {item.type === "image" ? (
                       <img
                         src={item.url}
@@ -186,7 +187,7 @@ export default function LibraryPage() {
 
                     {/* Type badge */}
                     <div className="absolute top-2 left-2">
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                      <span className="text-xs font-bold px-1.5 py-0.5 rounded-full"
                         style={item.type === "video"
                           ? { background: "rgba(124,58,237,0.85)", color: "#E9D5FF" }
                           : { background: "rgba(236,72,153,0.85)", color: "#FCE7F3" }
@@ -215,11 +216,11 @@ export default function LibraryPage() {
 
                   {/* Info strip */}
                   <div className="px-3 py-2.5">
-                    <p className="text-white text-xs font-semibold truncate">{item.label || "Ad Creative"}</p>
+                    <p className="text-slate-900 text-xs font-semibold truncate">{item.label || "Ad Creative"}</p>
                     {item.angle && (
-                      <p className="text-gray-500 text-[10px] truncate mt-0.5">{item.angle}</p>
+                      <p className="text-slate-500 text-xs truncate mt-0.5">{item.angle}</p>
                     )}
-                    <p className="text-gray-600 text-[10px] mt-1">{formatDate(item.created_at)}</p>
+                    <p className="text-slate-500 text-xs mt-1">{formatDate(item.created_at)}</p>
                   </div>
                 </div>
               ))}

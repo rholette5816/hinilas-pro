@@ -43,7 +43,7 @@ export default function LoadingScreen() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center"
-      style={{ background: "#0F172A" }}
+      style={{ background: "#F8FAFC" }}
     >
       {/* Glow */}
       <div
@@ -56,10 +56,10 @@ export default function LoadingScreen() {
         <HinilasIcon size="lg" accentColor="#F5A623" />
         <div className="leading-tight">
           <div className="flex items-baseline">
-            <span className="text-white font-bold text-2xl">Hinilas</span>
+            <span className="text-slate-900 font-bold text-2xl">Hinilas</span>
             <span className="font-bold text-2xl" style={{ color: "#F5A623" }}>Pro</span>
           </div>
-          <p className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>
+          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#2B7EC9" }}>
             AI Driven. Results Focused.
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function LoadingScreen() {
         key={msgIndex}
         className="text-sm font-medium mb-3"
         style={{
-          color: "#94A3B8",
+          color: "#0F172A",
           animation: "fadeUp 0.4s ease forwards",
         }}
       >

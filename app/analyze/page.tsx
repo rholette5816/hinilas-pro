@@ -180,7 +180,7 @@ export default function AnalyzePage() {
         ],
         roas,
         verdict: roas ? (parseFloat(roas) >= 3 ? "Profitable" : parseFloat(roas) >= 1.5 ? "Break-even Zone" : "Losing Money") : null,
-        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#94A3B8",
+        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#64748B",
       };
     } else {
       const spent = parseFloat(amountSpent) || 0;
@@ -206,7 +206,7 @@ export default function AnalyzePage() {
         ],
         roas,
         verdict: roas ? (parseFloat(roas) >= 3 ? "Profitable" : parseFloat(roas) >= 1.5 ? "Break-even Zone" : "Losing Money") : null,
-        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#94A3B8",
+        verdictColor: roas ? (parseFloat(roas) >= 3 ? "#22c55e" : parseFloat(roas) >= 1.5 ? "#eab308" : "#ef4444") : "#64748B",
       };
     }
   }
@@ -258,7 +258,7 @@ export default function AnalyzePage() {
       const hasGreen = clean.includes("🟢");
       const hasYellow = clean.includes("🟡");
       const hasRed = clean.includes("🔴");
-      const color = hasGreen ? "#22c55e" : hasYellow ? "#eab308" : hasRed ? "#ef4444" : "#94A3B8";
+      const color = hasGreen ? "#22c55e" : hasYellow ? "#eab308" : hasRed ? "#ef4444" : "#64748B";
       const bg = hasGreen ? "rgba(34,197,94,0.08)" : hasYellow ? "rgba(234,179,8,0.08)" : hasRed ? "rgba(239,68,68,0.08)" : "rgba(148,163,184,0.06)";
       const text = clean.replace(/🟢|🟡|🔴/g, "").replace(/^[-*]\s+/, "").replace(/\*\*(.*?)\*\*/g, "$1").trim();
       return `<div class="metric-card" style="border-left:3px solid ${color};background:${bg}">
@@ -503,11 +503,11 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .slide-icon svg{width:22px;height:22px}
 .slide-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#475569;margin-bottom:3px}
 .slide-title{font-size:24px;font-weight:800;color:#fff}
-.slide-num-header{font-size:12px;color:#334155;font-weight:600}
+.slide-num-header{font-size:12px;color:#64748B;font-weight:600}
 .slide-rule{height:1px;background:linear-gradient(90deg,#2B7EC9,transparent);margin:16px 60px;flex-shrink:0}
 .slide-body{flex:1;padding:0 60px 0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
-.slide-footer-bar{padding:14px 60px;font-size:11px;color:#334155;font-weight:500;flex-shrink:0;border-top:1px solid #0F1E2E}
-.slide-num{position:absolute;bottom:18px;right:60px;font-size:12px;color:#334155;font-weight:600;z-index:1}
+.slide-footer-bar{padding:14px 60px;font-size:11px;color:#64748B;font-weight:500;flex-shrink:0;border-top:1px solid #0F1E2E}
+.slide-num{position:absolute;bottom:18px;right:60px;font-size:12px;color:#64748B;font-weight:600;z-index:1}
 
 /* Metric cards */
 .cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -534,7 +534,7 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .callout-block{display:flex;flex-direction:column;gap:10px}
 .callout-line{font-size:15px;color:#CBD5E1;line-height:1.65;padding:10px 16px;background:rgba(255,255,255,0.025);border-radius:10px;border-left:3px solid #1E3A5F}
 .callout-line strong{color:#fff}
-.plain-line{font-size:14px;color:#94A3B8;line-height:1.6;padding:4px 0}
+.plain-line{font-size:14px;color:#64748B;line-height:1.6;padding:4px 0}
 
 /* Closing */
 .closing-layout{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 80px;position:relative;z-index:1}
@@ -549,7 +549,7 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 .bstat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .bstat-card{background:rgba(255,255,255,0.03);border:1px solid #1E293B;border-radius:14px;padding:20px 18px}
 .bstat-value{font-size:28px;font-weight:900;margin-bottom:6px;line-height:1}
-.bstat-label{font-size:12px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px}
+.bstat-label{font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px}
 .bstat-sub{font-size:11px;color:#475569}
 .roas-bar{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,0.03);border:1px solid #1E293B;border-radius:14px;padding:18px 24px}
 .roas-left{flex-shrink:0}
@@ -773,7 +773,7 @@ show(0);
               onClick={() => setMode("basic")}
               className="rounded-xl border p-5 text-left transition-all"
               style={{
-                background: mode === "basic" ? "#0F172A" : "#0A0F1A",
+                background: mode === "basic" ? "#FFFFFF" : "#F8FAFC",
                 borderColor: mode === "basic" ? "#2B7EC9" : "#1F2937",
                 boxShadow: mode === "basic" ? "0 0 16px #2B7EC930" : "none",
               }}
@@ -786,7 +786,7 @@ show(0);
               onClick={() => setMode("advanced")}
               className="rounded-xl border p-5 text-left transition-all"
               style={{
-                background: mode === "advanced" ? "#0F172A" : "#0A0F1A",
+                background: mode === "advanced" ? "#FFFFFF" : "#F8FAFC",
                 borderColor: mode === "advanced" ? "#F5A623" : "#1F2937",
                 boxShadow: mode === "advanced" ? "0 0 16px #F5A62330" : "none",
               }}
@@ -801,7 +801,7 @@ show(0);
           {mode === "basic" && (
             <>
               {/* Video guide */}
-              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#0F172A" }}>
+              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
                   <p className="text-white text-sm font-semibold">Watch before analyzing</p>
@@ -884,7 +884,7 @@ show(0);
               </div>
 
               {/* Basic profit fields */}
-              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#0F172A" }}>
+              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
                 <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
                 <p className="text-gray-500 text-xs mb-4">Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
                 <div className="grid grid-cols-2 gap-4">
@@ -905,7 +905,7 @@ show(0);
           {mode === "advanced" && (
             <>
               {/* Video guide */}
-              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#0F172A" }}>
+              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
                   <p className="text-white text-sm font-semibold">Watch before analyzing</p>
@@ -961,7 +961,7 @@ show(0);
                 <label className="block text-sm font-medium text-gray-300 mb-2">Meta Ads Export File</label>
                 <input ref={csvRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
                 {csvText ? (
-                  <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#0F172A" }}>
+                  <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF" }}>
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📄</span>
                       <div>
@@ -981,7 +981,7 @@ show(0);
               </div>
 
               {/* Advanced profit fields */}
-              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#0F172A" }}>
+              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
                 <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — COD Profit Calculator</p>
                 <p className="text-gray-500 text-xs mb-4">Include COGS, shipping, and RTS rate for a true net profit calculation.</p>
                 <div className="grid grid-cols-2 gap-4">

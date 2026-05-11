@@ -57,7 +57,7 @@ export default function HinilasLogo({ size = "md", showTagline = false }: Props)
   const tier = TIER_COLORS[plan as keyof typeof TIER_COLORS] ?? TIER_COLORS.lite;
 
   const textSize = size === "sm" ? "text-sm" : size === "lg" ? "text-xl" : "text-base";
-  const subSize = size === "sm" ? "text-[9px]" : "text-[10px]";
+  const subSize = size === "sm" ? "text-xs" : "text-xs";
 
   return (
     <div className="flex items-center gap-2.5">

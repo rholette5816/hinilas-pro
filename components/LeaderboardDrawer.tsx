@@ -31,6 +31,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     fetch(`/api/launch/leaderboard?period=${period}`)
       .then(r => r.json())
@@ -43,8 +44,8 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
       {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-black/60"
-          style={{ backdropFilter: "blur(4px)" }}
+          className="fixed inset-0 z-50"
+          style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(4px)" }}
           onClick={onClose}
         />
       )}
@@ -53,35 +54,35 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
       <div
         className="fixed top-0 right-0 z-50 h-full w-80 transform transition-transform duration-300"
         style={{
-          background: "rgba(15,23,42,0.97)",
-          borderLeft: "1px solid #1E2D45",
+          background: "rgba(255,255,255,0.97)",
+          borderLeft: "1px solid #E2E8F0",
           backdropFilter: "blur(20px)",
           transform: open ? "translateX(0)" : "translateX(100%)",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #1E2D45" }}>
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #E2E8F0" }}>
           <div className="flex items-center gap-2">
             <span className="text-lg">🏆</span>
             <div>
-              <p className="text-white font-bold text-sm">Ads Launched</p>
-              <p className="text-gray-500 text-[10px]">Real operators. Verified campaigns.</p>
+              <p className="text-slate-900 font-bold text-sm">Ads Launched</p>
+              <p className="text-slate-500 text-xs">Real operators. Verified campaigns.</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-500 hover:text-white p-1 transition-colors">✕</button>
+          <button onClick={onClose} className="text-slate-500 hover:text-slate-900 p-1 transition-colors">✕</button>
         </div>
 
         {/* Period toggle */}
-        <div className="flex gap-2 px-5 py-3" style={{ borderBottom: "1px solid #1E2D45" }}>
+        <div className="flex gap-2 px-5 py-3" style={{ borderBottom: "1px solid #E2E8F0" }}>
           {(["alltime", "month"] as const).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: period === p ? "#2B7EC9" : "#1E293B",
+                background: period === p ? "#2B7EC9" : "#F1F5F9",
                 color: period === p ? "#fff" : "#64748B",
-                border: `1px solid ${period === p ? "#2B7EC9" : "#334155"}`,
+                border: `1px solid ${period === p ? "#2B7EC9" : "#E2E8F0"}`,
               }}
             >
               {p === "alltime" ? "All Time" : "This Month"}
@@ -100,13 +101,13 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
           ) : data.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-3xl mb-3">🚀</p>
-              <p className="text-white font-semibold text-sm mb-1">No launches yet</p>
-              <p className="text-gray-500 text-xs">Be the first to submit your campaign proof.</p>
+              <p className="text-slate-900 font-semibold text-sm mb-1">No launches yet</p>
+              <p className="text-slate-500 text-xs">Be the first to submit your campaign proof.</p>
             </div>
           ) : (
             data.map((entry) => {
               const badgeColor = BADGE_COLORS[entry.badge] || "#64748B";
-              const rankColor = entry.rank === 1 ? "#F5A623" : entry.rank === 2 ? "#94A3B8" : entry.rank === 3 ? "#CD7F32" : "#475569";
+              const rankColor = entry.rank === 1 ? "#F5A623" : entry.rank === 2 ? "#64748B" : entry.rank === 3 ? "#CD7F32" : "#64748B";
               const initial = entry.username.charAt(0).toUpperCase();
 
               return (
@@ -114,13 +115,13 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
                   key={entry.rank}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl"
                   style={{
-                    background: entry.rank <= 3 ? `${rankColor}08` : "#1E293B",
-                    border: `1px solid ${entry.rank <= 3 ? rankColor + "25" : "#334155"}`,
+                    background: entry.rank <= 3 ? `${rankColor}08` : "#F1F5F9",
+                    border: `1px solid ${entry.rank <= 3 ? rankColor + "25" : "#E2E8F0"}`,
                   }}
                 >
                   {/* Medal / rank */}
                   <div className="w-7 h-7 flex items-center justify-center flex-shrink-0 text-base">
-                    {entry.rank <= 3 ? RANK_MEDALS[entry.rank - 1] : <span className="text-xs font-bold" style={{ color: "#475569" }}>#{entry.rank}</span>}
+                    {entry.rank <= 3 ? RANK_MEDALS[entry.rank - 1] : <span className="text-xs font-bold" style={{ color: "#64748B" }}>#{entry.rank}</span>}
                   </div>
 
                   {/* Avatar */}
@@ -129,7 +130,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
                       src={entry.avatar_url}
                       alt={entry.username}
                       className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-                      style={{ border: `2px solid ${entry.rank <= 3 ? rankColor + "50" : "#334155"}` }}
+                      style={{ border: `2px solid ${entry.rank <= 3 ? rankColor + "50" : "#E2E8F0"}` }}
                     />
                   ) : (
                     <div
@@ -146,10 +147,10 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
 
                   {/* Name + badge */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm truncate">{entry.username}</p>
+                    <p className="text-slate-900 font-semibold text-sm truncate">{entry.username}</p>
                     {entry.badge && (
                       <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                        className="text-xs font-bold px-1.5 py-0.5 rounded-full"
                         style={{ background: `${badgeColor}15`, color: badgeColor }}
                       >
                         {entry.badge}
@@ -159,8 +160,8 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
 
                   {/* Count */}
                   <div className="text-right flex-shrink-0">
-                    <p className="text-white font-black text-base">{entry.launches}</p>
-                    <p className="text-gray-500 text-[10px]">launched</p>
+                    <p className="text-slate-900 font-black text-base">{entry.launches}</p>
+                    <p className="text-slate-500 text-xs">launched</p>
                   </div>
                 </div>
               );

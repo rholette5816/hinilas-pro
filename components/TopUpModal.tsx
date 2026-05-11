@@ -115,13 +115,13 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-end md:items-center justify-center md:p-4" onClick={e => { if (e.target === e.currentTarget) { reset(); onClose(); } }}>
-      <div className="w-full md:max-w-md rounded-t-2xl md:rounded-2xl border border-gray-700 overflow-y-auto max-h-[92vh]" style={{ background: "#0F172A" }}>
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4" style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(8px)" }} onClick={e => { if (e.target === e.currentTarget) { reset(); onClose(); } }}>
+      <div className="w-full md:max-w-md rounded-t-2xl md:rounded-2xl overflow-y-auto max-h-[92vh] shadow-2xl" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
-          <p className="text-white font-bold text-sm">Top Up / Upgrade</p>
-          <button onClick={() => { reset(); onClose(); }} className="text-gray-500 hover:text-white text-lg leading-none">✕</button>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+          <p className="text-slate-900 font-bold text-sm">Top Up / Upgrade</p>
+          <button onClick={() => { reset(); onClose(); }} className="text-slate-500 hover:text-slate-900 text-lg leading-none">✕</button>
         </div>
 
         {step === "select" && (
@@ -133,21 +133,21 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                   onClick={() => setSelected(pkg)}
                   className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-left"
                   style={{
-                    background: selected.id === pkg.id ? `${pkg.color}12` : "#0A0F1A",
-                    borderColor: selected.id === pkg.id ? pkg.color : "#1F2937",
+                    background: selected.id === pkg.id ? `${pkg.color}12` : "#F1F5F9",
+                    borderColor: selected.id === pkg.id ? pkg.color : "#E2E8F0",
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: selected.id === pkg.id ? pkg.color : "#334155" }} />
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: selected.id === pkg.id ? pkg.color : "#64748B" }} />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-white font-bold text-sm">{pkg.label}</span>
+                        <span className="text-slate-900 font-bold text-sm">{pkg.label}</span>
                         <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: `${pkg.color}20`, color: pkg.color }}>{pkg.tag}</span>
                       </div>
-                      <span className="text-gray-500 text-xs">{pkg.credits} credits</span>
+                      <span className="text-slate-500 text-xs">{pkg.credits} credits</span>
                     </div>
                   </div>
-                  <span className="text-white font-bold text-sm">₱{pkg.price.toLocaleString()}</span>
+                  <span className="text-slate-900 font-bold text-sm">₱{pkg.price.toLocaleString()}</span>
                 </button>
               ))}
             </div>
@@ -164,8 +164,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
         {step === "confirm" && (
           <div className="p-5 space-y-4">
             {/* GCash QR */}
-            <div className="rounded-xl overflow-hidden border border-gray-800 bg-blue-600 flex flex-col items-center py-5 px-4">
-              <span className="text-white font-bold text-lg mb-4">GCash</span>
+            <div className="rounded-xl overflow-hidden border border-slate-200 bg-blue-600 flex flex-col items-center py-5 px-4">
+              <span className="text-slate-900 font-bold text-lg mb-4">GCash</span>
               <div className="bg-white rounded-xl p-3 mb-4">
                 <img
                   src="/gcash-qr.jpg"
@@ -178,33 +178,33 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                     (e.target as HTMLImageElement).nextElementSibling?.removeAttribute("style");
                   }}
                 />
-                <div style={{ display: "none", width: 140, height: 140 }} className="flex items-center justify-center bg-gray-100 rounded text-gray-400 text-xs text-center p-2">
+                <div style={{ display: "none", width: 140, height: 140 }} className="flex items-center justify-center bg-gray-100 rounded text-slate-600 text-xs text-center p-2">
                   QR not found
                 </div>
               </div>
               <p className="text-blue-100 text-xs mb-1">Transfer fees may apply.</p>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-white font-bold text-base">Donna Lim</p>
-                <button onClick={() => navigator.clipboard.writeText("Donna Lim")} className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
+                <p className="text-slate-900 font-bold text-base">Donna Lim</p>
+                <button onClick={() => navigator.clipboard.writeText("Donna Lim")} className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-blue-200 text-sm">0956 160 3751</p>
-                <button onClick={() => navigator.clipboard.writeText("09561603751")} className="text-blue-200 hover:text-white text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
+                <button onClick={() => navigator.clipboard.writeText("09561603751")} className="text-blue-200 hover:text-slate-900 text-xs px-2 py-0.5 rounded border border-blue-400 border-opacity-40 hover:border-opacity-80 transition-all">Copy</button>
               </div>
             </div>
 
             {/* Amount */}
-            <div className="flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
               <div>
-                <p className="text-white font-bold text-sm">{selected.label} — {selected.credits} credits</p>
-                <p className="text-gray-500 text-xs">{selected.tag}</p>
+                <p className="text-slate-900 font-bold text-sm">{selected.label} — {selected.credits} credits</p>
+                <p className="text-slate-500 text-xs">{selected.tag}</p>
               </div>
-              <p className="text-white font-bold">₱{selected.price.toLocaleString()}</p>
+              <p className="text-slate-900 font-bold">₱{selected.price.toLocaleString()}</p>
             </div>
 
             {/* Screenshot upload */}
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-1.5">Payment Screenshot</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Payment Screenshot</label>
               <input
                 ref={fileRef}
                 type="file"
@@ -213,11 +213,12 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
                 className="hidden"
               />
               {screenshotPreview ? (
-                <div className="relative rounded-xl overflow-hidden border border-gray-700">
-                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-gray-900" />
+                <div className="relative rounded-xl overflow-hidden border border-slate-200">
+                  <img src={screenshotPreview} alt="Payment screenshot" className="w-full max-h-48 object-contain bg-slate-100" />
                   <button
                     onClick={() => { setScreenshot(null); setScreenshotPreview(null); if (fileRef.current) fileRef.current.value = ""; }}
-                    className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg hover:bg-black/80"
+                    className="absolute top-2 right-2 text-xs px-2 py-1 rounded-lg"
+                    style={{ background: "#FFFFFF", color: "#0F172A", border: "1px solid #E2E8F0" }}
                   >
                     Remove
                   </button>
@@ -225,8 +226,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               ) : (
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="w-full py-4 rounded-xl border border-dashed border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200 text-sm transition-colors flex flex-col items-center gap-1"
-                  style={{ background: "#0A0F1A" }}
+                  className="w-full py-4 rounded-xl border border-dashed text-slate-600 hover:text-slate-900 text-sm transition-colors flex flex-col items-center gap-1"
+                  style={{ background: "#F1F5F9" }}
                 >
                   <span className="text-2xl">📎</span>
                   <span>Tap to upload screenshot</span>
@@ -238,7 +239,8 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep("select")}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+                style={{ border: "1px solid #E2E8F0" }}
               >
                 Back
               </button>
@@ -252,7 +254,7 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
               </button>
             </div>
 
-            <p className="text-gray-600 text-xs text-center">Credits will be added after we verify your payment. Usually within a few hours.</p>
+            <p className="text-slate-500 text-xs text-center">Credits will be added after we verify your payment. Usually within a few hours.</p>
           </div>
         )}
 
@@ -261,9 +263,9 @@ export default function TopUpModal({ isOpen, onClose, defaultPackage }: Props) {
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-2" style={{ background: "#22c55e20" }}>
               <span className="text-3xl">✓</span>
             </div>
-            <p className="text-white font-bold text-base">Request Submitted</p>
-            <p className="text-gray-400 text-sm">We received your top-up request for <strong className="text-white">{selected.credits} credits</strong>. Credits will be added after payment is verified.</p>
-            <p className="text-gray-600 text-xs">Usually within a few hours during business hours.</p>
+            <p className="text-slate-900 font-bold text-base">Request Submitted</p>
+            <p className="text-slate-600 text-sm">We received your top-up request for <strong className="text-slate-900">{selected.credits} credits</strong>. Credits will be added after payment is verified.</p>
+            <p className="text-slate-500 text-xs">Usually within a few hours during business hours.</p>
             <button
               onClick={() => { reset(); onClose(); }}
               className="mt-4 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"

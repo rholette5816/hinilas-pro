@@ -42,22 +42,22 @@ export default function FunnelProgress({ currentStep }: FunnelProgressProps) {
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all md:h-9 md:w-9 md:text-sm"
                   style={{
-                    background: isCompleted ? "#2B7EC9" : isActive ? "#F5A623" : "#1E2D45",
-                    color: isUpcoming ? "#475569" : "#FFFFFF",
+                    background: isCompleted ? "#2B7EC9" : isActive ? "#F5A623" : "#E2E8F0",
+                    color: isUpcoming ? "#64748B" : "#FFFFFF",
                     boxShadow: isActive ? "0 0 18px rgba(245,166,35,0.45)" : "none",
                   }}
                 >
                   {isCompleted ? <CheckIcon /> : stepNumber}
                 </div>
                 <span
-                  className={`${isActive ? "block" : "hidden md:block"} mt-2 max-w-[80px] break-words text-[10px] font-semibold leading-tight md:max-w-none`}
-                  style={{ color: isUpcoming ? "#475569" : "#FFFFFF" }}
+                  className={`${isActive ? "block" : "hidden md:block"} mt-2 max-w-[80px] break-words text-xs font-semibold leading-tight md:max-w-none`}
+                  style={{ color: isUpcoming ? "#64748B" : "#0F172A" }}
                 >
                   {label}
                 </span>
               </div>
               {index < STEPS.length - 1 && (
-                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#2B7EC9" : "#1E2D45" }} />
+                <div className="mt-3 hidden h-px flex-1 md:mt-4 md:block" style={{ background: connectorActive ? "#2B7EC9" : "#E2E8F0" }} />
               )}
             </div>
           );

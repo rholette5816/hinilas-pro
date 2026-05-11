@@ -121,25 +121,26 @@ export default function FloatingChat() {
     <>
       {open && (
         <div
-          className="fixed bottom-12 right-3 z-50 w-72 md:w-80 rounded-t-2xl rounded-bl-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden"
+          className="fixed bottom-12 right-3 z-50 w-72 md:w-80 rounded-t-2xl rounded-bl-2xl shadow-2xl flex flex-col overflow-hidden"
           style={{
-            background: "#0F172A",
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             height: "400px",
             animation: "slideUp 0.2s ease-out",
           }}
         >
-          <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between shrink-0" style={{ background: "#0A0F1A" }}>
+          <div className="px-4 py-3 flex items-center justify-between shrink-0" style={{ background: "#F1F5F9", borderBottom: "1px solid #E2E8F0" }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white text-sm font-bold">Mga Hilason</span>
-              <span className="text-gray-600 text-xs">{messages.length} messages</span>
+              <span className="text-slate-900 text-sm font-bold">Mga Hilason</span>
+              <span className="text-slate-500 text-xs">{messages.length} messages</span>
             </div>
-            <button onClick={closeChat} className="text-gray-500 hover:text-white text-base">×</button>
+            <button onClick={closeChat} className="text-gray-500 hover:text-slate-900 text-base">×</button>
           </div>
 
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
             {messages.length === 0 && (
-              <p className="text-center text-gray-600 text-xs pt-8">No messages yet. Say something!</p>
+              <p className="text-center text-slate-500 text-xs pt-8">No messages yet. Say something!</p>
             )}
             {messages.map((msg, idx) => {
               const isMe = msg.user_id === currentUser?.id;
@@ -150,15 +151,16 @@ export default function FloatingChat() {
                   <div className={`max-w-[75%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                     {!sameUser && (
                       <div className={`flex items-baseline gap-1.5 mb-0.5 ${isMe ? "flex-row-reverse" : ""}`}>
-                        <span className="text-xs font-semibold text-gray-300">{isMe ? "You" : msg.user_name}</span>
-                        <span className="text-gray-600 text-xs">{formatTime(msg.created_at)}</span>
+                        <span className="text-xs font-semibold text-slate-700">{isMe ? "You" : msg.user_name}</span>
+                        <span className="text-slate-500 text-xs">{formatTime(msg.created_at)}</span>
                       </div>
                     )}
                     <div
                       className="px-3 py-2 text-xs leading-relaxed"
                       style={{
-                        background: isMe ? "#2B7EC9" : "#1E293B",
-                        color: isMe ? "#fff" : "#D1D5DB",
+                        background: isMe ? "#2B7EC9" : "#F1F5F9",
+                        color: isMe ? "#fff" : "#0F172A",
+                        border: isMe ? "1px solid #2B7EC9" : "1px solid #E2E8F0",
                         borderRadius: isMe ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                       }}
                     >
@@ -171,7 +173,7 @@ export default function FloatingChat() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="px-3 py-3 border-t border-gray-800 shrink-0">
+          <div className="px-3 py-3 shrink-0" style={{ borderTop: "1px solid #E2E8F0" }}>
             <div className="flex items-end gap-2">
               <textarea
                 value={input}
@@ -179,8 +181,8 @@ export default function FloatingChat() {
                 onKeyDown={handleKeyDown}
                 placeholder="Message everyone..."
                 rows={1}
-                className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white placeholder-gray-600 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                style={{ maxHeight: "80px" }}
+                className="flex-1 rounded-xl px-3 py-2 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", maxHeight: "80px" }}
               />
               <button
                 onClick={sendMessage}
@@ -206,15 +208,16 @@ export default function FloatingChat() {
             width: "48px",
             height: "48px",
             borderRadius: "10px 10px 0 0",
-            background: open ? "#1E293B" : "linear-gradient(135deg, #7C3AED, #2B7EC9)",
+            background: open ? "#F1F5F9" : "linear-gradient(135deg, #7C3AED, #2B7EC9)",
+            border: open ? "1px solid #E2E8F0" : "none",
             boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
             animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",
           }}
         >
           <span className="text-lg leading-none">💬</span>
-          <span className="text-white font-bold leading-none mt-0.5" style={{ fontSize: "8px", letterSpacing: "0.02em" }}>HILASON</span>
+          <span className="text-white text-xs font-bold leading-none mt-0.5">HILASON</span>
           {unread > 0 && !open && (
-            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center font-bold" style={{ background: "#EF4444", color: "#fff", fontSize: "9px" }}>
+            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "#EF4444", color: "#fff" }}>
               {unread > 9 ? "9+" : unread}
             </span>
           )}

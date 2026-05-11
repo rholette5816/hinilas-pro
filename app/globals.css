@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0B1120;
-  --foreground: #f9fafb;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
   --brand-blue: #2B7EC9;
   --brand-orange: #F5A623;
-  --brand-dark: #0F172A;
+  --brand-dark: #FFFFFF;
 }
 
 body {
@@ -31,7 +31,7 @@ html, body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #374151 transparent;
+  scrollbar-color: #CBD5E1 transparent;
 }
 
 @keyframes btnGlowBlue {

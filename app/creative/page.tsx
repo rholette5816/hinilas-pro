@@ -687,7 +687,7 @@ export default function CreativePage() {
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                         <span className="text-2xl opacity-60">{card.emoji}</span>
-                        <p className="text-gray-600 text-[10px] text-center px-2">{card.disabled ? "Generate Main first" : "Not generated"}</p>
+                        <p className="text-gray-600 text-xs text-center px-2">{card.disabled ? "Generate Main first" : "Not generated"}</p>
                       </div>
                     )}
                   </div>

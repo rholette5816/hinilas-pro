@@ -72,22 +72,23 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/70 flex items-end md:items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4"
+      style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(8px)" }}
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
-      <div className="w-full max-w-md rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#0F172A" }}>
+      <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
 
         {/* No credits state */}
         {step === "no_credits" && (
           <div className="px-6 py-8 text-center">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1E293B" }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#F1F5F9" }}>
               <span className="text-2xl">⚡</span>
             </div>
-            <h3 className="text-white font-bold text-lg mb-2">Not Enough Credits</h3>
-            <p className="text-gray-400 text-sm mb-1">Live consultation costs <span className="text-white font-semibold">100 credits</span>.</p>
-            <p className="text-gray-500 text-xs mb-6">You have {credits} credits remaining. Top up to book a session.</p>
+            <h3 className="text-slate-900 font-bold text-lg mb-2">Not Enough Credits</h3>
+            <p className="text-slate-600 text-sm mb-1">Live consultation costs <span className="text-slate-900 font-semibold">100 credits</span>.</p>
+            <p className="text-xs mb-6" style={{ color: "#64748B" }}>You have {credits} credits remaining. Top up to book a session.</p>
             <div className="flex gap-3">
-              <button onClick={close} className="flex-1 py-2.5 rounded-xl border border-gray-700 text-gray-400 text-sm">Cancel</button>
+              <button onClick={close} className="flex-1 py-2.5 rounded-xl text-sm" style={{ border: "1px solid #E2E8F0", color: "#64748B" }}>Cancel</button>
               <a href="/pricing#topup" onClick={close} className="flex-1 py-2.5 rounded-xl text-center text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
                 Get Credits
               </a>
@@ -98,39 +99,41 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
         {/* Booking form */}
         {step === "open" && (
           <>
-            <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
+            <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #E2E8F0" }}>
               <div>
-                <h3 className="text-white font-bold text-base">Book a Live Consultation</h3>
-                <p className="text-gray-500 text-xs mt-0.5">1-on-1 session with Ken · 100 credits</p>
+                <h3 className="text-slate-900 font-bold text-base">Book a Live Consultation</h3>
+                <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>1-on-1 session with Ken · 100 credits</p>
               </div>
-              <button onClick={close} className="text-gray-500 hover:text-white text-lg px-1">✕</button>
+              <button onClick={close} className="text-slate-500 hover:text-slate-900 text-lg px-1">✕</button>
             </div>
 
             <div className="px-5 py-5 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">What do you need help with?</label>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748B" }}>What do you need help with?</label>
                 <textarea
                   value={topic}
                   onChange={e => setTopic(e.target.value)}
                   placeholder="e.g. My ads are spending but getting zero messages. CPM is P400+."
                   rows={3}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                  className="w-full rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Preferred Date</label>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748B" }}>Preferred Date</label>
                 <input
                   type="date"
                   value={date}
                   min={minDate}
                   onChange={e => setDate(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full rounded-xl px-4 py-3 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Preferred Time <span className="text-gray-600">(GMT+8)</span></label>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748B" }}>Preferred Time <span className="text-slate-500">(GMT+8)</span></label>
                 <div className="grid grid-cols-4 gap-2">
                   {TIME_SLOTS.map(t => (
                     <button
@@ -140,7 +143,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                       className="py-2 rounded-lg text-xs font-medium border transition-all"
                       style={time === t
                         ? { background: "#F5A623", borderColor: "#F5A623", color: "#000" }
-                        : { background: "#1E293B", borderColor: "#374151", color: "#9CA3AF" }
+                        : { background: "#F1F5F9", borderColor: "#E2E8F0", color: "#64748B" }
                       }
                     >
                       {t}
@@ -149,7 +152,7 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-amber-900 px-4 py-3 flex items-center justify-between" style={{ background: "#1C1200" }}>
+              <div className="rounded-xl px-4 py-3 flex items-center justify-between" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
                 <div>
                   <p className="text-amber-300 text-sm font-semibold">100 credits will be deducted</p>
                   <p className="text-amber-700 text-xs">You have {credits} credits · {credits - EXPERT_COST} remaining after</p>
@@ -172,34 +175,34 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
         {/* Confirm step */}
         {step === "confirm" && (
           <>
-            <div className="px-5 py-4 border-b border-gray-700 flex items-center justify-between">
-              <h3 className="text-white font-bold text-base">Confirm Booking</h3>
-              <button onClick={() => setStep("open")} className="text-gray-500 hover:text-white text-xs">← Edit</button>
+            <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #E2E8F0" }}>
+              <h3 className="text-slate-900 font-bold text-base">Confirm Booking</h3>
+              <button onClick={() => setStep("open")} className="text-slate-500 hover:text-slate-900 text-xs">← Edit</button>
             </div>
             <div className="px-5 py-5 space-y-3">
-              <div className="rounded-xl border border-gray-700 px-4 py-4 space-y-3" style={{ background: "#0A0F1A" }}>
+              <div className="rounded-xl px-4 py-4 space-y-3" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
                 <div>
-                  <p className="text-gray-500 text-xs">Topic</p>
-                  <p className="text-white text-sm mt-0.5">{topic}</p>
+                  <p className="text-xs" style={{ color: "#64748B" }}>Topic</p>
+                  <p className="text-slate-900 text-sm mt-0.5">{topic}</p>
                 </div>
                 <div className="flex gap-6">
                   <div>
-                    <p className="text-gray-500 text-xs">Date</p>
-                    <p className="text-white text-sm mt-0.5">{date}</p>
+                    <p className="text-xs" style={{ color: "#64748B" }}>Date</p>
+                    <p className="text-slate-900 text-sm mt-0.5">{date}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500 text-xs">Time</p>
-                    <p className="text-white text-sm mt-0.5">{time} GMT+8</p>
+                    <p className="text-xs" style={{ color: "#64748B" }}>Time</p>
+                    <p className="text-slate-900 text-sm mt-0.5">{time} GMT+8</p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs">Cost</p>
+                  <p className="text-xs" style={{ color: "#64748B" }}>Cost</p>
                   <p className="text-sm mt-0.5 font-semibold" style={{ color: "#F5A623" }}>100 credits</p>
                 </div>
               </div>
-              <p className="text-gray-600 text-xs">Ken will confirm your slot via the platform. Credits are deducted immediately upon booking.</p>
+              <p className="text-xs" style={{ color: "#64748B" }}>Ken will confirm your slot via the platform. Credits are deducted immediately upon booking.</p>
               <div className="flex gap-3 pt-1">
-                <button onClick={() => setStep("open")} className="flex-1 py-2.5 rounded-xl border border-gray-700 text-gray-400 text-sm">Back</button>
+                <button onClick={() => setStep("open")} className="flex-1 py-2.5 rounded-xl text-sm" style={{ border: "1px solid #E2E8F0", color: "#64748B" }}>Back</button>
                 <button
                   onClick={confirmBooking}
                   disabled={loading}
@@ -216,13 +219,13 @@ export default function FloatingExpert({ isOpen, onClose }: Props) {
         {/* Success */}
         {step === "success" && (
           <div className="px-6 py-8 text-center">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#14532D" }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#DCFCE7" }}>
               <span className="text-2xl">✅</span>
             </div>
-            <h3 className="text-white font-bold text-lg mb-2">Booking Confirmed!</h3>
-            <p className="text-gray-400 text-sm mb-1">Ref: <span className="text-white font-mono font-semibold">#{bookingRef}</span></p>
-            <p className="text-gray-500 text-xs mb-1">{date} · {time} GMT+8</p>
-            <p className="text-gray-400 text-xs mb-2">A <strong className="text-white">Google Meet link</strong> will be sent to your email approximately <strong className="text-white">1 hour before</strong> your session.</p>
+            <h3 className="text-slate-900 font-bold text-lg mb-2">Booking Confirmed!</h3>
+            <p className="text-slate-600 text-sm mb-1">Ref: <span className="text-slate-900 font-mono font-semibold">#{bookingRef}</span></p>
+            <p className="text-xs mb-1" style={{ color: "#64748B" }}>{date} · {time} GMT+8</p>
+            <p className="text-slate-600 text-xs mb-2">A <strong className="text-slate-900">Google Meet link</strong> will be sent to your email approximately <strong className="text-slate-900">1 hour before</strong> your session.</p>
             <p className="text-amber-600 text-xs mb-6">If you don&apos;t see it, please check your spam or junk folder.</p>
             <button onClick={close} className="w-full py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "#2B7EC9" }}>
               Done

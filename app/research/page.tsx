@@ -141,7 +141,7 @@ export default function ResearchPage() {
           </div>
 
           {!researchOutput && (
-            <div className="rounded-xl p-4 mb-6" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+            <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
               <h2 className="text-white font-semibold text-sm mb-3">What you&apos;ll get</h2>
               <div className="space-y-2">
                 {[

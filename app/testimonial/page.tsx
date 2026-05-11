@@ -146,7 +146,7 @@ export default function TestimonialPage() {
 
           {/* Name */}
           <div>
-            <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Name</label>
+            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Name</label>
             <input
               type="text"
               placeholder="e.g. Maria Santos"
@@ -161,7 +161,7 @@ export default function TestimonialPage() {
 
           {/* Rating */}
           <div>
-            <label className="block text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Rating</label>
+            <label className="block text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>Your Rating</label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map(star => (
                 <button
@@ -186,7 +186,7 @@ export default function TestimonialPage() {
           {/* Message */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Your Message</label>
+              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Your Message</label>
               {message.trim() && !improved && (
                 <>
                   <style>{`
@@ -199,7 +199,7 @@ export default function TestimonialPage() {
                     type="button"
                     onClick={improveFeedback}
                     disabled={improving}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                     style={{
                       background: "rgba(43,126,201,0.15)",
                       color: BRAND_BLUE,
@@ -212,7 +212,7 @@ export default function TestimonialPage() {
                 </>
               )}
               {improved && (
-                <span className="text-[10px] font-semibold" style={{ color: "#22c55e" }}>✓ Polished</span>
+                <span className="text-xs font-semibold" style={{ color: "#22c55e" }}>✓ Polished</span>
               )}
             </div>
             <textarea
@@ -230,13 +230,13 @@ export default function TestimonialPage() {
           {/* Video / Image Upload */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Video or Image</label>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded" style={{ background: "rgba(245,166,35,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>Highly Encouraged</span>
+              <label className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Video or Image</label>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ background: "rgba(245,166,35,0.1)", color: BRAND_ORANGE, border: `1px solid ${BRAND_ORANGE}30` }}>Highly Encouraged</span>
             </div>
 
             {/* Video guide */}
             <div className="rounded-xl px-4 py-3 mb-3" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
-              <p className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>If recording a video, cover these points:</p>
+              <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#475569" }}>If recording a video, cover these points:</p>
               <ul className="space-y-1.5">
                 {VIDEO_GUIDE.map((point, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#94A3B8" }}>

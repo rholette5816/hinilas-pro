@@ -78,37 +78,37 @@ export default function ExpertPage() {
 
   if (confirmed) {
     return (
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
         <Sidebar />
         <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
           <div className="max-w-xl mx-auto px-6 py-16 text-center">
             <div className="text-5xl mb-6">✅</div>
-            <h1 className="text-2xl font-bold text-white mb-3">Booking Confirmed!</h1>
-            <p className="text-gray-400 text-sm mb-8">
-              Your consultation has been submitted. Ken will review your request and send a <strong className="text-white">Google Meet link to your email</strong> approximately <strong className="text-white">1 hour before</strong> your scheduled time.
+            <h1 className="text-2xl font-bold text-slate-900 mb-3">Booking Confirmed!</h1>
+            <p className="text-slate-600 text-sm mb-8">
+              Your consultation has been submitted. Ken will review your request and send a <strong className="text-slate-900">Google Meet link to your email</strong> approximately <strong className="text-slate-900">1 hour before</strong> your scheduled time.
             </p>
-            <div className="rounded-xl border border-gray-700 px-6 py-5 mb-8 text-left" style={{ background: "#1E293B" }}>
-              <p className="text-xs text-gray-500 uppercase tracking-widest mb-4">Booking Details</p>
+            <div className="rounded-xl px-6 py-5 mb-8 text-left" style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+              <p className="text-xs text-slate-500 uppercase tracking-widest mb-4">Booking Details</p>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400 text-sm">Topic</span>
-                  <span className="text-white text-sm font-medium">{finalTopic}</span>
+                  <span className="text-slate-600 text-sm">Topic</span>
+                  <span className="text-slate-900 text-sm font-medium">{finalTopic}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400 text-sm">Date</span>
-                  <span className="text-white text-sm font-medium">{bookedDate}</span>
+                  <span className="text-slate-600 text-sm">Date</span>
+                  <span className="text-slate-900 text-sm font-medium">{bookedDate}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400 text-sm">Time</span>
-                  <span className="text-white text-sm font-medium">{bookedTime}</span>
+                  <span className="text-slate-600 text-sm">Time</span>
+                  <span className="text-slate-900 text-sm font-medium">{bookedTime}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400 text-sm">Credits Used</span>
-                  <span className="text-white text-sm font-medium">100 credits</span>
+                  <span className="text-slate-600 text-sm">Credits Used</span>
+                  <span className="text-slate-900 text-sm font-medium">100 credits</span>
                 </div>
               </div>
             </div>
-            <div className="rounded-xl border border-amber-900 px-5 py-4 mb-8 text-left" style={{ background: "#1C1200" }}>
+            <div className="rounded-xl px-5 py-4 mb-8 text-left" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
               <p className="text-amber-300 text-sm font-semibold mb-1">Check your email</p>
               <p className="text-amber-700 text-xs">The Google Meet link will be sent to your email about 1 hour before the session. If you don&apos;t see it, please check your spam or junk folder.</p>
             </div>
@@ -126,22 +126,22 @@ export default function ExpertPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-xl mx-auto px-6 py-10">
 
           {/* Header */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 bg-amber-950 border border-amber-800 rounded-full px-3 py-1 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
               <span className="text-amber-300 text-xs font-medium">🎙 Expert</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Book a Consultation</h1>
-            <p className="text-gray-400 text-sm">Get a 1-on-1 live session with Ken. Direct strategy, no fluff.</p>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Book a Consultation</h1>
+            <p className="text-slate-600 text-sm">Get a 1-on-1 live session with Ken. Direct strategy, no fluff.</p>
           </div>
 
           {/* Credit cost notice */}
-          <div className="rounded-xl border border-amber-900 px-4 py-3 mb-6 flex items-center justify-between" style={{ background: "#1C1200" }}>
+          <div className="rounded-xl px-4 py-3 mb-6 flex items-center justify-between" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
             <div className="flex items-center gap-3">
               <span className="text-amber-400 text-lg">⚡</span>
               <div>
@@ -174,15 +174,15 @@ export default function ExpertPage() {
 
             {/* Topic */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">What do you want to discuss?</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">What do you want to discuss?</label>
               <div className="grid grid-cols-1 gap-2">
                 {TOPICS.map(t => (
                   <button
                     key={t}
                     onClick={() => setTopic(t)}
                     disabled={!canBook}
-                    className={`text-left text-sm px-4 py-3 rounded-xl border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${topic === t ? "border-amber-500 text-white" : "border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white"}`}
-                    style={{ background: topic === t ? "#1C1200" : "#0F172A" }}
+                    className={`text-left text-sm px-4 py-3 rounded-xl border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${topic === t ? "border-amber-500 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"}`}
+                    style={{ background: topic === t ? "rgba(245,166,35,0.1)" : "#F1F5F9" }}
                   >
                     {t}
                   </button>
@@ -194,35 +194,36 @@ export default function ExpertPage() {
                   value={customTopic}
                   onChange={e => setCustomTopic(e.target.value)}
                   placeholder="Describe your topic..."
-                  className="mt-2 w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="mt-2 w-full rounded-lg px-4 py-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}
                 />
               )}
             </div>
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Date</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Preferred Date</label>
               <input
                 type="date"
                 value={preferredDate}
                 min={today}
                 onChange={e => setPreferredDate(e.target.value)}
                 disabled={!canBook}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-40"
+                className="w-full bg-slate-100 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-40"
               />
             </div>
 
             {/* Time */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Time (GMT+8)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Preferred Time (GMT+8)</label>
               <div className="grid grid-cols-4 gap-2">
                 {TIME_SLOTS.map(t => (
                   <button
                     key={t}
                     onClick={() => setPreferredTime(t)}
                     disabled={!canBook}
-                    className={`text-sm px-3 py-2 rounded-lg border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${preferredTime === t ? "border-amber-500 text-white" : "border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white"}`}
-                    style={{ background: preferredTime === t ? "#1C1200" : "#0F172A" }}
+                    className={`text-sm px-3 py-2 rounded-lg border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${preferredTime === t ? "border-amber-500 text-slate-900" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"}`}
+                    style={{ background: preferredTime === t ? "rgba(245,166,35,0.1)" : "#F1F5F9" }}
                   >
                     {t}
                   </button>

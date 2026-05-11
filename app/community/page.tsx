@@ -73,24 +73,24 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: "#F8FAFC" }}>
       <Sidebar />
       <main className="flex-1 flex flex-col pt-14 md:pt-0 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-800 shrink-0" style={{ background: "#0B1120" }}>
+        <div className="px-6 py-4 shrink-0" style={{ background: "#FFFFFF", borderBottom: "1px solid #E2E8F0" }}>
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-full px-3 py-1">
-              <span className="text-purple-300 text-xs font-medium">💬 Community</span>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1" style={{ background: "#F1F5F9", border: "1px solid #E2E8F0" }}>
+              <span className="text-xs font-medium" style={{ color: "#64748B" }}>💬 Community</span>
             </div>
-            <span className="text-gray-600 text-xs">{messages.length} messages</span>
+            <span className="text-slate-500 text-xs">{messages.length} messages</span>
           </div>
-          <h1 className="text-xl font-bold text-white mt-1">Hinilas Community</h1>
-          <p className="text-gray-500 text-xs">Share wins, ask questions, help each other grow.</p>
+          <h1 className="text-xl font-bold text-slate-900 mt-1">Hinilas Community</h1>
+          <p className="text-slate-500 text-xs">Share wins, ask questions, help each other grow.</p>
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
           {messages.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-gray-600 text-sm">No messages yet. Be the first to say something!</p>
+              <p className="text-slate-500 text-sm">No messages yet. Be the first to say something!</p>
             </div>
           )}
           {messages.map((msg, idx) => {
@@ -108,15 +108,16 @@ export default function CommunityPage() {
                 <div className={`max-w-[70%] ${isMe ? "items-end" : "items-start"} flex flex-col`}>
                   {!sameUser && (
                     <div className={`flex items-baseline gap-2 mb-1 ${isMe ? "flex-row-reverse" : ""}`}>
-                      <span className="text-xs font-semibold text-white">{isMe ? "You" : msg.user_name}</span>
-                      <span className="text-gray-600 text-xs">{formatTime(msg.created_at)}</span>
+                      <span className="text-xs font-semibold text-slate-900">{isMe ? "You" : msg.user_name}</span>
+                      <span className="text-slate-500 text-xs">{formatTime(msg.created_at)}</span>
                     </div>
                   )}
                   <div
                     className="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
                     style={{
-                      background: isMe ? "#2B7EC9" : "#0F172A",
-                      color: isMe ? "#fff" : "#D1D5DB",
+                      background: isMe ? "#2B7EC9" : "#F1F5F9",
+                      color: isMe ? "#fff" : "#0F172A",
+                      border: isMe ? "1px solid #2B7EC9" : "1px solid #E2E8F0",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -129,7 +130,7 @@ export default function CommunityPage() {
           <div ref={bottomRef} />
         </div>
 
-        <div className="px-4 py-4 border-t border-gray-800 shrink-0" style={{ background: "#0B1120" }}>
+        <div className="px-4 py-4 shrink-0" style={{ background: "#FFFFFF", borderTop: "1px solid #E2E8F0" }}>
           {currentUser ? (
             <div className="flex items-end gap-3 max-w-3xl mx-auto">
               <Avatar name={currentUser.name} avatar={currentUser.avatar} size={8} />
@@ -140,8 +141,8 @@ export default function CommunityPage() {
                   onKeyDown={handleKeyDown}
                   placeholder="Write a message... (Enter to send)"
                   rows={1}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 pr-12 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  style={{ maxHeight: "120px" }}
+                  className="w-full rounded-2xl px-4 py-3 pr-12 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", maxHeight: "120px" }}
                 />
                 <button
                   onClick={sendMessage}
@@ -157,7 +158,7 @@ export default function CommunityPage() {
               </div>
             </div>
           ) : (
-            <p className="text-center text-gray-600 text-sm">Log in to send messages.</p>
+            <p className="text-center text-slate-500 text-sm">Log in to send messages.</p>
           )}
         </div>
       </main>
