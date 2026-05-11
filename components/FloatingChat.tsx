@@ -207,10 +207,10 @@ export default function FloatingChat() {
           style={{
             width: "48px",
             height: "48px",
-            borderRadius: "10px 10px 0 0",
+            borderRadius: "10px",
             background: open ? "#f2f3f5" : "linear-gradient(135deg, #7C3AED, #1877F2)",
             border: open ? "1px solid #E4E6EB" : "none",
-            boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 -2px 12px rgba(0,0,0,0.4)",
+            boxShadow: glowing ? "0 0 0 3px #7C3AED50, 0 0 16px #7C3AED70" : "0 2px 12px rgba(0,0,0,0.25)",
             animation: glowing && !open ? "pulse-glow 1.5s ease-in-out infinite" : "none",
           }}
         >
