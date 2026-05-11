@@ -61,9 +61,9 @@ const LOGIN_MESSAGES = [
 
 function BrandMark() {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <HinilasIcon size="md" accentColor={BRAND_ORANGE} />
-      <div className="leading-tight">
+      <div className="hidden sm:block leading-tight">
         <div className="flex items-baseline">
           <span className="font-bold text-lg text-[#1c1e21]">Hinilas</span>
           <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
@@ -73,27 +73,31 @@ function BrandMark() {
   );
 }
 
-// shared flag: becomes true after first user gesture, enabling sound
 let reelSoundUnlocked = false;
 
 function ReelCard({ src, name, handle, caption, likes, shares, comments }: { src: string; name: string; handle: string; caption: string; likes: string; shares: string; comments: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [desktopPlaying, setDesktopPlaying] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     const el = videoRef.current;
-    if (!el) return;
+    if (!el || isDesktop) return;
 
-    // unlock sound on first user gesture anywhere on the page
     const unlockSound = () => {
       reelSoundUnlocked = true;
-      if (!el.paused) { el.muted = false; }
-      document.removeEventListener("click", unlockSound);
-      document.removeEventListener("touchstart", unlockSound);
-      document.removeEventListener("keydown", unlockSound);
+      if (!el.paused) el.muted = false;
     };
     document.addEventListener("click", unlockSound, { once: true });
     document.addEventListener("touchstart", unlockSound, { once: true });
-    document.addEventListener("keydown", unlockSound, { once: true });
 
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -105,14 +109,40 @@ function ReelCard({ src, name, handle, caption, likes, shares, comments }: { src
       }
     }, { threshold: 0.6 });
     obs.observe(el);
-    return () => { obs.disconnect(); };
-  }, []);
+    return () => obs.disconnect();
+  }, [isDesktop]);
+
+  const toggleDesktopPlay = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (el.paused) {
+      el.muted = false;
+      el.play().catch(() => {});
+      setDesktopPlaying(true);
+    } else {
+      el.pause();
+      setDesktopPlaying(false);
+    }
+  };
 
   return (
     <div className="ugc-card">
-      <div className="relative rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: "9/16" }}>
+      <div
+        className="relative rounded-2xl overflow-hidden bg-black cursor-pointer"
+        style={{ aspectRatio: "9/16" }}
+        onClick={isDesktop ? toggleDesktopPlay : undefined}
+      >
         <video ref={videoRef} src={src} loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{ transform: "scale(1.08)", transformOrigin: "center center" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 50%)" }} />
+
+        {isDesktop && !desktopPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)", border: "2px solid rgba(255,255,255,0.7)", backdropFilter: "blur(6px)" }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            </div>
+          </div>
+        )}
+
         <div className="absolute right-3 bottom-20 flex flex-col gap-5">
           <div className="reel-action-btn">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -243,14 +273,15 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-xl" style={{ borderColor: BORDER }}>
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:px-5 sm:py-4">
           <BrandMark />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link href="/blog" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5] sm:inline-flex" style={{ color: MUTED }}>Blog</Link>
             <a href="#pricing" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5] sm:inline-flex" style={{ color: MUTED }}>Pricing</a>
-            <button onClick={openModal} className="rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5]" style={{ color: MUTED }} type="button">Sign in</button>
-            <button onClick={openModal} className="rounded-xl px-4 py-2.5 text-sm font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
-              Try Hinilas Pro →
+            <button onClick={openModal} className="rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5]" style={{ color: MUTED }} type="button">Sign in</button>
+            <button onClick={openModal} className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-sm font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
+              <span className="sm:hidden">Try Free</span>
+              <span className="hidden sm:inline">Try Hinilas Pro →</span>
             </button>
           </div>
         </div>
@@ -374,12 +405,12 @@ export default function LandingPage() {
             <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8-in-1 Ad Execution System</h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup — all inside one workflow.</p>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-xl border bg-white p-6" style={{ borderColor: BORDER }}>
-                <span className="mb-4 inline-block text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>{f.num}</span>
-                <h3 className="mb-2 text-base font-black text-[#1c1e21]">{f.title}</h3>
-                <p className="text-sm leading-7 text-[#1c1e21]">{f.desc}</p>
+              <div key={f.title} className="rounded-xl border bg-white p-3 lg:p-6" style={{ borderColor: BORDER }}>
+                <span className="mb-2 lg:mb-4 inline-block text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>{f.num}</span>
+                <h3 className="mb-1 lg:mb-2 text-sm lg:text-base font-black text-[#1c1e21]">{f.title}</h3>
+                <p className="text-xs lg:text-sm leading-5 lg:leading-7 text-[#1c1e21]">{f.desc}</p>
               </div>
             ))}
           </div>
