@@ -290,14 +290,14 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-6 lg:gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:pb-24 lg:pt-20">
         <div className="min-w-0">
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wide" style={{ background: "#e7f3ff", border: "1px solid #BFDBFE", color: BRAND_BLUE }}>
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ background: "#e7f3ff", border: "1px solid #BFDBFE", color: BRAND_BLUE }}>
             AI Ad Execution System for Filipino Business Owners
           </div>
           <h1 className="max-w-xl text-3xl font-black leading-[1.05] tracking-tight text-[#050505] sm:text-5xl lg:text-6xl">
             Stop guessing.<br />Start launching.
           </h1>
           <p className="mt-3 max-w-lg text-base leading-7 text-[#1c1e21]">
-            Research your market, find winning angles, write ad copy, and set up campaigns — all in one guided workflow built for non-techy Filipino business owners.
+            Research your market, find winning angles, write ad copy, and set up campaigns. All in one guided workflow built for non-techy Filipino business owners.
           </p>
 
           {/* Social proof */}
@@ -333,7 +333,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: BORDER }}>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide" style={{ color: MUTED }}>Campaign workspace</p>
-                <p className="text-sm font-black text-[#1c1e21]">Skincare offer — Free Delivery</p>
+                <p className="text-sm font-black text-[#1c1e21]">Skincare offer: Free Delivery</p>
               </div>
               <span className="rounded-full px-3 py-1 text-xs font-bold" style={{ background: "#ECFDF5", color: "#059669" }}>Ready</span>
             </div>
@@ -403,7 +403,7 @@ export default function LandingPage() {
           <div className="mb-6 text-center">
             <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Everything in one place</p>
             <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8-in-1 Ad Execution System</h2>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup — all inside one workflow.</p>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup. All inside one workflow.</p>
           </div>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
             {FEATURES.map((f) => (
@@ -473,7 +473,7 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-[380px_1fr]">
             {/* Photo */}
             <div className="relative min-h-[240px] lg:min-h-0" style={{ background: INNER }}>
-              <Image src="/ken.jpg" alt="Kevin Allego — Hinilas Pro founder" fill className="object-cover" style={{ objectPosition: "center 30%" }} />
+              <Image src="/ken.jpg" alt="Kevin Allego, Hinilas Pro founder" fill className="object-cover" style={{ objectPosition: "center 30%" }} />
             </div>
             {/* Copy */}
             <div className="p-6 lg:p-12">
@@ -481,7 +481,7 @@ export default function LandingPage() {
               <h2 className="text-2xl font-black text-[#050505] sm:text-3xl">Kevin Rholette T. Allego RN</h2>
               <p className="mt-1 text-base font-semibold" style={{ color: BRAND_ORANGE }}>Meta Ads Strategist, eCommerce Operator, Founder</p>
               <div className="mt-6 space-y-4 text-base leading-8 text-[#1c1e21]">
-                <p>I built Hinilas Pro because I kept seeing the same problem — business owners spending money on ads without a real system. They guessed the angle. They copied captions. They boosted posts and hoped.</p>
+                <p>I built Hinilas Pro because I kept seeing the same problem: business owners spending money on ads without a real system. They guessed the angle. They copied captions. They boosted posts and hoped.</p>
                 <p>I wanted a tool that forces the right thinking before the first peso is spent. Research first. Angle next. Copy follows. Campaign last. That is the system.</p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -502,7 +502,7 @@ export default function LandingPage() {
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime with ₱249 credit packs. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
-              Start free — 30 credits →
+              Start free: 30 credits →
             </button>
             <a href="/pricing" className="rounded-xl border bg-white px-6 py-4 text-sm font-bold transition-colors hover:bg-slate-50" style={{ borderColor: BORDER, color: TEXT }}>
               See full pricing
