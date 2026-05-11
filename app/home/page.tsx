@@ -473,7 +473,7 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-[380px_1fr]">
             {/* Photo */}
             <div className="relative min-h-[240px] lg:min-h-0" style={{ background: INNER }}>
-              <Image src="/ken.jpg" alt="Kevin Allego — Hinilas Pro founder" fill className="object-cover object-top" />
+              <Image src="/ken.jpg" alt="Kevin Allego — Hinilas Pro founder" fill className="object-cover" style={{ objectPosition: "center 30%" }} />
             </div>
             {/* Copy */}
             <div className="p-6 lg:p-12">
