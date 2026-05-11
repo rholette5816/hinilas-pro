@@ -37,11 +37,11 @@ const FEATURES = [
   { num: "06", title: "AI Assistant", desc: "Ask follow-up questions when you need a clearer hook, offer, or next move." },
 ];
 
-const UGC_PLACEHOLDERS = [
-  { name: "Maria S.", biz: "Salon Owner, Cebu" },
-  { name: "Jerome T.", biz: "Supplement Seller, Manila" },
-  { name: "Anna L.", biz: "Spa Owner, Davao" },
-  { name: "Carlo M.", biz: "Real Estate Agent, BGC" },
+const UGC_VIDEOS = [
+  { src: "/videos/restaurant-owner.mp4", name: "Local Restaurant Owner" },
+  { src: "/videos/realestate-broker.mp4", name: "Real Estate Broker" },
+  { src: "/videos/hardware-owner.mp4", name: "Local Hardware Owner" },
+  { src: "/videos/spa-wellness-owner.mp4", name: "Spa & Wellness Owner" },
 ];
 
 const FAQS = [
@@ -327,28 +327,28 @@ export default function LandingPage() {
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Real ads. Real business owners. Real results from the Hinilas Pro workflow.</p>
         </div>
         <div className="ugc-scroll">
-          {UGC_PLACEHOLDERS.map((u, i) => (
+          {UGC_VIDEOS.map((u, i) => (
             <div key={i} className="ugc-card">
-              <div className="rounded-2xl border bg-white overflow-hidden" style={{ borderColor: BORDER }}>
-                {/* Portrait 9:16 placeholder */}
-                <div className="relative flex items-center justify-center" style={{ aspectRatio: "9/16", background: INNER }}>
-                  <div className="text-center px-4">
-                    <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full border-2" style={{ borderColor: BORDER, background: "#FFFFFF" }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={BRAND_BLUE} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </div>
-                    <p className="text-xs font-bold text-[#1c1e21]">Reel coming soon</p>
-                    <p className="mt-1 text-xs text-[#8a8d91]">Drop a video link here</p>
-                  </div>
+              <div className="rounded-2xl border bg-black overflow-hidden" style={{ borderColor: BORDER }}>
+                {/* Portrait 9:16 video — zoomed 8% to crop watermark edges */}
+                <div className="relative overflow-hidden" style={{ aspectRatio: "9/16" }}>
+                  <video
+                    src={u.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ transform: "scale(1.08)", transformOrigin: "center center" }}
+                  />
                 </div>
-                <div className="p-3 border-t" style={{ borderColor: BORDER }}>
+                <div className="p-3 border-t" style={{ borderColor: BORDER, background: "#FFFFFF" }}>
                   <p className="text-sm font-bold text-[#1c1e21]">{u.name}</p>
-                  <p className="text-xs text-[#1c1e21]">{u.biz}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <p className="mt-6 text-center text-xs text-[#8a8d91]">Are you a Hinilas Pro user? <button onClick={() => {}} className="font-bold underline" style={{ color: BRAND_BLUE }}>Submit your reel</button></p>
       </section>
 
       {/* TESTIMONIALS */}
