@@ -63,7 +63,7 @@ function BrandMark() {
   return (
     <div className="flex items-center gap-2">
       <HinilasIcon size="md" accentColor={BRAND_ORANGE} />
-      <div className="hidden sm:block leading-tight">
+      <div className="leading-tight">
         <div className="flex items-baseline">
           <span className="font-bold text-lg text-[#1c1e21]">Hinilas</span>
           <span className="font-bold text-lg" style={{ color: BRAND_ORANGE }}>Pro</span>
