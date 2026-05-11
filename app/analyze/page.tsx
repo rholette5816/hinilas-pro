@@ -50,7 +50,7 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-7 pr-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-7 pr-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
     </div>
@@ -547,23 +547,23 @@ body{background:#060D18;font-family:'Inter',Arial,sans-serif;overflow:hidden;wid
 
 /* Budget stats */
 .bstat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.bstat-card{background:rgba(255,255,255,0.03);border:1px solid #1C1E21;border-radius:14px;padding:20px 18px}
+.bstat-card{background:#FFFFFF;border:1px solid #E4E6EB;border-radius:14px;padding:20px 18px}
 .bstat-value{font-size:28px;font-weight:900;margin-bottom:6px;line-height:1}
 .bstat-label{font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px}
 .bstat-sub{font-size:11px;color:#475569}
-.roas-bar{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,0.03);border:1px solid #1C1E21;border-radius:14px;padding:18px 24px}
+.roas-bar{display:flex;align-items:center;gap:20px;background:#FFFFFF;border:1px solid #E4E6EB;border-radius:14px;padding:18px 24px}
 .roas-left{flex-shrink:0}
 .roas-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#475569;margin-bottom:4px}
 .roas-value{font-size:36px;font-weight:900;line-height:1}
-.roas-divider{width:1px;height:40px;background:#1C1E21;flex-shrink:0}
+.roas-divider{width:1px;height:40px;background:#E4E6EB;flex-shrink:0}
 .roas-verdict{font-size:18px;font-weight:800;flex-shrink:0}
-.roas-track{flex:1;height:8px;background:#1C1E21;border-radius:4px;overflow:hidden}
+.roas-track{flex:1;height:8px;background:#E4E6EB;border-radius:4px;overflow:hidden}
 .roas-fill{height:100%;border-radius:4px;transition:width 0.6s ease}
 
 /* Nav */
-.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(6,13,24,0.8);backdrop-filter:blur(12px);padding:8px;border-radius:16px;border:1px solid #1C1E21}
+.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);padding:8px;border-radius:16px;border:1px solid #E4E6EB}
 .nav button{background:transparent;border:none;color:#475569;font-size:16px;width:40px;height:40px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:600}
-.nav button:hover{background:#1C1E21;color:#fff}
+.nav button:hover{background:#E4E6EB;color:#1C1E21}
 .progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#0866FF,#38BDF8);transition:width 0.4s cubic-bezier(.4,0,.2,1);z-index:200}
 </style>
 </head>
@@ -763,7 +763,7 @@ show(0);
             <div className="inline-flex items-center gap-2 bg-yellow-950 border border-yellow-800 rounded-full px-3 py-1 mb-4">
               <span className="text-yellow-300 text-xs font-medium">📊 Audit Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Audit Your Ad Results</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Audit Your Ad Results</h1>
             <p className="text-gray-400 text-sm">Choose your analysis type below.</p>
           </div>
 
@@ -779,7 +779,7 @@ show(0);
               }}
             >
               <div className="text-2xl mb-2">📸</div>
-              <p className="text-white font-bold text-sm mb-1">Basic Analysis</p>
+              <p className="text-slate-900 font-bold text-sm mb-1">Basic Analysis</p>
               <p className="text-gray-500 text-xs">Messaging Ads — upload a screenshot</p>
             </button>
             <button
@@ -792,7 +792,7 @@ show(0);
               }}
             >
               <div className="text-2xl mb-2">📄</div>
-              <p className="text-white font-bold text-sm mb-1">Advanced Analysis</p>
+              <p className="text-slate-900 font-bold text-sm mb-1">Advanced Analysis</p>
               <p className="text-gray-500 text-xs">Purchase Ads — upload exported CSV</p>
             </button>
           </div>
@@ -801,10 +801,10 @@ show(0);
           {mode === "basic" && (
             <>
               {/* Video guide */}
-              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
+              <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
-                  <p className="text-white text-sm font-semibold">Watch before analyzing</p>
+                  <p className="text-slate-900 text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
                 {videos.analyze_basic.unlocked ? (
@@ -821,7 +821,7 @@ show(0);
                     <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#0866FF20" }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0866FF" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
-                    <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
                     <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                     {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                     {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
@@ -859,7 +859,7 @@ show(0);
                 <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImageUpload} />
                 {screenshot ? (
                   <>
-                    <div className="rounded-xl overflow-hidden border border-gray-700 mb-2">
+                    <div className="rounded-xl overflow-hidden border border-slate-200 mb-2">
                       <img src={screenshot} alt="screenshot" className="w-full object-contain max-h-72" />
                     </div>
                     <div className="flex gap-3 mt-2">
@@ -869,12 +869,12 @@ show(0);
                   </>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => fileRef.current?.click()} className="flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
+                    <button onClick={() => fileRef.current?.click()} className="flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
                       <span className="text-2xl">🖼</span>
                       <p className="text-gray-300 text-sm font-medium">Upload Screenshot</p>
                       <p className="text-gray-600 text-xs">From your files</p>
                     </button>
-                    <button onClick={() => cameraRef.current?.click()} className="flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
+                    <button onClick={() => cameraRef.current?.click()} className="flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
                       <span className="text-2xl">📷</span>
                       <p className="text-gray-300 text-sm font-medium">Take a Photo</p>
                       <p className="text-gray-600 text-xs">Use your camera</p>
@@ -884,7 +884,7 @@ show(0);
               </div>
 
               {/* Basic profit fields */}
-              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
+              <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
                 <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
                 <p className="text-gray-500 text-xs mb-4">Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
                 <div className="grid grid-cols-2 gap-4">
@@ -894,7 +894,7 @@ show(0);
                   <div>
                     <label className="block text-xs font-medium text-gray-400 mb-1">Number of Sales</label>
                     <input type="number" value={numSales} onChange={e => setNumSales(e.target.value)} placeholder="e.g. 5"
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 px-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   </div>
                 </div>
               </div>
@@ -905,10 +905,10 @@ show(0);
           {mode === "advanced" && (
             <>
               {/* Video guide */}
-              <div className="rounded-xl border border-gray-700 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
+              <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
                 <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
                   <span className="text-red-400 text-sm">▶</span>
-                  <p className="text-white text-sm font-semibold">Watch before analyzing</p>
+                  <p className="text-slate-900 text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
                 </div>
                 {videos.analyze_advanced.unlocked ? (
@@ -925,7 +925,7 @@ show(0);
                     <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#D9770620" }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
-                    <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                    <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
                     <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                     {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                     {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
@@ -961,18 +961,18 @@ show(0);
                 <label className="block text-sm font-medium text-gray-300 mb-2">Meta Ads Export File</label>
                 <input ref={csvRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
                 {csvText ? (
-                  <div className="rounded-xl border border-gray-700 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF" }}>
+                  <div className="rounded-xl border border-slate-200 px-4 py-3 flex items-center justify-between" style={{ background: "#FFFFFF" }}>
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📄</span>
                       <div>
-                        <p className="text-white text-sm font-medium">{csvFileName}</p>
+                        <p className="text-slate-700 text-sm font-medium">{csvFileName}</p>
                         <p className="text-gray-500 text-xs">File loaded — ready to analyze</p>
                       </div>
                     </div>
                     <button onClick={() => { setCsvText(null); setCsvFileName(""); }} className="text-xs text-red-400 hover:text-red-300">Remove</button>
                   </div>
                 ) : (
-                  <button onClick={() => csvRef.current?.click()} className="w-full flex flex-col items-center gap-2 bg-gray-800 border border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-orange-600 transition-colors">
+                  <button onClick={() => csvRef.current?.click()} className="w-full flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-orange-600 transition-colors">
                     <span className="text-3xl">📄</span>
                     <p className="text-gray-300 text-sm font-medium">Upload CSV Export</p>
                     <p className="text-gray-600 text-xs">CSV only — Export → Export Table Data (CSV)</p>
@@ -981,7 +981,7 @@ show(0);
               </div>
 
               {/* Advanced profit fields */}
-              <div className="border border-gray-700 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
+              <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
                 <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — COD Profit Calculator</p>
                 <p className="text-gray-500 text-xs mb-4">Include COGS, shipping, and RTS rate for a true net profit calculation.</p>
                 <div className="grid grid-cols-2 gap-4">
@@ -992,7 +992,7 @@ show(0);
                     <label className="block text-xs font-medium text-gray-400 mb-1">Estimated RTS % (Return to Sender)</label>
                     <div className="relative">
                       <input type="number" value={rtsPercent} onChange={e => setRtsPercent(e.target.value)} placeholder="e.g. 20"
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-3 pr-7 text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        className="w-full bg-white border border-slate-200 rounded-lg py-2.5 pl-3 pr-7 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">%</span>
                     </div>
                   </div>
@@ -1042,7 +1042,7 @@ show(0);
                   <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Analysis Result</span>
                   <button
                     onClick={() => navigator.clipboard.writeText(output)}
-                    className="text-xs px-3 py-1 rounded-lg border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white transition-colors"
+                    className="text-xs px-3 py-1 rounded-lg border border-slate-200 hover:border-gray-500 text-slate-500 hover:text-slate-900 transition-colors"
                   >
                     Copy
                   </button>

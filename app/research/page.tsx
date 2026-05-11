@@ -95,14 +95,14 @@ export default function ResearchPage() {
       <Sidebar />
       {noCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
             <div
               className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full text-lg"
               style={{ border: "1px solid rgba(217,119,6,0.4)", color: "#D97706" }}
             >
               !
             </div>
-            <h2 className="text-white font-bold text-lg mb-2">Not enough credits</h2>
+            <h2 className="text-slate-900 font-bold text-lg mb-2">Not enough credits</h2>
             <p className="text-gray-400 text-sm mb-6">Research costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a
@@ -127,22 +127,22 @@ export default function ResearchPage() {
             <div className="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-800 rounded-full px-3 py-1 mb-4">
               <span className="text-emerald-300 text-xs font-medium">Research Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">AI Market Research</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">AI Market Research</h1>
             <p className="text-gray-400 text-sm">
               Understand your market before you run a single ad. This research powers your strategy and copy.
             </p>
           </div>
 
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 mb-6">
             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-2">Researching for</p>
-            <p className="text-white font-semibold">{setup.businessName}</p>
+            <p className="text-slate-900 font-semibold">{setup.businessName}</p>
             <p className="text-gray-400 text-sm mt-1">{setup.product}</p>
             <p className="text-gray-500 text-xs mt-1">Target: {setup.targetAudience}</p>
           </div>
 
           {!researchOutput && (
             <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
-              <h2 className="text-white font-semibold text-sm mb-3">What you&apos;ll get</h2>
+              <h2 className="text-slate-700 font-semibold text-sm mb-3">What you&apos;ll get</h2>
               <div className="space-y-2">
                 {[
                   "Who your customer really is",
@@ -198,7 +198,7 @@ export default function ResearchPage() {
                 >
                   <CheckIcon />
                 </div>
-                <p className="text-white font-semibold text-sm">Step 2 done - Now let&apos;s find your angle</p>
+                <p className="text-slate-700 font-semibold text-sm">Step 2 done - Now let&apos;s find your angle</p>
               </div>
               <p className="text-xs text-gray-400 mb-4">Use these insights to craft angles that convert.</p>
               <button

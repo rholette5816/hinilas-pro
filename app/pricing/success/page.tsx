@@ -24,9 +24,9 @@ function SuccessContent() {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0F1A" }}>
       <div className="text-center max-w-sm px-6">
         <div className="text-6xl mb-6">🎉</div>
-        <h1 className="text-2xl font-bold text-white mb-3">Payment Successful!</h1>
+        <h1 className="text-2xl font-bold text-slate-900 mb-3">Payment Successful!</h1>
         <p className="text-gray-400 text-sm mb-2">
-          Your <span className="text-white font-semibold">{PLAN_LABELS[plan] || plan}</span> is now active.
+          Your <span className="text-slate-900 font-semibold">{PLAN_LABELS[plan] || plan}</span> is now active.
         </p>
         <p className="text-gray-500 text-xs mb-8">Credits have been added to your account.</p>
         <div className="flex flex-col gap-3">

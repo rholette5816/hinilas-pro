@@ -218,7 +218,7 @@ export default function Sidebar() {
               }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group"
               style={active
-                ? { background: "rgba(8,102,255,0.1)", borderLeft: "2px solid #0866FF", paddingLeft: "10px" }
+                ? { background: "#1D2129", borderLeft: "2px solid #1D2129", paddingLeft: "10px" }
                 : isLocked
                 ? { borderLeft: "2px solid transparent", opacity: 0.45, cursor: "not-allowed" }
                 : { borderLeft: "2px solid transparent" }
@@ -228,7 +228,7 @@ export default function Sidebar() {
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-base font-medium" style={{ color: "#1C1E21" }}>{item.label}</p>
+                <p className="text-base font-medium" style={{ color: active ? "#FFFFFF" : "#1C1E21" }}>{item.label}</p>
                 <p className="text-sm truncate" style={{ color: "#65676B" }}>{item.desc}</p>
               </div>
               {isLocked ? (

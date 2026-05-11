@@ -11,7 +11,7 @@ function renderInline(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**"))
-      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="text-slate-900 font-semibold">{part.slice(2, -2)}</strong>;
     if (part.startsWith("*") && part.endsWith("*"))
       return <em key={i} className="text-gray-200">{part.slice(1, -1)}</em>;
     return part;
@@ -21,7 +21,7 @@ function renderInline(text: string) {
 export default function AIOutput({ content, loading, loadingText = "Thinking..." }: Props) {
   if (loading) {
     return (
-      <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+      <div className="bg-white rounded-xl p-5 border border-slate-200">
         <div className="flex items-center gap-3 text-gray-400">
           <div className="flex gap-1">
             <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -39,7 +39,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
   const lines = content.split("\n");
 
   return (
-    <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+    <div className="bg-white rounded-xl p-5 border border-slate-200">
       <div className="space-y-1 text-sm leading-relaxed">
         {lines.map((line, i) => {
           const trimmed = line.trim();
@@ -50,7 +50,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
 
           // H1
           if (line.startsWith("# "))
-            return <h1 key={i} className="text-white font-bold text-lg mt-6 mb-2 first:mt-0">{renderInline(line.slice(2))}</h1>;
+            return <h1 key={i} className="text-slate-900 font-bold text-lg mt-6 mb-2 first:mt-0">{renderInline(line.slice(2))}</h1>;
 
           // H2
           if (line.startsWith("## "))
@@ -87,7 +87,7 @@ export default function AIOutput({ content, loading, loadingText = "Thinking..."
 
           // Bold-only line (acts as a label/heading)
           if (trimmed.startsWith("**") && trimmed.endsWith("**") && trimmed.length > 4)
-            return <p key={i} className="text-white font-semibold mt-3 mb-1">{trimmed.slice(2, -2)}</p>;
+            return <p key={i} className="text-slate-800 font-semibold mt-3 mb-1">{trimmed.slice(2, -2)}</p>;
 
           // Plain text (with inline bold support)
           return (

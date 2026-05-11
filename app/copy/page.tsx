@@ -21,7 +21,7 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
     <button
       onClick={copy}
       className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-      style={{ background: copied ? "#22c55e20" : "#1C1E21", color: copied ? "#22c55e" : "#9CA3AF", border: `1px solid ${copied ? "#22c55e40" : "#374151"}` }}
+      style={{ background: copied ? "#22c55e20" : "#F1F5F9", color: copied ? "#22c55e" : "#65676B", border: `1px solid ${copied ? "#22c55e40" : "#E4E6EB"}` }}
     >
       {copied ? "Copied!" : label}
     </button>
@@ -154,9 +154,9 @@ export default function CopyPage() {
       <Sidebar />
       {noCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
             <div className="text-4xl mb-4">⚡</div>
-            <h2 className="text-white font-bold text-lg mb-2">Not enough credits</h2>
+            <h2 className="text-slate-900 font-bold text-lg mb-2">Not enough credits</h2>
             <p className="text-gray-400 text-sm mb-6">Copy generation costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>View Plans</a>
@@ -174,7 +174,7 @@ export default function CopyPage() {
             <div className="inline-flex items-center gap-2 bg-purple-950 border border-purple-800 rounded-full px-3 py-1 mb-4">
               <span className="text-purple-300 text-xs font-medium">✍ Caption Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Write Your Captions</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Write Your Captions</h1>
             <p className="text-gray-400 text-sm">AI reads your generated ad image and writes captions that match it. Pick up to 2 formulas.</p>
           </div>
 
@@ -184,7 +184,7 @@ export default function CopyPage() {
               <p className="text-sm font-medium text-gray-300">Ad Image Reference</p>
               <button
                 onClick={() => uploadRef.current?.click()}
-                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-600 text-gray-300 hover:border-gray-400 hover:text-white transition-colors"
+                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-300 text-gray-300 hover:border-gray-400 hover:text-white transition-colors"
               >
                 Upload your own image
               </button>
@@ -193,7 +193,7 @@ export default function CopyPage() {
 
             {activeImage ? (
               <div>
-                <div className="rounded-xl overflow-hidden border border-gray-700 max-w-xs">
+                <div className="rounded-xl overflow-hidden border border-slate-200 max-w-xs">
                   <img src={activeImage} alt="Ad image reference" className="w-full object-cover" />
                 </div>
                 <div className="flex items-center gap-3 mt-2">
@@ -211,7 +211,7 @@ export default function CopyPage() {
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-800 border border-dashed border-gray-600 rounded-xl px-5 py-6 text-center">
+              <div className="bg-white border border-dashed border-slate-300 rounded-xl px-5 py-6 text-center">
                 <p className="text-gray-400 text-sm mb-3">No image yet. Upload one or generate from Creative.</p>
                 <div className="flex items-center justify-center gap-3">
                   <button
@@ -223,7 +223,7 @@ export default function CopyPage() {
                   </button>
                   <button
                     onClick={() => router.push("/creative")}
-                    className="text-gray-300 px-4 py-2 rounded-lg text-xs font-semibold border border-gray-600 hover:border-gray-500"
+                    className="text-gray-300 px-4 py-2 rounded-lg text-xs font-semibold border border-slate-300 hover:border-gray-500"
                   >
                     Go to Creative
                   </button>
@@ -244,7 +244,7 @@ export default function CopyPage() {
                   className="p-2.5 rounded-lg border text-left transition-all"
                   style={language === opt.value
                     ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
-                    : { background: "#1C1E21", borderColor: "#374151", color: "#9CA3AF" }
+                    : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#65676B" }
                   }
                 >
                   <p className="text-xs font-medium">{opt.label}</p>
@@ -275,8 +275,8 @@ export default function CopyPage() {
                       selected
                         ? { background: "#0866FF", borderColor: "#0866FF", color: "white" }
                         : disabled
-                        ? { background: "#111827", borderColor: "#1F2937", color: "#4B5563", cursor: "not-allowed" }
-                        : { background: "#1C1E21", borderColor: "#374151", color: "#9CA3AF" }
+                        ? { background: "#F8FAFC", borderColor: "#E4E6EB", color: "#94A3B8", cursor: "not-allowed" }
+                        : { background: "#F1F5F9", borderColor: "#E4E6EB", color: "#65676B" }
                     }
                   >
                     <p className="text-sm font-bold">{f.label}</p>
@@ -340,7 +340,7 @@ export default function CopyPage() {
               <div className="space-y-4">
                 <FireCelebration show={true} />
                 {variations.map((v, idx) => (
-                  <div key={idx} className="rounded-xl border border-gray-700 overflow-hidden" style={{ background: "#FFFFFF" }}>
+                  <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden" style={{ background: "#FFFFFF" }}>
                     {/* Card header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800" style={{ background: "#F0F2F5" }}>
                       <span className="text-blue-400 text-xs font-bold uppercase tracking-wide">{v.title}</span>
@@ -357,7 +357,7 @@ export default function CopyPage() {
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <p className="text-xs font-semibold text-gray-500 mb-1">HEADLINE</p>
-                            <p className="text-white text-sm font-medium">{v.headline}</p>
+                            <p className="text-slate-700 text-sm font-medium">{v.headline}</p>
                           </div>
                           <CopyButton text={v.headline} label="Copy" />
                         </div>

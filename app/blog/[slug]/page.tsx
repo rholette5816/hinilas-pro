@@ -174,7 +174,7 @@ export default async function BlogPostPage({
           >
             <div
               className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-              style={{ background: "rgba(8,102,255,0.18)", color: "#93C5FD", border: "1px solid rgba(147,197,253,0.25)" }}
+              style={{ background: "rgba(8,102,255,0.08)", color: "#0866FF", border: "1px solid rgba(8,102,255,0.2)" }}
             >
               Try Hinilas Pro
             </div>

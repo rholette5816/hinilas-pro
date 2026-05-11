@@ -119,7 +119,7 @@ export default function TestimonialPage() {
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "#14532D" }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h2 className="text-white font-bold text-2xl mb-2">Thank you!</h2>
+          <h2 className="text-slate-900 font-bold text-2xl mb-2">Thank you!</h2>
           <p className="text-sm leading-relaxed" style={{ color: "#65676B" }}>
             Your experience has been submitted. It means a lot and helps others discover what Hinilas Pro can do.
           </p>
@@ -138,7 +138,7 @@ export default function TestimonialPage() {
           <div className="mb-4">
             <HinilasIcon size="lg" accentColor={BRAND_ORANGE} />
           </div>
-          <h1 className="text-2xl font-black text-white mb-1">Share Your Experience</h1>
+          <h1 className="text-2xl font-black text-slate-900 mb-1">Share Your Experience</h1>
           <p className="text-sm" style={{ color: "#65676B" }}>Your story helps other business owners find the right tool.</p>
         </div>
 

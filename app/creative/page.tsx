@@ -362,7 +362,7 @@ export default function CreativePage() {
             <div className="inline-flex items-center gap-2 bg-pink-950 border border-pink-800 rounded-full px-3 py-1 mb-4">
               <span className="text-pink-300 text-xs font-medium">🖼 Creative Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Ad Creatives</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Ad Creatives</h1>
             <p className="text-gray-400 text-sm">Generate static images or short video clips for your Meta ads.</p>
           </div>
 
@@ -370,13 +370,13 @@ export default function CreativePage() {
           <div className="flex gap-2 mb-8">
             <button
               onClick={() => setActiveTab("image")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "image" ? "bg-pink-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "image" ? "bg-pink-600 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
             >
               🖼 Image
             </button>
             <button
               onClick={() => setActiveTab("video")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === "video" ? "bg-purple-600 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
             >
               🎬 Video Clips
             </button>
@@ -403,13 +403,13 @@ export default function CreativePage() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 mb-6">
-                    <p className="text-white text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
+                  <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6">
+                    <p className="text-slate-900 text-sm font-semibold mb-1">Get 3 Ready-to-Post Video Ads</p>
                     <p className="text-gray-400 text-xs leading-relaxed">Based on your angle, we generate 3 short clips - a hook, a solution, and a call to action. Shot in vertical format, ready to upload to Reels and Stories.</p>
                   </div>
 
                   {/* Sample previews */}
-                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 mb-5">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5">
                     <div className="flex items-center justify-between mb-2.5">
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sample Output</p>
                       <p className="text-gray-600 text-xs">Tap to play</p>
@@ -422,7 +422,7 @@ export default function CreativePage() {
                       ].map((s, i) => (
                         <div key={s.label} className="flex-1 flex flex-col items-center gap-1.5">
                           <div
-                            className="relative w-full rounded-lg overflow-hidden border border-gray-600 bg-gray-900 cursor-pointer"
+                            className="relative w-full rounded-lg overflow-hidden border border-slate-300 bg-slate-50 cursor-pointer"
                             style={{ aspectRatio: "9/16", maxHeight: "clamp(200px, 35vw, 320px)" }}
                             onClick={() => toggleSample(i)}
                           >
@@ -485,9 +485,9 @@ export default function CreativePage() {
                         { label: "Clip 2\nSolution", emoji: "💡" },
                         { label: "Clip 3\nCTA", emoji: "📣" },
                       ].map(({ label, emoji }, i) => (
-                        <div key={i} className="flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+                        <div key={i} className="flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
                           {/* Video or placeholder */}
-                          <div className="relative bg-gray-900 flex-1" style={{ aspectRatio: "9/16", minHeight: 160 }}>
+                          <div className="relative bg-slate-50 flex-1" style={{ aspectRatio: "9/16", minHeight: 160 }}>
                             {videoUrls[i] ? (
                               <video
                                 src={videoUrls[i]!}
@@ -513,7 +513,7 @@ export default function CreativePage() {
                           </div>
 
                           {/* Footer */}
-                          <div className="px-2 py-2 border-t border-gray-700 flex flex-col gap-1.5">
+                          <div className="px-2 py-2 border-t border-slate-200 flex flex-col gap-1.5">
                             {clipErrors[i] && (
                               <p className="text-red-400 text-xs text-center leading-tight">{clipErrors[i]}</p>
                             )}
@@ -566,13 +566,13 @@ export default function CreativePage() {
               <p className="text-gray-500 text-xs mb-1.5">Clean logo on white or transparent background. Sets your brand colors, fonts, and style.</p>
               <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setLogoFile)} />
               {logoFile ? (
-                <div className="bg-gray-800 border border-green-700 rounded-lg p-3 flex items-center gap-3">
+                <div className="bg-white border border-green-200 rounded-lg p-3 flex items-center gap-3">
                   <img src={logoFile} alt="Logo" className="w-10 h-10 object-contain rounded" />
                   <p className="text-gray-300 text-xs flex-1">Logo uploaded</p>
                   <button onClick={() => setLogoFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
-                <button onClick={() => logoRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-red-800 rounded-lg p-4 text-center hover:border-red-600 transition-colors">
+                <button onClick={() => logoRef.current?.click()} className="w-full bg-white border border-dashed border-red-300 rounded-lg p-4 text-center hover:border-red-600 transition-colors">
                   <p className="text-gray-400 text-sm">Upload logo</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
@@ -583,13 +583,13 @@ export default function CreativePage() {
               <p className="text-gray-500 text-xs mb-1.5">Upload your product photo or a photo of yourself / a model. The AI will feature it in the ad.</p>
               <input ref={productRef} type="file" accept="image/*" className="hidden" onChange={e => handleFileUpload(e, setProductFile)} />
               {productFile ? (
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
+                <div className="bg-white border border-slate-200 rounded-lg p-3 flex items-center gap-3">
                   <img src={productFile} alt="Product" className="w-10 h-10 object-contain rounded" />
                   <p className="text-gray-300 text-xs flex-1">Photo uploaded</p>
                   <button onClick={() => setProductFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
                 </div>
               ) : (
-                <button onClick={() => productRef.current?.click()} className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
+                <button onClick={() => productRef.current?.click()} className="w-full bg-white border border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-gray-500 transition-colors">
                   <p className="text-gray-400 text-sm">Upload product or model</p>
                   <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
                 </button>
@@ -607,16 +607,16 @@ export default function CreativePage() {
               value={extraPrompt}
               onChange={e => setExtraPrompt(e.target.value)}
               placeholder="e.g. dark themed, warm colors, show before and after, minimalist design..."
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+              className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
             />
           </div>
 
           {/* No credits modal */}
           {noCredits && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
                 <div className="text-4xl mb-4">⚡</div>
-                <h2 className="text-white font-bold text-lg mb-2">You&apos;re out of credits</h2>
+                <h2 className="text-slate-900 font-bold text-lg mb-2">You&apos;re out of credits</h2>
                 <p className="text-gray-400 text-sm mb-6">Upgrade to Pro for 150 credits/month or grab a quick top-up to continue generating.</p>
                 <div className="flex flex-col gap-3">
                   <a href="/pricing" className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center" style={{ background: "#D97706" }}>
@@ -649,7 +649,7 @@ export default function CreativePage() {
           {/* 3-card horizontal gallery: Main + Variation 1 + Variation 2 */}
           <div className="mb-8">
             <div className="mb-3">
-              <p className="text-white font-semibold text-sm">Ad Creative Set</p>
+              <p className="text-slate-700 font-semibold text-sm">Ad Creative Set</p>
               <p className="text-gray-500 text-xs">Main + 2 variations. Each uses 2 credits. Variations require Main first.</p>
             </div>
 
@@ -659,14 +659,14 @@ export default function CreativePage() {
                 { label: "Variation 1", emoji: "📱", image: iterations[0], loading: loadingIter[0], disabled: !mainImage, onGen: () => generateIteration(0), onUse: () => iterations[0] && applyForCopy(iterations[0]!), onDl: () => iterations[0] && downloadImage(iterations[0]!, "hinilas-ad-v1.png") },
                 { label: "Variation 2", emoji: "🖼️", image: iterations[1], loading: loadingIter[1], disabled: !mainImage, onGen: () => generateIteration(1), onUse: () => iterations[1] && applyForCopy(iterations[1]!), onDl: () => iterations[1] && downloadImage(iterations[1]!, "hinilas-ad-v2.png") },
               ].map((card, i) => (
-                <div key={i} className="w-full md:flex-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+                <div key={i} className="w-full md:flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col">
                   {/* Header */}
-                  <div className="px-3 py-2 border-b border-gray-700">
-                    <p className="text-white text-xs font-semibold leading-tight">{card.label}</p>
+                  <div className="px-3 py-2 border-b border-slate-200">
+                    <p className="text-slate-900 text-xs font-semibold leading-tight">{card.label}</p>
                   </div>
 
                   {/* Image area — 1:1 square */}
-                  <div className="relative bg-gray-900" style={{ aspectRatio: "1/1" }}>
+                  <div className="relative bg-slate-50" style={{ aspectRatio: "1/1" }}>
                     {card.loading ? (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="flex gap-1">
@@ -693,7 +693,7 @@ export default function CreativePage() {
                   </div>
 
                   {/* Footer actions - 3 big buttons when image exists, single Generate when empty */}
-                  <div className="p-2.5 border-t border-gray-700 flex flex-col gap-2">
+                  <div className="p-2.5 border-t border-slate-200 flex flex-col gap-2">
                     {card.image && !card.loading ? (
                       <>
                         <button
@@ -745,7 +745,7 @@ export default function CreativePage() {
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
-                className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
+                className="absolute top-4 right-4 bg-black/10 hover:bg-black/20 text-slate-900 w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
                 aria-label="Close preview"
               >
                 {"Ã—"}

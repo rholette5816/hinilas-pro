@@ -9,7 +9,7 @@ export default function CancelPage() {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0F1A" }}>
       <div className="text-center max-w-sm px-6">
         <div className="text-5xl mb-6">↩</div>
-        <h1 className="text-xl font-bold text-white mb-3">Payment cancelled</h1>
+        <h1 className="text-xl font-bold text-slate-900 mb-3">Payment cancelled</h1>
         <p className="text-gray-400 text-sm mb-8">No charge was made. You can upgrade anytime when you&apos;re ready.</p>
         <div className="flex flex-col gap-3">
           <button

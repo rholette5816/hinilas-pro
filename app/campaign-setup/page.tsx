@@ -370,7 +370,7 @@ export default function CampaignSetupPage() {
             <span>All steps complete - Ready to launch your campaign</span>
           </div>
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-white mb-1">Campaign Setup</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">Campaign Setup</h1>
             <p className="text-gray-400 text-sm">Step-by-step ad campaign guides</p>
           </div>
 
@@ -402,7 +402,7 @@ export default function CampaignSetupPage() {
               <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-700 rounded-full px-3 py-1 mb-4">
                 <span className="text-indigo-300 text-xs font-semibold">Coming Soon</span>
               </div>
-              <h2 className="text-white font-bold text-xl mb-2">Conversion Setup - Upcoming</h2>
+              <h2 className="text-slate-900 font-bold text-xl mb-2">Conversion Setup - Upcoming</h2>
               <p className="text-gray-400 text-sm mb-1">This guide covers Facebook Pixel setup, website conversion campaigns, and purchase-optimized ad sets.</p>
               <p className="text-gray-500 text-xs mb-6">Currently in production.</p>
               <p className="text-indigo-400 text-xs">Stay tuned - we&apos;ll notify you when it drops.</p>
@@ -417,7 +417,7 @@ export default function CampaignSetupPage() {
                     <span>Step {currentStep + 1} of {TOTAL}</span>
                     <span>{progress}% complete</span>
                   </div>
-                  <div className="w-full bg-gray-800 rounded-full h-2">
+                  <div className="w-full bg-slate-200 rounded-full h-2">
                     <div
                       className="h-2 rounded-full transition-all duration-300"
                       style={{ width: `${progress}%`, background: step.color }}
@@ -448,7 +448,7 @@ export default function CampaignSetupPage() {
                 const isLoadingReward = unlockingVideo === currentVideoKey;
 
                 return (
-                  <div className="mb-5 rounded-2xl overflow-hidden border border-gray-700" style={{ background: "#F0F2F5" }}>
+                  <div className="mb-5 rounded-2xl overflow-hidden border border-slate-200" style={{ background: "#F0F2F5" }}>
                     <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                       <div className="w-2 h-2 rounded-full" style={{ background: step.color }} />
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: step.color }}>{step.level} Level</span>
@@ -477,7 +477,7 @@ export default function CampaignSetupPage() {
                           <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${step.color}20` }}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                           </div>
-                          <p className="text-white text-sm font-semibold mb-1">Unlock this tutorial video</p>
+                          <p className="text-slate-900 text-sm font-semibold mb-1">Unlock this tutorial video</p>
                           <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
                           {noCredits && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
                           {!noCredits && <div className="mb-3" />}
@@ -554,11 +554,11 @@ export default function CampaignSetupPage() {
               )}
 
               {done ? (
-                <div className="rounded-2xl border border-gray-700 p-8 text-center" style={{ background: "#F0F2F5" }}>
+                <div className="rounded-2xl border border-slate-200 p-8 text-center" style={{ background: "#F0F2F5" }}>
                   <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#22c55e20" }}>
                     <span className="text-4xl">OK</span>
                   </div>
-                  <h2 className="text-white font-bold text-xl mb-2">Campaign Ready to Publish!</h2>
+                  <h2 className="text-slate-900 font-bold text-xl mb-2">Campaign Ready to Publish!</h2>
                   <p className="text-gray-400 text-sm mb-6">Your Messenger Ads campaign is set up. Here&apos;s your final structure:</p>
                   <div className="space-y-3 mb-8">
                     {[
@@ -571,7 +571,7 @@ export default function CampaignSetupPage() {
                           {item.icon}
                         </div>
                         <div className="text-left">
-                          <p className="text-white font-semibold text-sm">{item.label}</p>
+                          <p className="text-slate-700 font-semibold text-sm">{item.label}</p>
                           <p className="text-gray-500 text-xs">{item.sub}</p>
                         </div>
                         <span className="ml-auto text-xs font-bold" style={{ color: item.color }}>Done</span>
@@ -581,7 +581,7 @@ export default function CampaignSetupPage() {
                   {/* Launch proof CTA */}
                   <div className="mb-6 p-4 rounded-xl" style={{ background: "#FFFFFF", border: "1px solid #D9770630" }}>
                     <p className="text-yellow-400 font-bold text-sm mb-1">🚀 Claim Your Launch Reward</p>
-                    <p className="text-gray-400 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-white font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
+                    <p className="text-gray-400 text-xs mb-3">Submit a screenshot of your live campaign in Meta Ads Manager to earn <span className="text-slate-900 font-bold">+20 credits</span>. Make sure the campaign status is visible and clear.</p>
                     <button
                       onClick={() => { setShowLaunchModal(true); setLaunchDone(false); setLaunchFile(null); setLaunchError(""); }}
                       className="w-full py-2.5 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -592,7 +592,7 @@ export default function CampaignSetupPage() {
                   </div>
 
                   <div className="flex gap-3 justify-center">
-                    <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white transition-colors">
+                    <button onClick={back} className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-slate-200 text-slate-500 hover:text-slate-900 transition-colors">
                       Back
                     </button>
                     <button onClick={restart} className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#0866FF" }}>
@@ -607,15 +607,15 @@ export default function CampaignSetupPage() {
                         {launchDone ? (
                           <div className="text-center py-4">
                             <div className="text-5xl mb-4">🎉</div>
-                            <h3 className="text-white font-bold text-lg mb-2">Proof Submitted!</h3>
+                            <h3 className="text-slate-900 font-bold text-lg mb-2">Proof Submitted!</h3>
                             <p className="text-gray-400 text-sm mb-6">Your screenshot is being reviewed. Credits will be added once approved.</p>
                             <button onClick={() => setShowLaunchModal(false)} className="w-full py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#0866FF" }}>Done</button>
                           </div>
                         ) : (
                           <>
                             <div className="flex items-center justify-between mb-4">
-                              <h3 className="text-white font-bold text-base">Submit Campaign Proof</h3>
-                              <button onClick={() => setShowLaunchModal(false)} className="text-gray-500 hover:text-white text-sm">✕</button>
+                              <h3 className="text-slate-900 font-bold text-base">Submit Campaign Proof</h3>
+                              <button onClick={() => setShowLaunchModal(false)} className="text-slate-500 hover:text-slate-700 text-sm">✕</button>
                             </div>
                             <div className="bg-yellow-950 border border-yellow-800 rounded-lg px-4 py-3 mb-4">
                               <p className="text-yellow-300 text-xs font-medium mb-1">Screenshot requirements:</p>
@@ -636,7 +636,7 @@ export default function CampaignSetupPage() {
                             />
 
                             {launchFile ? (
-                              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 flex items-center gap-3 mb-4">
+                              <div className="bg-white border border-slate-200 rounded-lg p-3 flex items-center gap-3 mb-4">
                                 <span className="text-green-400 text-lg">✓</span>
                                 <p className="text-gray-300 text-xs flex-1 truncate">{launchFile.name}</p>
                                 <button onClick={() => setLaunchFile(null)} className="text-gray-500 hover:text-red-400 text-xs">Remove</button>
@@ -644,7 +644,7 @@ export default function CampaignSetupPage() {
                             ) : (
                               <button
                                 onClick={() => launchInputRef.current?.click()}
-                                className="w-full bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center hover:border-gray-500 transition-colors mb-4"
+                                className="w-full bg-white border border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-gray-500 transition-colors mb-4"
                               >
                                 <p className="text-gray-400 text-sm">Upload screenshot</p>
                                 <p className="text-gray-600 text-xs mt-0.5">PNG, JPG</p>
@@ -670,7 +670,7 @@ export default function CampaignSetupPage() {
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-gray-700 overflow-hidden" style={{ background: "#F0F2F5" }}>
+                <div className="rounded-2xl border border-slate-200 overflow-hidden" style={{ background: "#F0F2F5" }}>
                   <div className="px-6 py-4 border-b border-gray-800" style={{ background: "#FFFFFF" }}>
                     <div className="flex items-center gap-2 mb-1">
                       <span
@@ -683,7 +683,7 @@ export default function CampaignSetupPage() {
                         {currentStep === 0 ? "Pre-Step" : `Step ${currentStep}`}
                       </span>
                     </div>
-                    <h2 className="text-white font-bold text-lg">{step.label}</h2>
+                    <h2 className="text-slate-900 font-bold text-lg">{step.label}</h2>
                   </div>
 
                   <div className="px-6 py-5 space-y-3">
@@ -725,7 +725,7 @@ export default function CampaignSetupPage() {
                     <button
                       onClick={back}
                       disabled={currentStep === 0}
-                      className="flex-1 py-3 rounded-xl text-sm font-semibold border border-gray-700 text-gray-400 hover:text-white disabled:opacity-30 transition-colors"
+                      className="flex-1 py-3 rounded-xl text-sm font-semibold border border-slate-200 text-slate-500 hover:text-slate-900 disabled:opacity-30 transition-colors"
                     >
                       Back
                     </button>
