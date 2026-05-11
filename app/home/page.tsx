@@ -433,18 +433,16 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:gap-10 lg:py-20 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>FAQ</p>
-          <h2 className="text-3xl font-black tracking-tight text-[#050505]">Common questions</h2>
-          <p className="mt-4 text-base leading-7 text-[#1c1e21]">Straight answers before you create an account.</p>
-        </div>
+      <section className="mx-auto max-w-3xl px-4 py-12 lg:py-20 text-center">
+        <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>FAQ</p>
+        <h2 className="text-3xl font-black tracking-tight text-[#050505]">Common questions</h2>
+        <p className="mt-4 mb-8 text-base leading-7 text-[#1c1e21]">Straight answers before you create an account.</p>
         <FAQSection />
       </section>
 
       {/* FINAL CTA */}
       <section className="mx-auto max-w-6xl px-4 pb-8 lg:pb-10">
-        <div className="rounded-2xl px-6 py-12 text-center sm:px-12 sm:py-16" style={{ background: TEXT, color: "#FFFFFF" }}>
+        <div className="rounded-2xl px-6 py-12 text-center sm:px-12 sm:py-16" style={{ background: "linear-gradient(135deg, #1877F2 0%, #0d5dbf 100%)", color: "#FFFFFF" }}>
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Start today</p>
           <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-tight sm:text-4xl">Build your first ad kit in the next 10 minutes.</h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7" style={{ color: "#CBD5E1" }}>No agency, no workshop, no guessing. Just your business details and a system that tells you exactly what to say.</p>
