@@ -764,7 +764,7 @@ show(0);
               <span className="text-yellow-300 text-xs font-medium">📊 Audit Department</span>
             </div>
             <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Audit Your Ad Results</h1>
-            <p className="text-gray-400 text-sm">Choose your analysis type below.</p>
+            <p className="text-sm" style={{ color: "#65676b" }}>Choose your analysis type below.</p>
           </div>
 
           {/* Mode selector */}
@@ -802,7 +802,7 @@ show(0);
             <>
               {/* Video guide */}
               <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
-                <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
+                <div className="px-4 py-3 flex items-center gap-2 border-b border-slate-200">
                   <span className="text-red-400 text-sm">▶</span>
                   <p className="text-[#1c1e21] text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
@@ -817,39 +817,51 @@ show(0);
                     )}
                   </>
                 ) : (
-                  <div className="px-6 py-10 text-center">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#1877F220" }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1877F2" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <div>
+                    <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo("analyze_basic")}>
+                      <img src="https://cdn.loom.com/sessions/thumbnails/33bbe4f3b6dc41de9d2487eace51e9e5-with-play.gif" alt="Basic audit tutorial preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
+                        <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                        </div>
+                        <p className="text-white text-sm font-bold">Watch Tutorial</p>
+                        <p className="text-white/70 text-xs mt-0.5">1 credit · 24hr access</p>
+                      </div>
                     </div>
-                    <p className="text-[#1c1e21] text-sm font-semibold mb-1">Unlock this tutorial video</p>
-                    <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
-                    {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
-                    {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
-                    <button
-                      onClick={() => unlockVideo("analyze_basic")}
-                      disabled={unlockingVideo === "analyze_basic"}
-                      className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
-                      style={{ background: "#1877F2" }}
-                    >
-                      {unlockingVideo === "analyze_basic" ? "Unlocking..." : "Unlock — 1 credit"}
-                    </button>
+                    <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: "#FFFFFF", borderTop: "1px solid #E4E6EB" }}>
+                      <div>
+                        <p className="text-sm font-semibold" style={{ color: "#1c1e21" }}>Basic Analysis Tutorial</p>
+                        {videoNoCredits && unlockingVideo === null
+                          ? <p className="text-xs" style={{ color: "#fa383e" }}>No credits left. Top up to watch.</p>
+                          : <p className="text-xs" style={{ color: "#65676b" }}>Unlock once, watch for 24 hours</p>
+                        }
+                      </div>
+                      <button
+                        onClick={() => unlockVideo("analyze_basic")}
+                        disabled={unlockingVideo === "analyze_basic"}
+                        className="shrink-0 px-4 py-2 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
+                        style={{ background: "#1877F2" }}
+                      >
+                        {unlockingVideo === "analyze_basic" ? "Unlocking..." : "Unlock — 1 cr"}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Column instructions */}
-              <div className="rounded-xl border border-blue-900 bg-blue-950/40 px-5 py-4 mb-6">
-                <p className="text-blue-300 text-sm font-semibold mb-2">Before you screenshot — arrange your columns</p>
-                <p className="text-gray-400 text-xs mb-3">Set your Ads Manager columns in this exact order:</p>
+              <div className="rounded-xl border px-5 py-4 mb-6" style={{ background: "#e7f3ff", borderColor: "#c3d9fd" }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: "#1877F2" }}>Before you screenshot — arrange your columns</p>
+                <p className="text-xs mb-3" style={{ color: "#65676b" }}>Set your Ads Manager columns in this exact order:</p>
                 <ol className="space-y-1 mb-3">
                   {BASIC_COLUMNS.map((col, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#1E3A5F", color: "#1877F2" }}>{i + 1}</span>
+                    <li key={i} className="flex items-center gap-2 text-xs" style={{ color: "#1c1e21" }}>
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#1877F2", color: "#ffffff" }}>{i + 1}</span>
                       {col}
                     </li>
                   ))}
                 </ol>
-                <p className="text-gray-500 text-xs">Take a screenshot of that view, then upload below.</p>
+                <p className="text-xs" style={{ color: "#65676b" }}>Take a screenshot of that view, then upload below.</p>
               </div>
 
               {/* Upload */}
@@ -871,13 +883,13 @@ show(0);
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => fileRef.current?.click()} className="flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
                       <span className="text-2xl">🖼</span>
-                      <p className="text-gray-300 text-sm font-medium">Upload Screenshot</p>
-                      <p className="text-gray-600 text-xs">From your files</p>
+                      <p className="text-sm font-medium" style={{ color: "#1c1e21" }}>Upload Screenshot</p>
+                      <p className="text-xs" style={{ color: "#65676b" }}>From your files</p>
                     </button>
                     <button onClick={() => cameraRef.current?.click()} className="flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-5 text-center hover:border-blue-600 transition-colors">
                       <span className="text-2xl">📷</span>
-                      <p className="text-gray-300 text-sm font-medium">Take a Photo</p>
-                      <p className="text-gray-600 text-xs">Use your camera</p>
+                      <p className="text-sm font-medium" style={{ color: "#1c1e21" }}>Take a Photo</p>
+                      <p className="text-xs" style={{ color: "#65676b" }}>Use your camera</p>
                     </button>
                   </div>
                 )}
@@ -885,8 +897,8 @@ show(0);
 
               {/* Basic profit fields */}
               <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
-                <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
-                <p className="text-gray-500 text-xs mb-4">Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
+                <p className="text-xs font-medium" style={{ color: "#65676b" }} uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
+                <p className="text-xs mb-4" style={{ color: "#65676b" }}>Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
                 <div className="grid grid-cols-2 gap-4">
                   <PInput label="Selling Price (PHP)" value={productPrice} onChange={setProductPrice} placeholder="e.g. 499" />
                   <PInput label="Product Cost (PHP)" value={productCost} onChange={setProductCost} placeholder="e.g. 180" />
@@ -906,7 +918,7 @@ show(0);
             <>
               {/* Video guide */}
               <div className="rounded-xl border border-slate-200 overflow-hidden mb-6" style={{ background: "#FFFFFF" }}>
-                <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-800">
+                <div className="px-4 py-3 flex items-center gap-2 border-b border-slate-200">
                   <span className="text-red-400 text-sm">▶</span>
                   <p className="text-[#1c1e21] text-sm font-semibold">Watch before analyzing</p>
                   <span className="text-gray-600 text-xs ml-auto">Video guide</span>
@@ -921,39 +933,51 @@ show(0);
                     )}
                   </>
                 ) : (
-                  <div className="px-6 py-10 text-center">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#D9770620" }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <div>
+                    <div className="relative w-full cursor-pointer" style={{ paddingBottom: "56.25%" }} onClick={() => unlockVideo("analyze_advanced")}>
+                      <img src="https://cdn.loom.com/sessions/thumbnails/633b09b4378d4f4e863bead19f51b1a3-with-play.gif" alt="Advanced audit tutorial preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: "rgba(0,0,0,0.52)" }}>
+                        <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2" style={{ background: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.5)", backdropFilter: "blur(4px)" }}>
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                        </div>
+                        <p className="text-white text-sm font-bold">Watch Tutorial</p>
+                        <p className="text-white/70 text-xs mt-0.5">1 credit · 24hr access</p>
+                      </div>
                     </div>
-                    <p className="text-[#1c1e21] text-sm font-semibold mb-1">Unlock this tutorial video</p>
-                    <p className="text-xs text-gray-500 mt-1 mb-1">Costs 1 credit · Access valid for 24 hours</p>
-                    {videoNoCredits && unlockingVideo === null && <p className="text-red-400 text-xs mb-3">No credits remaining. Top up to watch.</p>}
-                    {!(videoNoCredits && unlockingVideo === null) && <div className="mb-3" />}
-                    <button
-                      onClick={() => unlockVideo("analyze_advanced")}
-                      disabled={unlockingVideo === "analyze_advanced"}
-                      className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-50"
-                      style={{ background: "#D97706", color: "#000" }}
-                    >
-                      {unlockingVideo === "analyze_advanced" ? "Unlocking..." : "Unlock — 1 credit"}
-                    </button>
+                    <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: "#FFFFFF", borderTop: "1px solid #E4E6EB" }}>
+                      <div>
+                        <p className="text-sm font-semibold" style={{ color: "#1c1e21" }}>Advanced Analysis Tutorial</p>
+                        {videoNoCredits && unlockingVideo === null
+                          ? <p className="text-xs" style={{ color: "#fa383e" }}>No credits left. Top up to watch.</p>
+                          : <p className="text-xs" style={{ color: "#65676b" }}>Unlock once, watch for 24 hours</p>
+                        }
+                      </div>
+                      <button
+                        onClick={() => unlockVideo("analyze_advanced")}
+                        disabled={unlockingVideo === "analyze_advanced"}
+                        className="shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
+                        style={{ background: "#D97706", color: "#000" }}
+                      >
+                        {unlockingVideo === "analyze_advanced" ? "Unlocking..." : "Unlock — 1 cr"}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Column instructions */}
-              <div className="rounded-xl border border-orange-900 bg-orange-950/30 px-5 py-4 mb-6">
-                <p className="text-orange-300 text-sm font-semibold mb-2">Before you export — include these columns</p>
-                <p className="text-gray-400 text-xs mb-3">In Ads Manager, customize columns to include these, then export as CSV:</p>
+              <div className="rounded-xl border px-5 py-4 mb-6" style={{ background: "#FFFBEB", borderColor: "#FDE68A" }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: "#D97706" }}>Before you export — include these columns</p>
+                <p className="text-xs mb-3" style={{ color: "#65676b" }}>In Ads Manager, customize columns to include these, then export as CSV:</p>
                 <ol className="space-y-1 mb-3">
                   {ADVANCED_COLUMNS.map((col, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#431407", color: "#D97706" }}>{i + 1}</span>
+                    <li key={i} className="flex items-center gap-2 text-xs" style={{ color: "#1c1e21" }}>
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-xs font-bold" style={{ background: "#D97706", color: "#ffffff" }}>{i + 1}</span>
                       {col}
                     </li>
                   ))}
                 </ol>
-                <p className="text-gray-500 text-xs">Ads Manager → Export → Export Table Data (CSV)</p>
+                <p className="text-xs" style={{ color: "#65676b" }}>Ads Manager → Export → Export Table Data (CSV)</p>
               </div>
 
               {/* CSV Upload */}
@@ -974,16 +998,16 @@ show(0);
                 ) : (
                   <button onClick={() => csvRef.current?.click()} className="w-full flex flex-col items-center gap-2 bg-white border border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-orange-600 transition-colors">
                     <span className="text-3xl">📄</span>
-                    <p className="text-gray-300 text-sm font-medium">Upload CSV Export</p>
-                    <p className="text-gray-600 text-xs">CSV only — Export → Export Table Data (CSV)</p>
+                    <p className="text-sm font-medium" style={{ color: "#1c1e21" }}>Upload CSV Export</p>
+                    <p className="text-xs" style={{ color: "#65676b" }}>CSV only — Export → Export Table Data (CSV)</p>
                   </button>
                 )}
               </div>
 
               {/* Advanced profit fields */}
               <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
-                <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Optional — COD Profit Calculator</p>
-                <p className="text-gray-500 text-xs mb-4">Include COGS, shipping, and RTS rate for a true net profit calculation.</p>
+                <p className="text-xs font-medium" style={{ color: "#65676b" }} uppercase tracking-wider mb-1">Optional — COD Profit Calculator</p>
+                <p className="text-xs mb-4" style={{ color: "#65676b" }}>Include COGS, shipping, and RTS rate for a true net profit calculation.</p>
                 <div className="grid grid-cols-2 gap-4">
                   <PInput label="Selling Price (PHP)" value={sellingPrice} onChange={setSellingPrice} placeholder="e.g. 599" />
                   <PInput label="COGS — Cost of Goods (PHP)" value={cogs} onChange={setCogs} placeholder="e.g. 150" />
@@ -1016,7 +1040,7 @@ show(0);
           {/* Last saved indicator */}
           {savedAt && !loading && output && (
             <div className="flex items-center justify-between mb-3">
-              <p className="text-gray-600 text-xs">
+              <p className="text-xs" style={{ color: "#65676b" }}>
                 Last analysis: <span className="text-gray-500">{savedAt}</span> · <span className="text-gray-500 uppercase text-xs">{mode === "advanced" ? "Advanced" : "Basic"}</span>
               </p>
               <button
