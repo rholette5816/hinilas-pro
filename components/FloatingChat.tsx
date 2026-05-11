@@ -200,7 +200,7 @@ export default function FloatingChat() {
         </div>
       )}
 
-      <div className="fixed bottom-0 right-3 z-50 flex flex-col items-center" style={{ width: "48px" }}>
+      <div className="fixed bottom-0 right-3 z-50 flex flex-col items-center" style={{ width: "56px", paddingRight: "8px" }}>
         <button
           onClick={() => (open ? closeChat() : openChat())}
           className="relative flex flex-col items-center justify-center transition-transform hover:scale-105 active:scale-95"
