@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import FloatingChatWrapper from "@/components/FloatingChatWrapper";
-import ReferralToastWrapper from "@/components/ReferralToastWrapper";
 import TopBar from "@/components/TopBar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,7 +55,6 @@ export default function RootLayout({
             <TopBar />
             {children}
             <FloatingChatWrapper />
-            <ReferralToastWrapper />
           </AppProvider>
         </div>
       </body>
