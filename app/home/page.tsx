@@ -352,15 +352,15 @@ export default function LandingPage() {
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">A week of prep. In one session.</h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Every output builds on the previous step so your campaign feels connected instead of randomly generated.</p>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
           {STEPS.map((step) => (
-            <div key={step.label} className="rounded-xl border bg-white p-6" style={{ borderColor: BORDER }}>
-              <div className="mb-5 flex items-center justify-between">
-                <span className="text-2xl font-black" style={{ color: step.color }}>{step.num}</span>
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: step.color }} />
+            <div key={step.label} className="rounded-xl border bg-white p-4 lg:p-6" style={{ borderColor: BORDER }}>
+              <div className="mb-3 lg:mb-5 flex items-center justify-between">
+                <span className="text-xl lg:text-2xl font-black" style={{ color: step.color }}>{step.num}</span>
+                <span className="h-2 w-2 lg:h-2.5 lg:w-2.5 rounded-full" style={{ background: step.color }} />
               </div>
-              <h3 className="mb-2 text-lg font-black text-[#1c1e21]">{step.label}</h3>
-              <p className="text-sm leading-7 text-[#1c1e21]">{step.desc}</p>
+              <h3 className="mb-1 lg:mb-2 text-base lg:text-lg font-black text-[#1c1e21]">{step.label}</h3>
+              <p className="text-xs lg:text-sm leading-5 lg:leading-7 text-[#1c1e21]">{step.desc}</p>
             </div>
           ))}
         </div>
