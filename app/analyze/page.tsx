@@ -897,7 +897,7 @@ show(0);
 
               {/* Basic profit fields */}
               <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
-                <p className="text-xs font-medium" style={{ color: "#65676b" }} uppercase tracking-wider mb-1">Optional — Profit & ROAS Calculator</p>
+                <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: "#65676b" }}>Optional — Profit & ROAS Calculator</p>
                 <p className="text-xs mb-4" style={{ color: "#65676b" }}>Add these numbers to get profit per sale, ROAS, and break-even cost per message.</p>
                 <div className="grid grid-cols-2 gap-4">
                   <PInput label="Selling Price (PHP)" value={productPrice} onChange={setProductPrice} placeholder="e.g. 499" />
@@ -1006,7 +1006,7 @@ show(0);
 
               {/* Advanced profit fields */}
               <div className="border border-slate-200 rounded-xl p-5 mb-6" style={{ background: "#FFFFFF" }}>
-                <p className="text-xs font-medium" style={{ color: "#65676b" }} uppercase tracking-wider mb-1">Optional — COD Profit Calculator</p>
+                <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: "#65676b" }}>Optional — COD Profit Calculator</p>
                 <p className="text-xs mb-4" style={{ color: "#65676b" }}>Include COGS, shipping, and RTS rate for a true net profit calculation.</p>
                 <div className="grid grid-cols-2 gap-4">
                   <PInput label="Selling Price (PHP)" value={sellingPrice} onChange={setSellingPrice} placeholder="e.g. 599" />
