@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import GCashModal from "@/components/GCashModal";
 import { useApp } from "@/lib/context";
+import { createClient } from "@/lib/supabase/client";
 
 const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
@@ -58,6 +59,23 @@ export default function PricingPage() {
   const { plan: currentPlan, credits } = useApp();
   const router = useRouter();
   const [gcash, setGcash] = useState<{ label: string; credits: number; price: number; color: string } | null>(null);
+  const [pendingRequest, setPendingRequest] = useState<{ package: string; amount_paid: number; created_at: string } | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("top_up_requests")
+        .select("package, amount_paid, created_at")
+        .eq("user_id", user.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (data) setPendingRequest(data);
+    });
+  }, [gcash]);
 
   const plans = [
     {
@@ -100,6 +118,22 @@ export default function PricingPage() {
             <h1 className="text-3xl font-bold text-[#1c1e21] mb-2">Credits & Plans</h1>
             <p className="text-slate-600 text-sm">Buy credits once. Flex and Max purchases give you <span className="text-[#1c1e21] font-medium">permanent tier access</span> — even when credits run low.</p>
           </div>
+
+          {/* Pending payment banner */}
+          {pendingRequest && (
+            <div className="rounded-2xl px-5 py-4 mb-6 flex items-start gap-4" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
+              <div className="mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-base" style={{ background: "#FEF3C7" }}>
+                ⏳
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-[#1c1e21]">We&apos;re confirming your payment</p>
+                <p className="text-xs text-[#92400E] mt-0.5">
+                  Your {pendingRequest.package} payment of ₱{pendingRequest.amount_paid.toLocaleString()} is being reviewed. Credits will be added once verified — usually within a few hours.
+                </p>
+                <p className="text-xs text-[#B45309] mt-2 font-medium">No need to pay again. Just sit tight. 🙏</p>
+              </div>
+            </div>
+          )}
 
           {/* Threshold bar */}
           <div className="rounded-2xl px-6 py-5 mb-8" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
