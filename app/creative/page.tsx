@@ -460,6 +460,49 @@ export default function CreativePage() {
                     </div>
                   </div>
 
+                  {/* Real Ad Examples */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Real Ad Examples</p>
+                      <p className="text-gray-600 text-xs">Actual outputs</p>
+                    </div>
+                    <div className="flex gap-3">
+                      {[
+                        { label: "Food Park", src: "/samples/reel-food-park.mp4" },
+                        { label: "Tailoring", src: "/samples/reel-tailoring.mp4" },
+                      ].map((s, i) => {
+                        const refIndex = i + 10;
+                        return (
+                          <div key={s.label} className="flex-1 flex flex-col items-center gap-1.5">
+                            <div
+                              className="relative w-full rounded-lg overflow-hidden border border-slate-300 bg-slate-50 cursor-pointer"
+                              style={{ aspectRatio: "9/16", maxHeight: "clamp(200px, 35vw, 320px)" }}
+                              onClick={() => {
+                                const vid = document.getElementById(`reel-ex-${i}`) as HTMLVideoElement | null;
+                                if (!vid) return;
+                                if (vid.paused) { vid.play(); } else { vid.pause(); }
+                              }}
+                            >
+                              <video
+                                id={`reel-ex-${i}`}
+                                src={s.src}
+                                loop
+                                playsInline
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/20 transition-colors pointer-events-none">
+                                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                  <svg width="12" height="12" viewBox="0 0 16 16" fill="white"><path d="M4 2l10 6-10 6V2z" /></svg>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-gray-500 text-xs">{s.label}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Credits */}
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs text-gray-500">{credits} credits remaining</span>
