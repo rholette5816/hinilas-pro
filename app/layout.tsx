@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import FloatingChatWrapper from "@/components/FloatingChatWrapper";
 import TopBar from "@/components/TopBar";
 import AppShell from "@/components/AppShell";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Hinilas Pro - The Meta Ads AI Tool for Filipino Sellers",
@@ -50,7 +47,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} text-[#1c1e21] antialiased`} style={{ background: "#F0F2F5" }}>
+      <body
+        className="text-[#1c1e21] antialiased"
+        style={{
+          background: "#F0F2F5",
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        }}
+      >
         <div style={{ position: "relative", zIndex: 1 }}>
           <AppProvider>
             <TopBar />

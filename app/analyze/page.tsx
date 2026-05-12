@@ -1029,11 +1029,7 @@ show(0);
           )}
 
           {/* Analyze button */}
-          {mode === "advanced" && !isMax ? (
-            <div className="mb-6">
-              <TierLock requiredTier="Max" featureName="Advanced Audit" />
-            </div>
-          ) : mode && (
+          {mode && (
             <button
               onClick={analyze}
               disabled={loading || (mode === "basic" ? !screenshot : !csvText)}
