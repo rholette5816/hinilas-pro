@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LeaderboardDrawer from "@/components/LeaderboardDrawer";
+import AIAssistant from "@/components/AIAssistant";
 
 const HIDDEN_PATHS = ["/home", "/loading-screen"];
 const PUBLIC_ROUTES = ["/pricing", "/blog", "/privacy", "/terms", "/data-deletion"];
@@ -59,15 +60,9 @@ export default function TopBar() {
           )}
         </div>
 
-        {/* Right - Blog */}
+        {/* Right - AI Assistant */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/blog"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#f2f3f5", color: "#65676B", border: "1px solid #E4E6EB" }}
-          >
-            Blog
-          </Link>
+          <AIAssistant />
         </div>
       </div>
 
