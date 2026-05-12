@@ -116,7 +116,8 @@ export default function PricingPage() {
               </span>
             </div>
             <div className="relative w-full bg-[#f2f3f5] rounded-full h-3">
-              <div className="absolute top-0 bottom-0 w-px bg-gray-500" style={{ left: `${(50 / 300) * 100}%` }} />
+              <div className="absolute top-0 bottom-0 w-px bg-gray-400" style={{ left: `${(50 / 300) * 100}%` }} />
+              <div className="absolute top-0 bottom-0 w-px bg-gray-400" style={{ left: "100%" }} />
               <div
                 className="h-3 rounded-full transition-all"
                 style={{
@@ -125,10 +126,10 @@ export default function PricingPage() {
                 }}
               />
             </div>
-            <div className="flex justify-between mt-2 text-xs text-[#8a8d91]">
-              <span>0 - Lite</span>
-              <span>50 - Flex unlocks</span>
-              <span>300 - Max unlocks</span>
+            <div className="relative mt-2 text-xs text-[#8a8d91]" style={{ height: 16 }}>
+              <span className="absolute left-0">0</span>
+              <span className="absolute -translate-x-1/2" style={{ left: `${(50 / 300) * 100}%` }}>50 — Flex</span>
+              <span className="absolute right-0">300 — Max</span>
             </div>
           </div>
 
