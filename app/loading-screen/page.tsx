@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HinilasIcon } from "@/components/HinilasLogo";
+import { createClient } from "@/lib/supabase/client";
 
 const MESSAGES = [
   "Cooking your workspace...",
@@ -28,9 +29,23 @@ export default function LoadingScreen() {
       setDots(prev => prev.length >= 3 ? "" : prev + ".");
     }, 400);
 
-    // Redirect to app after processing time
-    const redirect = setTimeout(() => {
-      router.replace("/");
+    // Redirect based on payment status
+    const redirect = setTimeout(async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.replace("/home"); return; }
+      const { data } = await supabase
+        .from("user_data")
+        .select("credits_remaining, locked_tier")
+        .eq("user_id", user.id)
+        .single();
+      const hasPaid = data?.locked_tier === "Flex" || data?.locked_tier === "Max";
+      const hasCredits = (data?.credits_remaining ?? 0) > 0;
+      if (!hasPaid && !hasCredits) {
+        router.replace("/pricing");
+      } else {
+        router.replace("/");
+      }
     }, 3500);
 
     return () => {

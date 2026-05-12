@@ -74,13 +74,13 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
   const isNew = !existing;
 
   if (isNew) {
-    // New user — grant 30 signup credits, save referral info + username
+    // New user — no free credits, must pay ₱499 for Flex access
     const username = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User";
     const avatar_url = user.user_metadata?.avatar_url || null;
     await adminSupabase.from("user_data").upsert({
       user_id: user.id,
-      credits_remaining: 15,
-      credits_total: 15,
+      credits_remaining: 0,
+      credits_total: 0,
       plan: "lite",
       referral_code: referralCode,
       referred_by: referredBy,
@@ -89,13 +89,6 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
       username,
       avatar_url,
     }, { onConflict: "user_id" });
-
-    await adminSupabase.from("credit_transactions").insert({
-      user_id: user.id,
-      type: "grant",
-      amount: 15,
-      description: "Welcome credits - 15 free credits on signup (15 more after first generation)",
-    });
 
     await sendMetaEvent({
       request,

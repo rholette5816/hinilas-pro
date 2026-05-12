@@ -50,7 +50,7 @@ const FAQS = [
   { q: "How does Hinilas Pro work?", a: "You enter your business profile once. Hinilas Pro uses it to guide market research, build ad angles, write copy, and prepare campaign assets in a structured workflow." },
   { q: "Who is this for?", a: "It is built for Filipino sellers, business owners, and ad operators who need faster decisions and cleaner campaign assets without jumping between multiple tools." },
   { q: "Is it a magic button?", a: "No. It gives you better research, clearer angles, and faster drafts. You still review the output, adjust it to your offer, and run the campaign responsibly." },
-  { q: "How much does it cost?", a: "You start with 30 free credits. Paid plans start at ₱499 for Flex (150 credits) and ₱1,299 for Max (500 credits). You can also top up starting at ₱99 anytime." },
+  { q: "How much does it cost?", a: "Access starts at ₱499 for Flex — 150 credits, never expires. When you run out, top up anytime starting at ₱99. No monthly fees." },
   { q: "Do I need to be techy?", a: "No. Hinilas Pro is built for non-techy business owners. If you can fill out a form and click a button, you can use every feature." },
 ];
 
@@ -217,8 +217,8 @@ function LoginModal({ onClose }: { onClose: () => void }) {
       <div className="relative w-full max-w-sm rounded-2xl p-7" style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, boxShadow: "0 24px 80px rgba(15,23,42,0.18)", animation: "modalIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards" }}>
         <button onClick={onClose} className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-sm font-bold transition-colors hover:bg-slate-200" style={{ background: INNER, color: MUTED }} type="button">✕</button>
         <div className="mb-7"><BrandMark /></div>
-        <h2 className="mb-2 text-2xl font-black tracking-tight" style={{ color: TEXT }}>Start with 30 free credits</h2>
-        <p className="mb-7 text-sm leading-6" style={{ color: MUTED }}>Create your business profile, run guided research, and generate your first Meta Ads assets in minutes.</p>
+        <h2 className="mb-2 text-2xl font-black tracking-tight" style={{ color: TEXT }}>Get full access for ₱499</h2>
+        <p className="mb-7 text-sm leading-6" style={{ color: MUTED }}>Sign up, pay ₱499, and get full Flex access with 150 credits. No monthly fees. Credits never expire.</p>
         <button type="button" onClick={handleGoogle} disabled={loading} className="flex w-full items-center justify-center gap-3 rounded-xl py-3.5 text-sm font-bold transition-all hover:brightness-105 disabled:opacity-70" style={{ background: BRAND_BLUE, color: "#FFFFFF" }}>
           {loading ? (
             <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25" /><path d="M12 2a10 10 0 0 1 10 10" /></svg>
@@ -229,7 +229,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
         </button>
         <div className="mt-3 flex w-full cursor-not-allowed items-center justify-center rounded-xl py-3.5 text-sm font-semibold opacity-60" style={{ background: INNER, border: `1px solid ${BORDER}`, color: MUTED }}>Facebook login coming soon</div>
         <div className="mt-6 grid grid-cols-3 gap-2 text-center text-sm font-semibold" style={{ color: MUTED }}>
-          <span>SSL encrypted</span><span>Free to start</span><span>No spam</span>
+          <span>SSL encrypted</span><span>One-time payment</span><span>No spam</span>
         </div>
       </div>
     </div>
@@ -282,8 +282,8 @@ export default function LandingPage() {
             <a href="#pricing" className="hidden rounded-xl px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5] sm:inline-flex" style={{ color: MUTED }}>Pricing</a>
             <button onClick={openModal} className="rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5]" style={{ color: MUTED }} type="button">Sign in</button>
             <button onClick={openModal} className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-sm font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
-              <span className="sm:hidden">Try Free</span>
-              <span className="hidden sm:inline">Try Hinilas Pro →</span>
+              <span className="sm:hidden">Get Access</span>
+              <span className="hidden sm:inline">Get Access — ₱499 →</span>
             </button>
           </div>
         </div>
@@ -320,13 +320,13 @@ export default function LandingPage() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
-              Create My Free Ad Kit →
+              Get Access — ₱499 →
             </button>
             <button onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })} className="rounded-xl border bg-white px-6 py-4 text-sm font-bold transition-colors hover:bg-slate-50" style={{ borderColor: BORDER, color: TEXT }} type="button">
               See how it works
             </button>
           </div>
-          <p className="mt-3 text-xs text-[#1c1e21]">30 free credits · No credit card required · Cancel anytime</p>
+          <p className="mt-3 text-xs text-[#1c1e21]">One-time payment · No monthly fees · Credits never expire</p>
         </div>
 
         {/* Product mock */}
@@ -367,7 +367,7 @@ export default function LandingPage() {
               { val: "1,000+", label: "Business owners" },
               { val: "5,000+", label: "Ad kits generated" },
               { val: "₱499", label: "Starting/month" },
-              { val: "30", label: "Free credits to start" },
+              { val: "₱499", label: "One-time to get access" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-3xl font-black" style={{ color: BRAND_BLUE }}>{s.val}</p>
@@ -501,16 +501,16 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-8 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">Pay for credits. Not subscriptions.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Flex is ₱499 for 150 credits. Max is ₱1,299 for 500 credits. Credits never expire. Less than the cost of one wrong boosted post.</p>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">₱499 gets you 150 credits and full Flex access — forever. When you run out, top up anytime. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
-              Start free: 30 credits →
+              Get Access — ₱499 →
             </button>
             <a href="/pricing" className="rounded-xl border bg-white px-6 py-4 text-sm font-bold transition-colors hover:bg-slate-50" style={{ borderColor: BORDER, color: TEXT }}>
               See full pricing
             </a>
           </div>
-          <p className="mt-4 text-xs text-[#1c1e21]">FREE · CANCEL ANYTIME · NO CREDIT CARD REQUIRED</p>
+          <p className="mt-4 text-xs text-[#1c1e21]">ONE-TIME PAYMENT · CREDITS NEVER EXPIRE · NO MONTHLY FEES</p>
         </div>
       </section>
 
@@ -531,7 +531,7 @@ export default function LandingPage() {
           <button onClick={openModal} className="mt-8 rounded-xl px-8 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
             Create My Free Ad Kit →
           </button>
-          <p className="mt-4 text-xs" style={{ color: "#8a8d91" }}>30 free credits · No credit card · Cancel anytime</p>
+          <p className="mt-4 text-xs" style={{ color: "#8a8d91" }}>One-time payment · Credits never expire · No monthly fees</p>
         </div>
       </section>
 
