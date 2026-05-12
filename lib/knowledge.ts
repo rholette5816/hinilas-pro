@@ -294,7 +294,7 @@ Keep it simple. Write like a real Filipino online seller — direct, warm, confi
 `,
 
   content: (userContext: string, researchContext: string, language: string) => `
-You are a Filipino social media content expert specializing in Facebook and Instagram ads.
+You are a Filipino social media content expert specializing in Facebook captions that convert.
 
 # USER CONTEXT
 ${userContext}
@@ -303,38 +303,52 @@ ${userContext}
 ${researchContext || "No research provided. Use the business context above to infer buyer psychology."}
 
 # LANGUAGE
-Write ALL post content in ${language}. This applies to the hook, body, cta, and hashtags. Write naturally in this dialect as Filipinos actually speak it.
+Write ALL post content in ${language}. Write naturally in this dialect as Filipinos actually speak it — conversational, not formal.
 
 # TASK
-Generate exactly 7 Facebook/Instagram content posts for this business. Each post must be based on the research insights above. Use the specific pains, desires, fears, and internal dialogues from the research.
+Generate exactly 7 Facebook caption posts for this business. Each post must use the specific pains, desires, fears, and language from the research above.
 
 Return your response as a valid JSON array with exactly 7 objects. No markdown, no explanation, just the raw JSON array.
 
 Each object must follow this exact structure:
 {
   "type": "<one of: Pain Point | Transformation | Objection Crusher | Social Proof | Educational Tip | Urgency/Offer | Trust Builder>",
-  "hook": "<scroll-stopping opening line, 1-2 sentences max, makes them stop scrolling>",
-  "body": "<2-4 sentences expanding on the hook, connects emotionally, builds desire or addresses fear>",
-  "cta": "<clear call to action, 1 sentence, tells them exactly what to do next>",
-  "hashtags": "<6-10 relevant hashtags separated by spaces>"
+  "caption": "<the full ready-to-post Facebook caption with emojis and proper line breaks>"
 }
 
-Post type guidelines:
-1. Pain Point: Opens with the exact pain or problem. Agitate it. Make them feel seen.
-2. Transformation: Before/after story. Show the struggle then the result. Make it specific.
-3. Objection Crusher: Address the #1 reason they hesitate. Flip it into a reason to buy.
-4. Social Proof: Write as if sharing a customer result or reaction. Testimonial energy.
-5. Educational Tip: Teach something useful related to the product/problem. Soft sell at the end.
-6. Urgency/Offer: Lead with the offer. Create urgency. Make the value undeniable.
-7. Trust Builder: Behind-the-scenes or founder perspective. Build credibility and authenticity.
+# CAPTION FORMAT
+Each caption must be structured and formatted exactly like this — ready to copy and paste to Facebook:
 
-Rules:
-- Each post must feel completely different from the others
-- Use conversational ${language}, how real Filipinos talk, not formal
-- Hooks must be specific to the research insights, not generic
-- Body must connect the product to the research pains/desires
-- No em dashes anywhere
-- Return ONLY the JSON array, nothing else
+[opening emoji] [scroll-stopping hook — 1 sentence that makes them stop]
+
+[paragraph 1 — agitate the pain or build the desire, 2-3 sentences]
+
+[paragraph 2 — connect to the product/solution, 2-3 sentences]
+
+[paragraph 3 — close the emotional loop or add credibility, 1-2 sentences] [closing emoji]
+
+[action emoji] [clear CTA — exactly what to do next]
+
+Rules for the caption:
+- Empty line between every paragraph (Facebook-ready spacing)
+- Opening emoji matches the post type emotion
+- Closing emoji on the last body line
+- Action emoji before the CTA (comment, message, link in bio style)
+- No hashtags
+- No em dashes
+- Hook must be specific to the research, not generic
+- CTA must be direct and conversational
+
+Post type guidelines:
+1. Pain Point: Hook opens with the exact pain. Agitate it. Make them feel seen.
+2. Transformation: Before/after structure. Specific struggle then specific result.
+3. Objection Crusher: Name the #1 hesitation. Flip it into a reason to act.
+4. Social Proof: Testimonial energy. Write as if sharing a real customer result.
+5. Educational Tip: Teach something useful. Soft sell at the end.
+6. Urgency/Offer: Lead with the offer. Make the value undeniable. Create urgency.
+7. Trust Builder: Behind-the-scenes or founder voice. Build credibility.
+
+Return ONLY the JSON array, nothing else.
 `,
 
   analyze: (userContext: string, profitInfo: string) => `

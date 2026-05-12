@@ -29,10 +29,7 @@ const POST_TYPES = [
 
 interface ContentPost {
   type: string;
-  hook: string;
-  body: string;
-  cta: string;
-  hashtags: string;
+  caption: string;
   image?: string;
   language: string;
 }
@@ -75,20 +72,16 @@ function normalizePosts(raw: string, language: string): ContentPost[] {
   return parsed.slice(0, 7).map((post, index) => {
     const fallbackType = POST_TYPES[index]?.type || "Content Post";
     return {
-      type: post.type || fallbackType,
-      hook: post.hook || "",
-      body: post.body || "",
-      cta: post.cta || "",
-      hashtags: post.hashtags || "",
-      image: post.image,
-      language: post.language || language,
+      type: (post as { type?: string }).type || fallbackType,
+      caption: (post as { caption?: string }).caption || "",
+      image: (post as { image?: string }).image,
+      language,
     };
   });
 }
 
 function copyPost(post: ContentPost) {
-  const text = `${post.hook}\n\n${post.body}\n\n${post.cta}\n\n${post.hashtags}`;
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(post.caption);
 }
 
 export default function ContentPage() {
@@ -116,10 +109,7 @@ export default function ContentPage() {
     const mock: ContentPost[] = POST_TYPES.map((pt) => ({
       type: pt.type,
       language,
-      hook: `[${pt.type}] Sample hook — Bakit hindi pa sila nag-aaral ng tamang Meta Ads?`,
-      body: `Maraming business owners ang nagsisimula ng ads nang walang research. Resulta? Pera na nawala, zero results.\n\nYung totoo — hindi ito tungkol sa budget. Tungkol ito sa sistema. At yun mismo ang tinuturo ng Hinilas Pro.\n\nIsang tool. Lahat ng kailangan mo para mag-scale.`,
-      cta: `I-try ang Hinilas Pro ngayon — libre ang unang 30 credits. Link sa bio.`,
-      hashtags: `#MetaAds #DigitalMarketing #HinilasPro #FacebookAds #OnlineBusiness`,
+      caption: `😩 Bakit kahit mahal na ads ang pinapatakbo mo, zero pa rin ang benta?\n\nMaraming business owners ang naggu-gugol ng libo-libo sa Facebook Ads pero hindi nakikita ang results. Dahil hindi ito problema ng budget.\n\nProblem ito ng sistema. Kung wala kang tamang angle, tamang copy, at tamang target — kahit gastusan mo pa ng malaki, mauubos lang.\n\nYun ang tinutuklasan ng mga gumagamit ng Hinilas Pro. Hindi lang basta marunong mag-ads. Nag-e-earn na. ✨\n\n💬 Comment "READY" sa baba at ipapadala ko sa iyo ang link.`,
     }));
     setPosts(mock);
   }
@@ -180,24 +170,39 @@ export default function ContentPage() {
     setError("");
     setNoCredits(false);
 
+    const imageStyleByType: Record<string, string> = {
+      "Pain Point": "a relatable scene showing the frustration or problem the audience faces. Emotional, real, Filipino setting.",
+      "Transformation": "a before/after split or a glowing result visual. Show the transformation clearly. Clean and aspirational.",
+      "Objection Crusher": "a confident, reassuring visual that addresses doubt. Use a direct, trustworthy feel with strong colors.",
+      "Social Proof": "a testimonial-style graphic. Include a quote overlay design, warm tones, and a happy Filipino customer energy.",
+      "Educational Tip": "a clean tip card or infographic-style layout. Minimal text, bold numbers or steps, bright and readable.",
+      "Urgency/Offer": "a bold product-focused image with price or offer highlight. Strong contrast, urgency colors (red/orange), direct CTA feel.",
+      "Trust Builder": "a behind-the-scenes or founder-style image. Authentic, warm, personal. Shows the human side of the brand.",
+    };
+    const styleGuide = imageStyleByType[post.type] || "a polished Filipino Meta Ads social post image.";
+
     const prompt = `Create a ready-to-post Facebook/Instagram image for ${setup.businessName}.
 
+Business: ${setup.businessName}
 Product or service: ${setup.product}
 Target audience: ${setup.targetAudience}
-Market: ${setup.market}
-Language: ${post.language}
 Post type: ${post.type}
-Hook: ${post.hook}
-Body: ${post.body}
-CTA: ${post.cta}
+Caption context: ${post.caption.slice(0, 300)}
 
-Make it feel like a polished Filipino Meta Ads social post. Use a clear focal subject, readable short text only, strong contrast, and a layout that matches the emotional angle of the post. Avoid clutter, distorted faces, blurry text, watermarks, and generic stock-photo energy.`;
+Visual style: ${styleGuide}
+
+Requirements:
+- Polished Filipino Meta Ads quality
+- Clear focal subject, strong contrast
+- Minimal readable text only (no long sentences in the image)
+- No watermarks, no blurry text, no distorted faces
+- Layout matches the emotional angle of the post type above`;
 
     try {
       const res = await fetch("/api/content-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, aspectRatio, postType: post.type, angle: post.hook }),
+        body: JSON.stringify({ prompt, aspectRatio, postType: post.type, angle: post.type }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -369,13 +374,7 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
                         </button>
                       </div>
 
-                      <h2 className="text-[#1c1e21] text-lg font-bold leading-snug mb-3">{post.hook}</h2>
-                      <p className="text-[#1c1e21] text-sm leading-relaxed whitespace-pre-line mb-4">{post.body}</p>
-                      <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4" style={{ background: "#F0F2F5" }}>
-                        <CheckIcon className="h-3.5 w-3.5 text-[#1877F2]" />
-                        <p className="text-[#1c1e21] text-xs font-semibold">{post.cta}</p>
-                      </div>
-                      <p className="text-[#64748B] text-xs leading-relaxed mb-5">{post.hashtags}</p>
+                      <p className="text-[#1c1e21] text-sm leading-relaxed whitespace-pre-line mb-5">{post.caption}</p>
 
                       {post.image && (
                         <div className="mb-5">

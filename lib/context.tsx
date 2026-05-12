@@ -24,10 +24,7 @@ export interface ReferralToast {
 
 export interface ContentPost {
   type: string;
-  hook: string;
-  body: string;
-  cta: string;
-  hashtags: string;
+  caption: string;
   image?: string;
   language: string;
 }
