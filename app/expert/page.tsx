@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
 
 const CONSULTATION_CREDIT_COST = 100;
@@ -78,8 +77,7 @@ export default function ExpertPage() {
 
   if (confirmed) {
     return (
-      <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
-        <Sidebar />
+      <>
         <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
           <div className="max-w-xl mx-auto px-6 py-16 text-center">
             <div className="text-5xl mb-6">✅</div>
@@ -121,13 +119,12 @@ export default function ExpertPage() {
             </button>
           </div>
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
-      <Sidebar />
+    <>
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <div className="max-w-xl mx-auto px-6 py-10">
 
@@ -246,6 +243,6 @@ export default function ExpertPage() {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }

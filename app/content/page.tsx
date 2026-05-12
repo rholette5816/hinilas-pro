@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
@@ -212,8 +211,7 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
 
   if (!setup) {
     return (
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
+      <>
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
@@ -225,13 +223,12 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
             </button>
           </div>
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
           <FunnelProgress currentStep={3} />

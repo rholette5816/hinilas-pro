@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
@@ -73,8 +72,7 @@ export default function ResearchPage() {
 
   if (!setup) {
     return (
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
+      <>
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
@@ -86,13 +84,12 @@ export default function ResearchPage() {
             </button>
           </div>
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
       {noCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
@@ -212,6 +209,6 @@ export default function ResearchPage() {
           )}
         </div>
       </main>
-    </div>
+    </>
   );
 }

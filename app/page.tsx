@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
@@ -98,8 +97,7 @@ export default function SetupPage() {
   const setupDone = !!(setup?.businessName);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#FFFFFF" }}>
-      <Sidebar />
+    <>
 
       <div className="flex-1 flex flex-col overflow-hidden">
 

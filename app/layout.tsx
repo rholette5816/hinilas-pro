@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import FloatingChatWrapper from "@/components/FloatingChatWrapper";
 import TopBar from "@/components/TopBar";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,7 +54,9 @@ export default function RootLayout({
         <div style={{ position: "relative", zIndex: 1 }}>
           <AppProvider>
             <TopBar />
-            {children}
+            <AppShell>
+              {children}
+            </AppShell>
             <FloatingChatWrapper />
           </AppProvider>
         </div>

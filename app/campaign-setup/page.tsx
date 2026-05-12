@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import FunnelProgress from "@/components/FunnelProgress";
-import Sidebar from "@/components/Sidebar";
 import { useApp } from "@/lib/context";
 import { createClient } from "@/lib/supabase/client";
 
@@ -361,8 +360,7 @@ export default function CampaignSetupPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-2xl mx-auto px-4 py-8">
           <FunnelProgress currentStep={5} />

@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import AILoadingState from "@/components/AILoadingState";
-import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import FireCelebration from "@/components/FireCelebration";
 import FunnelProgress from "@/components/FunnelProgress";
@@ -137,21 +136,19 @@ export default function CopyPage() {
 
   if (!setup) {
     return (
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
+      <>
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
             <button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium">Go to Setup</button>
           </div>
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
       {noCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
@@ -379,6 +376,6 @@ export default function CopyPage() {
 
         </div>
       </main>
-    </div>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Sidebar from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/client";
 import { useCommunityMessages } from "@/lib/use-community-messages";
 
@@ -73,8 +72,7 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
-      <Sidebar />
+    <>
       <main className="flex-1 flex flex-col pt-14 md:pt-0 overflow-hidden">
         <div className="px-6 py-4 shrink-0" style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB" }}>
           <div className="flex items-center gap-3">

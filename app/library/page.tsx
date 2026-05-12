@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/client";
 
 interface MediaItem {
@@ -100,8 +99,7 @@ export default function LibraryPage() {
   const videoCount = items.filter(i => i.type === "video").length;
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#F0F2F5" }}>
-      <Sidebar />
+    <>
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
 
@@ -229,6 +227,6 @@ export default function LibraryPage() {
 
         </div>
       </main>
-    </div>
+    </>
   );
 }

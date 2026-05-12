@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
@@ -740,21 +739,19 @@ show(0);
 
   if (!setup) {
     return (
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
+      <>
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-gray-400 mb-4">Set up your business profile first.</p>
             <button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium">Go to Setup</button>
           </div>
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+    <>
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-3xl mx-auto px-6 py-10">
 

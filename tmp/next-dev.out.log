@@ -1,0 +1,16 @@
+
+> web-hilas@0.1.0 dev
+> next dev --port 3000
+
+▲ Next.js 16.2.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.4:3000
+- Environments: .env.local
+✓ Ready in 1374ms
+Creating turbopack project {
+  dir: 'C:\\Users\\Donna Lim\\Desktop\\executive assistant\\web-hilas',
+  testMode: true
+}
+
+○ Compiling /home ...
+[?25h
