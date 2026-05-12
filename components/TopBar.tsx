@@ -23,17 +23,28 @@ export default function TopBar() {
         className="hidden md:flex items-center justify-between gap-2 px-6 py-3 fixed top-0 right-0 z-20"
         style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB", left: leftOffset }}
       >
-        {/* Left - Library */}
-        <Link
-          href="/library"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-          style={pathname === "/library"
-            ? { background: "rgba(24,119,242,0.2)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.4)" }
-            : { background: "#f2f3f5", color: "#65676B", border: "1px solid #E4E6EB" }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Media Library
-        </Link>
+        {/* Left - Library or Back to Dashboard */}
+        {isPublic ? (
+          <Link
+            href="/"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+            style={{ background: "#1877F2", color: "#fff", border: "1px solid #1877F2" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            Back to Dashboard
+          </Link>
+        ) : (
+          <Link
+            href="/library"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+            style={pathname === "/library"
+              ? { background: "rgba(24,119,242,0.2)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.4)" }
+              : { background: "#f2f3f5", color: "#65676B", border: "1px solid #E4E6EB" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Media Library
+          </Link>
+        )}
 
         {/* Right - Blog + Leaderboard */}
         <div className="flex items-center gap-2">

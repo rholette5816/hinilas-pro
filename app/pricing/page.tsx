@@ -63,12 +63,11 @@ export default function PricingPage() {
     {
       key: "lite",
       name: "Lite",
-      tagline: "Get started for free",
-      price: "Free",
-      credits: "30 free credits (15 + 15 after first action)",
-      threshold: "0 - 49 credits",
+      tagline: "Limited access",
+      price: "No Access",
+      credits: "Sign up then pay ₱499 to unlock",
+      threshold: "Upgrade to Flex to get started",
       color: "#9CA3AF",
-      nextAt: `${49 - credits > 0 ? 49 - credits + " more credits" : ""}`,
     },
     {
       key: "flex",
@@ -94,7 +93,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-16">
         <div className="max-w-4xl mx-auto px-6 py-10">
           {/* Header */}
           <div className="text-center mb-8">
