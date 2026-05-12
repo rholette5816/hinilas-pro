@@ -44,6 +44,8 @@ const UGC_VIDEOS = [
   { src: "https://statics.pancake.vn/web-media-262/1b/8a/cd/2c/b04bab24ff3e321812808b46c4292b343ac61f044c66d17799b10fe7-w:720-h:1280-l:27350353-t:video/mp4.mp4", name: "Local Hardware Owner", handle: "@hardwaremarcelo", caption: "Sa loob ng 10 minuto may ad na ako. Walang agency needed 🛠️", likes: "9.7K", shares: "2.3K", comments: "541" },
   { src: "https://statics.pancake.vn/web-media-262/39/f9/47/6d/5fcf9d102f499cf10336f25c0356028c62910078599575da488ce578-w:720-h:1280-l:27227598-t:video/mp4.mp4", name: "Real Estate Broker", handle: "@kenbroker_realty", caption: "Grabe ang lead quality pagkatapos gamitin ito. Hindi pa ako nag-hire ng copywriter 💯", likes: "21.5K", shares: "6.1K", comments: "1.4K" },
   { src: "https://statics.pancake.vn/web-media-262/0a/0d/bb/45/dd8a737d51cc14591ccd2eea83b09c3d517febc369c8bc9a04a2d880-w:720-h:1280-l:27369124-t:video/mp4.mp4", name: "Spa & Wellness Owner", handle: "@serenityspa_davao", caption: "Ang gaan gamitin kahit hindi ako tech-savvy. Booking namin nag-double! ✨", likes: "18.3K", shares: "5.2K", comments: "1.1K" },
+  { src: "/samples/reel-food-park.mp4", name: "Food Park Owner", handle: "@foodpark_ph", caption: "Nag-try lang ako ng libre, tapos na-hooked na. Results agad! 🍢", likes: "11.4K", shares: "2.9K", comments: "734" },
+  { src: "/samples/reel-tailoring.mp4", name: "Tailoring Shop Owner", handle: "@stitchmaster_ph", caption: "Hindi ako marunong mag-ads dati. Ngayon 3x na ang orders ko 🧵", likes: "8.6K", shares: "1.7K", comments: "489" },
 ];
 
 const FAQS = [
