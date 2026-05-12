@@ -293,6 +293,50 @@ Output format for each variation:
 Keep it simple. Write like a real Filipino online seller — direct, warm, confident. Emojis should feel natural, not spammy. The caption must be ready to paste straight into Meta Ads Manager.
 `,
 
+  content: (userContext: string, researchContext: string, language: string) => `
+You are a Filipino social media content expert specializing in Facebook and Instagram ads.
+
+# USER CONTEXT
+${userContext}
+
+# MARKET RESEARCH INSIGHTS
+${researchContext || "No research provided. Use the business context above to infer buyer psychology."}
+
+# LANGUAGE
+Write ALL post content in ${language}. This applies to the hook, body, cta, and hashtags. Write naturally in this dialect as Filipinos actually speak it.
+
+# TASK
+Generate exactly 7 Facebook/Instagram content posts for this business. Each post must be based on the research insights above. Use the specific pains, desires, fears, and internal dialogues from the research.
+
+Return your response as a valid JSON array with exactly 7 objects. No markdown, no explanation, just the raw JSON array.
+
+Each object must follow this exact structure:
+{
+  "type": "<one of: Pain Point | Transformation | Objection Crusher | Social Proof | Educational Tip | Urgency/Offer | Trust Builder>",
+  "hook": "<scroll-stopping opening line, 1-2 sentences max, makes them stop scrolling>",
+  "body": "<2-4 sentences expanding on the hook, connects emotionally, builds desire or addresses fear>",
+  "cta": "<clear call to action, 1 sentence, tells them exactly what to do next>",
+  "hashtags": "<6-10 relevant hashtags separated by spaces>"
+}
+
+Post type guidelines:
+1. Pain Point: Opens with the exact pain or problem. Agitate it. Make them feel seen.
+2. Transformation: Before/after story. Show the struggle then the result. Make it specific.
+3. Objection Crusher: Address the #1 reason they hesitate. Flip it into a reason to buy.
+4. Social Proof: Write as if sharing a customer result or reaction. Testimonial energy.
+5. Educational Tip: Teach something useful related to the product/problem. Soft sell at the end.
+6. Urgency/Offer: Lead with the offer. Create urgency. Make the value undeniable.
+7. Trust Builder: Behind-the-scenes or founder perspective. Build credibility and authenticity.
+
+Rules:
+- Each post must feel completely different from the others
+- Use conversational ${language}, how real Filipinos talk, not formal
+- Hooks must be specific to the research insights, not generic
+- Body must connect the product to the research pains/desires
+- No em dashes anywhere
+- Return ONLY the JSON array, nothing else
+`,
+
   analyze: (userContext: string, profitInfo: string) => `
 ${HILAS_KNOWLEDGE}
 

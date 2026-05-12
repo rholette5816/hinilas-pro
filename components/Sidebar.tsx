@@ -22,6 +22,10 @@ const NAV_ITEMS = [
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
   },
   {
+    href: "/content", label: "Content Pack", desc: "7 posts from research",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="3"/></svg>,
+  },
+  {
     href: "/angles", label: "Strategy Department", desc: "Find winning angles",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
   },
@@ -46,7 +50,7 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { credits, creditsTotal, plan, setup, researchOutput, anglesOutput, copyOutput, savedImages } = useApp();
+  const { credits, creditsTotal, plan, setup, researchOutput, contentOutput, anglesOutput, copyOutput, savedImages } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
@@ -159,6 +163,7 @@ export default function Sidebar() {
   const completionMap: Record<string, boolean> = {
     "/": !!(setup?.businessName),
     "/research": !!(researchOutput),
+    "/content": !!(contentOutput?.posts?.length),
     "/angles": !!(anglesOutput),
     "/creative": !!(savedImages?.main),
     "/copy": !!(copyOutput),
@@ -167,6 +172,7 @@ export default function Sidebar() {
   // Lock map — each route requires the previous step to be done
   const lockMap: Record<string, { locked: boolean; message: string }> = {
     "/research": { locked: !setup?.businessName, message: "Complete your Setup first." },
+    "/content":  { locked: !researchOutput,       message: "Run Research first." },
     "/angles":   { locked: !researchOutput,       message: "Run Research first." },
     "/creative": { locked: !anglesOutput,          message: "Generate Angles first." },
     "/copy":     { locked: !savedImages?.main,     message: "Generate a Creative first." },

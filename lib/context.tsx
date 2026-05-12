@@ -22,11 +22,29 @@ export interface ReferralToast {
   amount: number;
 }
 
+export interface ContentPost {
+  type: string;
+  hook: string;
+  body: string;
+  cta: string;
+  hashtags: string;
+  image?: string;
+  language: string;
+}
+
+export interface ContentOutput {
+  posts: ContentPost[];
+  language: string;
+  generatedAt: string;
+}
+
 interface AppContextType {
   setup: UserSetup | null;
   setSetup: (s: UserSetup) => void;
   researchOutput: string;
   setResearchOutput: (s: string) => void;
+  contentOutput: ContentOutput | null;
+  setContentOutput: (c: ContentOutput) => void;
   anglesOutput: string;
   setAnglesOutput: (s: string) => void;
   copyOutput: string;
@@ -68,6 +86,7 @@ export function derivePlan(
 export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
   const [researchOutput, setResearchOutputState] = useState("");
+  const [contentOutput, setContentOutputState] = useState<ContentOutput | null>(null);
   const [anglesOutput, setAnglesOutputState] = useState("");
   const [copyOutput, setCopyOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
@@ -99,6 +118,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (data) {
         if (data.setup) setSetupState(data.setup);
         if (data.research_output) setResearchOutputState(data.research_output);
+        if (data.content_output) setContentOutputState(data.content_output);
         if (data.angles_output) setAnglesOutputState(data.angles_output);
         if (data.copy_output) setCopyOutputState(data.copy_output);
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
@@ -164,6 +184,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function setResearchOutput(s: string) {
     setResearchOutputState(s);
     persist({ research_output: s });
+  }
+
+  function setContentOutput(c: ContentOutput) {
+    setContentOutputState(c);
+    persist({ content_output: c });
   }
 
   function setAnglesOutput(s: string) {
@@ -258,6 +283,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       setup, setSetup,
       researchOutput, setResearchOutput,
+      contentOutput, setContentOutput,
       anglesOutput, setAnglesOutput,
       copyOutput, setCopyOutput,
       selectedAngle, setSelectedAngle,
