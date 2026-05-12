@@ -6,6 +6,7 @@ import Link from "next/link";
 import LeaderboardDrawer from "@/components/LeaderboardDrawer";
 
 const HIDDEN_PATHS = ["/home", "/loading-screen"];
+const PUBLIC_ROUTES = ["/pricing", "/blog", "/privacy", "/terms", "/data-deletion"];
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -13,11 +14,14 @@ export default function TopBar() {
 
   if (HIDDEN_PATHS.includes(pathname) || pathname.startsWith("/admin") || pathname.startsWith("/blog")) return null;
 
+  const isPublic = PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/")) || pathname.startsWith("/ref/");
+  const leftOffset = isPublic ? "0px" : "240px";
+
   return (
     <>
       <div
         className="hidden md:flex items-center justify-between gap-2 px-6 py-3 fixed top-0 right-0 z-20"
-        style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB", left: "240px" }}
+        style={{ background: "#FFFFFF", borderBottom: "1px solid #E4E6EB", left: leftOffset }}
       >
         {/* Left - Library */}
         <Link
