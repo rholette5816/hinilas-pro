@@ -500,8 +500,8 @@ export default function LandingPage() {
       <section id="pricing" className="border-y bg-white" style={{ borderColor: BORDER }}>
         <div className="mx-auto max-w-6xl px-4 py-8 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
-          <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">₱499/mo. No guesswork fees.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime starting at ₱99. Less than the cost of one wrong boosted post.</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">Pay for credits. Not subscriptions.</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Flex is ₱499 for 150 credits. Max is ₱1,299 for 500 credits. Credits never expire. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
               Start free: 30 credits →
