@@ -9,7 +9,7 @@ const BRAND_BLUE = "#1877F2";
 const BRAND_ORANGE = "#D97706";
 const BRAND_RED = "#EF4444";
 
-const FEATURES = [
+const FEATURES: { category: string; items: FeatureItem[] }[] = [
   {
     category: "Core AI Tools",
     items: [
@@ -23,17 +23,17 @@ const FEATURES = [
   {
     category: "Flex Features",
     items: [
-      { label: "Audit Department — Results analysis", lite: false, flex: true, max: true },
+      { label: "Audit Department — Basic analysis", lite: false, flex: true, max: true },
+      { label: "Audit Department — Advanced analysis", lite: false, flex: true, max: true },
       { label: "Content Creation — 7 ready-to-post captions", lite: false, flex: true, max: true },
     ],
   },
   {
-    category: "Max Features",
+    category: "Max Features (Coming Soon)",
     items: [
-      { label: "Creative Department — Video generation", lite: false, flex: false, max: true },
-      { label: "Audit Department — Advanced analysis", lite: false, flex: false, max: true },
-      { label: "Campaign Setup — Conversion Setup guide", lite: false, flex: false, max: true },
-      { label: "Script Writing — Video ad scripts (Coming Soon)", lite: false, flex: false, max: true },
+      { label: "Creative Department — Video generation", lite: false, flex: false, max: "Coming Soon" },
+      { label: "Campaign Setup — Conversion Setup guide", lite: false, flex: false, max: "Coming Soon" },
+      { label: "Script Writing — Video ad scripts", lite: false, flex: false, max: "Coming Soon" },
     ],
   },
   {
@@ -46,6 +46,7 @@ const FEATURES = [
 ];
 
 type FeatureValue = boolean | string;
+interface FeatureItem { label: string; lite: FeatureValue; flex: FeatureValue; max: FeatureValue; }
 
 function Check({ value, color }: { value: FeatureValue; color: string }) {
   if (value === false) return <span className="text-xs font-semibold text-slate-400">Not included</span>;
@@ -84,10 +85,9 @@ export default function PricingPage() {
       key: "max",
       name: "Max",
       tagline: "Unmatched power. Zero limits.",
-      price: "PHP 1,299",
-      period: " / 500 credits",
-      credits: "500 credits + lifetime Max access",
-      threshold: "Pay once, access forever",
+      price: "Coming Soon",
+      credits: "Video, Conversion Setup, Script Writing",
+      threshold: "Launching soon",
       color: BRAND_RED,
     },
   ];
@@ -204,13 +204,12 @@ export default function PricingPage() {
                       Get Flex - PHP 499
                     </button>
                   ) : (
-                    <button
-                      onClick={() => setGcash({ label: "Max", credits: 500, price: 1299, color: BRAND_RED })}
-                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
-                      style={{ background: BRAND_RED }}
+                    <div
+                      className="mt-auto w-full py-2 rounded-xl text-sm font-bold text-center"
+                      style={{ background: "#f2f3f5", color: "#9CA3AF", border: "1px solid #E4E6EB" }}
                     >
-                      Get Max - PHP 1,299
-                    </button>
+                      Coming Soon
+                    </div>
                   )}
                 </div>
               );
