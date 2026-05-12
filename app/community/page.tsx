@@ -160,6 +160,5 @@ export default function CommunityPage() {
           )}
         </div>
       </main>
-    </div>
   );
 }

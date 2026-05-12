@@ -325,6 +325,5 @@ export default function SetupPage() {
       </div>
 
       <TutorialOverlay show={!setup?.businessName} />
-    </div>
   );
 }

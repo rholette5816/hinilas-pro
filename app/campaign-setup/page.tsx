@@ -759,6 +759,5 @@ export default function CampaignSetupPage() {
           )}
         </div>
       </main>
-    </div>
   );
 }
