@@ -293,7 +293,7 @@ export default function SetupPage() {
         </main>
 
         {/* Sticky bottom bar — sits above chat button (chat is bottom-6 right-6, ~80px) */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-60 px-4 py-3 flex items-center gap-3 z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)" }}>
+        <div className="fixed bottom-0 left-0 right-0 md:left-60 px-4 py-3 flex items-center justify-end gap-3 z-30" style={{ background: "rgba(248,250,252,0.95)", borderTop: "1px solid #E4E6EB", backdropFilter: "blur(12px)" }}>
           <button
             type="button"
             onClick={handleClearData}
