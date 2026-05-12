@@ -7,11 +7,11 @@ import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 const LANGUAGE_OPTIONS = [
-  { value: "Taglish", label: "Taglish" },
-  { value: "Bisaya-English", label: "Bisaya-English" },
-  { value: "Ilocano-English", label: "Ilocano-English" },
-  { value: "Pure English", label: "Pure English" },
-  { value: "Pure Filipino", label: "Pure Filipino" },
+  { value: "Taglish", label: "Taglish", sub: "Tagalog + English" },
+  { value: "Bislish", label: "Bislish", sub: "Bisaya + English" },
+  { value: "Filipino", label: "Filipino", sub: "Tagalog" },
+  { value: "Bisaya", label: "Bisaya", sub: "Cebuano" },
+  { value: "Ilocano", label: "Ilocano", sub: "Northern Luzon" },
 ];
 
 const POST_TYPES = [
@@ -270,20 +270,28 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
             </div>
           )}
 
-          <div className="flex items-center gap-3 mb-6 flex-wrap">
-            <label className="flex items-center gap-2 text-sm text-[#1c1e21]">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Language</span>
-              <select
-                value={language}
-                onChange={(event) => setLanguage(event.target.value)}
-                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-[#1c1e21] focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {LANGUAGE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-            </label>
+          <div className="mb-4">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-2">Language</label>
+            <div className="grid grid-cols-5 gap-2 mb-4">
+              {LANGUAGE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setLanguage(opt.value)}
+                  className="p-2.5 rounded-lg border text-left transition-all"
+                  style={language === opt.value
+                    ? { background: "#1877F2", borderColor: "#1877F2", color: "white" }
+                    : { background: "#f2f3f5", borderColor: "#E4E6EB", color: "#374151" }
+                  }
+                >
+                  <p className="text-xs font-medium">{opt.label}</p>
+                  <p className="text-xs opacity-60 mt-0.5">{opt.sub}</p>
+                </button>
+              ))}
+            </div>
+          </div>
 
+          <div className="flex items-center gap-3 mb-6 flex-wrap">
             <button
               onClick={generateContentPack}
               disabled={!canGenerate}
