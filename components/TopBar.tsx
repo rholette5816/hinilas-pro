@@ -46,7 +46,20 @@ export default function TopBar() {
           </Link>
         )}
 
-        {/* Right - Blog + Leaderboard */}
+        {/* Left group - Library + Leaderboard */}
+        <div className="flex items-center gap-2">
+          {!isPublic && (
+            <button
+              onClick={() => setShowLeaderboard(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
+              style={{ background: "#f2f3f5", color: "#D97706", border: "1px solid #D9770630" }}
+            >
+              Leaderboard
+            </button>
+          )}
+        </div>
+
+        {/* Right - Blog */}
         <div className="flex items-center gap-2">
           <Link
             href="/blog"
@@ -55,13 +68,6 @@ export default function TopBar() {
           >
             Blog
           </Link>
-          <button
-            onClick={() => setShowLeaderboard(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-            style={{ background: "#f2f3f5", color: "#D97706", border: "1px solid #D9770630" }}
-          >
-            Leaderboard
-          </button>
         </div>
       </div>
 
