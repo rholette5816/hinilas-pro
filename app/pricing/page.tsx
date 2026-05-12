@@ -326,5 +326,6 @@ export default function PricingPage() {
           color={gcash.color}
         />
       )}
+    </>
   );
 }
