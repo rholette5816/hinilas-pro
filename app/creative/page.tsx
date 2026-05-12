@@ -3,12 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FunnelProgress from "@/components/FunnelProgress";
+import TierLock from "@/components/TierLock";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 export default function CreativePage() {
-  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages, savedVideos, savedVideoPrompts, saveVideos } = useApp();
+  const { setup, selectedAngle, setCreativeImage, credits, refreshCredits, savedImages, saveAdImages, savedVideos, savedVideoPrompts, saveVideos, plan } = useApp();
   const router = useRouter();
+  const isMax = plan === "max";
 
   const [activeTab, setActiveTab] = useState<"image" | "video">("image");
 
@@ -382,6 +384,9 @@ export default function CreativePage() {
 
           {/* === VIDEO TAB === */}
           {activeTab === "video" && (
+            !isMax ? (
+              <TierLock requiredTier="Max" featureName="Video Generation" />
+            ) : (
             <div>
               {!selectedAngle ? (
                 <div className="rounded-xl p-6 text-center mb-6" style={{ background: "#FFF7ED", border: "1px solid #FED7AA" }}>
@@ -547,6 +552,7 @@ export default function CreativePage() {
                 </>
               )}
             </div>
+            )
           )}
 
           {/* === IMAGE TAB === */}

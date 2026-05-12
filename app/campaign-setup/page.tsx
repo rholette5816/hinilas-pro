@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import FunnelProgress from "@/components/FunnelProgress";
+import TierLock from "@/components/TierLock";
 import { useApp } from "@/lib/context";
 import { createClient } from "@/lib/supabase/client";
 
@@ -161,10 +162,11 @@ const STEPS: Step[] = [
 const TOTAL = STEPS.length;
 
 export default function CampaignSetupPage() {
-  const { refreshCredits } = useApp();
+  const { refreshCredits, plan } = useApp();
   const [researchOutput, setResearchOutput] = useState("");
   const [activeTab, setActiveTab] = useState<"messenger" | "conversion">("messenger");
   const [copiedInterest, setCopiedInterest] = useState<string | null>(null);
+  const isMax = plan === "max";
 
   useEffect(() => {
     const supabase = createClient();
@@ -385,15 +387,21 @@ export default function CampaignSetupPage() {
               Messenger Ads Setup
             </button>
             <button
-              disabled
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold cursor-not-allowed"
-              style={{ background: "#FFFFFF", color: "#374151", border: "1px solid #1F2937" }}
+              onClick={() => setActiveTab("conversion")}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+              style={activeTab === "conversion"
+                ? { background: "#8B5CF6", color: "#fff" }
+                : { background: "#FFFFFF", color: "#6B7280", border: "1px solid #1F2937" }
+              }
             >
-              Conversion Setup Locked
+              Conversion Setup
             </button>
           </div>
 
           {activeTab === "conversion" && (
+            !isMax ? (
+              <TierLock requiredTier="Max" featureName="Conversion Setup" />
+            ) : (
             <div className="rounded-2xl border border-indigo-900 px-6 py-12 text-center" style={{ background: "#0D0B1F" }}>
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1E1B4B" }}>
                 <span className="text-2xl">Target</span>
@@ -406,6 +414,7 @@ export default function CampaignSetupPage() {
               <p className="text-[#1c1e21] text-xs mb-6">Currently in production.</p>
               <p className="text-indigo-400 text-xs">Stay tuned - we&apos;ll notify you when it drops.</p>
             </div>
+            )
           )}
 
           {activeTab === "messenger" && (

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AIOutput from "@/components/AIOutput";
+import TierLock from "@/components/TierLock";
 import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 import { createClient } from "@/lib/supabase/client";
@@ -59,9 +60,11 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
 type AnalyzeVideoKey = "analyze_basic" | "analyze_advanced";
 
 export default function AnalyzePage() {
-  const { setup, credits, refreshCredits } = useApp();
+  const { setup, credits, refreshCredits, plan } = useApp();
   const router = useRouter();
   const [mode, setMode] = useState<Mode | null>(null);
+  const isLite = plan === "lite";
+  const isMax = plan === "max";
 
   // Basic state
   const [screenshot, setScreenshot] = useState<string | null>(null);
@@ -764,6 +767,9 @@ show(0);
             <p className="text-sm" style={{ color: "#65676b" }}>Choose your analysis type below.</p>
           </div>
 
+          {isLite && <TierLock requiredTier="Flex" featureName="Audit Department" />}
+          {!isLite && (
+            <>
           {/* Mode selector */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <button
@@ -1023,7 +1029,11 @@ show(0);
           )}
 
           {/* Analyze button */}
-          {mode && (
+          {mode === "advanced" && !isMax ? (
+            <div className="mb-6">
+              <TierLock requiredTier="Max" featureName="Advanced Audit" />
+            </div>
+          ) : mode && (
             <button
               onClick={analyze}
               disabled={loading || (mode === "basic" ? !screenshot : !csvText)}
@@ -1086,6 +1096,8 @@ show(0);
             </div>
           )}
 
+            </>
+          )}
 
         </div>
       </main>

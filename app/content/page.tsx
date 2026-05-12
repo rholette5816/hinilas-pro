@@ -2,86 +2,42 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
+import TierLock from "@/components/TierLock";
 import { useApp, buildUserContext } from "@/lib/context";
-import { MODULE_PROMPTS } from "@/lib/knowledge";
-
-const LANGUAGE_OPTIONS = [
-  { value: "Taglish", label: "Taglish", sub: "Tagalog + English" },
-  { value: "Bislish", label: "Bislish", sub: "Bisaya + English" },
-  { value: "Filipino", label: "Filipino", sub: "Tagalog" },
-  { value: "Bisaya", label: "Bisaya", sub: "Cebuano" },
-  { value: "Ilocano", label: "Ilocano", sub: "Northern Luzon" },
-  { value: "Hiligaynon", label: "Hiligaynon", sub: "Ilonggo" },
-  { value: "Kapampangan", label: "Kapampangan", sub: "Pampanga" },
-  { value: "English", label: "English", sub: "Formal" },
-];
-
-const POST_TYPES = [
-  { type: "Pain Point", color: "#EF4444", bg: "#FEF2F2", border: "#FECACA" },
-  { type: "Transformation", color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE" },
-  { type: "Objection Crusher", color: "#D97706", bg: "#FFFBEB", border: "#FDE68A" },
-  { type: "Social Proof", color: "#10B981", bg: "#ECFDF5", border: "#A7F3D0" },
-  { type: "Educational Tip", color: "#1877F2", bg: "#EFF6FF", border: "#BFDBFE" },
-  { type: "Urgency/Offer", color: "#F59E0B", bg: "#FFFBEB", border: "#FDE68A" },
-  { type: "Trust Builder", color: "#6366F1", bg: "#EEF2FF", border: "#C7D2FE" },
-];
+import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
 interface ContentPost {
   type: string;
   caption: string;
-  image?: string;
-  language: string;
 }
 
-function CheckIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className={className}>
-      <path
-        d="M3.5 8.5 6.5 11.5 12.5 4.5"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
+const POST_TYPES = [
+  { type: "Problem Hook", color: "#EF4444", bg: "#FEF2F2", border: "#FECACA" },
+  { type: "Solution Reveal", color: "#1877F2", bg: "#EFF6FF", border: "#BFDBFE" },
+  { type: "Testimonial Story", color: "#10B981", bg: "#ECFDF5", border: "#A7F3D0" },
+  { type: "Educational", color: "#D97706", bg: "#FFFBEB", border: "#FDE68A" },
+  { type: "Urgency Offer", color: "#F59E0B", bg: "#FFFBEB", border: "#FDE68A" },
+  { type: "Transformation", color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE" },
+  { type: "Behind the Scenes", color: "#6366F1", bg: "#EEF2FF", border: "#C7D2FE" },
+];
 
-function Spinner() {
-  return (
-    <span
-      aria-hidden="true"
-      className="inline-block h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin"
-    />
-  );
-}
-
-function normalizePosts(raw: string, language: string): ContentPost[] {
+function parseContentPosts(raw: string): ContentPost[] {
   const cleaned = raw
     .trim()
     .replace(/^```(?:json)?/i, "")
     .replace(/```$/i, "")
     .trim();
   const jsonText = cleaned.match(/\[[\s\S]*\]/)?.[0] || cleaned;
-  const parsed = JSON.parse(jsonText) as Partial<ContentPost>[];
+  const parsed = JSON.parse(jsonText) as Array<Partial<ContentPost>>;
 
   if (!Array.isArray(parsed)) return [];
 
-  return parsed.slice(0, 7).map((post, index) => {
-    const fallbackType = POST_TYPES[index]?.type || "Content Post";
-    return {
-      type: (post as { type?: string }).type || fallbackType,
-      caption: (post as { caption?: string }).caption || "",
-      image: (post as { image?: string }).image,
-      language,
-    };
-  });
-}
-
-function copyPost(post: ContentPost) {
-  navigator.clipboard.writeText(post.caption);
+  return parsed.slice(0, 7).map((post, index) => ({
+    type: post.type || POST_TYPES[index]?.type || "Content Post",
+    caption: post.caption || "",
+  }));
 }
 
 export default function ContentPage() {
@@ -92,66 +48,65 @@ export default function ContentPage() {
     setContentOutput,
     credits,
     refreshCredits,
+    plan,
   } = useApp();
   const router = useRouter();
-  const [language, setLanguage] = useState(setup?.language || "Taglish");
   const [loading, setLoading] = useState(false);
-  const [noCredits, setNoCredits] = useState(false);
   const [posts, setPosts] = useState<ContentPost[]>(contentOutput?.posts || []);
-  const [imageLoading, setImageLoading] = useState<Record<number, boolean>>({});
-  const [aspectRatio, setAspectRatio] = useState<"1:1" | "4:5">("1:1");
+  const [noCredits, setNoCredits] = useState(false);
   const [error, setError] = useState("");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-  const canGenerate = Boolean(researchOutput) && credits >= 7 && !loading;
+  const isLite = plan === "lite";
+  const isMax = plan === "max";
 
-  function loadMockData() {
-    const mock: ContentPost[] = POST_TYPES.map((pt) => ({
-      type: pt.type,
-      language,
-      caption: `😩 Bakit kahit mahal na ads ang pinapatakbo mo, zero pa rin ang benta?\n\nMaraming business owners ang naggu-gugol ng libo-libo sa Facebook Ads pero hindi nakikita ang results. Dahil hindi ito problema ng budget.\n\nProblem ito ng sistema. Kung wala kang tamang angle, tamang copy, at tamang target — kahit gastusan mo pa ng malaki, mauubos lang.\n\nYun ang tinutuklasan ng mga gumagamit ng Hinilas Pro. Hindi lang basta marunong mag-ads. Nag-e-earn na. ✨\n\n💬 Comment "READY" sa baba at ipapadala ko sa iyo ang link.`,
-    }));
-    setPosts(mock);
-  }
-
-  async function generateContentPack() {
+  async function generateContent() {
     if (!setup) return;
-    if (!researchOutput) {
-      setError("Run Research first to generate content.");
-      return;
-    }
-    if (credits < 7) {
+    if (credits < 1) {
       setNoCredits(true);
       return;
     }
 
     setLoading(true);
-    setError("");
     setNoCredits(false);
-    setPosts([]);
+    setError("");
 
-    const prompt = MODULE_PROMPTS.content(buildUserContext(setup), researchOutput, language);
+    const deduct = await fetch("/api/credits/use", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 1, description: "Content creation" }),
+    });
+
+    if (!deduct.ok) {
+      setNoCredits(true);
+      setLoading(false);
+      return;
+    }
+
+    await refreshCredits();
+
+    const prompt = MODULE_PROMPTS.content(buildUserContext(setup), researchOutput, setup.language);
 
     try {
-      const res = await fetch("/api/content", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, language, module: "content" }),
+        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "content" }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) {
-        if (data.code === "NO_CREDITS") setNoCredits(true);
-        throw new Error(data.error || "Content generation failed.");
-      }
+      if (!res.ok || data.error) throw new Error(data.error || "Content generation failed.");
 
-      const parsedPosts = normalizePosts(data.content, language);
-      if (parsedPosts.length !== 7) {
-        throw new Error("The content pack response was not a complete 7-post JSON array. Please try again.");
+      const parsedPosts = parseContentPosts(data.content || "");
+      if (parsedPosts.length !== 7 || parsedPosts.some((post) => !post.caption.trim())) {
+        throw new Error("The content response was not a complete 7-post JSON array. Please try again.");
       }
 
       setPosts(parsedPosts);
-      setContentOutput({ posts: parsedPosts, language, generatedAt: new Date().toISOString() });
-      await refreshCredits();
+      setContentOutput({
+        posts: parsedPosts.map((post) => ({ ...post, language: setup.language })),
+        language: setup.language,
+        generatedAt: new Date().toISOString(),
+      });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     } finally {
@@ -159,130 +114,91 @@ export default function ContentPage() {
     }
   }
 
-  async function generateImage(postIndex: number, post: ContentPost) {
-    if (!setup) return;
-    if (credits < 2) {
-      setNoCredits(true);
-      return;
-    }
-
-    setImageLoading((prev) => ({ ...prev, [postIndex]: true }));
-    setError("");
-    setNoCredits(false);
-
-    const imageStyleByType: Record<string, string> = {
-      "Pain Point": "a relatable scene showing the frustration or problem the audience faces. Emotional, real, Filipino setting.",
-      "Transformation": "a before/after split or a glowing result visual. Show the transformation clearly. Clean and aspirational.",
-      "Objection Crusher": "a confident, reassuring visual that addresses doubt. Use a direct, trustworthy feel with strong colors.",
-      "Social Proof": "a testimonial-style graphic. Include a quote overlay design, warm tones, and a happy Filipino customer energy.",
-      "Educational Tip": "a clean tip card or infographic-style layout. Minimal text, bold numbers or steps, bright and readable.",
-      "Urgency/Offer": "a bold product-focused image with price or offer highlight. Strong contrast, urgency colors (red/orange), direct CTA feel.",
-      "Trust Builder": "a behind-the-scenes or founder-style image. Authentic, warm, personal. Shows the human side of the brand.",
-    };
-    const styleGuide = imageStyleByType[post.type] || "a polished Filipino Meta Ads social post image.";
-
-    const prompt = `Create a ready-to-post Facebook/Instagram image for ${setup.businessName}.
-
-Business: ${setup.businessName}
-Product or service: ${setup.product}
-Target audience: ${setup.targetAudience}
-Post type: ${post.type}
-Caption context: ${post.caption.slice(0, 300)}
-
-Visual style: ${styleGuide}
-
-Requirements:
-- Polished Filipino Meta Ads quality
-- Clear focal subject, strong contrast
-- Minimal readable text only (no long sentences in the image)
-- No watermarks, no blurry text, no distorted faces
-- Layout matches the emotional angle of the post type above`;
-
-    try {
-      const res = await fetch("/api/content-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, aspectRatio, postType: post.type, angle: post.type }),
-      });
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        if (data.code === "NO_CREDITS") setNoCredits(true);
-        throw new Error(data.error || "Image generation failed.");
-      }
-
-      const updatedPosts = posts.map((item, idx) =>
-        idx === postIndex ? { ...item, image: data.imageUrl } : item
-      );
-      setPosts(updatedPosts);
-      setContentOutput({ posts: updatedPosts, language, generatedAt: contentOutput?.generatedAt || new Date().toISOString() });
-      await refreshCredits();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Image generation failed. Try again.");
-    } finally {
-      setImageLoading((prev) => ({ ...prev, [postIndex]: false }));
-    }
+  function copyCaption(caption: string, index: number) {
+    navigator.clipboard.writeText(caption);
+    setCopiedIndex(index);
+    window.setTimeout(() => setCopiedIndex(null), 1500);
   }
 
-  function handleCopy(post: ContentPost, index: number) {
-    copyPost(post);
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 1500);
+  if (isLite) {
+    return (
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
+        <div className="max-w-3xl mx-auto px-6 py-10">
+          <TierLock requiredTier="Flex" featureName="Content Creation" />
+        </div>
+      </main>
+    );
   }
 
   if (!setup) {
     return (
-      <>
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
-            <button
-              onClick={() => router.push("/")}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium"
-            >
-              Go to Setup
-            </button>
-          </div>
-        </main>
-      </>
+      <main className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
+          <button
+            onClick={() => router.push("/")}
+            className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium"
+          >
+            Go to Setup
+          </button>
+        </div>
+      </main>
     );
   }
 
   return (
     <>
+      {noCredits && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
+            <div
+              className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full text-lg"
+              style={{ border: "1px solid rgba(217,119,6,0.4)", color: "#D97706" }}
+            >
+              !
+            </div>
+            <h2 className="text-[#1c1e21] font-bold text-lg mb-2">Not enough credits</h2>
+            <p className="text-[#1c1e21] text-sm mb-6">Content creation costs 1 credit. Top up to continue.</p>
+            <div className="flex flex-col gap-3">
+              <a
+                href="/pricing"
+                className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
+                style={{ background: "#D97706" }}
+              >
+                View Plans
+              </a>
+              <button onClick={() => setNoCredits(false)} className="text-[#1c1e21] text-sm">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="flex-1 overflow-y-auto pt-14 md:pt-12">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <FunnelProgress currentStep={3} />
+          <FunnelProgress currentStep={5} />
 
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-blue-950 border border-blue-800 rounded-full px-3 py-1 mb-4">
               <span className="text-blue-300 text-xs font-medium">Content Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Content Pack Generator</h1>
+            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">Generate Your Content Pack</h1>
             <p className="text-[#1c1e21] text-sm">
-              Turn your research into 7 ready-to-post Facebook and Instagram pieces.
+              7 ready-to-post captions based on your business and research.
             </p>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl p-4 mb-6">
-            <p className="text-[#1c1e21] text-xs font-medium uppercase tracking-wider mb-2">Generating for</p>
-            <p className="text-[#1c1e21] font-semibold">{setup.businessName}</p>
-            <p className="text-[#1c1e21] text-sm mt-1">{setup.product}</p>
-            <p className="text-[#1c1e21] text-xs mt-1">Target: {setup.targetAudience}</p>
+          <div className="flex items-center gap-3 mb-6 flex-wrap">
+            <button
+              onClick={generateContent}
+              disabled={loading}
+              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+              style={{ background: "#1877F2", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+            >
+              {loading ? "Generating..." : posts.length > 0 ? "Regenerate Content Pack - 1 credit" : "Generate Content Pack - 1 credit"}
+            </button>
           </div>
-
-          {!researchOutput && (
-            <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
-              <p className="text-[#1c1e21] text-sm font-semibold">Run Research first to generate content</p>
-              <p className="text-[#64748B] text-xs mt-1">The content pack uses your customer pains, desires, and objections from research.</p>
-            </div>
-          )}
-
-          {(noCredits || (credits < 7 && !loading)) && (
-            <div className="rounded-xl p-4 mb-6" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
-              <p className="text-[#991B1B] text-sm font-semibold">Not enough credits</p>
-              <p className="text-[#7F1D1D] text-xs mt-1">You need 7 credits to generate the content pack. Images cost 2 credits each.</p>
-            </div>
-          )}
 
           {error && (
             <div className="rounded-xl p-4 mb-6" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
@@ -290,67 +206,23 @@ Requirements:
             </div>
           )}
 
-          <div className="mb-4">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-2">Language</label>
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              {LANGUAGE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setLanguage(opt.value)}
-                  className="p-2.5 rounded-lg border text-left transition-all"
-                  style={language === opt.value
-                    ? { background: "#1877F2", borderColor: "#1877F2", color: "white" }
-                    : { background: "#f2f3f5", borderColor: "#E4E6EB", color: "#374151" }
-                  }
-                >
-                  <p className="text-xs font-medium">{opt.label}</p>
-                  <p className="text-xs opacity-60 mt-0.5">{opt.sub}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 mb-6 flex-wrap">
-            <button
-              onClick={generateContentPack}
-              disabled={!canGenerate}
-              className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#1877F2", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
-            >
-              {loading ? "Generating..." : posts.length > 0 ? "Regenerate Content Pack - 7 credits" : "Generate Content Pack - 7 credits"}
-            </button>
-            <button
-              onClick={loadMockData}
-              className="px-4 py-3 rounded-lg text-sm font-semibold border transition-colors hover:bg-slate-50"
-              style={{ borderColor: "#E4E6EB", color: "#64748B" }}
-            >
-              Preview Mock Data
-            </button>
-          </div>
-
           {loading && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {POST_TYPES.map((postType) => (
-                <div key={postType.type} className="bg-white border border-slate-200 rounded-xl p-5 animate-pulse">
-                  <div className="h-5 w-28 rounded-full mb-5" style={{ background: postType.bg }} />
-                  <div className="h-6 bg-slate-200 rounded mb-3 w-3/4" />
-                  <div className="space-y-2 mb-5">
-                    <div className="h-3 bg-slate-200 rounded" />
-                    <div className="h-3 bg-slate-200 rounded w-5/6" />
-                    <div className="h-3 bg-slate-200 rounded w-2/3" />
-                  </div>
-                  <div className="h-9 bg-slate-200 rounded-lg w-32" />
-                </div>
-              ))}
-            </div>
+            <AILoadingState
+              messages={[
+                "Studying your business profile...",
+                "Turning research into post ideas...",
+                "Writing scroll-stopping captions...",
+                "Finalizing your 7-post content pack...",
+              ]}
+              estimatedTime="This takes about 1-2 minutes."
+              icon="P"
+            />
           )}
 
           {!loading && posts.length > 0 && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
               {posts.map((post, index) => {
                 const typeStyle = POST_TYPES.find((item) => item.type === post.type) || POST_TYPES[index] || POST_TYPES[0];
-                const isGeneratingImage = Boolean(imageLoading[index]);
 
                 return (
                   <article
@@ -367,64 +239,45 @@ Requirements:
                           {post.type}
                         </span>
                         <button
-                          onClick={() => handleCopy(post, index)}
+                          onClick={() => copyCaption(post.caption, index)}
                           className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 text-[#1c1e21] hover:border-blue-400 transition-colors"
                         >
                           {copiedIndex === index ? "Copied" : "Copy"}
                         </button>
                       </div>
 
-                      <p className="text-[#1c1e21] text-sm leading-relaxed whitespace-pre-line mb-5">{post.caption}</p>
-
-                      {post.image && (
-                        <div className="mb-5">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={post.image}
-                            alt={`${post.type} generated creative`}
-                            className="w-full rounded-lg border border-slate-200 object-cover"
-                          />
-                          <a
-                            href={post.image}
-                            download
-                            className="inline-flex mt-3 text-xs font-bold px-3 py-2 rounded-lg transition-opacity hover:opacity-90"
-                            style={{ background: "#ECFDF5", color: "#047857", border: "1px solid #A7F3D0" }}
-                          >
-                            Download Image
-                          </a>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between gap-3 flex-wrap pt-4 border-t border-slate-200">
-                        <div className="inline-flex rounded-lg border border-slate-200 overflow-hidden bg-white">
-                          {(["1:1", "4:5"] as const).map((ratio) => (
-                            <button
-                              key={ratio}
-                              type="button"
-                              onClick={() => setAspectRatio(ratio)}
-                              className="px-3 py-2 text-xs font-bold transition-colors"
-                              style={aspectRatio === ratio ? { background: "#1877F2", color: "#FFFFFF" } : { color: "#1c1e21" }}
-                            >
-                              {ratio}
-                            </button>
-                          ))}
-                        </div>
-
-                        <button
-                          onClick={() => generateImage(index, post)}
-                          disabled={isGeneratingImage || credits < 2}
-                          className="inline-flex items-center gap-2 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-90 disabled:opacity-40"
-                          style={{ background: typeStyle.color }}
-                        >
-                          {isGeneratingImage ? <><Spinner /> Generating...</> : "Generate Image - 2 credits"}
-                        </button>
-                      </div>
+                      <p className="text-[#1c1e21] text-sm leading-relaxed whitespace-pre-line">{post.caption}</p>
                     </div>
                   </article>
                 );
               })}
             </div>
           )}
+
+          <div
+            className="rounded-2xl border p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            style={{
+              background: isMax ? "#F5F3FF" : "#FFFFFF",
+              borderColor: isMax ? "#DDD6FE" : "#E4E6EB",
+            }}
+          >
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3" style={{ background: "#8B5CF615", color: "#8B5CF6", border: "1px solid #8B5CF640" }}>
+                <span className="text-xs font-bold">{isMax ? "Coming Soon" : "Max Feature"}</span>
+              </div>
+              <h2 className="text-[#1c1e21] font-bold text-lg mb-1">Script Writing</h2>
+              <p className="text-[#64748B] text-sm">Video scripts powered by AI. Coming soon for Max users.</p>
+            </div>
+            {!isMax && (
+              <button
+                onClick={() => router.push("/pricing")}
+                className="shrink-0 px-5 py-2.5 rounded-lg text-sm font-bold text-white"
+                style={{ background: "#8B5CF6" }}
+              >
+                Upgrade to Max
+              </button>
+            )}
+          </div>
         </div>
       </main>
     </>

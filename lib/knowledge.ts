@@ -293,26 +293,26 @@ Output format for each variation:
 Keep it simple. Write like a real Filipino online seller — direct, warm, confident. Emojis should feel natural, not spammy. The caption must be ready to paste straight into Meta Ads Manager.
 `,
 
-  content: (userContext: string, researchContext: string, language: string) => `
+  content: (userContext: string, researchOutput?: string, language?: string) => `
 You are a Filipino social media content expert specializing in Facebook captions that convert.
 
 # USER CONTEXT
 ${userContext}
 
 # MARKET RESEARCH INSIGHTS
-${researchContext || "No research provided. Use the business context above to infer buyer psychology."}
+${researchOutput || "No research provided. Use the business context above to infer buyer psychology."}
 
 # LANGUAGE
-Write ALL post content in ${language}. Write naturally in this dialect as Filipinos actually speak it — conversational, not formal.
+Write ALL post content in ${language || "Taglish"}. Write naturally in this dialect as Filipinos actually speak it — conversational, not formal.
 
 # TASK
-Generate exactly 7 Facebook caption posts for this business. Each post must use the specific pains, desires, fears, and language from the research above.
+Generate exactly 7 Facebook or Instagram caption posts for this business. Each post must use the specific pains, desires, fears, and language from the research above.
 
 Return your response as a valid JSON array with exactly 7 objects. No markdown, no explanation, just the raw JSON array.
 
-Each object must follow this exact structure:
+Each object must follow this exact structure, using each required type exactly once:
 {
-  "type": "<one of: Pain Point | Transformation | Objection Crusher | Social Proof | Educational Tip | Urgency/Offer | Trust Builder>",
+  "type": "<one of: Problem Hook | Solution Reveal | Testimonial Story | Educational | Urgency Offer | Transformation | Behind the Scenes>",
   "caption": "<the full ready-to-post Facebook caption with emojis and proper line breaks>"
 }
 
@@ -338,17 +338,63 @@ Rules for the caption:
 - No em dashes
 - Hook must be specific to the research, not generic
 - CTA must be direct and conversational
+- First line must stop the scroll
+- End with a CTA to comment, message, or click
 
 Post type guidelines:
-1. Pain Point: Hook opens with the exact pain. Agitate it. Make them feel seen.
-2. Transformation: Before/after structure. Specific struggle then specific result.
-3. Objection Crusher: Name the #1 hesitation. Flip it into a reason to act.
-4. Social Proof: Testimonial energy. Write as if sharing a real customer result.
-5. Educational Tip: Teach something useful. Soft sell at the end.
-6. Urgency/Offer: Lead with the offer. Make the value undeniable. Create urgency.
-7. Trust Builder: Behind-the-scenes or founder voice. Build credibility.
+1. Problem Hook: Hook opens with the exact pain. Agitate it. Make them feel seen.
+2. Solution Reveal: Show the better way and connect it to the offer.
+3. Testimonial Story: Testimonial energy. Write as if sharing a real customer result.
+4. Educational: Teach something useful. Soft sell at the end.
+5. Urgency Offer: Lead with the offer. Make the value undeniable. Create urgency.
+6. Transformation: Before/after structure. Specific struggle then specific result.
+7. Behind the Scenes: Founder or process voice. Build credibility.
 
 Return ONLY the JSON array, nothing else.
+`,
+
+  contentScript: (caption: string, hookStyle: "numerical" | "commanding" | "hereswhy", language: string) => `
+You are a Filipino social media scriptwriter for talking head videos.
+
+# LANGUAGE
+Write the entire script in ${language} - natural, conversational, how real Filipinos speak it.
+
+# SOURCE MATERIAL
+The caption below is the content idea. Use its angle, pain point, and CTA as the basis.
+
+# HOOK STYLE
+Selected style: ${hookStyle}
+- numerical: start with a number ("3 reasons bakit...", "2 things na hindi mo alam...")
+- commanding: start with a direct command ("Tigilan mo na ito.", "Gawin mo ito ngayon.")
+- hereswhy: start with "Here's why..." or "Eto ang dahilan kung bakit..."
+
+# FORMULA
+Output exactly these 5 labeled parts, nothing else:
+
+**[HOOK]**
+One punchy opening line matching the selected hook style. Must stop the scroll in the first 2 seconds.
+
+**[CONTEXT]**
+2-3 sentences. Set up the problem or situation. Make them feel seen.
+
+**[CURIOSITY LOOP]**
+1-2 sentences. Tease what's coming. Make them want to keep watching. ("And here's the part most people miss...", "Pero eto ang hindi sinasabi ng iba...")
+
+**[VALUE]**
+3-5 sentences. Deliver the actual insight, tip, or offer. This is the meat. Be specific, not generic.
+
+**[CTA]**
+1 sentence. Tell them exactly what to do. ("Comment 'INFO' sa baba.", "I-follow para sa part 2.", "DM mo ko ng 'READY'.")
+
+# RULES
+- No hashtags
+- No em dashes
+- Write in ${language} throughout
+- Keep it under 90 seconds when spoken aloud, roughly 200-250 words total
+- Return ONLY the 5 labeled sections, no intro, no explanation
+
+CAPTION SOURCE:
+${caption}
 `,
 
   analyze: (userContext: string, profitInfo: string) => `

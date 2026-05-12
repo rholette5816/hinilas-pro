@@ -210,6 +210,7 @@ export default function Sidebar() {
           const done = completionMap[item.href] ?? false;
           const lock = lockMap[item.href];
           const isLocked = lock?.locked ?? false;
+          const showTierLock = item.href === "/content" && plan === "lite";
           return (
             <Link
               key={item.href}
@@ -234,7 +235,14 @@ export default function Sidebar() {
                 {item.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-base font-medium" style={{ color: active ? "#1877F2" : "#1c1e21" }}>{item.label}</p>
+                <p className="text-base font-medium flex items-center gap-1.5" style={{ color: active ? "#1877F2" : "#1c1e21" }}>
+                  <span className="truncate">{item.label}</span>
+                  {showTierLock && (
+                    <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "#E7F3FF", color: "#1877F2", border: "1px solid #BFDBFE" }}>
+                      Flex+
+                    </span>
+                  )}
+                </p>
                 <p className="text-sm truncate" style={{ color: "#65676B" }}>{item.desc}</p>
               </div>
               {isLocked ? (
