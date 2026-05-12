@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
-import FloatingChatWrapper from "@/components/FloatingChatWrapper";
+// import FloatingChatWrapper from "@/components/FloatingChatWrapper";
 import TopBar from "@/components/TopBar";
 import AppShell from "@/components/AppShell";
 
@@ -60,7 +60,7 @@ export default function RootLayout({
             <AppShell>
               {children}
             </AppShell>
-            <FloatingChatWrapper />
+            {/* <FloatingChatWrapper /> */}
           </AppProvider>
         </div>
       </body>
