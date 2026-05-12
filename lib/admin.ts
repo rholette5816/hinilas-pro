@@ -32,9 +32,10 @@ function normalizeLockedTier(value: string | null | undefined): Tier | null {
 }
 
 function isLockActive(tierExpiresAt: string | Date | null | undefined): boolean {
-  if (!tierExpiresAt) return false;
+  // null / undefined = permanent lock (never expires)
+  if (tierExpiresAt === null || tierExpiresAt === undefined) return true;
   const expiry = typeof tierExpiresAt === "string" ? new Date(tierExpiresAt) : tierExpiresAt;
-  if (Number.isNaN(expiry.getTime())) return false;
+  if (Number.isNaN(expiry.getTime())) return true; // treat unparseable as permanent
   return expiry.getTime() > Date.now();
 }
 
@@ -44,7 +45,7 @@ export function deriveTier(
   tierExpiresAt?: string | Date | null
 ): Tier {
   const normalizedLock = normalizeLockedTier(lockedTier ?? null);
-  if (normalizedLock && isLockActive(tierExpiresAt ?? null)) {
+  if (normalizedLock && isLockActive(tierExpiresAt)) {
     return normalizedLock;
   }
   if (credits >= 300) return "Max";

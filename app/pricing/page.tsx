@@ -75,8 +75,8 @@ export default function PricingPage() {
       tagline: "The engine of your marketing",
       price: "PHP 499",
       period: " / 150 credits",
-      credits: "150 credits - never expires",
-      threshold: "50 - 299 credits",
+      credits: "150 credits + lifetime Flex access",
+      threshold: "Pay once, access forever",
       color: BRAND_ORANGE,
       popular: true,
     },
@@ -86,8 +86,8 @@ export default function PricingPage() {
       tagline: "Unmatched power. Zero limits.",
       price: "PHP 1,299",
       period: " / 500 credits",
-      credits: "500 credits - never expires",
-      threshold: "300+ credits",
+      credits: "500 credits + lifetime Max access",
+      threshold: "Pay once, access forever",
       color: BRAND_RED,
     },
   ];
@@ -99,7 +99,7 @@ export default function PricingPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-[#1c1e21] mb-2">Credits & Plans</h1>
-            <p className="text-slate-600 text-sm">Buy credits once. Flex and Max <span className="text-[#1c1e21] font-medium">lock your tier for 30 days</span>. After that, tier auto-adjusts based on credits remaining.</p>
+            <p className="text-slate-600 text-sm">Buy credits once. Flex and Max purchases give you <span className="text-[#1c1e21] font-medium">permanent tier access</span> — even when credits run low.</p>
           </div>
 
           {/* Threshold bar */}
