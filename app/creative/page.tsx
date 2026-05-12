@@ -241,6 +241,7 @@ export default function CreativePage() {
       const data = await res.json();
       if (data.error) { setPromptsError(data.error); return; }
       setVideoPrompts(data.prompts || []);
+      await refreshCredits();
     } catch {
       setPromptsError("Something went wrong. Try again.");
     } finally {
@@ -409,43 +410,27 @@ export default function CreativePage() {
                   <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5">
                     <div className="flex items-center justify-between mb-2.5">
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Sample Output</p>
-                      <p className="text-gray-600 text-xs">Tap to play</p>
+                      <p className="text-gray-400 text-xs">Preview only</p>
                     </div>
                     <div className="flex gap-3">
                       {[
-                        { label: "Hook", src: "/samples/clip-hook.mp4" },
-                        { label: "Solution", src: "/samples/clip-solution.mp4" },
-                        { label: "CTA", src: "/samples/clip-cta.mp4" },
-                      ].map((s, i) => (
+                        { label: "Hook" },
+                        { label: "Solution" },
+                        { label: "CTA" },
+                      ].map((s) => (
                         <div key={s.label} className="flex-1 flex flex-col items-center gap-1.5">
                           <div
-                            className="relative w-full rounded-lg overflow-hidden border border-slate-300 bg-slate-50 cursor-pointer"
-                            style={{ aspectRatio: "9/16", maxHeight: "clamp(200px, 35vw, 320px)" }}
-                            onClick={() => toggleSample(i)}
+                            className="relative w-full rounded-lg overflow-hidden border border-slate-200"
+                            style={{ aspectRatio: "9/16", maxHeight: "clamp(200px, 35vw, 320px)", background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)" }}
                           >
-                            <video
-                              ref={el => { sampleRefs.current[i] = el; }}
-                              src={s.src}
-                              loop
-                              playsInline
-                              className="w-full h-full object-cover"
-                              onEnded={() => setPlayingSample(null)}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/20 transition-colors">
-                              {playingsample === i ? (
-                                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                  <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
-                                    <rect x="3" y="2" width="4" height="12" rx="1" />
-                                    <rect x="9" y="2" width="4" height="12" rx="1" />
-                                  </svg>
-                                </div>
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                  <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
-                                    <path d="M4 2l10 6-10 6V2z" />
-                                  </svg>
-                                </div>
-                              )}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.3)" }}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                              </div>
+                              <p className="text-white/70 text-xs font-medium">{s.label}</p>
                             </div>
                           </div>
                           <p className="text-gray-500 text-xs">{s.label}</p>
@@ -471,7 +456,7 @@ export default function CreativePage() {
                     className="w-full text-white py-3 rounded-xl text-sm font-semibold mb-6 transition-opacity hover:opacity-90 disabled:opacity-40"
                     style={{ background: promptsLoading ? "#4B5563" : "linear-gradient(135deg, #7C3AED, #4F46E5)" }}
                   >
-                    {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts - Free" : "Generate Scripts - Free"}
+                    {promptsLoading ? "Writing scripts..." : videoPrompts.length > 0 ? "Regenerate Scripts — 2 credits" : "Generate Scripts — 2 credits"}
                   </button>
 
                   {/* Step 2 - Per-clip cards (horizontal) */}

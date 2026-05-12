@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { isOwnerUser } from "@/lib/admin";
+import { deductCreditsAtomic } from "@/lib/credits";
 
 export const maxDuration = 60;
 
@@ -19,6 +21,20 @@ export async function POST(req: NextRequest) {
 
   const { angle, userContext, industry } = await req.json();
   if (!angle || !userContext) return NextResponse.json({ error: "angle and userContext are required" }, { status: 400 });
+
+  const ownerMode = isOwnerUser(user);
+
+  if (!ownerMode) {
+    const { data: userData } = await supabase
+      .from("user_data")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!userData || userData.credits_remaining < 2) {
+      return NextResponse.json({ error: "Not enough credits. You need 2 credits to generate scripts.", code: "NO_CREDITS" }, { status: 402 });
+    }
+  }
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -74,6 +90,18 @@ Example format:
       video_prompts: prompts,
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
+
+    if (!ownerMode) {
+      const deduction = await deductCreditsAtomic({
+        userId: user.id,
+        amount: 2,
+        description: "Video script generation (3 clips)",
+      });
+      if (!deduction.ok) {
+        return NextResponse.json({ error: "Credit deduction failed", code: deduction.code }, { status: 409 });
+      }
+      return NextResponse.json({ prompts, creditsRemaining: deduction.creditsRemaining });
+    }
 
     return NextResponse.json({ prompts });
   } catch (err: unknown) {
