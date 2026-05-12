@@ -39,25 +39,27 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
       .catch(() => setLoading(false));
   }, [open, period]);
 
+  if (!open) return null;
+
   return (
     <>
       {/* Backdrop */}
-      {open && (
-        <div
-          className="fixed inset-0 z-50"
-          style={{ background: "rgba(248,250,252,0.85)", backdropFilter: "blur(4px)" }}
-          onClick={onClose}
-        />
-      )}
-
-      {/* Drawer */}
       <div
-        className="fixed top-0 right-0 z-50 h-full w-80 transform transition-transform duration-300"
+        className="fixed inset-0 z-40"
+        style={{ background: "rgba(0,0,0,0.2)" }}
+        onClick={onClose}
+      />
+
+      {/* Popup — drops down from Leaderboard button */}
+      <div
+        className="fixed z-50 rounded-2xl overflow-hidden shadow-2xl"
         style={{
-          background: "rgba(255,255,255,0.97)",
-          borderLeft: "1px solid #E4E6EB",
-          backdropFilter: "blur(20px)",
-          transform: open ? "translateX(0)" : "translateX(100%)",
+          top: "56px",
+          left: "calc(240px + 24px + 120px)",
+          width: "320px",
+          maxHeight: "calc(100vh - 80px)",
+          background: "#FFFFFF",
+          border: "1px solid #E4E6EB",
         }}
       >
         {/* Header */}
@@ -91,7 +93,7 @@ export default function LeaderboardDrawer({ open, onClose }: Props) {
         </div>
 
         {/* List */}
-        <div className="px-4 py-4 space-y-3 overflow-y-auto" style={{ maxHeight: "calc(100vh - 130px)" }}>
+        <div className="px-4 py-4 space-y-3 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
           {loading ? (
             <div className="flex gap-1.5 justify-center py-12">
               {[0, 1, 2].map(i => (
