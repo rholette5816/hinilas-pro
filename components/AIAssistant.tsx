@@ -116,20 +116,22 @@ export default function AIAssistant() {
 
       {/* Popup */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-end pointer-events-none">
+        <div className="fixed inset-0 z-50 pointer-events-none">
           {/* Backdrop */}
           <div
             className="absolute inset-0 pointer-events-auto"
-            style={{ background: "rgba(0,0,0,0.3)" }}
+            style={{ background: "rgba(0,0,0,0.2)" }}
             onClick={() => setOpen(false)}
           />
 
-          {/* Chat panel */}
+          {/* Chat panel — drops down from top-right */}
           <div
-            className="relative pointer-events-auto flex flex-col m-4 rounded-2xl overflow-hidden shadow-2xl"
+            className="absolute pointer-events-auto flex flex-col rounded-2xl overflow-hidden shadow-2xl"
             style={{
+              top: "56px",
+              right: "16px",
               width: "min(420px, calc(100vw - 32px))",
-              height: "min(600px, calc(100vh - 32px))",
+              height: "min(580px, calc(100vh - 80px))",
               background: "#FFFFFF",
               border: "1px solid #E4E6EB",
             }}
