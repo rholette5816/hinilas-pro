@@ -12,6 +12,9 @@ const LANGUAGE_OPTIONS = [
   { value: "Filipino", label: "Filipino", sub: "Tagalog" },
   { value: "Bisaya", label: "Bisaya", sub: "Cebuano" },
   { value: "Ilocano", label: "Ilocano", sub: "Northern Luzon" },
+  { value: "Hiligaynon", label: "Hiligaynon", sub: "Ilonggo" },
+  { value: "Kapampangan", label: "Kapampangan", sub: "Pampanga" },
+  { value: "English", label: "English", sub: "Formal" },
 ];
 
 const POST_TYPES = [
@@ -272,7 +275,7 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
 
           <div className="mb-4">
             <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-2">Language</label>
-            <div className="grid grid-cols-5 gap-2 mb-4">
+            <div className="grid grid-cols-4 gap-2 mb-4">
               {LANGUAGE_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
