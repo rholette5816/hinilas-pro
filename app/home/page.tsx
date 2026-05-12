@@ -34,7 +34,9 @@ const FEATURES = [
   { num: "03", title: "Copy Generator", desc: "Primary text, headlines, CTAs, and sales frameworks built for Meta Ads." },
   { num: "04", title: "Creative Studio", desc: "Ad image prompts and visual variations connected to the angle you choose." },
   { num: "05", title: "Campaign Guide", desc: "A practical launch checklist for Messenger, traffic, and conversion campaigns." },
-  { num: "06", title: "AI Assistant", desc: "Ask follow-up questions when you need a clearer hook, offer, or next move." },
+  { num: "06", title: "Results Audit", desc: "Upload your ad screenshots and get a clear breakdown of what to fix." },
+  { num: "07", title: "Content Creation", desc: "7 ready-to-post captions generated from your business profile and research." },
+  { num: "08", title: "AI Assistant", desc: "Ask follow-up questions when you need a clearer hook, offer, or next move." },
 ];
 
 const UGC_VIDEOS = [
@@ -48,7 +50,7 @@ const FAQS = [
   { q: "How does Hinilas Pro work?", a: "You enter your business profile once. Hinilas Pro uses it to guide market research, build ad angles, write copy, and prepare campaign assets in a structured workflow." },
   { q: "Who is this for?", a: "It is built for Filipino sellers, business owners, and ad operators who need faster decisions and cleaner campaign assets without jumping between multiple tools." },
   { q: "Is it a magic button?", a: "No. It gives you better research, clearer angles, and faster drafts. You still review the output, adjust it to your offer, and run the campaign responsibly." },
-  { q: "How much does it cost?", a: "You start with 30 free credits. Paid plans start at ₱499/month. You can also top up with ₱249 credit packs anytime." },
+  { q: "How much does it cost?", a: "You start with 30 free credits. Paid plans start at ₱499 for Flex (150 credits) and ₱1,299 for Max (500 credits). You can also top up starting at ₱99 anytime." },
   { q: "Do I need to be techy?", a: "No. Hinilas Pro is built for non-techy business owners. If you can fill out a form and click a button, you can use every feature." },
 ];
 
@@ -402,8 +404,8 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-8 lg:py-20">
           <div className="mb-6 text-center">
             <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_ORANGE }}>Everything in one place</p>
-            <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8-in-1 Ad Execution System</h2>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, and campaign setup. All inside one workflow.</p>
+            <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">8 Tools. One Workflow.</h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">No more jumping between tools. Research, angles, copy, creatives, content, and campaign setup. All inside one workflow.</p>
           </div>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
             {FEATURES.map((f) => (
@@ -499,7 +501,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-8 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">₱499/mo. No guesswork fees.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime with ₱249 credit packs. Less than the cost of one wrong boosted post.</p>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">Start free with 30 credits. Upgrade when you are ready. Top up anytime starting at ₱99. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
               Start free: 30 credits →

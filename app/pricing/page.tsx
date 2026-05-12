@@ -11,22 +11,29 @@ const BRAND_RED = "#EF4444";
 
 const FEATURES = [
   {
-    category: "AI Tools",
+    category: "Core AI Tools",
     items: [
-      { label: "Market Research", lite: true, flex: true, max: true },
-      { label: "Marketing Angles (5 angles + 3C Hook)", lite: true, flex: true, max: true },
-      { label: "Sales Copy Writing (PAS, BAB, AIDA, Story)", lite: true, flex: true, max: true },
-      { label: "Ad Results Analysis (screenshot upload)", lite: true, flex: true, max: true },
-      { label: "Ad Image Generation", lite: true, flex: true, max: true },
+      { label: "Research Department — Market research", lite: true, flex: true, max: true },
+      { label: "Strategy Department — Ad angles + hooks", lite: true, flex: true, max: true },
+      { label: "Caption Department — Sales copy + captions", lite: true, flex: true, max: true },
+      { label: "Creative Department — Ad image generation", lite: true, flex: true, max: true },
+      { label: "Campaign Setup — Basic guide", lite: true, flex: true, max: true },
     ],
   },
   {
-    category: "Premium Features",
+    category: "Flex Features",
     items: [
-      { label: "Live Expert Consultation (20 credits/session)", lite: false, flex: true, max: true },
-      { label: "Full Meta Ads Course (7 phases, 61 topics)", lite: false, flex: false, max: true },
-      { label: "Video Lessons per Topic", lite: false, flex: false, max: true },
-      { label: "Downloadable PDF Notes", lite: false, flex: false, max: true },
+      { label: "Audit Department — Results analysis", lite: false, flex: true, max: true },
+      { label: "Content Creation — 7 ready-to-post captions", lite: false, flex: true, max: true },
+    ],
+  },
+  {
+    category: "Max Features",
+    items: [
+      { label: "Creative Department — Video generation", lite: false, flex: false, max: true },
+      { label: "Audit Department — Advanced analysis", lite: false, flex: false, max: true },
+      { label: "Campaign Setup — Conversion Setup guide", lite: false, flex: false, max: true },
+      { label: "Script Writing — Video ad scripts (Coming Soon)", lite: false, flex: false, max: true },
     ],
   },
   {
