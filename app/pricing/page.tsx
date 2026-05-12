@@ -59,7 +59,7 @@ export default function PricingPage() {
   const { plan: currentPlan, credits } = useApp();
   const router = useRouter();
   const [gcash, setGcash] = useState<{ label: string; credits: number; price: number; color: string } | null>(null);
-  const [pendingRequest, setPendingRequest] = useState<{ package: string; amount_paid: number; created_at: string } | null>(null);
+  const [topupStatus, setTopupStatus] = useState<{ package: string; amount_paid: number; status: "pending" | "approved" } | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -67,13 +67,13 @@ export default function PricingPage() {
       if (!user) return;
       const { data } = await supabase
         .from("top_up_requests")
-        .select("package, amount_paid, created_at")
+        .select("package, amount_paid, status")
         .eq("user_id", user.id)
-        .eq("status", "pending")
+        .in("status", ["pending", "approved"])
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (data) setPendingRequest(data);
+      if (data) setTopupStatus(data as { package: string; amount_paid: number; status: "pending" | "approved" });
     });
   }, [gcash]);
 
@@ -119,8 +119,8 @@ export default function PricingPage() {
             <p className="text-slate-600 text-sm">Buy credits once. Flex and Max purchases give you <span className="text-[#1c1e21] font-medium">permanent tier access</span> — even when credits run low.</p>
           </div>
 
-          {/* Pending payment banner */}
-          {pendingRequest && (
+          {/* Payment status banner */}
+          {topupStatus?.status === "pending" && (
             <div className="rounded-2xl px-5 py-4 mb-6 flex items-start gap-4" style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
               <div className="mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-base" style={{ background: "#FEF3C7" }}>
                 ⏳
@@ -128,9 +128,30 @@ export default function PricingPage() {
               <div className="min-w-0">
                 <p className="text-sm font-bold text-[#1c1e21]">We&apos;re confirming your payment</p>
                 <p className="text-xs text-[#92400E] mt-0.5">
-                  Your {pendingRequest.package} payment of ₱{pendingRequest.amount_paid.toLocaleString()} is being reviewed. Credits will be added once verified — usually within a few hours.
+                  Your {topupStatus.package} payment of ₱{topupStatus.amount_paid.toLocaleString()} is being reviewed. Credits will be added once verified — usually within a few hours.
                 </p>
-                <p className="text-xs text-[#B45309] mt-2 font-medium">No need to pay again. Just sit tight. 🙏</p>
+                <p className="text-xs text-[#B45309] mt-2 font-medium">No need to pay again. Just sit tight — you&apos;ll receive an email notification once your payment is approved. 🙏</p>
+              </div>
+            </div>
+          )}
+
+          {topupStatus?.status === "approved" && (
+            <div className="rounded-2xl px-5 py-4 mb-6 flex items-start gap-4" style={{ background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+              <div className="mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-base" style={{ background: "#DCFCE7" }}>
+                ✅
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold text-[#1c1e21]">Payment confirmed — your credits are live!</p>
+                <p className="text-xs text-[#166534] mt-0.5">
+                  Your {topupStatus.package} payment of ₱{topupStatus.amount_paid.toLocaleString()} has been verified. You now have full access. Check your email for confirmation.
+                </p>
+                <button
+                  onClick={() => router.push("/")}
+                  className="mt-3 px-4 py-2 rounded-lg text-xs font-bold text-white"
+                  style={{ background: "#16A34A" }}
+                >
+                  Go to App →
+                </button>
               </div>
             </div>
           )}
