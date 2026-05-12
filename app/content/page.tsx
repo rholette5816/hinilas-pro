@@ -112,6 +112,18 @@ export default function ContentPage() {
 
   const canGenerate = Boolean(researchOutput) && credits >= 7 && !loading;
 
+  function loadMockData() {
+    const mock: ContentPost[] = POST_TYPES.map((pt) => ({
+      type: pt.type,
+      language,
+      hook: `[${pt.type}] Sample hook — Bakit hindi pa sila nag-aaral ng tamang Meta Ads?`,
+      body: `Maraming business owners ang nagsisimula ng ads nang walang research. Resulta? Pera na nawala, zero results.\n\nYung totoo — hindi ito tungkol sa budget. Tungkol ito sa sistema. At yun mismo ang tinuturo ng Hinilas Pro.\n\nIsang tool. Lahat ng kailangan mo para mag-scale.`,
+      cta: `I-try ang Hinilas Pro ngayon — libre ang unang 30 credits. Link sa bio.`,
+      hashtags: `#MetaAds #DigitalMarketing #HinilasPro #FacebookAds #OnlineBusiness`,
+    }));
+    setPosts(mock);
+  }
+
   async function generateContentPack() {
     if (!setup) return;
     if (!researchOutput) {
@@ -302,6 +314,13 @@ Make it feel like a polished Filipino Meta Ads social post. Use a clear focal su
               style={{ background: "#1877F2", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Generating..." : posts.length > 0 ? "Regenerate Content Pack - 7 credits" : "Generate Content Pack - 7 credits"}
+            </button>
+            <button
+              onClick={loadMockData}
+              className="px-4 py-3 rounded-lg text-sm font-semibold border transition-colors hover:bg-slate-50"
+              style={{ borderColor: "#E4E6EB", color: "#64748B" }}
+            >
+              Preview Mock Data
             </button>
           </div>
 
