@@ -38,6 +38,10 @@ const NAV_ITEMS = [
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>,
   },
   {
+    href: "/affiliate", label: "Affiliate Program", desc: "Earn cash per referral",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>,
+  },
+  {
     href: "/analyze", label: "Audit Department", desc: "Read your results",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
   },
@@ -177,6 +181,7 @@ export default function Sidebar() {
     "/creative": { locked: !anglesOutput,          message: "Generate Angles first." },
     "/copy":     { locked: !savedImages?.main,     message: "Generate a Creative first." },
     "/campaign-setup": { locked: false, message: "" },
+    "/affiliate": { locked: false, message: "" },
     "/analyze":  { locked: false, message: "" },
   };
 

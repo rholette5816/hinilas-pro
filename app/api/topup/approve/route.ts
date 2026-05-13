@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { sendMetaEvent } from "@/lib/meta-capi";
+import { grantAffiliateCommissions } from "@/lib/affiliate";
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
   const { data: buyer } = await supabase
@@ -144,22 +145,38 @@ export async function POST(req: Request) {
   // Referral reward
   await grantReferralReward(supabase, request.user_id, request.credits_requested);
 
+  // Affiliate cash commissions - writes affiliate_earnings rows
+  await grantAffiliateCommissions(supabase, request, amount);
+
   // Notify user via email
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "Hinilas Pro <onboarding@resend.dev>",
+      from: "Ken from Hinilas Pro <ken@hinilas.pro>",
       to: request.user_email,
-      subject: "Your credits have been added — Hinilas Pro",
+      subject: "Payment confirmed. Your access is live. — Hinilas Pro",
       html: `
-        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#1C1E21;color:#fff;border-radius:12px">
-          <h2 style="color:#0866FF;margin-bottom:8px">Credits Added</h2>
-          <p style="color:#94A3B8;margin-bottom:24px">Your payment has been verified and your credits are now live.</p>
-          <div style="background:#1C1E21;border-radius:10px;padding:20px;margin-bottom:24px">
-            <div style="font-size:36px;font-weight:900;color:#22c55e;margin-bottom:4px">+${request.credits_requested} credits</div>
-            <div style="font-size:13px;color:#64748B">${request.package} — ₱${amount}</div>
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#1F2937;">
+          <p style="font-size:16px;line-height:1.6;">Hi,</p>
+          <p style="font-size:16px;line-height:1.6;">Na-confirm na ang bayad mo. Nandoon na ang credits mo — ready ka na.</p>
+          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:20px;margin:24px 0;">
+            <div style="font-size:32px;font-weight:900;color:#16A34A;margin-bottom:4px;">+${request.credits_requested} credits</div>
+            <div style="font-size:13px;color:#6B7280;">${request.package} — ₱${amount} · Credits never expire</div>
           </div>
-          <p style="color:#64748B;font-size:13px">Log in to Hinilas Pro to start using your credits.</p>
+          <p style="font-size:15px;line-height:1.6;"><strong>Eto na ang next steps mo:</strong></p>
+          <ol style="font-size:15px;line-height:1.8;padding-left:20px;color:#374151;">
+            <li>Punan ang Setup form — business name, product, target audience</li>
+            <li>I-run ang Market Research</li>
+            <li>Pumili ng winning angle</li>
+            <li>Generate ad copy at image</li>
+          </ol>
+          <p style="margin:28px 0;">
+            <a href="https://hinilas.pro" style="display:inline-block;background:#D97706;color:#000;font-weight:bold;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:14px;">Open Hinilas Pro →</a>
+          </p>
+          <p style="font-size:15px;line-height:1.6;">Kung may tanong ka, reply ka lang dito. Sagot ko personally.</p>
+          <p style="font-size:15px;line-height:1.6;">- Ken<br/><span style="color:#6B7280;font-size:13px;">Founder, Hinilas Pro</span></p>
+          <hr style="border:none;border-top:1px solid #E5E7EB;margin:28px 0 16px;"/>
+          <p style="font-size:12px;color:#9CA3AF;">You're receiving this because you purchased credits on <a href="https://hinilas.pro" style="color:#9CA3AF;">hinilas.pro</a>.</p>
         </div>
       `,
     });

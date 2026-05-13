@@ -100,6 +100,21 @@ type AdminStats = {
   recommendedActions: string[];
   healthScore: number;
   users: Array<{ userId: string; username: string; email: string; plan: string; creditsRemaining: number; signupDate: string | null }>;
+  affiliatePayouts: Array<{
+    id: string;
+    affiliateId: string;
+    userId: string;
+    username: string;
+    email: string;
+    rank: string;
+    affiliateStatus: string;
+    amount: number;
+    gcashName: string;
+    gcashNumber: string;
+    status: string;
+    requestedAt: string | null;
+    paidAt: string | null;
+  }>;
   recentActivity: Array<{ userId: string; username: string; type: string; amount: number; description: string; createdAt: string | null; module?: string }>;
   dataQuality: {
     warnings: string[];
@@ -110,7 +125,7 @@ type AdminStats = {
 
 type SortKey = "username" | "email" | "plan" | "creditsRemaining" | "signupDate";
 type SortDirection = "asc" | "desc";
-type TabKey = "overview" | "funnel" | "revenue" | "feedback" | "tokens" | "users";
+type TabKey = "overview" | "funnel" | "revenue" | "feedback" | "tokens" | "users" | "payouts";
 type ReportPayload = {
   generatedAt: string;
   summary: { healthScore: number; criticalAlerts: number; warningAlerts: number; weakestFunnelStep: string | null };
@@ -400,6 +415,8 @@ export default function AdminDashboardClient() {
   const [reportLoading, setReportLoading] = useState(false);
   const [reportError, setReportError] = useState("");
   const [copyLabel, setCopyLabel] = useState("Copy Report");
+  const [approvingPayoutId, setApprovingPayoutId] = useState("");
+  const [payoutMsg, setPayoutMsg] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -482,6 +499,31 @@ export default function AdminDashboardClient() {
     setTimeout(() => setCopyLabel("Copy Report"), 1200);
   }
 
+  async function handleApprovePayout(payoutId: string) {
+    setApprovingPayoutId(payoutId);
+    setPayoutMsg("");
+    try {
+      const res = await fetch("/api/affiliate/payout/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payoutId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to approve payout");
+      setStats(prev => prev ? {
+        ...prev,
+        affiliatePayouts: prev.affiliatePayouts.map(payout =>
+          payout.id === payoutId ? { ...payout, status: "paid", paidAt: new Date().toISOString() } : payout
+        ),
+      } : prev);
+      setPayoutMsg("Payout marked as paid.");
+    } catch (err) {
+      setPayoutMsg(err instanceof Error ? err.message : "Failed to approve payout");
+    } finally {
+      setApprovingPayoutId("");
+    }
+  }
+
   function handleSort(nextKey: SortKey) {
     if (sortKey === nextKey) {
       setSortDirection(p => p === "asc" ? "desc" : "asc");
@@ -524,7 +566,7 @@ export default function AdminDashboardClient() {
     );
   }
 
-  const { userStats, creditActivity, tokenStats, departmentFunnel, signupTrend, topUsers, recentActivity, revenue, feedback, timeWindows } = stats;
+  const { userStats, creditActivity, tokenStats, departmentFunnel, signupTrend, topUsers, recentActivity, revenue, feedback, timeWindows, affiliatePayouts } = stats;
   const funnelMax = Math.max(...departmentFunnel.map(d => d.count), 1);
   const tokenMax = Math.max(...Object.values(tokenStats.byModule).map(m => m.total), 1);
   const usageMax = Math.max(...Object.values(creditActivity.usageBreakdown), 1);
@@ -538,6 +580,7 @@ export default function AdminDashboardClient() {
     { key: "feedback", label: "Feedback" },
     { key: "tokens", label: "Tokens" },
     { key: "users", label: "Users" },
+    { key: "payouts", label: "Payouts" },
   ];
 
   return (
@@ -955,6 +998,87 @@ export default function AdminDashboardClient() {
                 {resetMsg && <p className="text-xs mt-2" style={{ color: "#65676b" }}>{resetMsg}</p>}
               </div>
             </details>
+          </div>
+        )}
+
+        {activeTab === "payouts" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <KPICard label="Requested Payouts" value={formatNumber(affiliatePayouts.filter(p => p.status === "requested").length)} sub="awaiting manual GCash send" tone="#D97706" />
+              <KPICard label="Requested Amount" value={formatPhp(affiliatePayouts.filter(p => p.status === "requested").reduce((sum, p) => sum + p.amount, 0))} sub="unpaid cash liability" tone="#EF4444" />
+              <KPICard label="Paid Amount" value={formatPhp(affiliatePayouts.filter(p => p.status === "paid").reduce((sum, p) => sum + p.amount, 0))} sub="approved affiliate payouts" tone="#22C55E" />
+            </div>
+
+            {payoutMsg && (
+              <div className="rounded-xl px-4 py-3 text-sm font-semibold" style={{ background: "#ffffff", border: "1px solid #e4e6eb", color: payoutMsg.includes("Failed") ? "#EF4444" : "#22C55E" }}>
+                {payoutMsg}
+              </div>
+            )}
+
+            <Card className="overflow-hidden">
+              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
+                <SectionHeader title="Affiliate Payouts" sub="Send GCash first, then mark the payout as paid" />
+              </div>
+              <div className="overflow-auto">
+                <table className="w-full text-sm">
+                  <thead style={{ background: "#f2f3f5" }}>
+                    <tr>
+                      {["Affiliate", "GCash", "Amount", "Requested", "Status", "Action"].map(h => (
+                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#65676B" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {affiliatePayouts.map(payout => {
+                      const isPaid = payout.status === "paid";
+                      return (
+                        <tr key={payout.id} style={{ borderTop: "1px solid #e4e6eb" }}>
+                          <td className="px-4 py-3">
+                            <p className="text-white font-semibold">{payout.username}</p>
+                            <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{payout.email || "N/A"} - {payout.rank}</p>
+                          </td>
+                          <td className="px-4 py-3">
+                            <p className="text-white font-semibold">{payout.gcashName || "N/A"}</p>
+                            <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{payout.gcashNumber || "N/A"}</p>
+                          </td>
+                          <td className="px-4 py-3 text-white font-black">{formatPhp(payout.amount)}</td>
+                          <td className="px-4 py-3" style={{ color: "#65676B" }}>{formatDate(payout.requestedAt)}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className="text-xs font-bold px-2 py-1 rounded-full capitalize"
+                              style={{
+                                background: isPaid ? "rgba(34,197,94,0.15)" : "rgba(217,119,6,0.15)",
+                                color: isPaid ? "#22C55E" : "#D97706",
+                                border: `1px solid ${isPaid ? "rgba(34,197,94,0.3)" : "rgba(217,119,6,0.3)"}`,
+                              }}
+                            >
+                              {payout.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {isPaid ? (
+                              <span className="text-xs" style={{ color: "#65676B" }}>Paid {formatDate(payout.paidAt)}</span>
+                            ) : (
+                              <button
+                                onClick={() => handleApprovePayout(payout.id)}
+                                disabled={approvingPayoutId === payout.id}
+                                className="px-3 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110 disabled:opacity-50"
+                                style={{ background: "#22C55E", color: "#052E16" }}
+                              >
+                                {approvingPayoutId === payout.id ? "Marking..." : "Mark as Paid"}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {affiliatePayouts.length === 0 && (
+                      <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-600 text-sm">No affiliate payout requests yet.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
           </div>
         )}
       </div>

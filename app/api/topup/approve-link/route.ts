@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { sendMetaEvent } from "@/lib/meta-capi";
+import { grantAffiliateCommissions } from "@/lib/affiliate";
 
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
@@ -134,6 +135,9 @@ export async function GET(req: NextRequest) {
 
   // Referral reward — only fires once per referred user
   await grantReferralReward(supabase, request.user_id, request.credits_requested);
+
+  // Affiliate cash commissions
+  await grantAffiliateCommissions(supabase, request, request.amount_paid);
 
   // Notify user via email
   try {

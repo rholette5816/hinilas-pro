@@ -1,0 +1,73 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { adminClient, calculateWithdrawableEarnings, MIN_PAYOUT_AMOUNT, sendTelegramNotification } from "@/lib/affiliate";
+
+export async function POST() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const admin = adminClient();
+
+  const { data: affiliate } = await admin
+    .from("affiliates")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!affiliate) return NextResponse.json({ error: "Affiliate account not found" }, { status: 404 });
+  if (affiliate.status !== "active") return NextResponse.json({ error: "Affiliate account is not active" }, { status: 403 });
+
+  const { data: existingPayout } = await admin
+    .from("affiliate_payouts")
+    .select("id")
+    .eq("affiliate_id", affiliate.id)
+    .eq("status", "requested")
+    .maybeSingle();
+
+  if (existingPayout) {
+    return NextResponse.json({ error: "You already have a pending payout request" }, { status: 400 });
+  }
+
+  const { data: earnings } = await admin
+    .from("affiliate_earnings")
+    .select("amount_earned, status, created_at")
+    .eq("affiliate_id", affiliate.id);
+
+  const pendingBalance = calculateWithdrawableEarnings(earnings || []);
+
+  if (pendingBalance < MIN_PAYOUT_AMOUNT) {
+    return NextResponse.json({ error: "Minimum payout is ₱200" }, { status: 400 });
+  }
+
+  const { error } = await admin.from("affiliate_payouts").insert({
+    affiliate_id: affiliate.id,
+    user_id: user.id,
+    amount: pendingBalance,
+    gcash_number: affiliate.gcash_number,
+    gcash_name: affiliate.gcash_name,
+    status: "requested",
+  });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const { data: userData } = await admin
+    .from("user_data")
+    .select("username")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  await sendTelegramNotification(
+    [
+      "💸 Affiliate Payout Request",
+      "",
+      `Affiliate: ${userData?.username || "User"} (${user.email || "no email"})`,
+      `GCash: ${affiliate.gcash_name} - ${affiliate.gcash_number}`,
+      `Amount: ₱${pendingBalance.toLocaleString("en-PH")}`,
+      "",
+      "Go to admin to approve.",
+    ].join("\n")
+  );
+
+  return NextResponse.json({ success: true });
+}

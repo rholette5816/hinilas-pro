@@ -95,6 +95,29 @@ type FeedbackPromptRow = {
   feedback_prompt_shown_at?: string | null;
 };
 
+type AffiliatePayoutRow = {
+  id: string;
+  affiliate_id?: string | null;
+  user_id?: string | null;
+  amount?: number | string | null;
+  gcash_number?: string | null;
+  gcash_name?: string | null;
+  status?: string | null;
+  requested_at?: string | null;
+  paid_at?: string | null;
+  affiliates?: {
+    gcash_name?: string | null;
+    gcash_number?: string | null;
+    rank?: string | null;
+    status?: string | null;
+  } | Array<{
+    gcash_name?: string | null;
+    gcash_number?: string | null;
+    rank?: string | null;
+    status?: string | null;
+  }> | null;
+};
+
 type AuthUserRow = {
   id: string;
   email?: string | null;
@@ -287,6 +310,7 @@ export async function GET() {
     consultationRows,
     emailRows,
     promptRows,
+    affiliatePayoutRows,
   ] = await Promise.all([
     admin
       .from("user_data")
@@ -328,6 +352,14 @@ export async function GET() {
       admin.from("user_data").select("user_id, feedback_prompt_shown_at").not("feedback_prompt_shown_at", "is", null),
       warnings
     ),
+    safeRows<AffiliatePayoutRow>(
+      "affiliate_payouts",
+      admin
+        .from("affiliate_payouts")
+        .select("id, affiliate_id, user_id, amount, gcash_number, gcash_name, status, requested_at, paid_at, affiliates(gcash_name, gcash_number, rank, status)")
+        .order("requested_at", { ascending: false }),
+      warnings
+    ),
   ]);
 
   if (userDataError) return NextResponse.json({ error: userDataError.message }, { status: 500 });
@@ -342,6 +374,7 @@ export async function GET() {
   const consultations = consultationRows as ConsultationRow[];
   const emails = emailRows as EmailLogRow[];
   const promptShown = promptRows as FeedbackPromptRow[];
+  const affiliatePayoutsRaw = affiliatePayoutRows as AffiliatePayoutRow[];
   const authUsersById = new Map(authUsers.map((authUser) => [authUser.id, authUser]));
 
   const emailByUserId = new Map<string, string>();
@@ -787,6 +820,35 @@ export async function GET() {
     };
   });
 
+  const affiliatePayouts = affiliatePayoutsRaw.map(payout => {
+    const matchingUser = payout.user_id ? userTable.find(row => row.userId === payout.user_id) : null;
+    const authUser = payout.user_id ? authUsersById.get(payout.user_id) : null;
+    const affiliateInfo = Array.isArray(payout.affiliates) ? payout.affiliates[0] : payout.affiliates;
+    const email = payout.user_id ? emailByUserId.get(payout.user_id) || "" : "";
+    const username =
+      matchingUser?.username ||
+      authUser?.user_metadata?.full_name ||
+      authUser?.user_metadata?.name ||
+      email.split("@")[0] ||
+      "Affiliate";
+
+    return {
+      id: payout.id,
+      affiliateId: payout.affiliate_id || "",
+      userId: payout.user_id || "",
+      username,
+      email,
+      rank: affiliateInfo?.rank || "Starter",
+      affiliateStatus: affiliateInfo?.status || "active",
+      amount: asNumber(payout.amount),
+      gcashName: payout.gcash_name || affiliateInfo?.gcash_name || "",
+      gcashNumber: payout.gcash_number || affiliateInfo?.gcash_number || "",
+      status: payout.status || "requested",
+      requestedAt: payout.requested_at || null,
+      paidAt: payout.paid_at || null,
+    };
+  });
+
   const payload = {
     userStats: {
       totalSignups: users.length,
@@ -823,6 +885,7 @@ export async function GET() {
     recommendedActions,
     healthScore: Math.round(healthScore),
     users: userTable,
+    affiliatePayouts,
     recentActivity,
     dataQuality: {
       warnings,
@@ -834,6 +897,7 @@ export async function GET() {
         consultations: !warnings.some(w => w.startsWith("consultations:")),
         emails: !warnings.some(w => w.startsWith("email_log:")),
         feedbackPromptShownAt: !warnings.some(w => w.startsWith("feedback_prompt_shown_at:")),
+        affiliatePayouts: !warnings.some(w => w.startsWith("affiliate_payouts:")),
       },
     },
     fetchedAt: new Date().toISOString(),
