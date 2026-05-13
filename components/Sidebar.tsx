@@ -38,10 +38,6 @@ const NAV_ITEMS = [
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>,
   },
   {
-    href: "/affiliate", label: "Affiliate Program", desc: "Earn cash per referral",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>,
-  },
-  {
     href: "/analyze", label: "Audit Department", desc: "Read your results",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
   },
@@ -59,15 +55,9 @@ export default function Sidebar() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [earnOpen, setEarnOpen] = useState(false);
-  const [referralCode, setReferralCode] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [creditTooltipOpen, setCreditTooltipOpen] = useState(false);
-  const [referralStats, setReferralStats] = useState<{ total: number; credits: number; history: { description: string; amount: number; created_at: string }[] } | null>(null);
-  const [leaderboard, setLeaderboard] = useState<{ rank: number; username: string; avatar_url: string | null; credits: number }[]>([]);
   const [user, setUser] = useState<{ name: string; avatar: string } | null>(null);
-  const [canEarnFromFeedback, setCanEarnFromFeedback] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -83,27 +73,6 @@ export default function Sidebar() {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (credits > 5) return;
-
-    const supabase = createClient();
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) {
-        setCanEarnFromFeedback(false);
-        return;
-      }
-
-      const { data } = await supabase
-        .from("feedbacks")
-        .select("id")
-        .eq("user_id", user.id)
-        .limit(1)
-        .single();
-
-      setCanEarnFromFeedback(!data);
-    });
-  }, [credits]);
 
   // Auto-open feedback after the user's 3rd paid generation, once per user.
   useEffect(() => {
@@ -122,33 +91,6 @@ export default function Sidebar() {
   // Run once on mount only
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function openEarn() {
-    setEarnOpen(true);
-    setMobileOpen(false);
-    if (!referralCode) {
-      fetch("/api/referral").then(r => r.json()).then(d => {
-        if (d.referralCode) setReferralCode(d.referralCode);
-      });
-    }
-    fetch("/api/referral/stats").then(r => r.json()).then(d => {
-      if (!d.error) setReferralStats(d);
-    });
-    fetch("/api/referral/leaderboard").then(r => r.json()).then(d => {
-      if (d.leaderboard) setLeaderboard(d.leaderboard);
-    });
-  }
-
-  function getReferralLink() {
-    if (!referralCode) return "";
-    return `${window.location.origin}/ref/${referralCode}`;
-  }
-
-  function copyLink() {
-    navigator.clipboard.writeText(getReferralLink());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
 
   async function handleLogout() {
     const supabase = createClient();
@@ -266,20 +208,24 @@ export default function Sidebar() {
         {/* Divider */}
         <div className="my-2" style={{ borderTop: "1px solid #E4E6EB" }} />
 
-        {/* Consultation — Coming Soon */}
-        <div
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-not-allowed opacity-50"
-          style={{ borderLeft: "2px solid transparent" }}
+        {/* Partner Program */}
+        <Link
+          href="/affiliate"
+          onClick={() => setMobileOpen(false)}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all"
+          style={pathname === "/affiliate" || pathname.startsWith("/affiliate/")
+            ? { background: "#e7f3ff", borderLeft: "2px solid #1877F2", paddingLeft: "10px" }
+            : { borderLeft: "2px solid transparent" }
+          }
         >
-          <span style={{ color: "#65676B" }} className="shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span style={{ color: pathname === "/affiliate" || pathname.startsWith("/affiliate/") ? "#1877F2" : "#65676B" }} className="shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
           </span>
-          <div className="min-w-0 flex-1 text-left">
-            <p className="text-base font-medium" style={{ color: "#1C1E21" }}>Consultation</p>
-            <p className="text-sm" style={{ color: "#65676B" }}>100 credits / session</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-base font-medium" style={{ color: pathname === "/affiliate" || pathname.startsWith("/affiliate/") ? "#1877F2" : "#1c1e21" }}>Partner Program</p>
+            <p className="text-sm" style={{ color: "#65676B" }}>Earn cash per referral</p>
           </div>
-          <span className="shrink-0 text-sm font-bold px-1.5 py-0.5 rounded-full" style={{ background: "#E4E6EB", color: "#65676B" }}>Soon</span>
-        </div>
+        </Link>
 
         {/* Feedback button */}
         <button
@@ -332,30 +278,12 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Top up + Earn */}
-        <div className="flex gap-1">
-          <button
-            onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
-            className="flex-1 text-center text-xs font-bold py-1 rounded-lg transition-all hover:brightness-110"
-            style={{ background: planColor, color: "#000" }}
-          >Top Up</button>
-          <button
-            onClick={openEarn}
-            className="flex-1 text-center text-xs font-semibold py-1 rounded-lg transition-all hover:opacity-90"
-            style={{ background: "#ECFDF5", color: "#16A34A", border: "1px solid #22c55e50" }}
-          >Earn Credits</button>
-        </div>
-
-        {canEarnFromFeedback && (
-          <button
-            onClick={() => setFeedbackOpen(true)}
-            className="w-full rounded-lg px-2 py-1.5 text-left flex items-center gap-1.5 transition-all hover:opacity-90"
-            style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}
-          >
-            <span className="text-amber-400 text-sm shrink-0">⚡</span>
-            <p className="text-xs font-semibold" style={{ color: "#1c1e21" }}>Feedback → earn credits</p>
-          </button>
-        )}
+        {/* Top up */}
+        <button
+          onClick={() => { setMobileOpen(false); router.push("/pricing"); }}
+          className="w-full text-center text-xs font-bold py-1.5 rounded-lg transition-all hover:brightness-110"
+          style={{ background: planColor, color: "#000" }}
+        >Top Up</button>
 
         {/* User row + actions */}
         {user && (
@@ -475,106 +403,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Earn Credits modal */}
-      {earnOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setEarnOpen(false)}>
-          <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }} onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[#1c1e21] font-bold text-base">Earn Credits</h2>
-              <button onClick={() => setEarnOpen(false)} className="text-gray-500 hover:text-[#1c1e21] text-lg leading-none">✕</button>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">Share your referral link. When someone signs up and buys credits, you earn automatically.</p>
-            <div className="rounded-xl p-4 mb-4" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-              <p className="text-sm text-gray-500 mb-3 font-bold ">Your rewards</p>
-              <div className="space-y-2">
-                {[
-                  ["Referral signs up", "+12 credits"],
-                  ["Referral buys Flex (₱499)", "+30 credits"],
-                  ["Referral buys Max (₱1,299)", "+75 credits"],
-                  ["Referral buys Top-up (₱249)", "+10 credits"],
-                ].map(([label, val]) => (
-                  <div key={label} className="flex justify-between items-center">
-                    <span className="text-slate-600 text-sm">{label}</span>
-                    <span className="text-emerald-400 text-sm font-bold">{val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <p className="text-sm text-gray-500 mb-2">Your referral link</p>
-            {referralCode ? (
-              <div className="flex gap-2">
-                <div className="flex-1 rounded-lg px-3 py-2 text-sm text-[#1c1e21] truncate" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-                  {getReferralLink()}
-                </div>
-                <button
-                  onClick={copyLink}
-                  className="shrink-0 px-4 py-2 rounded-lg text-sm font-bold transition-all"
-                  style={{ background: copied ? "#22c55e20" : "#22c55e", color: copied ? "#22c55e" : "#000", border: copied ? "1px solid #22c55e40" : "none" }}
-                >
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500 py-2">Loading your link...</div>
-            )}
-            <p className="text-sm text-gray-600 mt-3">Signup credits are added instantly. Purchase rewards are added after their first top-up.</p>
-
-            {/* Leaderboard */}
-            {leaderboard.length > 0 && (
-              <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-                <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>Top Referrers</p>
-                <div className="divide-y" style={{ borderColor: "#E4E6EB" }}>
-                  {leaderboard.map((u) => (
-                    <div key={u.rank} className="flex items-center gap-2.5 px-3 py-2">
-                      <span className="text-sm font-bold w-4 shrink-0 text-center" style={{ color: u.rank === 1 ? "#D97706" : u.rank === 2 ? "#64748B" : u.rank === 3 ? "#CD7F32" : "#475569" }}>
-                        #{u.rank}
-                      </span>
-                      {u.avatar_url ? (
-                        <img src={u.avatar_url} alt={u.username} className="w-6 h-6 rounded-full shrink-0 object-cover" />
-                      ) : (
-                        <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ background: "#1877F2" }}>
-                          {u.username.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <span className="text-sm font-bold text-emerald-400 ml-auto">+{u.credits} cr</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {referralStats && (
-              <div className="mt-4">
-                <div className="grid grid-cols-2 gap-2 mb-3">
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-                    <p className="text-lg font-bold text-[#1c1e21]">{referralStats.total}</p>
-                    <p className="text-sm text-gray-500">Signups referred</p>
-                  </div>
-                  <div className="rounded-lg px-3 py-2 text-center" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-                    <p className="text-lg font-bold text-emerald-400">+{referralStats.credits}</p>
-                    <p className="text-sm text-gray-500">Credits earned</p>
-                  </div>
-                </div>
-                {referralStats.history.length > 0 && (
-                  <div className="rounded-xl overflow-hidden" style={{ background: "#f2f3f5", border: "1px solid #E4E6EB" }}>
-                    <p className="text-sm text-gray-500 font-bold px-3 py-2" style={{ borderBottom: "1px solid #E4E6EB" }}>History</p>
-                    <div className="divide-y max-h-36 overflow-y-auto" style={{ borderColor: "#E4E6EB" }}>
-                      {referralStats.history.map((h, i) => (
-                        <div key={i} className="flex items-center justify-between px-3 py-2">
-                          <div>
-                            <p className="text-sm text-[#1c1e21]">{h.description}</p>
-                            <p className="text-sm text-gray-600">{new Date(h.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</p>
-                          </div>
-                          <span className="text-sm font-bold text-emerald-400">+{h.amount}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </>
   );
 }
