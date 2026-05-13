@@ -161,9 +161,9 @@ export default function AffiliateJoinPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: "#E4E6EB" }}>
                 {[
-                  ["Content Creation", "Gumawa ng TikTok/Reels gamit ang Hinilas Pro"],
-                  ["Workshops", "Magturo ng Meta Ads. Gamitin ang tool bilang demo."],
-                  ["Direct Recruit", "Personal invite sa mga kakilala mong may business"],
+                  ["Content Creation", "Gumawa ng TikTok/Reels tungkol sa tool. I-show kung paano ito ginagamit, tapos ilagay ang iyong affiliate link. Mag-sign up sila, ikaw kumita."],
+                  ["Workshops", "Mag-conduct ng Meta Ads workshops — live o online. Gamitin ang Hinilas Pro bilang demo. Instead na manual prompts at notes, ipakita na all-in-one na ito: research, angles, copy, at creative sa iisang tool."],
+                  ["Direct Recruit", "Personal invite sa mga kakilala mong may business o nagpapatakbo ng ads. Mas madaling i-close ang taong kilala mo na."],
                 ].map(([title, sub]) => (
                   <div key={title} className="p-5">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black mb-3" style={{ background: "#E7F3FF", color: BRAND_BLUE }}>
