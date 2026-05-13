@@ -256,10 +256,17 @@ export default function AffiliateJoinPage() {
               </div>
             )}
 
+            <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+              By joining, you agree to the{" "}
+              <Link href="/affiliate/terms" className="font-semibold underline" style={{ color: BRAND_ORANGE }}>
+                Partner Program Terms & Conditions
+              </Link>.
+            </p>
+
             <button
               type="submit"
               disabled={submitting}
-              className="mt-5 w-full rounded-xl px-4 py-3 text-sm font-black text-white disabled:opacity-60"
+              className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-black text-white disabled:opacity-60"
               style={{ background: BRAND_ORANGE }}
             >
               {submitting ? "Joining..." : "Join Partner Program"}
