@@ -11,7 +11,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   const isPublic =
     PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/")) ||
-    pathname.startsWith("/ref/");
+    pathname.startsWith("/ref/") ||
+    pathname.startsWith("/admin");
 
   if (isPublic) return <>{children}</>;
 
