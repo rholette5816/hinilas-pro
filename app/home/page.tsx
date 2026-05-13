@@ -44,8 +44,8 @@ const UGC_VIDEOS = [
   { src: "https://statics.pancake.vn/web-media-262/1b/8a/cd/2c/b04bab24ff3e321812808b46c4292b343ac61f044c66d17799b10fe7-w:720-h:1280-l:27350353-t:video/mp4.mp4", name: "Local Hardware Owner", handle: "@hardwaremarcelo", caption: "Sa loob ng 10 minuto may ad na ako. Walang agency needed 🛠️", likes: "9.7K", shares: "2.3K", comments: "541" },
   { src: "https://statics.pancake.vn/web-media-262/39/f9/47/6d/5fcf9d102f499cf10336f25c0356028c62910078599575da488ce578-w:720-h:1280-l:27227598-t:video/mp4.mp4", name: "Real Estate Broker", handle: "@kenbroker_realty", caption: "Grabe ang lead quality pagkatapos gamitin ito. Hindi pa ako nag-hire ng copywriter 💯", likes: "21.5K", shares: "6.1K", comments: "1.4K" },
   { src: "https://statics.pancake.vn/web-media-262/0a/0d/bb/45/dd8a737d51cc14591ccd2eea83b09c3d517febc369c8bc9a04a2d880-w:720-h:1280-l:27369124-t:video/mp4.mp4", name: "Spa & Wellness Owner", handle: "@serenityspa_davao", caption: "Ang gaan gamitin kahit hindi ako tech-savvy. Booking namin nag-double! ✨", likes: "18.3K", shares: "5.2K", comments: "1.1K" },
-  { src: "/samples/reel-food-park.mp4", name: "Food Park Owner", handle: "@foodpark_ph", caption: "Nag-try lang ako ng libre, tapos na-hooked na. Results agad! 🍢", likes: "11.4K", shares: "2.9K", comments: "734" },
-  { src: "/samples/reel-tailoring.mp4", name: "Tailoring Shop Owner", handle: "@stitchmaster_ph", caption: "Hindi ako marunong mag-ads dati. Ngayon 3x na ang orders ko 🧵", likes: "8.6K", shares: "1.7K", comments: "489" },
+  { src: "https://statics.pancake.vn/web-media-262/57/80/79/7d/77b4a15adc7b4a32ad0d0f4639de77b22eb2ec88b8f1a197be2fc1ae-w:720-h:1280-l:27011045-t:video/mp4.mp4", name: "Food Park Owner", handle: "@foodpark_ph", caption: "Nag-try lang ako ng libre, tapos na-hooked na. Results agad! 🍢", likes: "11.4K", shares: "2.9K", comments: "734" },
+  { src: "https://statics.pancake.vn/web-media-262/95/e8/13/b4/11f0e231422538694248bf88da81c011c348d0ec4ade27bd1b41d046-w:720-h:1280-l:27590010-t:video/mp4.mp4", name: "Tailoring Shop Owner", handle: "@stitchmaster_ph", caption: "Hindi ako marunong mag-ads dati. Ngayon 3x na ang orders ko 🧵", likes: "8.6K", shares: "1.7K", comments: "489" },
 ];
 
 const FAQS = [
@@ -136,7 +136,20 @@ function ReelCard({ src, name, handle, caption, likes, shares, comments }: { src
         style={{ aspectRatio: "9/16" }}
         onClick={isDesktop ? toggleDesktopPlay : undefined}
       >
-        <video ref={videoRef} src={src} loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{ transform: "scale(1.08)", transformOrigin: "center center" }} />
+        <video
+          ref={videoRef}
+          loop
+          muted
+          playsInline
+          autoPlay
+          preload="metadata"
+          webkit-playsinline="true"
+          x-webkit-airplay="deny"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ transform: "scale(1.08)", transformOrigin: "center center" }}
+        >
+          <source src={src} type="video/mp4" />
+        </video>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 50%)" }} />
 
         {isDesktop && !desktopPlaying && (
