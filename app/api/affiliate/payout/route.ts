@@ -15,8 +15,8 @@ export async function POST() {
     .eq("user_id", user.id)
     .single();
 
-  if (!affiliate) return NextResponse.json({ error: "Affiliate account not found" }, { status: 404 });
-  if (affiliate.status !== "active") return NextResponse.json({ error: "Affiliate account is not active" }, { status: 403 });
+  if (!affiliate) return NextResponse.json({ error: "Partner account not found" }, { status: 404 });
+  if (affiliate.status !== "active") return NextResponse.json({ error: "Partner account is not active" }, { status: 403 });
 
   const { data: existingPayout } = await admin
     .from("affiliate_payouts")
@@ -37,7 +37,7 @@ export async function POST() {
   const pendingBalance = calculateWithdrawableEarnings(earnings || []);
 
   if (pendingBalance < MIN_PAYOUT_AMOUNT) {
-    return NextResponse.json({ error: "Minimum payout is ₱200" }, { status: 400 });
+    return NextResponse.json({ error: "Minimum payout is PHP 200" }, { status: 400 });
   }
 
   const { error } = await admin.from("affiliate_payouts").insert({
@@ -59,11 +59,11 @@ export async function POST() {
 
   await sendTelegramNotification(
     [
-      "💸 Affiliate Payout Request",
+      "Partner Payout Request",
       "",
-      `Affiliate: ${userData?.username || "User"} (${user.email || "no email"})`,
+      `Partner: ${userData?.username || "User"} (${user.email || "no email"})`,
       `GCash: ${affiliate.gcash_name} - ${affiliate.gcash_number}`,
-      `Amount: ₱${pendingBalance.toLocaleString("en-PH")}`,
+      `Amount: PHP ${pendingBalance.toLocaleString("en-PH")}`,
       "",
       "Go to admin to approve.",
     ].join("\n")

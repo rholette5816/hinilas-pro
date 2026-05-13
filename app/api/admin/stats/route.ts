@@ -128,6 +128,32 @@ type AuthUserRow = {
   } | null;
 };
 
+type AffiliateOverrideRow = {
+  id: string;
+  affiliate_id?: string | null;
+  month?: string | null;
+  team_topup_revenue?: number | string | null;
+  active_members?: number | string | null;
+  override_rate?: number | string | null;
+  amount_earned?: number | string | null;
+  override_type?: string | null;
+  status?: string | null;
+  calculated_at?: string | null;
+  affiliates?: {
+    user_id?: string | null;
+    gcash_name?: string | null;
+    gcash_number?: string | null;
+    rank?: string | null;
+    status?: string | null;
+  } | Array<{
+    user_id?: string | null;
+    gcash_name?: string | null;
+    gcash_number?: string | null;
+    rank?: string | null;
+    status?: string | null;
+  }> | null;
+};
+
 type WindowKey = "today" | "sevenDays" | "thirtyDays" | "allTime";
 
 const WINDOW_KEYS: WindowKey[] = ["today", "sevenDays", "thirtyDays", "allTime"];
@@ -311,6 +337,7 @@ export async function GET() {
     emailRows,
     promptRows,
     affiliatePayoutRows,
+    affiliateOverrideRows,
   ] = await Promise.all([
     admin
       .from("user_data")
@@ -360,6 +387,15 @@ export async function GET() {
         .order("requested_at", { ascending: false }),
       warnings
     ),
+    safeRows<AffiliateOverrideRow>(
+      "affiliate_overrides",
+      admin
+        .from("affiliate_overrides")
+        .select("id, affiliate_id, month, team_topup_revenue, active_members, override_rate, amount_earned, override_type, status, calculated_at, affiliates(user_id, gcash_name, gcash_number, rank, status)")
+        .eq("status", "pending")
+        .order("calculated_at", { ascending: false }),
+      warnings
+    ),
   ]);
 
   if (userDataError) return NextResponse.json({ error: userDataError.message }, { status: 500 });
@@ -375,6 +411,7 @@ export async function GET() {
   const emails = emailRows as EmailLogRow[];
   const promptShown = promptRows as FeedbackPromptRow[];
   const affiliatePayoutsRaw = affiliatePayoutRows as AffiliatePayoutRow[];
+  const affiliateOverridesRaw = affiliateOverrideRows as AffiliateOverrideRow[];
   const authUsersById = new Map(authUsers.map((authUser) => [authUser.id, authUser]));
 
   const emailByUserId = new Map<string, string>();
@@ -838,7 +875,7 @@ export async function GET() {
       userId: payout.user_id || "",
       username,
       email,
-      rank: affiliateInfo?.rank || "Starter",
+      rank: affiliateInfo?.rank || "Partner",
       affiliateStatus: affiliateInfo?.status || "active",
       amount: asNumber(payout.amount),
       gcashName: payout.gcash_name || affiliateInfo?.gcash_name || "",
@@ -846,6 +883,37 @@ export async function GET() {
       status: payout.status || "requested",
       requestedAt: payout.requested_at || null,
       paidAt: payout.paid_at || null,
+    };
+  });
+
+  const affiliateOverridePayouts = affiliateOverridesRaw.map(override => {
+    const affiliateInfo = Array.isArray(override.affiliates) ? override.affiliates[0] : override.affiliates;
+    const userId = affiliateInfo?.user_id || "";
+    const matchingUser = userId ? userTable.find(row => row.userId === userId) : null;
+    const authUser = userId ? authUsersById.get(userId) : null;
+    const email = userId ? emailByUserId.get(userId) || "" : "";
+    const username =
+      matchingUser?.username ||
+      authUser?.user_metadata?.full_name ||
+      authUser?.user_metadata?.name ||
+      email.split("@")[0] ||
+      "Partner";
+
+    return {
+      id: override.id,
+      affiliateId: override.affiliate_id || "",
+      userId,
+      username,
+      email,
+      rank: affiliateInfo?.rank || "Partner",
+      month: override.month || "",
+      overrideType: override.override_type || "gen1",
+      activeMembers: asNumber(override.active_members),
+      teamTopupRevenue: asNumber(override.team_topup_revenue),
+      overrideRate: asNumber(override.override_rate),
+      amountEarned: asNumber(override.amount_earned),
+      status: override.status || "pending",
+      calculatedAt: override.calculated_at || null,
     };
   });
 
@@ -886,6 +954,7 @@ export async function GET() {
     healthScore: Math.round(healthScore),
     users: userTable,
     affiliatePayouts,
+    affiliateOverridePayouts,
     recentActivity,
     dataQuality: {
       warnings,
@@ -898,6 +967,7 @@ export async function GET() {
         emails: !warnings.some(w => w.startsWith("email_log:")),
         feedbackPromptShownAt: !warnings.some(w => w.startsWith("feedback_prompt_shown_at:")),
         affiliatePayouts: !warnings.some(w => w.startsWith("affiliate_payouts:")),
+        affiliateOverrides: !warnings.some(w => w.startsWith("affiliate_overrides:")),
       },
     },
     fetchedAt: new Date().toISOString(),

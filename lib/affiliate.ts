@@ -1,15 +1,42 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-export type AffiliateRank = "Starter" | "Hustler" | "Pro" | "Elite";
+export type AffiliateRank = "Partner" | "Hustler" | "Leader" | "Educator" | "Top Leader";
 
 export const MIN_PAYOUT_AMOUNT = 200;
 export const AFFILIATE_HOLD_DAYS = 7;
 
-const RANK_BONUS: Record<AffiliateRank, number> = {
-  Starter: 0,
-  Hustler: 25,
-  Pro: 50,
-  Elite: 75,
+export const OVERRIDE_RATES: Record<AffiliateRank, number> = {
+  Partner: 0,
+  Hustler: 0,
+  Leader: 0.05,
+  Educator: 0.08,
+  "Top Leader": 0.12,
+};
+
+export const OVERRIDE_RATES_GEN2: Record<AffiliateRank, number> = {
+  Partner: 0,
+  Hustler: 0,
+  Leader: 0.04,
+  Educator: 0.06,
+  "Top Leader": 0.10,
+};
+
+export const ACTIVE_MEMBER_DAYS = 30;
+
+export const OVERRIDE_ACTIVE_REQUIRED: Record<AffiliateRank, number> = {
+  Partner: 0,
+  Hustler: 0,
+  Leader: 5,
+  Educator: 10,
+  "Top Leader": 20,
+};
+
+export const OVERRIDE_ACTIVE_REQUIRED_GEN2: Record<AffiliateRank, number> = {
+  Partner: 0,
+  Hustler: 0,
+  Leader: 3,
+  Educator: 5,
+  "Top Leader": 10,
 };
 
 export function adminClient() {
@@ -29,17 +56,26 @@ export function asMoneyNumber(value: number | string | null | undefined) {
 }
 
 export function getRankForPaidReferrals(count: number): AffiliateRank {
-  if (count >= 30) return "Elite";
-  if (count >= 15) return "Pro";
-  if (count >= 5) return "Hustler";
-  return "Starter";
+  if (count >= 50) return "Top Leader";
+  if (count >= 25) return "Educator";
+  if (count >= 10) return "Leader";
+  if (count >= 3) return "Hustler";
+  return "Partner";
 }
 
-export function getNextRank(count: number) {
-  if (count < 5) return { name: "Hustler", referralsNeeded: 5 - count };
-  if (count < 15) return { name: "Pro", referralsNeeded: 15 - count };
-  if (count < 30) return { name: "Elite", referralsNeeded: 30 - count };
-  return { name: "Elite", referralsNeeded: 0 };
+export function getNextRank(count: number): { name: string; referralsNeeded: number } {
+  if (count < 3) return { name: "Hustler", referralsNeeded: 3 - count };
+  if (count < 10) return { name: "Leader", referralsNeeded: 10 - count };
+  if (count < 25) return { name: "Educator", referralsNeeded: 25 - count };
+  if (count < 50) return { name: "Top Leader", referralsNeeded: 50 - count };
+  return { name: "Top Leader", referralsNeeded: 0 };
+}
+
+export function coerceAffiliateRank(rank: string | null | undefined, paidReferrals = 0): AffiliateRank {
+  if (rank === "Partner" || rank === "Hustler" || rank === "Leader" || rank === "Educator" || rank === "Top Leader") {
+    return rank;
+  }
+  return getRankForPaidReferrals(paidReferrals);
 }
 
 export function calculateWithdrawableEarnings(
@@ -126,8 +162,7 @@ export async function grantAffiliateCommissions(
   let type = "";
 
   if (Number(request.credits_requested) === 150) {
-    const rank = (affiliate.rank || "Starter") as AffiliateRank;
-    commission = 250 + (RANK_BONUS[rank] ?? 0);
+    commission = 250;
     type = "flex_sale";
 
     const newCount = asMoneyNumber(affiliate.total_paid_referrals) + 1;

@@ -34,6 +34,10 @@
     {
       "path": "/api/cron/dropoff-emails-copy",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/affiliate-overrides",
+      "schedule": "0 0 1 * *"
     }
   ]
 }

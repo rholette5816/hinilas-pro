@@ -123,6 +123,7 @@ type AdminStats = {
     email: string;
     rank: string;
     month: string;
+    overrideType: string;
     activeMembers: number;
     teamTopupRevenue: number;
     overrideRate: number;
@@ -1129,7 +1130,7 @@ export default function AdminDashboardClient() {
                 <table className="w-full text-sm">
                   <thead style={{ background: "rgba(255,255,255,0.04)" }}>
                     <tr>
-                      {["Partner", "Month", "Active", "Team Revenue", "Rate", "Amount", "Action"].map(h => (
+                      {["Partner", "Type", "Month", "Active", "Team Revenue", "Rate", "Amount", "Action"].map(h => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
                       ))}
                     </tr>
@@ -1142,6 +1143,11 @@ export default function AdminDashboardClient() {
                           <td className="px-4 py-3">
                             <p className="text-white font-semibold">{override.username}</p>
                             <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{override.email || "N/A"} - {override.rank}</p>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-1 rounded-full text-xs font-bold" style={override.overrideType === "gen2" ? { background: "#F5F3FF", color: "#7C3AED" } : { background: "#FFF7ED", color: "#D97706" }}>
+                              {override.overrideType === "gen2" ? "Gen 2" : "Gen 1"}
+                            </span>
                           </td>
                           <td className="px-4 py-3 text-white font-semibold">{override.month || "N/A"}</td>
                           <td className="px-4 py-3 text-white">{formatNumber(override.activeMembers)}</td>
@@ -1166,7 +1172,7 @@ export default function AdminDashboardClient() {
                       );
                     })}
                     {affiliateOverridePayouts.length === 0 && (
-                      <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-sm">No pending override payouts.</td></tr>
+                      <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400 text-sm">No pending override payouts.</td></tr>
                     )}
                   </tbody>
                 </table>

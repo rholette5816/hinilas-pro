@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import TutorialOverlay from "@/components/TutorialOverlay";
 import { useApp, UserSetup } from "@/lib/context";
 
@@ -52,8 +52,21 @@ const LANGUAGES = [
 export default function SetupPage() {
   const { setup, setSetup } = useApp();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isRecruiting = searchParams.get("recruiting") === "true";
+  const recruitingSetup = useMemo<UserSetup>(() => ({
+    businessName: "Hinilas Pro",
+    product: "AI-powered Meta Ads tool for Filipino business owners",
+    targetAudience: "Filipino business owners, sellers, and entrepreneurs who run Facebook ads",
+    uniqueSellingOffer: "Generate ad angles, copy, and images in minutes using AI. Pay once, credits never expire.",
+    market: "Philippines",
+    businessType: "digital",
+    stage: "running_ads",
+    language: setup?.language || "Bislish",
+    industry: "digital_services",
+  }), [setup?.language]);
 
-  const [form, setForm] = useState<UserSetup>(setup || {
+  const [form, setForm] = useState<UserSetup>(isRecruiting ? recruitingSetup : setup || {
     businessName: "",
     product: "",
     targetAudience: "",
@@ -94,8 +107,6 @@ export default function SetupPage() {
     setClearing(false);
   }
 
-  const setupDone = !!(setup?.businessName);
-
   return (
     <>
 
@@ -125,6 +136,12 @@ export default function SetupPage() {
                 Tell us about your business to power your AI-driven marketing engine. Our intelligence models use these details to craft high-conversion strategies.
               </p>
             </div>
+
+            {isRecruiting && (
+              <div data-recruiting-query="recruiting=true" className="mb-5 rounded-xl px-4 py-3 text-sm font-semibold" style={{ background: "rgba(24,119,242,0.10)", border: "1px solid rgba(24,119,242,0.30)", color: BRAND_BLUE }}>
+                You&apos;re creating content to recruit for Hinilas Pro. Your referral link will be shown at the end.
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-8" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB", borderRadius: "12px", padding: "28px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
 

@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     gcash_number: cleanNumber,
     gcash_name: cleanName,
     status: "active",
-    rank: "Starter",
+    rank: "Partner",
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

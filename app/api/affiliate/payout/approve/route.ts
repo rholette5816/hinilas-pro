@@ -43,6 +43,13 @@ export async function POST(req: Request) {
     .eq("status", "pending")
     .lte("created_at", cutoff);
 
+  await admin
+    .from("affiliate_overrides")
+    .update({ status: "paid" })
+    .eq("affiliate_id", payout.affiliate_id)
+    .eq("status", "pending")
+    .lte("calculated_at", cutoff);
+
   try {
     const { data: affiliateUser } = await admin.auth.admin.getUserById(payout.user_id);
     if (affiliateUser.user?.email) {
@@ -50,7 +57,7 @@ export async function POST(req: Request) {
       await resend.emails.send({
         from: "Ken from Hinilas Pro <ken@hinilas.pro>",
         to: affiliateUser.user.email,
-        subject: "Your Hinilas Pro affiliate payout has been sent",
+        subject: "Your Hinilas Pro partner payout has been sent",
         html: `
           <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#1F2937;">
             <p style="font-size:16px;line-height:1.6;">Napadala na ang ₱${Number(payout.amount).toLocaleString("en-PH")} sa iyong GCash (${payout.gcash_number}). Salamat sa pag-refer!</p>

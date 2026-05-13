@@ -129,18 +129,29 @@ export default function AffiliateJoinPage() {
               <div className="px-5 py-4 border-b" style={{ borderColor: "#E4E6EB" }}>
                 <h2 className="font-bold text-[#1c1e21]">Stream 2 - Team Override</h2>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: "#E4E6EB" }}>
-                {[
-                  ["Leader", "10 referrals", "5% of team's monthly top-ups"],
-                  ["Educator", "25 referrals", "8% of team's monthly top-ups"],
-                  ["Top Leader", "50 referrals", "12% of team's monthly top-ups"],
-                ].map(([rank, req, override]) => (
-                  <div key={rank} className="p-5">
-                    <p className="text-sm font-black text-[#1c1e21]">{rank}</p>
-                    <p className="text-xs text-slate-500 mt-1">{req}</p>
-                    <p className="text-sm font-bold mt-3" style={{ color: BRAND_ORANGE }}>{override}</p>
-                  </div>
-                ))}
+              <div className="overflow-auto">
+                <table className="w-full text-sm">
+                  <thead style={{ background: "#F8FAFC" }}>
+                    <tr>
+                      {["Rank", "Gen 1 Override", "Gen 2 Override"].map(header => (
+                        <th key={header} className="px-5 py-3 text-left text-xs font-bold uppercase tracking-widest text-slate-500">{header}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["Leader (10 refs)", "5% of direct team", "4% of their teams"],
+                      ["Educator (25 refs)", "8% of direct team", "6% of their teams"],
+                      ["Top Leader (50 refs)", "12% of direct team", "10% of their teams"],
+                    ].map(([rank, gen1, gen2]) => (
+                      <tr key={rank} style={{ borderTop: "1px solid #E4E6EB" }}>
+                        <td className="px-5 py-4 font-black text-[#1c1e21]">{rank}</td>
+                        <td className="px-5 py-4 font-bold" style={{ color: BRAND_ORANGE }}>{gen1}</td>
+                        <td className="px-5 py-4 font-bold" style={{ color: BRAND_BLUE }}>{gen2}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </section>
 
