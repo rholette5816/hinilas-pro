@@ -115,6 +115,21 @@ type AdminStats = {
     requestedAt: string | null;
     paidAt: string | null;
   }>;
+  affiliateOverridePayouts: Array<{
+    id: string;
+    affiliateId: string;
+    userId: string;
+    username: string;
+    email: string;
+    rank: string;
+    month: string;
+    activeMembers: number;
+    teamTopupRevenue: number;
+    overrideRate: number;
+    amountEarned: number;
+    status: string;
+    calculatedAt: string | null;
+  }>;
   recentActivity: Array<{ userId: string; username: string; type: string; amount: number; description: string; createdAt: string | null; module?: string }>;
   dataQuality: {
     warnings: string[];
@@ -206,7 +221,7 @@ function scoreColor(score: number) {
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-xl ${className}`} style={{ background: "#ffffff", border: "1px solid #e4e6eb" }}>
+    <div className={`rounded-xl ${className}`} style={{ background: "#111827", border: "1px solid rgba(255,255,255,0.08)" }}>
       {children}
     </div>
   );
@@ -215,7 +230,7 @@ function Card({ children, className = "" }: { children: ReactNode; className?: s
 function KPICard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: string }) {
   return (
     <Card className="p-4">
-      <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#65676B" }}>{label}</p>
+      <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: "#94A3B8" }}>{label}</p>
       <p className="text-2xl md:text-3xl font-black text-white leading-tight">{value}</p>
       {sub && <p className="text-xs mt-2" style={{ color: tone || "#64748B" }}>{sub}</p>}
     </Card>
@@ -226,7 +241,7 @@ function SectionHeader({ title, sub }: { title: string; sub?: string }) {
   return (
     <div className="mb-4">
       <h2 className="text-white font-bold text-base">{title}</h2>
-      {sub && <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{sub}</p>}
+      {sub && <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{sub}</p>}
     </div>
   );
 }
@@ -255,12 +270,12 @@ function LineChart({ data, color = "#1877F2" }: { data: { label: string; value: 
   return (
     <div>
       <div className="mb-3 flex items-center justify-between gap-3 text-xs">
-        <span style={{ color: "#65676b" }}>Peak: <strong className="text-[#1c1e21]">{formatNumber(peak)}</strong></span>
-        <span style={{ color: "#65676b" }}>Latest: <strong className="text-[#1c1e21]">{formatNumber(latest)}</strong></span>
+        <span style={{ color: "#94A3B8" }}>Peak: <strong className="text-white">{formatNumber(peak)}</strong></span>
+        <span style={{ color: "#94A3B8" }}>Latest: <strong className="text-white">{formatNumber(latest)}</strong></span>
       </div>
-      <div className="relative h-52 w-full overflow-hidden rounded-lg" style={{ background: "#f2f3f5", border: "1px solid #e4e6eb" }}>
+      <div className="relative h-52 w-full overflow-hidden rounded-lg" style={{ background: "#0B1120", border: "1px solid rgba(255,255,255,0.08)" }}>
         {peak === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-xs font-semibold" style={{ color: "#65676B" }}>
+          <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-xs font-semibold" style={{ color: "#94A3B8" }}>
             No new signups recorded in this window
           </div>
         )}
@@ -275,12 +290,12 @@ function LineChart({ data, color = "#1877F2" }: { data: { label: string; value: 
             const y = padding.top + (1 - tick / axisMax) * plotHeight;
             return (
               <g key={tick}>
-                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#e4e6eb" strokeWidth="1" />
+                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
                 <text x={padding.left - 10} y={y + 4} textAnchor="end" fontSize="10" fill="#64748B">{formatNumber(tick)}</text>
               </g>
             );
           })}
-          <line x1={padding.left} x2={padding.left} y1={padding.top} y2={baselineY} stroke="#e4e6eb" strokeWidth="1" />
+          <line x1={padding.left} x2={padding.left} y1={padding.top} y2={baselineY} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
           {areaPath && <path d={areaPath} fill="url(#signupTrendFill)" />}
           {path && <path d={path} fill="none" stroke={peak > 0 ? color : "#65676b"} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />}
           {points.map((p, i) => (
@@ -309,13 +324,13 @@ function HorizontalBar({ label, value, max, color, sub }: { label: string; value
   return (
     <div className="mb-3">
       <div className="flex items-center justify-between mb-1 gap-3">
-        <span className="text-xs font-medium text-[#1c1e21] truncate">{label}</span>
+        <span className="text-xs font-medium text-white truncate">{label}</span>
         <div className="text-right shrink-0">
           <span className="text-xs font-bold text-white">{formatNumber(value)}</span>
-          {sub && <span className="text-xs ml-2" style={{ color: "#65676B" }}>{sub}</span>}
+          {sub && <span className="text-xs ml-2" style={{ color: "#94A3B8" }}>{sub}</span>}
         </div>
       </div>
-      <div className="w-full rounded-full h-2" style={{ background: "#ffffff" }}>
+      <div className="w-full rounded-full h-2" style={{ background: "rgba(255,255,255,0.08)" }}>
         <div className="h-2 rounded-full transition-all" style={{ width: `${pctWidth}%`, background: color }} />
       </div>
     </div>
@@ -332,7 +347,7 @@ function AlertCard({ alert }: { alert: AdminStats["alerts"][number] }) {
           <p className="text-white text-sm font-bold">{alert.title}</p>
         </div>
       </div>
-      <p className="text-xs mt-2 leading-relaxed" style={{ color: "#1c1e21" }}>{alert.message}</p>
+      <p className="text-xs mt-2 leading-relaxed" style={{ color: "#CBD5E1" }}>{alert.message}</p>
       <p className="text-xs mt-3 font-semibold" style={{ color: style.color }}>{alert.action}</p>
     </div>
   );
@@ -349,13 +364,13 @@ function FunnelTable({ steps }: { steps: ActivationStep[] }) {
             <div className="flex items-center justify-between gap-3 mb-1">
               <div>
                 <p className="text-sm font-semibold text-white">{step.label}</p>
-                <p className="text-xs" style={{ color: "#65676B" }}>
+                <p className="text-xs" style={{ color: "#94A3B8" }}>
                   {step.rateFromPrevious === null ? "baseline" : `${step.rateFromPrevious}% from previous`} - {step.rateFromSignup ?? 0}% of signups
                 </p>
               </div>
               <p className="text-sm font-black text-white">{formatNumber(step.count)}</p>
             </div>
-            <div className="h-2 rounded-full" style={{ background: "#ffffff" }}>
+            <div className="h-2 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
               <div className="h-2 rounded-full" style={{ width: `${Math.max((step.count / max) * 100, step.count > 0 ? 3 : 0)}%`, background: step.key === "paid" ? "#22C55E" : "#1877F2" }} />
             </div>
           </div>
@@ -368,16 +383,16 @@ function FunnelTable({ steps }: { steps: ActivationStep[] }) {
 function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onCopy: () => void; copyLabel: string }) {
   return (
     <Card className="overflow-hidden">
-      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "#e4e6eb" }}>
+      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
         <div>
           <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#D97706" }}>Generated Report</p>
           <h2 className="text-white font-black text-lg">Report & Analysis</h2>
-          <p className="text-xs mt-1" style={{ color: "#65676B" }}>{report.generatedAt}</p>
+          <p className="text-xs mt-1" style={{ color: "#94A3B8" }}>{report.generatedAt}</p>
         </div>
         <button
           onClick={onCopy}
           className="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-          style={{ background: "#ffffff", color: "#1c1e21", border: "1px solid #e4e6eb" }}
+          style={{ background: "#1E293B", color: "#CBD5E1", border: "1px solid rgba(255,255,255,0.08)" }}
         >
           {copyLabel}
         </button>
@@ -388,13 +403,13 @@ function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onC
           <KPICard label="Critical Alerts" value={formatNumber(report.summary.criticalAlerts)} tone={report.summary.criticalAlerts ? "#EF4444" : "#22C55E"} />
           <KPICard label="Watch Alerts" value={formatNumber(report.summary.warningAlerts)} tone={report.summary.warningAlerts ? "#D97706" : "#22C55E"} />
           {report.summary.weakestFunnelStep && (
-            <div className="rounded-xl p-4" style={{ background: "#f2f3f5", border: "1px solid #e4e6eb" }}>
-              <p className="text-xs uppercase font-bold tracking-widest" style={{ color: "#65676B" }}>Weakest Funnel Step</p>
+            <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <p className="text-xs uppercase font-bold tracking-widest" style={{ color: "#94A3B8" }}>Weakest Funnel Step</p>
               <p className="text-white font-bold mt-1">{report.summary.weakestFunnelStep}</p>
             </div>
           )}
         </div>
-        <pre className="p-5 text-xs leading-relaxed whitespace-pre-wrap overflow-auto max-h-[680px]" style={{ color: "#1c1e21" }}>
+        <pre className="p-5 text-xs leading-relaxed whitespace-pre-wrap overflow-auto max-h-[680px]" style={{ color: "#CBD5E1" }}>
           {report.markdown}
         </pre>
       </div>
@@ -416,6 +431,7 @@ export default function AdminDashboardClient() {
   const [reportError, setReportError] = useState("");
   const [copyLabel, setCopyLabel] = useState("Copy Report");
   const [approvingPayoutId, setApprovingPayoutId] = useState("");
+  const [approvingOverrideId, setApprovingOverrideId] = useState("");
   const [payoutMsg, setPayoutMsg] = useState("");
 
   useEffect(() => {
@@ -524,6 +540,31 @@ export default function AdminDashboardClient() {
     }
   }
 
+  async function handleApproveOverride(overrideId: string) {
+    setApprovingOverrideId(overrideId);
+    setPayoutMsg("");
+    try {
+      const res = await fetch("/api/affiliate/override/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ overrideId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to approve override");
+      setStats(prev => prev ? {
+        ...prev,
+        affiliateOverridePayouts: prev.affiliateOverridePayouts.map(override =>
+          override.id === overrideId ? { ...override, status: "paid" } : override
+        ),
+      } : prev);
+      setPayoutMsg("Override payout marked as paid.");
+    } catch (err) {
+      setPayoutMsg(err instanceof Error ? err.message : "Failed to approve override");
+    } finally {
+      setApprovingOverrideId("");
+    }
+  }
+
   function handleSort(nextKey: SortKey) {
     if (sortKey === nextKey) {
       setSortDirection(p => p === "asc" ? "desc" : "asc");
@@ -550,7 +591,7 @@ export default function AdminDashboardClient() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#0B1120" }}>
-        <p style={{ color: "#65676B" }}>Loading dashboard...</p>
+        <p style={{ color: "#94A3B8" }}>Loading dashboard...</p>
       </div>
     );
   }
@@ -560,13 +601,13 @@ export default function AdminDashboardClient() {
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#0B1120" }}>
         <Card className="px-6 py-5 text-center">
           <p className="text-white font-semibold mb-2">Could not load admin dashboard</p>
-          <p style={{ color: "#65676B" }}>{error || "Unknown error"}</p>
+          <p style={{ color: "#94A3B8" }}>{error || "Unknown error"}</p>
         </Card>
       </div>
     );
   }
 
-  const { userStats, creditActivity, tokenStats, departmentFunnel, signupTrend, topUsers, recentActivity, revenue, feedback, timeWindows, affiliatePayouts } = stats;
+  const { userStats, creditActivity, tokenStats, departmentFunnel, signupTrend, topUsers, recentActivity, revenue, feedback, timeWindows, affiliatePayouts, affiliateOverridePayouts } = stats;
   const funnelMax = Math.max(...departmentFunnel.map(d => d.count), 1);
   const tokenMax = Math.max(...Object.values(tokenStats.byModule).map(m => m.total), 1);
   const usageMax = Math.max(...Object.values(creditActivity.usageBreakdown), 1);
@@ -591,7 +632,7 @@ export default function AdminDashboardClient() {
           <div>
             <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#1877F2" }}>Owner Dashboard</p>
             <h1 className="text-3xl font-black text-white">Command Center</h1>
-            <p className="text-sm mt-1" style={{ color: "#65676B" }}>Live app awareness - refreshes every 60s while active</p>
+            <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>Live app awareness - refreshes every 60s while active</p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -602,12 +643,12 @@ export default function AdminDashboardClient() {
             >
               {reportLoading ? "Generating..." : "Generate Report & Analysis"}
             </button>
-            <Link href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#ffffff", color: "#65676b", border: "1px solid #e4e6eb" }}>
+            <Link href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid rgba(255,255,255,0.08)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
               Back to App
             </Link>
-            <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#ffffff", border: "1px solid #e4e6eb" }}>
-              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#65676B" }}>Last Refresh</p>
+            <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Last Refresh</p>
               <p className="text-sm text-white mt-1">{timeAgo(stats.fetchedAt)}</p>
             </div>
           </div>
@@ -621,15 +662,15 @@ export default function AdminDashboardClient() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 mb-6">
           <Card className="p-5">
-            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#65676B" }}>App Health</p>
+            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>App Health</p>
             <div className="flex items-end gap-2 mt-2">
               <p className="text-5xl font-black" style={{ color: scoreColor(stats.healthScore) }}>{stats.healthScore}</p>
-              <p className="text-sm mb-2" style={{ color: "#65676B" }}>/ 100</p>
+              <p className="text-sm mb-2" style={{ color: "#94A3B8" }}>/ 100</p>
             </div>
-            <div className="h-2 rounded-full mt-4" style={{ background: "#ffffff" }}>
+            <div className="h-2 rounded-full mt-4" style={{ background: "rgba(255,255,255,0.08)" }}>
               <div className="h-2 rounded-full" style={{ width: `${stats.healthScore}%`, background: scoreColor(stats.healthScore) }} />
             </div>
-            <p className="text-xs mt-3" style={{ color: "#65676b" }}>
+            <p className="text-xs mt-3" style={{ color: "#94A3B8" }}>
               Calibrated from activation, revenue, feedback, pending topups, and zero-credit risk.
             </p>
           </Card>
@@ -646,7 +687,7 @@ export default function AdminDashboardClient() {
               className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
               style={activeTab === tab.key
                 ? { background: "#1877F2", color: "#fff" }
-                : { background: "#ffffff", color: "#65676B", border: "1px solid #e4e6eb" }}
+                : { background: "#1E293B", color: "#94A3B8", border: "1px solid rgba(255,255,255,0.08)" }}
             >
               {tab.label}
             </button>
@@ -669,10 +710,10 @@ export default function AdminDashboardClient() {
                   <Card key={row.label} className="p-4">
                     <p className="text-white font-bold text-sm">{row.label}</p>
                     <div className="grid grid-cols-2 gap-3 mt-4">
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.signups)}</p><p className="text-xs" style={{ color: "#65676B" }}>signups</p></div>
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.activeUsers)}</p><p className="text-xs" style={{ color: "#65676B" }}>active</p></div>
-                      <div><p className="text-xl font-black text-white">{formatPhp(row.data.revenuePhp)}</p><p className="text-xs" style={{ color: "#65676B" }}>revenue</p></div>
-                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.creditsConsumed)}</p><p className="text-xs" style={{ color: "#65676B" }}>credits used</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.signups)}</p><p className="text-xs" style={{ color: "#94A3B8" }}>signups</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.activeUsers)}</p><p className="text-xs" style={{ color: "#94A3B8" }}>active</p></div>
+                      <div><p className="text-xl font-black text-white">{formatPhp(row.data.revenuePhp)}</p><p className="text-xs" style={{ color: "#94A3B8" }}>revenue</p></div>
+                      <div><p className="text-xl font-black text-white">{formatNumber(row.data.creditsConsumed)}</p><p className="text-xs" style={{ color: "#94A3B8" }}>credits used</p></div>
                     </div>
                   </Card>
                 ))}
@@ -700,8 +741,8 @@ export default function AdminDashboardClient() {
                 <div className="space-y-3">
                   {stats.recommendedActions.slice(0, 5).map((action, i) => (
                     <div key={action} className="flex gap-3">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "#ffffff", color: "#D97706" }}>{i + 1}</span>
-                      <p className="text-sm" style={{ color: "#1c1e21" }}>{action}</p>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0" style={{ background: "rgba(217,119,6,0.15)", color: "#D97706" }}>{i + 1}</span>
+                      <p className="text-sm" style={{ color: "#CBD5E1" }}>{action}</p>
                     </div>
                   ))}
                 </div>
@@ -716,7 +757,7 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 <SectionHeader title="Live Activity" sub="Last 20 credit transactions" />
               </div>
               <div className="max-h-80 overflow-auto">
@@ -724,11 +765,11 @@ export default function AdminDashboardClient() {
                   <div key={`${a.userId}-${a.createdAt}-${i}`} className="px-5 py-3 flex items-center justify-between gap-3" style={{ borderTop: i === 0 ? "none" : "1px solid #e4e6eb" }}>
                     <div className="min-w-0">
                       <p className="text-white font-semibold text-sm truncate">{a.username}</p>
-                      <p className="text-xs mt-0.5 truncate" style={{ color: "#65676b" }}>{a.type} - {a.description || "No description"}</p>
+                      <p className="text-xs mt-0.5 truncate" style={{ color: "#94A3B8" }}>{a.type} - {a.description || "No description"}</p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-sm font-bold" style={{ color: a.amount >= 0 ? "#22C55E" : "#EF4444" }}>{a.amount >= 0 ? "+" : ""}{a.amount}</p>
-                      <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{timeAgo(a.createdAt)}</p>
+                      <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{timeAgo(a.createdAt)}</p>
                     </div>
                   </div>
                 ))}
@@ -762,15 +803,15 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 <SectionHeader title="Top 10 Power Users" sub="Highest credit consumption - strongest upsell and testimonial candidates" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "#f2f3f5" }}>
+                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
                     <tr>
                       {["#", "User", "Email", "Plan", "Credits Used", "Credits Left"].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#65676B" }}>{h}</th>
+                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -779,14 +820,14 @@ export default function AdminDashboardClient() {
                       <tr key={u.userId} style={{ borderTop: "1px solid #e4e6eb" }}>
                         <td className="px-4 py-3 text-gray-500 text-xs font-bold">#{i + 1}</td>
                         <td className="px-4 py-3 text-white font-medium">{u.username}</td>
-                        <td className="px-4 py-3" style={{ color: "#65676b" }}>{u.email || "N/A"}</td>
+                        <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{u.email || "N/A"}</td>
                         <td className="px-4 py-3"><PlanPill plan={u.plan} /></td>
                         <td className="px-4 py-3 font-bold" style={{ color: "#EF4444" }}>{formatNumber(u.consumed)}</td>
                         <td className="px-4 py-3 text-white">{formatNumber(u.creditsRemaining)}</td>
                       </tr>
                     ))}
                     {topUsers.length === 0 && (
-                      <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-600 text-sm">No usage data yet.</td></tr>
+                      <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">No usage data yet.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -813,7 +854,7 @@ export default function AdminDashboardClient() {
                   { label: "Referral rewards", value: creditActivity.grantBreakdown.referral, color: "#8B5CF6" },
                   { label: "Feedback rewards", value: creditActivity.grantBreakdown.feedback, color: "#D97706" },
                   { label: "Campaign launch", value: creditActivity.grantBreakdown.campaignLaunch, color: "#EC4899" },
-                  { label: "Other", value: creditActivity.grantBreakdown.other, color: "#65676B" },
+                  { label: "Other", value: creditActivity.grantBreakdown.other, color: "#94A3B8" },
                 ].map(row => <HorizontalBar key={row.label} label={row.label} value={row.value} max={grantMax} color={row.color} />)}
               </Card>
 
@@ -827,7 +868,7 @@ export default function AdminDashboardClient() {
                   { label: "Copy", value: creditActivity.usageBreakdown.copy, color: "#8B5CF6" },
                   { label: "Video generation", value: creditActivity.usageBreakdown.videoGeneration, color: "#38BDF8" },
                   { label: "Consultation", value: creditActivity.usageBreakdown.consultation, color: "#22C55E" },
-                  { label: "Other", value: creditActivity.usageBreakdown.other, color: "#65676B" },
+                  { label: "Other", value: creditActivity.usageBreakdown.other, color: "#94A3B8" },
                 ].map(row => <HorizontalBar key={row.label} label={row.label} value={row.value} max={usageMax} color={row.color} />)}
               </Card>
             </div>
@@ -861,7 +902,7 @@ export default function AdminDashboardClient() {
               </Card>
               <Card className="p-5">
                 <SectionHeader title="Feedback Interpretation" sub="How to read this section" />
-                <div className="space-y-3 text-sm" style={{ color: "#1c1e21" }}>
+                <div className="space-y-3 text-sm" style={{ color: "#CBD5E1" }}>
                   <p>If prompt conversion is low, the modal timing or reward copy needs work.</p>
                   <p>If rating is below 4.0, read feedback before adding new features.</p>
                   <p>If testimonial candidates are growing, ask those users for public proof.</p>
@@ -894,15 +935,15 @@ export default function AdminDashboardClient() {
             </Card>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 <SectionHeader title="Token Breakdown" sub="Input, output, and estimated cost" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "#f2f3f5" }}>
+                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
                     <tr>
                       {["Department", "Calls", "Input", "Output", "Total", "Cost"].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#65676B" }}>{h}</th>
+                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -914,8 +955,8 @@ export default function AdminDashboardClient() {
                         <tr key={mod} style={{ borderTop: "1px solid #e4e6eb" }}>
                           <td className="px-4 py-3 text-white font-medium">{DEPT_LABELS[mod]}</td>
                           <td className="px-4 py-3 text-white">{formatNumber(m.calls)}</td>
-                          <td className="px-4 py-3" style={{ color: "#65676b" }}>{formatNumber(m.prompt)}</td>
-                          <td className="px-4 py-3" style={{ color: "#65676b" }}>{formatNumber(m.completion)}</td>
+                          <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatNumber(m.prompt)}</td>
+                          <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatNumber(m.completion)}</td>
                           <td className="px-4 py-3 text-white font-bold">{formatNumber(m.total)}</td>
                           <td className="px-4 py-3 font-bold" style={{ color: "#D97706" }}>${cost.toFixed(5)}</td>
                         </tr>
@@ -931,12 +972,12 @@ export default function AdminDashboardClient() {
         {activeTab === "users" && (
           <div className="space-y-6">
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 <SectionHeader title="All Users" sub="Sortable user list" />
               </div>
               <div className="overflow-auto max-h-[700px]">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "#f2f3f5" }}>
+                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
                     <tr>
                       {[
                         { key: "username", label: "Username" },
@@ -948,7 +989,7 @@ export default function AdminDashboardClient() {
                         <th
                           key={col.key}
                           className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest cursor-pointer whitespace-nowrap"
-                          style={{ color: "#65676B" }}
+                          style={{ color: "#94A3B8" }}
                           onClick={() => handleSort(col.key as SortKey)}
                         >
                           {col.label}
@@ -961,10 +1002,10 @@ export default function AdminDashboardClient() {
                     {sortedUsers.map(u => (
                       <tr key={u.userId} style={{ borderTop: "1px solid #e4e6eb" }}>
                         <td className="px-4 py-3 text-white font-medium">{u.username}</td>
-                        <td className="px-4 py-3" style={{ color: "#65676b" }}>{u.email || "N/A"}</td>
+                        <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{u.email || "N/A"}</td>
                         <td className="px-4 py-3"><PlanPill plan={u.plan} /></td>
                         <td className="px-4 py-3 text-white">{formatNumber(u.creditsRemaining)}</td>
-                        <td className="px-4 py-3" style={{ color: "#65676b" }}>{formatDate(u.signupDate)}</td>
+                        <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatDate(u.signupDate)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -986,7 +1027,7 @@ export default function AdminDashboardClient() {
             <details className="rounded-xl" style={{ background: "#ffffff", border: "1px solid rgba(239,68,68,0.35)" }}>
               <summary className="cursor-pointer px-5 py-4 text-sm font-bold" style={{ color: "#EF4444" }}>Danger Zone</summary>
               <div className="px-5 pb-5">
-                <p className="text-xs mb-4" style={{ color: "#65676b" }}>Use only when you intentionally need to remove top-up transaction data and reverse those credits.</p>
+                <p className="text-xs mb-4" style={{ color: "#94A3B8" }}>Use only when you intentionally need to remove top-up transaction data and reverse those credits.</p>
                 <button
                   onClick={handleResetTopups}
                   disabled={resetting}
@@ -995,7 +1036,7 @@ export default function AdminDashboardClient() {
                 >
                   {resetting ? "Resetting..." : "Reset Topup Data"}
                 </button>
-                {resetMsg && <p className="text-xs mt-2" style={{ color: "#65676b" }}>{resetMsg}</p>}
+                {resetMsg && <p className="text-xs mt-2" style={{ color: "#94A3B8" }}>{resetMsg}</p>}
               </div>
             </details>
           </div>
@@ -1005,26 +1046,26 @@ export default function AdminDashboardClient() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <KPICard label="Requested Payouts" value={formatNumber(affiliatePayouts.filter(p => p.status === "requested").length)} sub="awaiting manual GCash send" tone="#D97706" />
-              <KPICard label="Requested Amount" value={formatPhp(affiliatePayouts.filter(p => p.status === "requested").reduce((sum, p) => sum + p.amount, 0))} sub="unpaid cash liability" tone="#EF4444" />
-              <KPICard label="Paid Amount" value={formatPhp(affiliatePayouts.filter(p => p.status === "paid").reduce((sum, p) => sum + p.amount, 0))} sub="approved affiliate payouts" tone="#22C55E" />
+              <KPICard label="Requested Amount" value={formatPhp(affiliatePayouts.filter(p => p.status === "requested").reduce((sum, p) => sum + p.amount, 0))} sub="direct unpaid cash liability" tone="#EF4444" />
+              <KPICard label="Override Amount" value={formatPhp(affiliateOverridePayouts.filter(p => p.status === "pending").reduce((sum, p) => sum + p.amountEarned, 0))} sub="pending monthly overrides" tone="#7C3AED" />
             </div>
 
             {payoutMsg && (
-              <div className="rounded-xl px-4 py-3 text-sm font-semibold" style={{ background: "#ffffff", border: "1px solid #e4e6eb", color: payoutMsg.includes("Failed") ? "#EF4444" : "#22C55E" }}>
+              <div className="rounded-xl px-4 py-3 text-sm font-semibold" style={{ background: "#ffffff", border: "1px solid rgba(255,255,255,0.08)", color: payoutMsg.includes("Failed") ? "#EF4444" : "#22C55E" }}>
                 {payoutMsg}
               </div>
             )}
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "#e4e6eb" }}>
-                <SectionHeader title="Affiliate Payouts" sub="Send GCash first, then mark the payout as paid" />
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <SectionHeader title="Partner Payouts" sub="Send GCash first, then mark the payout as paid" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "#f2f3f5" }}>
+                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
                     <tr>
                       {["Affiliate", "GCash", "Amount", "Requested", "Status", "Action"].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#65676B" }}>{h}</th>
+                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -1035,14 +1076,14 @@ export default function AdminDashboardClient() {
                         <tr key={payout.id} style={{ borderTop: "1px solid #e4e6eb" }}>
                           <td className="px-4 py-3">
                             <p className="text-white font-semibold">{payout.username}</p>
-                            <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{payout.email || "N/A"} - {payout.rank}</p>
+                            <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{payout.email || "N/A"} - {payout.rank}</p>
                           </td>
                           <td className="px-4 py-3">
                             <p className="text-white font-semibold">{payout.gcashName || "N/A"}</p>
-                            <p className="text-xs mt-0.5" style={{ color: "#65676B" }}>{payout.gcashNumber || "N/A"}</p>
+                            <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{payout.gcashNumber || "N/A"}</p>
                           </td>
                           <td className="px-4 py-3 text-white font-black">{formatPhp(payout.amount)}</td>
-                          <td className="px-4 py-3" style={{ color: "#65676B" }}>{formatDate(payout.requestedAt)}</td>
+                          <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatDate(payout.requestedAt)}</td>
                           <td className="px-4 py-3">
                             <span
                               className="text-xs font-bold px-2 py-1 rounded-full capitalize"
@@ -1057,7 +1098,7 @@ export default function AdminDashboardClient() {
                           </td>
                           <td className="px-4 py-3">
                             {isPaid ? (
-                              <span className="text-xs" style={{ color: "#65676B" }}>Paid {formatDate(payout.paidAt)}</span>
+                              <span className="text-xs" style={{ color: "#94A3B8" }}>Paid {formatDate(payout.paidAt)}</span>
                             ) : (
                               <button
                                 onClick={() => handleApprovePayout(payout.id)}
@@ -1073,7 +1114,59 @@ export default function AdminDashboardClient() {
                       );
                     })}
                     {affiliatePayouts.length === 0 && (
-                      <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-600 text-sm">No affiliate payout requests yet.</td></tr>
+                      <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">No partner payout requests yet.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card className="overflow-hidden">
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+                <SectionHeader title="Override Payouts" sub="Monthly team override payouts waiting for manual GCash send" />
+              </div>
+              <div className="overflow-auto">
+                <table className="w-full text-sm">
+                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <tr>
+                      {["Partner", "Month", "Active", "Team Revenue", "Rate", "Amount", "Action"].map(h => (
+                        <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {affiliateOverridePayouts.map(override => {
+                      const isPaid = override.status === "paid";
+                      return (
+                        <tr key={override.id} style={{ borderTop: "1px solid #e4e6eb" }}>
+                          <td className="px-4 py-3">
+                            <p className="text-white font-semibold">{override.username}</p>
+                            <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{override.email || "N/A"} - {override.rank}</p>
+                          </td>
+                          <td className="px-4 py-3 text-white font-semibold">{override.month || "N/A"}</td>
+                          <td className="px-4 py-3 text-white">{formatNumber(override.activeMembers)}</td>
+                          <td className="px-4 py-3 text-white">{formatPhp(override.teamTopupRevenue)}</td>
+                          <td className="px-4 py-3 text-white">{Math.round(override.overrideRate * 100)}%</td>
+                          <td className="px-4 py-3 text-white font-black">{formatPhp(override.amountEarned)}</td>
+                          <td className="px-4 py-3">
+                            {isPaid ? (
+                              <span className="text-xs" style={{ color: "#94A3B8" }}>Paid</span>
+                            ) : (
+                              <button
+                                onClick={() => handleApproveOverride(override.id)}
+                                disabled={approvingOverrideId === override.id}
+                                className="px-3 py-2 rounded-lg text-xs font-bold transition-all hover:brightness-110 disabled:opacity-50"
+                                style={{ background: "#7C3AED", color: "#FFFFFF" }}
+                              >
+                                {approvingOverrideId === override.id ? "Marking..." : "Mark as Paid"}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {affiliateOverridePayouts.length === 0 && (
+                      <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-sm">No pending override payouts.</td></tr>
                     )}
                   </tbody>
                 </table>
