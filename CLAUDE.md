@@ -1,7 +1,7 @@
 # Hinilas Pro — CLAUDE.md
 
 ## What This App Is
-Hinilas Pro is a Next.js SaaS app for Filipino Meta Ads marketers. It's an AI-powered tool that generates ad angles, sales copy, and ad creatives. Users pay with credits. Built by Ken (kevinrholette@gmail.com).
+Hinilas Pro is a Next.js SaaS app for Filipino Meta Ads marketers. It's an AI-powered tool that generates ad angles, sales copy, and ad creatives. Users pay with credits.
 
 ## Tech Stack
 - **Framework:** Next.js (App Router, server + client components)
@@ -49,7 +49,7 @@ Hinilas Pro is a Next.js SaaS app for Filipino Meta Ads marketers. It's an AI-po
 | `/community` | Community (locked/coming soon) |
 | `/expert` | AI consultation |
 | `/pricing` | Plans + top-up |
-| `/admin` | Owner-only dashboard (kevinrholette@gmail.com) |
+| `/admin` | Owner-only dashboard |
 | `/ref/[code]` | Referral redirect — sets cookie then goes to /home |
 
 ## Key Files

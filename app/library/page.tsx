@@ -62,12 +62,6 @@ export default function LibraryPage() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("[library] fetch error:", error.message, error.code);
-    } else {
-      console.log("[library] fetched items:", data?.length ?? 0);
-    }
-
     setItems((data as MediaItem[]) || []);
     setLoading(false);
   }, [router]);
