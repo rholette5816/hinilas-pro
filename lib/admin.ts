@@ -1,24 +1,8 @@
-type OwnerLikeUser = {
-  email?: string | null;
-  user_metadata?: {
-    role?: string;
-    is_owner?: boolean;
-  } | null;
-};
-
 export const OWNER_EMAILS = ["kevinrholette@gmail.com"];
 
-export function isOwnerUser(user: OwnerLikeUser | null | undefined) {
+export function isOwnerUser(user: { email?: string | null } | null | undefined): boolean {
   if (!user) return false;
-
-  const email = user.email?.toLowerCase().trim();
-  const metadata = user.user_metadata;
-
-  return Boolean(
-    (email && OWNER_EMAILS.includes(email)) ||
-    metadata?.role === "owner" ||
-    metadata?.is_owner === true
-  );
+  return OWNER_EMAILS.includes((user.email ?? "").toLowerCase());
 }
 
 export type Tier = "Lite" | "Flex" | "Max";
