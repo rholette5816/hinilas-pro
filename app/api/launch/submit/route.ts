@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
+import { generateApprovalToken } from "@/lib/approval-token";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
@@ -13,21 +15,22 @@ function adminClient() {
 }
 
 async function aiScreenCheck(base64: string, mimeType: string): Promise<{ pass: boolean; reason: string }> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return { pass: true, reason: "skipped" };
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
-    const result = await model.generateContent({
-      contents: [{
+    const openai = new OpenAI({ apiKey });
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{
         role: "user",
-        parts: [
+        content: [
           {
-            inlineData: { mimeType: mimeType as "image/png" | "image/jpeg", data: base64 },
+            type: "image_url",
+            image_url: { url: `data:${mimeType};base64,${base64}` },
           },
           {
+            type: "text",
             text: `You are reviewing a screenshot submitted by a user claiming to have launched a Facebook/Meta Ads campaign.
 
 Check if this screenshot shows a real, active Meta Ads Manager campaign. Look for:
@@ -47,7 +50,7 @@ Be strict. Reject blurry, cropped, edited, or unrelated screenshots.`,
       }],
     });
 
-    const text = result.response.text().trim();
+    const text = (completion.choices[0]?.message?.content || "").trim();
     const match = text.match(/\{[\s\S]*\}/);
     if (match) {
       const parsed = JSON.parse(match[0]);
@@ -71,8 +74,9 @@ async function sendTelegramLaunch(
 
   if (!botToken || chatIds.length === 0) return;
 
-  const approveUrl = `${baseUrl}/api/launch/approve?id=${launchId}&action=approve&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
-  const rejectUrl = `${baseUrl}/api/launch/approve?id=${launchId}&action=reject&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
+  const token = generateApprovalToken(launchId);
+  const approveUrl = `${baseUrl}/api/launch/approve?action=approve&token=${token}`;
+  const rejectUrl = `${baseUrl}/api/launch/approve?action=reject&token=${token}`;
 
   const caption = `🚀 New Campaign Launch Submission\n\nUser: ${username}\nEmail: ${email}\n\n✅ Approve (+20 credits): ${approveUrl}\n❌ Reject: ${rejectUrl}`;
 
@@ -94,6 +98,14 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = checkRateLimit(`launch-submit:${user.id}`, { limit: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const { data: userData } = await supabase
     .from("user_data")
     .select("username")
@@ -106,12 +118,10 @@ export async function POST(req: NextRequest) {
   const file = formData.get("screenshot") as File | null;
   if (!file) return NextResponse.json({ error: "No screenshot provided" }, { status: 400 });
 
-  // Convert to base64 for AI check
   const arrayBuffer = await file.arrayBuffer();
   const base64 = Buffer.from(arrayBuffer).toString("base64");
   const mimeType = file.type || "image/png";
 
-  // AI pre-screen
   const check = await aiScreenCheck(base64, mimeType);
   if (!check.pass) {
     return NextResponse.json({
@@ -120,7 +130,6 @@ export async function POST(req: NextRequest) {
     }, { status: 422 });
   }
 
-  // Upload to Supabase storage
   const filename = `launches/${user.id}/${Date.now()}.${file.name.split(".").pop() || "png"}`;
   const { error: uploadError } = await adminClient()
     .storage
@@ -129,13 +138,12 @@ export async function POST(req: NextRequest) {
 
   if (uploadError) {
     console.error("Storage upload error:", uploadError);
-    return NextResponse.json({ error: `Upload failed: ${uploadError.message}` }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
   const { data: urlData } = adminClient().storage.from("screenshots").getPublicUrl(filename);
   const screenshotUrl = urlData.publicUrl;
 
-  // Insert launch record
   const { data: launch, error: insertError } = await adminClient()
     .from("campaign_launches")
     .insert({
@@ -149,10 +157,9 @@ export async function POST(req: NextRequest) {
 
   if (insertError || !launch) {
     console.error("DB insert error:", insertError);
-    return NextResponse.json({ error: `Failed to save submission: ${insertError?.message || "unknown error"}` }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
-  // Send to Telegram
   await sendTelegramLaunch(username, user.email || "", launch.id, screenshotUrl);
 
   return NextResponse.json({ success: true });

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { isOwnerUser } from "@/lib/admin";
 import { deductCreditsAtomic } from "@/lib/credits";
+import { sanitizePrompt } from "@/lib/sanitize";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
@@ -19,8 +21,29 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = checkRateLimit(`video-prompts:${user.id}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const { angle, userContext, industry } = await req.json();
-  if (!angle || !userContext) return NextResponse.json({ error: "angle and userContext are required" }, { status: 400 });
+  if (typeof angle !== "string" || typeof userContext !== "string" || !angle.trim() || !userContext.trim()) {
+    return NextResponse.json({ error: "angle and userContext are required" }, { status: 400 });
+  }
+  if (
+    angle.trim().length > 5000 ||
+    userContext.trim().length > 5000 ||
+    (typeof industry === "string" && industry.trim().length > 5000)
+  ) {
+    return NextResponse.json({ error: "Prompt input too long." }, { status: 400 });
+  }
+
+  const sanitizedAngle = sanitizePrompt(angle);
+  const sanitizedUserContext = sanitizePrompt(userContext);
+  const sanitizedIndustry = typeof industry === "string" ? sanitizePrompt(industry) : "";
 
   const ownerMode = isOwnerUser(user);
 
@@ -36,18 +59,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
   const prompt = `You are a video ad director and scriptwriter for Meta Ads. Your job is to write 3 short video clip prompts powered by Veo 3, which generates video WITH audio and spoken dialogue.
 
 BUSINESS CONTEXT:
-${userContext}
+${sanitizedUserContext}
 
 MARKETING ANGLE:
-${angle}
+${sanitizedAngle}
 
-INDUSTRY: ${industry || "general"}
+INDUSTRY: ${sanitizedIndustry || "general"}
 
 STEP 1 — Detect the dialect/language from the angle above. The dialogue in all 3 clips MUST be written in that exact dialect (Tagalog, Bisaya, Taglish, English, etc). Match the tone and slang of the angle exactly.
 
@@ -78,13 +100,15 @@ Example format:
 ["prompt one here","prompt two here","prompt three here"]`;
 
   try {
-    const result = await model.generateContent(prompt);
-    const text = result.response.text().trim();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+    const text = (completion.choices[0]?.message?.content || "").trim();
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return NextResponse.json({ error: "Could not parse prompts" }, { status: 500 });
     const prompts = JSON.parse(match[0]) as string[];
 
-    // Save prompts to user_data for persistence
     const admin = adminClient();
     await admin.from("user_data").update({
       video_prompts: prompts,
@@ -105,7 +129,7 @@ Example format:
 
     return NextResponse.json({ prompts });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to generate prompts";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[video-prompts] OpenAI API error:", err);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
 import { deductCreditsAtomic } from "@/lib/credits";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function adminClient() {
   return createAdminClient(
@@ -13,6 +14,12 @@ function adminClient() {
 }
 
 export const maxDuration = 60;
+
+const ASPECT_RATIO_SIZES: Record<string, "1024x1024" | "1024x1536" | "1536x1024"> = {
+  "1:1": "1024x1024",
+  "9:16": "1024x1536",
+  "1.91:1": "1536x1024",
+};
 
 const ASPECT_RATIO_LABELS: Record<string, string> = {
   "1:1": "square (1:1 aspect ratio)",
@@ -58,6 +65,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const ip = getRequestIp(req);
+  const rateLimit = checkRateLimit(`image:${user.id}:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+      }
+    );
+  }
+
   const ownerMode = isOwnerUser(user);
 
   const { data: userData } = await supabase
@@ -73,62 +92,46 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const apiKey = process.env.GEMINI_IMAGE_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ error: "GEMINI_IMAGE_API_KEY not configured." }, { status: 500 });
+    return NextResponse.json({ error: "OPENAI_API_KEY not configured." }, { status: 500 });
   }
 
-  const images: string[] = [];
+  const size = ASPECT_RATIO_SIZES[aspectRatio] || "1024x1024";
+  const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const openai = new OpenAI({ apiKey });
+    let imageBase64: string | null = null;
 
     if (!referenceImage) {
-      const geminiMain = new GoogleGenerativeAI(apiKey);
-      const mainModel = geminiMain.getGenerativeModel({ model: "gemini-2.5-flash-image" });
-      const ratioLabelMain = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
-
-      const result = await mainModel.generateContent({
-        contents: [{ role: "user", parts: [{ text: `${prompt}\n\nGenerate this as a ${ratioLabelMain} image.` }] }],
-        generationConfig: {
-          // @ts-expect-error responseModalities is valid but not yet in type definitions
-          responseModalities: ["IMAGE", "TEXT"],
-        },
+      const response = await openai.images.generate({
+        model: "gpt-image-1",
+        prompt: `${prompt}\n\nGenerate this as a ${ratioLabel} image.`,
+        size,
+        n: 1,
       });
-
-      const responseParts = result.response.candidates?.[0]?.content?.parts ?? [];
-      for (const part of responseParts) {
-        if (part.inlineData?.data) {
-          const mime = part.inlineData.mimeType || "image/png";
-          images.push(`data:${mime};base64,${part.inlineData.data}`);
-          break;
-        }
-      }
+      imageBase64 = response.data?.[0]?.b64_json ?? null;
     } else {
-      const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
-      const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parts: any[] = [];
-
-      let mimeType = "image/png";
-      let data: string;
+      let refBuffer: Buffer;
+      let refMime = "image/png";
 
       if ((referenceImage as string).startsWith("data:")) {
         const [header, b64] = (referenceImage as string).split(",");
-        mimeType = header.match(/:(.*?);/)?.[1] || "image/png";
-        data = b64;
+        refMime = header.match(/:(.*?);/)?.[1] || "image/png";
+        refBuffer = Buffer.from(b64, "base64");
       } else {
         const fetchRes = await fetch(referenceImage as string);
-        const buffer = await fetchRes.arrayBuffer();
-        mimeType = fetchRes.headers.get("content-type") || "image/png";
-        data = Buffer.from(buffer).toString("base64");
+        refBuffer = Buffer.from(await fetchRes.arrayBuffer());
+        refMime = fetchRes.headers.get("content-type") || "image/png";
       }
 
-      parts.push({ inlineData: { mimeType, data } });
+      const { toFile } = await import("openai");
+      const imageFile = await toFile(refBuffer, "reference.png", { type: refMime });
 
+      let editPrompt: string;
       if (isVariation) {
-        const variationText = variationIndex === 0
+        editPrompt = variationIndex === 0
           ? `This is the original ad creative reference. Create Variation 1 - LIFESTYLE / UGC execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (typography weight, brand colors, dialect on copy) but flip the framing to lifestyle-first.
 
 DETECT DIALECT from the original ad copy and write all on-image text in that exact dialect.
@@ -188,36 +191,26 @@ HARD RULE: do NOT include the words "Before" or "After" anywhere in the image. L
 NEGATIVE: blurry text, distorted face, extra limbs, watermark, oversaturated skin, horror lighting, cartoon, anime, 3D render, generic stock-photo poses, overlapping text, the words "Before" or "After".
 
 Final output: ready-to-upload Facebook/Instagram feed ad in ${ratioLabel} format.`;
-        parts.push({ text: variationText });
       } else {
-        parts.push({
-          text: `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message - adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`,
-        });
+        editPrompt = `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message - adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`;
       }
 
-      const result = await geminiModel.generateContent({
-        contents: [{ role: "user", parts }],
-        generationConfig: {
-          // @ts-expect-error responseModalities is valid but not yet in type definitions
-          responseModalities: ["IMAGE", "TEXT"],
-        },
+      const response = await openai.images.edit({
+        model: "gpt-image-1",
+        image: imageFile,
+        prompt: editPrompt,
+        size,
+        n: 1,
       });
-
-      const responseParts = result.response.candidates?.[0]?.content?.parts ?? [];
-      for (const part of responseParts) {
-        if (part.inlineData?.data) {
-          const mime = part.inlineData.mimeType || "image/png";
-          images.push(`data:${mime};base64,${part.inlineData.data}`);
-          break;
-        }
-      }
+      imageBase64 = response.data?.[0]?.b64_json ?? null;
     }
 
-    if (images.length === 0) {
+    if (!imageBase64) {
       return NextResponse.json({ error: "No image was generated. Try again." }, { status: 500 });
     }
 
-    // Upload to storage with timestamped path
+    const imageDataUri = `data:image/png;base64,${imageBase64}`;
+
     const ts = Date.now();
     const label = !referenceImage
       ? "Main Ad"
@@ -225,9 +218,8 @@ Final output: ready-to-upload Facebook/Instagram feed ad in ${ratioLabel} format
         ? `Variation ${variationIndex + 1}`
         : "Resized";
     const slugLabel = label.toLowerCase().replace(/\s/g, "-");
-    const publicUrl = await uploadBase64ToStorage(images[0], user.id, `${ts}-${slugLabel}`);
+    const publicUrl = await uploadBase64ToStorage(imageDataUri, user.id, `${ts}-${slugLabel}`);
 
-    // Insert into media_library
     if (publicUrl) {
       const admin = adminClient();
       const { error: libError } = await admin.from("media_library").insert({
@@ -269,13 +261,12 @@ Final output: ready-to-upload Facebook/Instagram feed ad in ${ratioLabel} format
         return NextResponse.json({ error: "Credit update failed", code: deduction.code }, { status: 409 });
       }
 
-      // Return public URL (falls back to base64 if upload failed)
-      return NextResponse.json({ images: [publicUrl ?? images[0]], creditsRemaining: deduction.creditsRemaining });
+      return NextResponse.json({ images: [publicUrl ?? imageDataUri], creditsRemaining: deduction.creditsRemaining });
     }
 
-    return NextResponse.json({ images: [publicUrl ?? images[0]], creditsRemaining: userData?.credits_remaining ?? 0 });
+    return NextResponse.json({ images: [publicUrl ?? imageDataUri], creditsRemaining: userData?.credits_remaining ?? 0 });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Image generation error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[image] generation error:", err);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

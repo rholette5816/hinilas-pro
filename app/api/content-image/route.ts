@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
 import { deductCreditsAtomic } from "@/lib/credits";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
@@ -34,12 +35,26 @@ async function uploadBase64ToStorage(base64DataUri: string, userId: string, file
   }
 }
 
-export async function POST(req: NextRequest) {
-  const { prompt, aspectRatio = "1:1", postType = "", angle = "" } = await req.json();
+const ASPECT_RATIO_SIZES: Record<string, "1024x1024" | "1024x1536" | "1536x1024"> = {
+  "1:1": "1024x1024",
+  "4:5": "1024x1024",
+  "9:16": "1024x1536",
+};
 
+export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = checkRateLimit(`content-image:${user.id}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
+  const { prompt, aspectRatio = "1:1", postType = "", angle = "" } = await req.json();
 
   if (typeof prompt !== "string" || !prompt.trim()) {
     return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
@@ -59,40 +74,24 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const apiKey = process.env.GEMINI_IMAGE_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "GEMINI_IMAGE_API_KEY not configured." }, { status: 500 });
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY not configured." }, { status: 500 });
 
-  const ASPECT_RATIO_LABELS: Record<string, string> = {
-    "1:1": "square (1:1 aspect ratio)",
-    "4:5": "portrait (4:5 aspect ratio)",
-    "9:16": "vertical portrait (9:16 aspect ratio)",
-  };
-  const ratioLabel = ASPECT_RATIO_LABELS[aspectRatio] || aspectRatio;
+  const size = ASPECT_RATIO_SIZES[aspectRatio] || "1024x1024";
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
-
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: `${prompt}\n\nGenerate this as a ${ratioLabel} image.` }] }],
-      generationConfig: {
-        // @ts-expect-error responseModalities is valid but not yet in type definitions
-        responseModalities: ["IMAGE", "TEXT"],
-      },
+    const openai = new OpenAI({ apiKey });
+    const response = await openai.images.generate({
+      model: "gpt-image-1",
+      prompt,
+      size,
+      n: 1,
     });
 
-    const parts = result.response.candidates?.[0]?.content?.parts ?? [];
-    let imageData: string | null = null;
-    for (const part of parts) {
-      if (part.inlineData?.data) {
-        const mime = part.inlineData.mimeType || "image/png";
-        imageData = `data:${mime};base64,${part.inlineData.data}`;
-        break;
-      }
-    }
+    const b64 = response.data?.[0]?.b64_json;
+    if (!b64) return NextResponse.json({ error: "No image generated. Try again." }, { status: 500 });
 
-    if (!imageData) return NextResponse.json({ error: "No image generated. Try again." }, { status: 500 });
-
+    const imageData = `data:image/png;base64,${b64}`;
     const ts = Date.now();
     const publicUrl = await uploadBase64ToStorage(imageData, user.id, `${ts}-content-post`);
 
@@ -121,7 +120,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ imageUrl: publicUrl ?? imageData });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Image generation error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[content-image] image generation error:", err);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

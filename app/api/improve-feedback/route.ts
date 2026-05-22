@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
@@ -26,13 +26,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
-  const prompt = `Improve this user feedback message. Make it clearer, more specific, and easier to understand — but keep the original meaning and tone. Return only the improved text, nothing else.\n\nFeedback: ${message}`;
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{
+      role: "user",
+      content: `Improve this user feedback message. Make it clearer, more specific, and easier to understand — but keep the original meaning and tone. Return only the improved text, nothing else.\n\nFeedback: ${message}`,
+    }],
+  });
 
-  const result = await model.generateContent(prompt);
-  const improved = result.response.text().trim();
-
+  const improved = completion.choices[0]?.message?.content?.trim() || message;
   return NextResponse.json({ improved });
 }

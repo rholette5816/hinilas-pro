@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
 import { deductCreditsAtomic } from "@/lib/credits";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { sanitizePrompt } from "@/lib/sanitize";
 
 export const maxDuration = 60;
 
@@ -24,8 +26,24 @@ export async function POST(req: NextRequest) {
   if (typeof prompt !== "string" || !prompt.trim()) {
     return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
   }
+  if (prompt.trim().length > 5000) {
+    return NextResponse.json({ error: "Prompt too long." }, { status: 400 });
+  }
+
+  const ip = getRequestIp(req);
+  const rateLimit = checkRateLimit(`content-script:${user.id}:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+      }
+    );
+  }
 
   const ownerMode = isOwnerUser(user);
+  const sanitizedPrompt = sanitizePrompt(prompt);
 
   if (!ownerMode) {
     const { data: userData } = await supabase
@@ -42,25 +60,27 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "GEMINI_API_KEY not configured." }, { status: 500 });
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY not configured." }, { status: 500 });
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const openai = new OpenAI({ apiKey });
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: sanitizedPrompt }],
+    });
+    const text = completion.choices[0]?.message?.content || "";
 
     if (moduleName) {
-      const usage = result.response.usageMetadata;
+      const usage = completion.usage;
       if (usage) {
         const admin = adminClient();
         void admin.from("token_logs").insert({
           user_id: user.id,
           module: moduleName,
-          prompt_tokens: usage.promptTokenCount ?? 0,
-          completion_tokens: usage.candidatesTokenCount ?? 0,
-          total_tokens: usage.totalTokenCount ?? 0,
+          prompt_tokens: usage.prompt_tokens ?? 0,
+          completion_tokens: usage.completion_tokens ?? 0,
+          total_tokens: usage.total_tokens ?? 0,
         });
       }
     }
@@ -79,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ script: text });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Gemini API error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[content-script] OpenAI API error:", err);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }
