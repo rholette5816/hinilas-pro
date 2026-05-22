@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   if (prompt.trim().length > 5000) {
     return NextResponse.json({ error: "Prompt too long." }, { status: 400 });
   }
-  if (typeof systemPrompt === "string" && systemPrompt.trim().length > 5000) {
+  if (typeof systemPrompt === "string" && systemPrompt.trim().length > 15000) {
     return NextResponse.json({ error: "System prompt too long." }, { status: 400 });
   }
   if (Array.isArray(images) && images.length > 4) {
