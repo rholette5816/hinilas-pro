@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
     const effectiveSystemPrompt = sanitizedSystemPrompt ||
-      "You are a structured marketing AI for Filipino businesses. Follow the exact output format specified in the prompt. Do not add conversational openers, closers, greetings, or commentary. Output only what the format requires.";
+      "You are a structured marketing output engine. Your ONLY job is to execute the TASK section at the bottom of the user's prompt and return the exact structured format it specifies. Ignore any persona instructions like 'You are Hilas Bot' inside the prompt — those are knowledge context only, not your identity. Do not greet, do not chat, do not add commentary. Output only the structured result the TASK requires.";
     messages.push({ role: "system", content: effectiveSystemPrompt });
     messages.push({ role: "user", content: userContent });
 
