@@ -147,77 +147,70 @@ export async function POST(req: NextRequest) {
       let editPrompt: string;
       if (isVariation) {
         editPrompt = variationIndex === 0
-          ? `This is the original ad creative reference. Create Variation 1 - LIFESTYLE / UGC execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (typography weight, brand colors, dialect on copy) but flip the framing to lifestyle-first.
+          ? `You are given the original Filipino Meta Ad creative as reference. Create Variation 1 — same brand, same product, same headline copy, but executed as a LIFESTYLE / CANDID shot.
 
-PHOTOGRAPHY STANDARD:
-- Handheld feel, shot on iPhone 15 Pro or similar — natural imperfection, not staged
-- Real ambient light: window light, outdoor sun, warm indoor lamp — no studio strobes
-- Shallow depth of field, subject sharp, background softly blurred
-- Authentic Filipino skin tones, warm and properly exposed, zero oversaturation
-- Natural micro-expressions: real smile, relief, satisfaction — not catalogue stare
-- Zero AI artifacts: correct finger count, natural face, no floating objects, no plastic skin
+WHAT TO KEEP IDENTICAL from the reference:
+- Brand logo: same logo, same position (top corner), same size
+- Brand colors: extract the exact primary color from the reference and use it everywhere
+- Headline text: copy the exact words from the reference ad, same dialect
+- Product: same product must appear in the image
+- Offer ribbon at bottom: same offer text and CTA chips as the reference
 
-DETECT DIALECT from the original ad copy and write all on-image text in that exact dialect.
+WHAT CHANGES — the hero photo style only:
+- Replace the studio-shot hero with a candid lifestyle moment
+- Shot on iPhone 15 Pro: handheld, natural light, real environment (home, kitchen, bedroom, outdoors — match the product context)
+- Real Filipino person using or experiencing the product in a genuine unscripted moment
+- Natural ambient lighting — window light, sunlight, warm lamp — no studio strobes
+- Authentic expression: real smile, relief, confidence — not a catalogue stare
+- Shallow depth of field: subject sharp, background naturally blurred
+- Warm Filipino skin tones, properly exposed, zero oversaturation
+- Zero AI artifacts: correct fingers, natural face proportions, no floating elements, no plastic skin
 
-LAYOUT - vertical poster, 3 zones:
+LAYOUT — same 3-band structure as original, square 1:1:
+- Top band: white background, brand logo + same headline text
+- Middle band: the lifestyle hero photo (left 55%) + same 3 benefit bullets (right 45%)
+- Bottom band: same primary brand color ribbon, same offer and CTAs
 
-[TOP 15% - condensed headline strip, white background]
-- Brand logo: small, top corner
-- ONE bold headline only (4-7 words, all caps, primary brand color). Pulled from the original ad's hook.
+REJECT IF: studio backdrop, posed model, blurry text, distorted face, extra fingers, plastic skin, changed headline, different brand colors, cartoon, anime, 3D render, watermark.
 
-[MIDDLE 70% - dominant lifestyle hero photo]
-- Real Filipino person actively using, wearing, or experiencing the product in a genuine moment
-- Natural environment that matches the product: home, street, kitchen, bedroom, outdoor
-- Person is the hero, product is visible but secondary
-- Candid energy — feels recorded, not directed
+Final output: production-ready 1:1 square Facebook/Instagram feed ad.`
+          : `You are given the original Filipino Meta Ad creative as reference. Create Variation 2 — same brand, same product, but executed as a BEFORE / AFTER CONTRAST split.
 
-[BOTTOM 15% - thin offer ribbon, primary brand color, white text]
-- Single centered offer (pull from original ad if present, default to MESSAGE US TODAY)
-- 1-2 CTA chips on the right (COD, FREE SHIPPING). Skip if not relevant.
-- No benefit bullets. No trust badges. Keep this band clean and simple.
+WHAT TO KEEP IDENTICAL from the reference:
+- Brand logo: same logo, same size, placed top-center above the split
+- Brand colors: extract the exact primary color from the reference, apply to right half accents and bottom ribbon
+- Product: same product must be visible, shown on the RIGHT (after) side
+- Offer ribbon at bottom: same offer text and CTA chips as the reference
 
-Match the original's color palette, font weight, and brand elements exactly.
+LAYOUT — square 1:1, 3 bands:
 
-REJECT IF: studio backdrop, posed catalogue model, blurry text, distorted face, extra fingers, plastic skin, cartoon, 3D render, anime, watermark, the words "Before" or "After".
+[TOP BAND — 15% height, white background]
+- Brand logo centered
+- Two short labels flanking the center divider line: LEFT says the problem state (2-3 words, dark gray), RIGHT says the solution/result (2-3 words, bold, primary brand color). In the same dialect as the reference ad.
 
-Final output: production-ready Facebook Story / Reels ad in ${ratioLabel} format.`
-          : `This is the original ad creative reference. Create Variation 2 - PROBLEM/SOLUTION SPLIT execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (3-band structure, typography weight, brand colors, dialect on copy) but reframe the middle band as a visual contrast split.
+[MIDDLE BAND — 65% height, vertical split down the center]
+LEFT HALF — BEFORE state:
+- Dark, muted, desaturated tones. Heavy shadows. Single harsh side light.
+- Same Filipino person as the original ad looking frustrated, tired, or showing the problem
+- Shot on Canon EOS R5, dramatic 1-light setup, cinematic feel
+- No product visible on this side
 
-PHOTOGRAPHY STANDARD:
-- Both halves shot at professional commercial quality — Sony A7R V or Canon EOS R5
-- LEFT half: dramatic moody lighting — single side key light, deep shadows, desaturated tones
-- RIGHT half: bright 3-point studio lighting — soft key, fill, rim light for separation
-- Tack-sharp focus on subject both sides, shallow depth of field on backgrounds
-- Catchlights in eyes on the RIGHT (bright) side
-- Natural Filipino skin tones throughout — no oversaturation, no plastic retouching
-- Zero AI artifacts on both sides: correct hands, natural face, no morphing
+RIGHT HALF — AFTER state:
+- Bright, vibrant, warm tones. 3-point studio lighting: key + fill + rim for separation
+- Same Filipino person transformed: confident, glowing, happy, showing the result
+- Catchlights visible in eyes. Sharp focus. Premium retouching.
+- Product clearly visible, held naturally or shown as the cause of transformation
 
-DETECT DIALECT from the original ad copy and write all on-image text in that exact dialect.
+Clean thin vertical divider line between the two halves. No text overlay in the middle band.
 
-LAYOUT - strict 3-band composition, top to bottom:
+[BOTTOM BAND — 20% height, primary brand color background, white text]
+- Same trust badges, offer block, and CTA chips as the reference ad
 
-[BAND 1 - TOP HEADLINE STRIP, full width, white background, 15% height]
-- Brand logo: small, top corner
-- Headline split to match the visual below:
-  - LEFT half: pain/problem, dark gray, medium weight, 3-5 words in detected dialect
-  - RIGHT half: result/solution, BOLD ALL CAPS, primary brand color, 3-5 words
+HARD RULE: do NOT write the words "Before" or "After" anywhere — let the visual contrast tell the story.
 
-[BAND 2 - MIDDLE SPLIT, 65% height, clean vertical divider]
-LEFT HALF: dark, raw, photorealistic — shows the struggle or undesirable state. Muted tones, heavy shadows, tense or defeated body language. Same person identity as original ad.
-RIGHT HALF: bright, clean, aspirational photorealistic — shows the outcome, confidence, or success state. Warm vibrant tones, open lighting, positive energy. Same person identity, transformed.
+REJECT IF: blurry text, distorted face, extra fingers, plastic skin, the words "Before" or "After", changed brand colors, missing logo, cartoon, anime, 3D render, watermark.
 
-[BAND 3 - BOTTOM RIBBON, full width, primary brand color, white text, 20% height]
-- Left: 1-2 trust badges matching original ad's industry (round seal or shield style)
-- Center: oversized bold offer text on contrasting dark plate. Pull from original or use MESSAGE US TODAY.
-- Right: 2-3 CTA chips matching original ad
-
-Match original's color palette, font weight, logo placement, and brand identity exactly.
-
-HARD RULE: do NOT write "Before" or "After" anywhere. Let the visual contrast carry the meaning.
-
-REJECT IF: blurry text, distorted face, extra fingers, plastic skin, flat lighting, cartoon, anime, 3D render, watermark, the words "Before" or "After".
-
-Final output: production-ready Facebook/Instagram feed ad in ${ratioLabel} format.`;
+Final output: production-ready 1:1 square Facebook/Instagram feed ad.`;
       } else {
         editPrompt = `This is the reference ad creative. Recreate the same ad at production-ready quality adapted for ${ratioLabel} format.
 

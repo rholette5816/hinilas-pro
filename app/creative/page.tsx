@@ -162,7 +162,7 @@ export default function CreativePage() {
       body: JSON.stringify({
         prompt,
         count: 1,
-        aspectRatio: isVariation ? (variationIndex === 0 ? "9:16" : "1.91:1") : "1:1",
+        aspectRatio: "1:1",
         referenceImage,
         logoImage,
         isVariation,
