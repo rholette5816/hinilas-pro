@@ -134,65 +134,85 @@ export async function POST(req: NextRequest) {
         editPrompt = variationIndex === 0
           ? `This is the original ad creative reference. Create Variation 1 - LIFESTYLE / UGC execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (typography weight, brand colors, dialect on copy) but flip the framing to lifestyle-first.
 
+PHOTOGRAPHY STANDARD:
+- Handheld feel, shot on iPhone 15 Pro or similar — natural imperfection, not staged
+- Real ambient light: window light, outdoor sun, warm indoor lamp — no studio strobes
+- Shallow depth of field, subject sharp, background softly blurred
+- Authentic Filipino skin tones, warm and properly exposed, zero oversaturation
+- Natural micro-expressions: real smile, relief, satisfaction — not catalogue stare
+- Zero AI artifacts: correct finger count, natural face, no floating objects, no plastic skin
+
 DETECT DIALECT from the original ad copy and write all on-image text in that exact dialect.
 
 LAYOUT - vertical poster, 3 zones:
 
 [TOP 15% - condensed headline strip, white background]
-- Brand logo: small, top corner.
-- ONE bold headline only (no sub-line, no Line 2 stack). 4-7 words, all caps, primary brand color. Pulled from the original ad's hook.
+- Brand logo: small, top corner
+- ONE bold headline only (4-7 words, all caps, primary brand color). Pulled from the original ad's hook.
 
 [MIDDLE 70% - dominant lifestyle hero photo]
-- Photorealistic candid moment of a real Filipino person actively using, wearing, or experiencing the product.
-- Phone-video framing, handheld feel, slight imperfection - NOT a studio shot.
-- Natural light, real environment (home, street, kitchen, bedroom, outdoor - whatever fits the angle).
-- Authentic emotion - genuine smile, relief, surprise, focus. No posed catalogue stares.
-- Subject is the PERSON, product is secondary but visible.
-- Skin tones natural, no oversaturation.
+- Real Filipino person actively using, wearing, or experiencing the product in a genuine moment
+- Natural environment that matches the product: home, street, kitchen, bedroom, outdoor
+- Person is the hero, product is visible but secondary
+- Candid energy — feels recorded, not directed
 
-[BOTTOM 15% - thin offer ribbon, primary brand color background, white text]
-- Single offer block centered (BUY 1 TAKE 1, MURA LANG, FREE SHIPPING, MESSAGE US TODAY - pull from the original ad if present, otherwise default to MESSAGE US TODAY).
-- 1-2 small CTA chips on the right (COD, FREE SHIPPING). Skip if not relevant.
-- NO benefit bullets in this variation. NO trust badges in this variation. Keep this band clean.
+[BOTTOM 15% - thin offer ribbon, primary brand color, white text]
+- Single centered offer (pull from original ad if present, default to MESSAGE US TODAY)
+- 1-2 CTA chips on the right (COD, FREE SHIPPING). Skip if not relevant.
+- No benefit bullets. No trust badges. Keep this band clean and simple.
 
-Keep the same brand, product, and subject identity from the original ad. Match the original's color palette and font weight exactly.
+Match the original's color palette, font weight, and brand elements exactly.
 
-NEGATIVE: studio backdrop, posed model, blurry text, distorted face, AI artifacts, cartoon, 3D render, anime, watermark, oversaturated skin, the words "Before" or "After".
+REJECT IF: studio backdrop, posed catalogue model, blurry text, distorted face, extra fingers, plastic skin, cartoon, 3D render, anime, watermark, the words "Before" or "After".
 
-Final output: ready-to-upload Facebook Story / Reels ad in ${ratioLabel} format.`
-          : `This is the original ad creative reference. Create Variation 2 - PROBLEM/SOLUTION SPLIT execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (3-band structure, typography weight, brand colors, dialect on copy) but reframe the middle band as a contrast split.
+Final output: production-ready Facebook Story / Reels ad in ${ratioLabel} format.`
+          : `This is the original ad creative reference. Create Variation 2 - PROBLEM/SOLUTION SPLIT execution in ${ratioLabel} format. Keep the same Filipino Meta Ads brand DNA (3-band structure, typography weight, brand colors, dialect on copy) but reframe the middle band as a visual contrast split.
+
+PHOTOGRAPHY STANDARD:
+- Both halves shot at professional commercial quality — Sony A7R V or Canon EOS R5
+- LEFT half: dramatic moody lighting — single side key light, deep shadows, desaturated tones
+- RIGHT half: bright 3-point studio lighting — soft key, fill, rim light for separation
+- Tack-sharp focus on subject both sides, shallow depth of field on backgrounds
+- Catchlights in eyes on the RIGHT (bright) side
+- Natural Filipino skin tones throughout — no oversaturation, no plastic retouching
+- Zero AI artifacts on both sides: correct hands, natural face, no morphing
 
 DETECT DIALECT from the original ad copy and write all on-image text in that exact dialect.
 
 LAYOUT - strict 3-band composition, top to bottom:
 
 [BAND 1 - TOP HEADLINE STRIP, full width, white background, 15% height]
-- Brand logo: small, top corner.
-- Headline split into TWO halves matching the image split below:
-  - LEFT half: pain/problem statement, dark gray or black, medium weight, dialect-matched, 3-5 words.
-  - RIGHT half: result/solution statement, BOLD all caps, primary brand color, 3-5 words.
+- Brand logo: small, top corner
+- Headline split to match the visual below:
+  - LEFT half: pain/problem, dark gray, medium weight, 3-5 words in detected dialect
+  - RIGHT half: result/solution, BOLD ALL CAPS, primary brand color, 3-5 words
 
-[BAND 2 - MIDDLE PROBLEM/SOLUTION SPLIT, 65% height, vertical divider down the center]
-LEFT HALF: dark, moody, raw photorealistic shot. Shows the struggle, frustration, or undesirable situation the target audience faces. Muted tones, heavy shadows, tense body language or visual metaphor for the problem. Same person identity as the original ad.
+[BAND 2 - MIDDLE SPLIT, 65% height, clean vertical divider]
+LEFT HALF: dark, raw, photorealistic — shows the struggle or undesirable state. Muted tones, heavy shadows, tense or defeated body language. Same person identity as original ad.
+RIGHT HALF: bright, clean, aspirational photorealistic — shows the outcome, confidence, or success state. Warm vibrant tones, open lighting, positive energy. Same person identity, transformed.
 
-RIGHT HALF: bright, clean, aspirational photorealistic shot. Shows the outcome, confidence, relief, or success state. Warm or vibrant tones, open natural lighting, positive energy. Same person identity, transformed.
+[BAND 3 - BOTTOM RIBBON, full width, primary brand color, white text, 20% height]
+- Left: 1-2 trust badges matching original ad's industry (round seal or shield style)
+- Center: oversized bold offer text on contrasting dark plate. Pull from original or use MESSAGE US TODAY.
+- Right: 2-3 CTA chips matching original ad
 
-The split line should be clean and subtle - either a thin vertical divider or a natural contrast edge. Both halves are photorealistic.
+Match original's color palette, font weight, logo placement, and brand identity exactly.
 
-[BAND 3 - BOTTOM RIBBON, full width, primary brand color background, white text, 20% height]
-- Left side: 1-2 trust badges (round seals or shield icons). Pick from FDA APPROVED, AUTHENTIC, HALAL, DOH REGISTERED, BIR REGISTERED, ISO CERTIFIED - only those that fit the industry. Skip badges if none fit.
-- Center: bold offer block, oversized text on contrasting plate. Pull offer from original ad if mentioned, otherwise MESSAGE US TODAY.
-- Right side: 2-3 small CTA chips (COD CASH ON DELIVERY, FREE SHIPPING, MESSAGE US). Use only ones that fit the angle.
+HARD RULE: do NOT write "Before" or "After" anywhere. Let the visual contrast carry the meaning.
 
-Keep the same brand, product, and subject from the original ad. Match the original's color palette and font weight exactly. Logo placement, badge style, ribbon color must match the original's brand reference.
+REJECT IF: blurry text, distorted face, extra fingers, plastic skin, flat lighting, cartoon, anime, 3D render, watermark, the words "Before" or "After".
 
-HARD RULE: do NOT include the words "Before" or "After" anywhere in the image. Let the visual contrast carry the meaning.
-
-NEGATIVE: blurry text, distorted face, extra limbs, watermark, oversaturated skin, horror lighting, cartoon, anime, 3D render, generic stock-photo poses, overlapping text, the words "Before" or "After".
-
-Final output: ready-to-upload Facebook/Instagram feed ad in ${ratioLabel} format.`;
+Final output: production-ready Facebook/Instagram feed ad in ${ratioLabel} format.`;
       } else {
-        editPrompt = `This is the reference ad creative. Recreate the same concept, visual style, color palette, typography, layout, and message - adapted for a ${ratioLabel} format. Keep everything consistent: same headline text, same subject, same mood, same brand elements. Only adjust the composition and spacing to fit the new format.`;
+        editPrompt = `This is the reference ad creative. Recreate the same ad at production-ready quality adapted for ${ratioLabel} format.
+
+Keep everything identical: same headline text, same dialect, same subject and person, same brand colors, same typography weight, same mood, same product, same layout structure. Only adjust composition and spacing to fit the new format — wider or taller as needed.
+
+QUALITY STANDARD: commercial advertising photography quality. Sharp text, natural Filipino skin tones, professional lighting, zero AI artifacts (correct fingers, natural face, no floating elements, no plastic skin). Every text element legible at thumbnail size.
+
+REJECT IF: blurry text, changed headline, different subject, color drift, distorted face, extra fingers, cartoon or illustrated style.
+
+Final output: production-ready ${ratioLabel} format ad. Premium quality. No revisions needed.`;
       }
 
       const response = await openai.images.edit({
