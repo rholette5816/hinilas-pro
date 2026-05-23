@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
-import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
+import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 const ANGLE_COLORS: Record<string, string> = {
   Problem: "#EF4444",
@@ -115,7 +115,7 @@ export default function AnglesPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "angles" }),
+        body: JSON.stringify({ prompt, module: "angles" }),
       });
       const data = await res.json();
       setAnglesOutput(data.error ? data.error : data.content);

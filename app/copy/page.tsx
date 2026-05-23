@@ -7,7 +7,7 @@ import AIOutput from "@/components/AIOutput";
 import FireCelebration from "@/components/FireCelebration";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
-import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
+import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
@@ -120,7 +120,6 @@ export default function CopyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt,
-          systemPrompt: HILAS_KNOWLEDGE,
           images: [activeImage],
           module: "copy",
         }),

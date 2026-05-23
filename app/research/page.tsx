@@ -6,7 +6,7 @@ import AIOutput from "@/components/AIOutput";
 import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
-import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
+import { MODULE_PROMPTS } from "@/lib/knowledge";
 
 function CheckIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -59,7 +59,7 @@ export default function ResearchPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "research" }),
+        body: JSON.stringify({ prompt, module: "research" }),
       });
       const data = await res.json();
       setResearchOutput(data.error ? data.error : data.content);
