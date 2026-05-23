@@ -196,8 +196,6 @@ Messages but no sales: ads are working, fix your sales conversation (reply speed
 
 export const MODULE_PROMPTS = {
   research: (userContext: string, language?: string) => `
-${HILAS_KNOWLEDGE}
-
 # USER CONTEXT
 ${userContext}
 
@@ -236,8 +234,6 @@ Keep everything specific to the Philippine market.
 `,
 
   angles: (userContext: string, researchContext?: string, language?: string) => `
-${HILAS_KNOWLEDGE}
-
 # USER CONTEXT
 ${userContext}
 
@@ -261,8 +257,6 @@ Focus on angles that work for Philippine Facebook/Messenger ads. Use specific pa
 `,
 
   copy: (userContext: string, formulas: string[], language: string) => `
-${HILAS_KNOWLEDGE}
-
 # USER CONTEXT
 ${userContext}
 
