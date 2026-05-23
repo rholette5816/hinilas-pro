@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
 import AIOutput from "@/components/AIOutput";
 import AILoadingState from "@/components/AILoadingState";
 import FunnelProgress from "@/components/FunnelProgress";
 import { useApp, buildUserContext } from "@/lib/context";
-import { MODULE_PROMPTS } from "@/lib/knowledge";
+import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 
 function CheckIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -59,7 +60,7 @@ export default function ResearchPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, module: "research" }),
+        body: JSON.stringify({ prompt, systemPrompt: HILAS_KNOWLEDGE, module: "research" }),
       });
       const data = await res.json();
       setResearchOutput(data.error ? data.error : data.content);
@@ -72,10 +73,11 @@ export default function ResearchPage() {
 
   if (!setup) {
     return (
-      <>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-[#1c1e21] mb-4">Set up your business profile first.</p>
+            <p className="text-gray-400 mb-4">Set up your business profile first.</p>
             <button
               onClick={() => router.push("/")}
               className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium"
@@ -84,32 +86,33 @@ export default function ResearchPage() {
             </button>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
       {noCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 max-w-sm w-full mx-4 text-center">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
             <div
               className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full text-lg"
-              style={{ border: "1px solid rgba(217,119,6,0.4)", color: "#D97706" }}
+              style={{ border: "1px solid rgba(245,166,35,0.4)", color: "#F5A623" }}
             >
               !
             </div>
-            <h2 className="text-[#1c1e21] font-bold text-lg mb-2">Not enough credits</h2>
-            <p className="text-[#1c1e21] text-sm mb-6">Research costs 1 credit. Top up to continue.</p>
+            <h2 className="text-white font-bold text-lg mb-2">Not enough credits</h2>
+            <p className="text-gray-400 text-sm mb-6">Research costs 1 credit. Top up to continue.</p>
             <div className="flex flex-col gap-3">
               <a
                 href="/pricing"
                 className="w-full text-white py-3 rounded-lg text-sm font-semibold text-center"
-                style={{ background: "#D97706" }}
+                style={{ background: "#F5A623" }}
               >
                 View Plans
               </a>
-              <button onClick={() => setNoCredits(false)} className="text-[#1c1e21] text-sm hover:text-[#1c1e21]">
+              <button onClick={() => setNoCredits(false)} className="text-gray-500 text-sm hover:text-gray-400">
                 Cancel
               </button>
             </div>
@@ -124,22 +127,22 @@ export default function ResearchPage() {
             <div className="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-800 rounded-full px-3 py-1 mb-4">
               <span className="text-emerald-300 text-xs font-medium">Research Department</span>
             </div>
-            <h1 className="text-2xl font-bold text-[#1c1e21] mb-2">AI Market Research</h1>
-            <p className="text-[#1c1e21] text-sm">
+            <h1 className="text-2xl font-bold text-white mb-2">AI Market Research</h1>
+            <p className="text-gray-400 text-sm">
               Understand your market before you run a single ad. This research powers your strategy and copy.
             </p>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl p-4 mb-6">
-            <p className="text-[#1c1e21] text-xs font-medium uppercase tracking-wider mb-2">Researching for</p>
-            <p className="text-[#1c1e21] font-semibold">{setup.businessName}</p>
-            <p className="text-[#1c1e21] text-sm mt-1">{setup.product}</p>
-            <p className="text-[#1c1e21] text-xs mt-1">Target: {setup.targetAudience}</p>
+          <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-6">
+            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-2">Researching for</p>
+            <p className="text-white font-semibold">{setup.businessName}</p>
+            <p className="text-gray-400 text-sm mt-1">{setup.product}</p>
+            <p className="text-gray-500 text-xs mt-1">Target: {setup.targetAudience}</p>
           </div>
 
           {!researchOutput && (
-            <div className="rounded-xl p-4 mb-6" style={{ background: "#FFFFFF", border: "1px solid #E4E6EB" }}>
-              <h2 className="text-[#1c1e21] font-semibold text-sm mb-3">What you&apos;ll get</h2>
+            <div className="rounded-xl p-4 mb-6" style={{ background: "#0F172A", border: "1px solid #1E2D45" }}>
+              <h2 className="text-white font-semibold text-sm mb-3">What you&apos;ll get</h2>
               <div className="space-y-2">
                 {[
                   "Who your customer really is",
@@ -149,7 +152,7 @@ export default function ResearchPage() {
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-2">
                     <CheckIcon className="h-4 w-4 shrink-0 text-blue-400 mt-0.5" />
-                    <p className="text-xs text-[#1c1e21]">{item}</p>
+                    <p className="text-xs text-gray-400">{item}</p>
                   </div>
                 ))}
               </div>
@@ -161,7 +164,7 @@ export default function ResearchPage() {
               onClick={runResearch}
               disabled={loading}
               className="text-white px-6 py-3 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#1877F2", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
+              style={{ background: "#2B7EC9", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
             >
               {loading ? "Researching..." : researchOutput ? "Re-run Research - 1 credit" : "Run Market Research - 1 credit"}
             </button>
@@ -186,22 +189,22 @@ export default function ResearchPage() {
           {researchOutput && !loading && (
             <div
               className="rounded-2xl p-6 mt-6"
-              style={{ background: "rgba(24,119,242,0.08)", border: "1px solid rgba(24,119,242,0.3)" }}
+              style={{ background: "rgba(43,126,201,0.08)", border: "1px solid rgba(43,126,201,0.3)" }}
             >
               <div className="flex items-center gap-3 mb-2">
                 <div
                   className="flex h-5 w-5 items-center justify-center rounded-full"
-                  style={{ background: "rgba(24,119,242,0.18)", color: "#1877F2" }}
+                  style={{ background: "rgba(43,126,201,0.18)", color: "#2B7EC9" }}
                 >
                   <CheckIcon />
                 </div>
-                <p className="text-[#1c1e21] font-semibold text-sm">Step 2 done - Now let&apos;s find your angle</p>
+                <p className="text-white font-semibold text-sm">Step 2 done - Now let&apos;s find your angle</p>
               </div>
-              <p className="text-xs text-[#1c1e21] mb-4">Use these insights to craft angles that convert.</p>
+              <p className="text-xs text-gray-400 mb-4">Use these insights to craft angles that convert.</p>
               <button
                 onClick={() => router.push("/angles")}
                 className="w-full py-3.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
-                style={{ background: "#D97706", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
+                style={{ background: "#F5A623", color: "#000000", animation: "btnGlowOrange 2s ease-in-out infinite alternate" }}
               >
                 Next: Find Your Angle &rarr;
               </button>
@@ -209,6 +212,6 @@ export default function ResearchPage() {
           )}
         </div>
       </main>
-    </>
+    </div>
   );
 }
