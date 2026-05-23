@@ -67,7 +67,10 @@ export async function POST(req: NextRequest) {
     const openai = new OpenAI({ apiKey });
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: sanitizedPrompt }],
+      messages: [
+        { role: "system", content: "You are a structured marketing AI. Follow the exact output format specified in the prompt. Do not add conversational openers, closers, or commentary. Output only what the format requires." },
+        { role: "user", content: sanitizedPrompt },
+      ],
     });
     const text = completion.choices[0]?.message?.content || "";
 
