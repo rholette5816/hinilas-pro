@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   if (typeof prompt !== "string" || !prompt.trim()) {
     return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
   }
-  if (prompt.trim().length > 5000) {
+  if (prompt.trim().length > 15000) {
     return NextResponse.json({ error: "Prompt too long." }, { status: 400 });
   }
   if (typeof systemPrompt === "string" && systemPrompt.trim().length > 15000) {

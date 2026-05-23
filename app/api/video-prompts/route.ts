@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "angle and userContext are required" }, { status: 400 });
   }
   if (
-    angle.trim().length > 5000 ||
-    userContext.trim().length > 5000 ||
-    (typeof industry === "string" && industry.trim().length > 5000)
+    angle.trim().length > 15000 ||
+    userContext.trim().length > 15000 ||
+    (typeof industry === "string" && industry.trim().length > 15000)
   ) {
     return NextResponse.json({ error: "Prompt input too long." }, { status: 400 });
   }
