@@ -547,113 +547,221 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
 `,
 
   getIndustryLayers: (industry: string) => {
-    const layers: Record<string, { person: string; environment: string; lighting: string }> = {
+    const layers: Record<string, { person: string; environment: string; lighting: string; band3: { badges: string; offers: string; ctas: string } }> = {
       skincare_beauty: {
         person: "young Filipino woman in her mid-20s, radiant glowing skin, warm confident smile, wearing a clean white or nude-toned outfit, hands gently touching her face or holding product, looking warmly toward camera",
         environment: "inside a clean bright vanity or beauty studio, soft white shelves with skincare products softly visible in background, warm neutral tones throughout, fresh and premium atmosphere",
         lighting: "soft warm ambient lighting, gentle even illumination on face, no harsh shadows, glowing and flattering atmosphere",
+        band3: {
+          badges: "FDA REGISTERED, DERMATOLOGIST TESTED, CRUELTY FREE",
+          offers: "BUY 1 TAKE 1, FREE SHIPPING, MURA LANG",
+          ctas: "COD AVAILABLE, MESSAGE US, ORDER NA",
+        },
       },
       supplements_health: {
         person: "fit Filipino man or woman in their late 20s, energetic healthy expression, wearing athletic or casual wear, holding product naturally or showing confident body language, looking directly at camera",
         environment: "inside a clean modern kitchen or wellness space, fresh green accents and natural light visible in background, health-focused and vibrant atmosphere",
         lighting: "bright clean natural lighting, crisp even illumination on subject, no harsh shadows, fresh and energetic atmosphere",
+        band3: {
+          badges: "FDA REGISTERED, DOH APPROVED, ALL NATURAL",
+          offers: "BUY 2 GET 1 FREE, FREE SHIPPING, BUNDLE DEAL",
+          ctas: "COD AVAILABLE, MESSAGE US, ORDER NA",
+        },
       },
       fashion_clothing: {
         person: "stylish young Filipino woman or man in their mid-20s, confident fashionable expression, wearing the featured clothing or branded outfit, standing casually with natural pose, looking directly at camera",
         environment: "inside a modern clothing boutique or minimalist studio, neatly arranged clothing racks or clean white walls visible in background, contemporary and aspirational atmosphere",
         lighting: "bright clean studio lighting, crisp even illumination on subject, minimal shadows, fresh and stylish atmosphere",
+        band3: {
+          badges: "AUTHENTIC, PREMIUM QUALITY, LOCALLY MADE",
+          offers: "SALE UP TO 50% OFF, FREE SHIPPING, LIMITED STOCKS",
+          ctas: "COD AVAILABLE, SHOPEE / LAZADA, MESSAGE US",
+        },
       },
       jewelry_accessories: {
         person: "elegant Filipino woman in her late 20s, sophisticated graceful expression, wearing the featured jewelry, hands or neck naturally showcasing the piece, looking warmly toward camera",
         environment: "inside a clean luxury jewelry boutique or elegant studio, soft velvet displays and warm accent lighting softly visible in background, premium and aspirational atmosphere",
         lighting: "soft warm directional lighting, gentle glow on jewelry and skin, elegant depth, sophisticated and premium atmosphere",
+        band3: {
+          badges: "AUTHENTIC, PREMIUM QUALITY, HYPOALLERGENIC",
+          offers: "FREE GIFT WRAPPING, BUY 2 GET 1, FREE SHIPPING",
+          ctas: "COD AVAILABLE, MESSAGE US, ORDER NA",
+        },
       },
       food_beverage: {
         person: "young friendly Filipino in their mid-20s, warm inviting smile, wearing casual or branded attire, holding or presenting the featured product naturally, looking toward camera",
         environment: "inside a warm modern kitchen or cozy dining setup, product ingredients or packaging softly visible in background, appetizing and inviting atmosphere",
         lighting: "warm natural kitchen lighting, soft even illumination on subject and product, no harsh shadows, inviting and appetizing atmosphere",
+        band3: {
+          badges: "FDA REGISTERED, HALAL CERTIFIED, NO PRESERVATIVES",
+          offers: "FREE DELIVERY, BUNDLE PROMO, MURA LANG",
+          ctas: "ORDER NOW, MESSAGE US, DELIVERY AVAILABLE",
+        },
       },
       dental_clinic: {
         person: "professional Filipino woman in her early 30s, calm trustworthy smile showing healthy teeth, wearing clean white medical scrubs or lab coat, arms relaxed, looking toward camera with gentle confidence",
         environment: "inside a clean modern dental clinic, clinical white walls and equipment softly blurred in background, organized and hygienic atmosphere",
         lighting: "bright neutral overhead lighting, even flat illumination, professional and credible atmosphere",
+        band3: {
+          badges: "LICENSED DENTIST, PRC CERTIFIED, PHILHEALTH ACCREDITED",
+          offers: "FREE CONSULTATION, INSTALLMENT AVAILABLE, PROMO PACKAGE",
+          ctas: "BOOK NOW, CALL US, MESSAGE US",
+        },
       },
       spa_wellness: {
         person: "young Filipino woman in her late 20s, calm serene expression, wearing a white spa therapist uniform or soft robe, hands gently folded, looking warmly toward camera",
         environment: "inside a clean luxury spa treatment room, soft white linen treatment bed softly visible in background, warm candles and neutral beige tones throughout, calming and premium atmosphere",
         lighting: "soft warm ambient lighting, gentle even illumination on face, no harsh shadows, calming and luxurious atmosphere",
+        band3: {
+          badges: "LICENSED THERAPIST, PREMIUM PRODUCTS, CLEAN & SAFE",
+          offers: "PROMO PACKAGE, BOOK 2 GET 1 FREE, WALK-INS WELCOME",
+          ctas: "BOOK NOW, MESSAGE US, SLOTS AVAILABLE",
+        },
       },
       salon_barbershop: {
         person: "stylish young Filipino in their mid-20s, confident fresh expression showing clean hair or style, wearing salon uniform or casual branded wear, natural relaxed pose, looking directly at camera",
         environment: "inside a clean modern salon or barbershop, styling chairs and mirrors softly visible in background, contemporary and professional atmosphere",
         lighting: "bright clean salon lighting, crisp even illumination on hair and face, fresh and confident atmosphere",
+        band3: {
+          badges: "LICENSED STYLIST, PREMIUM PRODUCTS, WALK-INS WELCOME",
+          offers: "PROMO PACKAGE, LOYALTY DISCOUNT, FREE WASH",
+          ctas: "BOOK NOW, MESSAGE US, SLOTS AVAILABLE",
+        },
       },
       fitness_gym: {
         person: "fit energetic Filipino in their late 20s, confident motivated expression, wearing athletic wear, arms crossed or natural power pose, looking directly at camera",
         environment: "inside a well-equipped modern gym, workout machines and weights softly visible in background, industrial lighting, high-energy and motivating atmosphere",
         lighting: "bright dramatic gym lighting, strong directional light on subject, bold and energetic atmosphere",
+        band3: {
+          badges: "CERTIFIED TRAINER, SAFE & CLEAN, AIR-CONDITIONED",
+          offers: "1 MONTH FREE TRIAL, PROMO MEMBERSHIP, NO LOCK-IN",
+          ctas: "ENROLL NOW, MESSAGE US, VISIT US",
+        },
       },
       restaurant: {
         person: "young friendly Filipino in their mid-20s, warm confident smile, wearing a clean chef coat or branded uniform, holding a plate or food naturally, looking toward camera",
         environment: "inside a warm restaurant kitchen or dining area, stainless counter or warm wooden interior softly visible in background, inviting and professional atmosphere",
         lighting: "warm kitchen lighting, soft even illumination on face and food, no harsh shadows, inviting and appetizing atmosphere",
+        band3: {
+          badges: "FDA REGISTERED, HALAL FRIENDLY, DINE-IN & DELIVERY",
+          offers: "FREE DELIVERY, FAMILY BUNDLE, MURA LANG",
+          ctas: "ORDER NOW, DELIVERY AVAILABLE, MESSAGE US",
+        },
       },
       real_estate: {
         person: "well-dressed Filipino man or woman in their 30s, professional confident smile, wearing business casual attire, standing naturally with arms relaxed, facing camera directly",
         environment: "standing inside or in front of a modern residential property or condo, clean architecture and interior design softly visible in background, aspirational and trustworthy atmosphere",
         lighting: "soft natural window light with warm fill, elegant even illumination, sophisticated and premium atmosphere",
+        band3: {
+          badges: "HLURB REGISTERED, LICENSED BROKER, PRC CERTIFIED",
+          offers: "0% INTEREST, LOW MONTHLY AMORTIZATION, RESERVE NOW",
+          ctas: "INQUIRE NOW, SCHEDULE TRIPPING, MESSAGE US",
+        },
       },
       lending_loans: {
         person: "approachable Filipino adult in their 30s, relieved confident expression, wearing casual business attire, relaxed open body language, looking warmly toward camera",
         environment: "inside a clean modern office or bright open space, neutral professional interior softly visible in background, trustworthy and approachable atmosphere",
         lighting: "bright neutral lighting, even flat illumination, professional and credible atmosphere",
+        band3: {
+          badges: "SEC REGISTERED, BIR REGISTERED, LEGITIMATE LENDER",
+          offers: "SAME-DAY RELEASE, LOW INTEREST, NO COLLATERAL",
+          ctas: "APPLY NOW, MESSAGE US, FAST APPROVAL",
+        },
       },
       insurance: {
         person: "professional Filipino man or woman in their 30s, warm trustworthy smile, wearing business casual attire, natural protective body language, looking directly at camera",
         environment: "inside a clean professional office or warm home setting, family-oriented or professional interior softly visible in background, secure and trustworthy atmosphere",
         lighting: "soft warm natural lighting, gentle even illumination, trustworthy and comforting atmosphere",
+        band3: {
+          badges: "IC LICENSED, SEC REGISTERED, GOVERNMENT REGULATED",
+          offers: "FREE CONSULTATION, LOW MONTHLY PREMIUM, FAMILY PLAN",
+          ctas: "GET A QUOTE, MESSAGE US, INQUIRE NOW",
+        },
       },
       online_course: {
         person: "confident Filipino entrepreneur or educator in their late 20s to mid-30s, authoritative inspiring expression, wearing smart casual attire, natural commanding pose, looking directly at camera",
         environment: "inside a modern home office or clean studio setup, laptop, bookshelf, or course materials softly visible in background, professional and aspirational atmosphere",
         lighting: "clean natural window light or studio lighting, crisp even illumination, professional and credible atmosphere",
+        band3: {
+          badges: "CERTIFICATE INCLUDED, LIFETIME ACCESS, MONEY-BACK GUARANTEE",
+          offers: "LIMITED SLOTS, EARLY BIRD PROMO, INSTALLMENT AVAILABLE",
+          ctas: "ENROLL NOW, MESSAGE US, JOIN FREE WEBINAR",
+        },
       },
       recruitment: {
         person: "professional Filipino HR or recruiter in their 30s, approachable confident smile, wearing business attire, open welcoming body language, looking warmly toward camera",
         environment: "inside a clean modern office or professional workspace, team or office environment softly visible in background, credible and opportunity-forward atmosphere",
         lighting: "bright neutral office lighting, even flat illumination, professional and trustworthy atmosphere",
+        band3: {
+          badges: "POEA LICENSED, LEGITIMATE AGENCY, DOLE ACCREDITED",
+          offers: "FREE PROCESSING, HIRING NOW, SLOTS AVAILABLE",
+          ctas: "APPLY NOW, SEND YOUR RESUME, MESSAGE US",
+        },
       },
       printing_customized: {
         person: "friendly Filipino in their mid-20s, satisfied proud expression, holding or presenting a finished printed product naturally, wearing casual or branded attire, looking toward camera",
         environment: "inside a clean print shop or creative studio, finished products and equipment softly visible in background, creative and professional atmosphere",
         lighting: "bright clean studio lighting, crisp even illumination on product and subject, fresh and creative atmosphere",
+        band3: {
+          badges: "PREMIUM QUALITY, FAST TURNAROUND, LOCALLY MADE",
+          offers: "BULK DISCOUNT, FREE DELIVERY, RUSH ORDER AVAILABLE",
+          ctas: "ORDER NOW, MESSAGE US, GET A QUOTE",
+        },
       },
       events_photo_video: {
         person: "creative young Filipino in their mid-20s, passionate expressive smile, holding camera or creative equipment naturally, wearing smart casual attire, looking confidently toward camera",
         environment: "inside a clean photography studio or elegant event backdrop, equipment or décor softly visible in background, creative and professional atmosphere",
         lighting: "dramatic creative studio lighting, strong directional key light, bold and artistic atmosphere",
+        band3: {
+          badges: "PROFESSIONAL PHOTOGRAPHER, LICENSED, INSURED",
+          offers: "FREE SAME-DAY PREVIEW, PACKAGE DEALS, BOOK NOW",
+          ctas: "BOOK YOUR DATE, MESSAGE US, CHECK AVAILABILITY",
+        },
       },
       auto_accessories: {
-        person: "confident young Filipino man in his late 20s, proud enthusiastic expression, wearing casual or branded wear, standing beside or presenting a vehicle or product, looking directly at camera",
+        person: "confident young Filipino man in his late 28s, proud enthusiastic expression, wearing casual or branded wear, standing beside or presenting a vehicle or product, looking directly at camera",
         environment: "inside a clean auto shop or outdoor parking area, vehicle and accessories softly visible in background, bold and performance-driven atmosphere",
         lighting: "bright dramatic outdoor or studio lighting, strong clean illumination, bold and energetic atmosphere",
+        band3: {
+          badges: "AUTHENTIC PARTS, BIR REGISTERED, WARRANTY INCLUDED",
+          offers: "FREE INSTALLATION, BUNDLE DEAL, COD AVAILABLE",
+          ctas: "ORDER NOW, MESSAGE US, VISIT OUR SHOP",
+        },
       },
       repair_services: {
         person: "skilled trustworthy Filipino technician in their 30s, confident reliable expression, wearing branded uniform or work wear, holding tools naturally or presenting repaired item, looking toward camera",
         environment: "inside a clean organized repair shop or home service setting, tools and equipment softly visible in background, professional and reliable atmosphere",
         lighting: "bright clean workshop lighting, even flat illumination, professional and trustworthy atmosphere",
+        band3: {
+          badges: "LICENSED TECHNICIAN, WARRANTY ON REPAIR, BIR REGISTERED",
+          offers: "FREE DIAGNOSTIC, HOME SERVICE AVAILABLE, SAME-DAY REPAIR",
+          ctas: "CALL US NOW, MESSAGE US, BOOK A SCHEDULE",
+        },
       },
       digital_services: {
         person: "confident young Filipino digital professional in their late 20s, sharp focused expression, wearing smart casual attire, sitting at a desk or standing with device naturally, looking directly at camera",
         environment: "inside a modern home office or co-working space, screens and tech equipment softly visible in background, professional and innovative atmosphere",
         lighting: "clean natural or studio lighting, crisp even illumination, modern and credible atmosphere",
+        band3: {
+          badges: "BIR REGISTERED, VERIFIED AGENCY, RESULTS-DRIVEN",
+          offers: "FREE AUDIT, MONTHLY RETAINER, MONEY-BACK GUARANTEE",
+          ctas: "GET A QUOTE, MESSAGE US, BOOK A CALL",
+        },
       },
     };
-    return layers[industry] || {
-      person: "confident Filipino entrepreneur in their 30s, professional warm expression, wearing smart casual attire, natural relaxed pose, looking directly at camera",
-      environment: "inside a clean modern office or professional workspace, neutral professional interior softly visible in background, credible and trustworthy atmosphere",
-      lighting: "bright clean studio lighting, crisp even illumination, professional atmosphere",
+    const defaultBand3 = {
+      badges: "LEGITIMATE BUSINESS, BIR REGISTERED, TRUSTED SELLER",
+      offers: "PROMO AVAILABLE, FREE SHIPPING, COD ACCEPTED",
+      ctas: "MESSAGE US, ORDER NOW, INQUIRE TODAY",
     };
+    return layers[industry]
+      ? layers[industry]
+      : {
+          person: "confident Filipino entrepreneur in their 30s, professional warm expression, wearing smart casual attire, natural relaxed pose, looking directly at camera",
+          environment: "inside a clean modern office or professional workspace, neutral professional interior softly visible in background, credible and trustworthy atmosphere",
+          lighting: "bright clean studio lighting, crisp even illumination, professional atmosphere",
+          band3: defaultBand3,
+        };
   },
 
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
@@ -689,9 +797,9 @@ RIGHT 40-45%: stack of exactly 3 benefit bullets, vertically centered.
 - Pull the 3 benefits directly from the angle's value proposition. Translate to detected dialect.
 
 [BAND 3 - BOTTOM RIBBON, full width, primary brand color background, white text]
-- Left side: 1-2 trust badges (round seals or shield icons). Pick from: FDA APPROVED, AUTHENTIC, HALAL, DOH REGISTERED, BIR REGISTERED, ISO CERTIFIED - only those that realistically fit the industry/angle. Skip badges if none fit.
-- Center: bold offer block, oversized text on contrasting plate. Pull offer from angle if mentioned (BUY 1 TAKE 1, 50% OFF, FREE SHIPPING, MURA LANG, etc). If no offer in angle, use a soft CTA like MESSAGE US TODAY.
-- Right side: 2-3 small CTA chips (icon + label): COD CASH ON DELIVERY, FREE SHIPPING, MESSAGE US, MGA SLOT NA LANG, etc. Use only ones that fit the angle/industry.
+- Left side: 1-2 trust badges (round seals or shield icons). Use these industry-specific options: ${layers.band3.badges}. Show only the 1-2 most relevant to the angle.
+- Center: bold offer block, oversized text on contrasting plate. Pull offer from angle if mentioned. If no offer in angle, pick from: ${layers.band3.offers}.
+- Right side: 2-3 small CTA chips (icon + label). Pick the most relevant from: ${layers.band3.ctas}.
 
 ${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style.\n- Apply brand colors to: Line 2 of headline, benefit icon fills, benefit Line A text, bottom ribbon background.` : "BRAND PALETTE: pick 1 primary saturated color (red, green, blue, or orange) + black + white. Apply consistently across headline accent, icons, and ribbon."}
 ${productDesc ? `HERO PRODUCT: ${productDesc} - must appear visibly in hero image, dominant focal point on the right edge of the hero photo.` : ""}
