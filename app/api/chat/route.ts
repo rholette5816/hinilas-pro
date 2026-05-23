@@ -77,7 +77,9 @@ export async function POST(req: NextRequest) {
     }
 
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
-    if (sanitizedSystemPrompt) messages.push({ role: "system", content: sanitizedSystemPrompt });
+    const effectiveSystemPrompt = sanitizedSystemPrompt ||
+      "You are a structured marketing AI for Filipino businesses. Follow the exact output format specified in the prompt. Do not add conversational openers, closers, greetings, or commentary. Output only what the format requires.";
+    messages.push({ role: "system", content: effectiveSystemPrompt });
     messages.push({ role: "user", content: userContent });
 
     const completion = await openai.chat.completions.create({
