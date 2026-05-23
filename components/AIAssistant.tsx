@@ -37,6 +37,25 @@ Rules:
 - If they ask how to use a Hinilas Pro tool, explain it clearly based on the knowledge base above.
 `.trim();
 
+const STORAGE_KEY = "hilas_assistant_messages";
+const MAX_STORED = 40;
+
+function loadMessages(): Message[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMessages(msgs: Message[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs.slice(-MAX_STORED)));
+  } catch {}
+}
+
 export default function AIAssistant() {
   const { setup } = useApp();
   const [open, setOpen] = useState(false);
@@ -46,13 +65,20 @@ export default function AIAssistant() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Load saved messages on mount
   useEffect(() => {
-    if (open && messages.length === 0) {
+    const saved = loadMessages();
+    if (saved.length > 0) {
+      setMessages(saved);
+    } else {
       setMessages([{
         role: "assistant",
         text: "Hi! I'm your Hinilas Pro AI Assistant. Ask me anything about Meta Ads, your business, or how to use the tools here.",
       }]);
     }
+  }, []);
+
+  useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
@@ -66,7 +92,11 @@ export default function AIAssistant() {
     if (!input.trim() || loading) return;
     const userText = input.trim();
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", text: userText }]);
+    setMessages((prev) => {
+      const updated = [...prev, { role: "user" as const, text: userText }];
+      saveMessages(updated);
+      return updated;
+    });
     setLoading(true);
 
     const userContext = setup ? buildUserContext(setup) : "No business profile set up yet.";
@@ -84,15 +114,26 @@ export default function AIAssistant() {
         }),
       });
       const data = await res.json();
-      setMessages((prev) => [...prev, {
-        role: "assistant",
-        text: data.content || data.error || "Something went wrong. Try again.",
-      }]);
+      setMessages((prev) => {
+        const updated = [...prev, { role: "assistant" as const, text: data.content || data.error || "Something went wrong. Try again." }];
+        saveMessages(updated);
+        return updated;
+      });
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", text: "Connection error. Please try again." }]);
+      setMessages((prev) => {
+        const updated = [...prev, { role: "assistant" as const, text: "Connection error. Please try again." }];
+        saveMessages(updated);
+        return updated;
+      });
     } finally {
       setLoading(false);
     }
+  }
+
+  function clearHistory() {
+    const fresh = [{ role: "assistant" as const, text: "Hi! I'm your Hinilas Pro AI Assistant. Ask me anything about Meta Ads, your business, or how to use the tools here." }];
+    setMessages(fresh);
+    saveMessages(fresh);
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -150,12 +191,22 @@ export default function AIAssistant() {
                   <p className="text-white/70 text-xs mt-0.5">Hinilas Pro</p>
                 </div>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="text-white/70 hover:text-white transition-colors text-lg leading-none"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={clearHistory}
+                  className="text-white/60 hover:text-white transition-colors text-xs px-2 py-1 rounded-lg"
+                  style={{ background: "rgba(255,255,255,0.1)" }}
+                  title="Clear conversation"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="text-white/70 hover:text-white transition-colors text-lg leading-none"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
