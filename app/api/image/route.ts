@@ -174,41 +174,39 @@ LAYOUT — same 3-band structure as original, square 1:1:
 REJECT IF: studio backdrop, posed model, blurry text, distorted face, extra fingers, plastic skin, changed headline, different brand colors, cartoon, anime, 3D render, watermark.
 
 Final output: production-ready 1:1 square Facebook/Instagram feed ad.`
-          : `You are given the original Filipino Meta Ad creative as reference. Create Variation 2 — same brand, same product, but executed as a BEFORE / AFTER CONTRAST split.
+          : `You are given the original Filipino Meta Ad creative as reference. Create Variation 2 — same brand, same product, reframed as a TESTIMONIAL / SOCIAL PROOF ad.
 
-WHAT TO KEEP IDENTICAL from the reference:
-- Brand logo: same logo, same size, placed top-center above the split
-- Brand colors: extract the exact primary color from the reference, apply to right half accents and bottom ribbon
-- Product: same product must be visible, shown on the RIGHT (after) side
-- Offer ribbon at bottom: same offer text and CTA chips as the reference
+EXTRACT FROM REFERENCE (copy these exactly):
+- Brand logo: same logo, place small at top-left corner
+- Primary brand color: extract from the reference and apply throughout
+- Product: same product must appear in the hero photo
+- Bottom ribbon: same offer text, same CTA chips, same brand color background
+- Dialect: detect from the reference ad copy and match exactly
+
+PHOTOGRAPHY STANDARD:
+- Shot on Sony A7R V, 85mm f/1.4, 3-point studio lighting
+- Key light from 45 degrees, soft fill, rim light for background separation
+- Tack-sharp focus on subject, shallow depth of field on background
+- Warm natural Filipino skin tones, magazine-quality retouching
+- Catchlights in eyes, genuine warm expression — satisfied, confident, relieved
+- Zero AI artifacts: correct fingers, natural face, no plastic skin, no floating elements
 
 LAYOUT — square 1:1, 3 bands:
 
 [TOP BAND — 15% height, white background]
-- Brand logo centered
-- Two short labels flanking the center divider line: LEFT says the problem state (2-3 words, dark gray), RIGHT says the solution/result (2-3 words, bold, primary brand color). In the same dialect as the reference ad.
+- Brand logo small at top-left
+- Bold headline (all caps, primary brand color, 4-6 words): a customer result statement in the detected dialect. Example patterns: "NAWALA NA ANG SAKIT KO", "GRABE ANG RESULTA", "WORTH IT TALAGA", "DI NA KO NAGHANAP PA". Pull the emotion from the reference ad's angle.
 
-[MIDDLE BAND — 65% height, vertical split down the center]
-LEFT HALF — BEFORE state:
-- Dark, muted, desaturated tones. Heavy shadows. Single harsh side light.
-- Same Filipino person as the original ad looking frustrated, tired, or showing the problem
-- Shot on Canon EOS R5, dramatic 1-light setup, cinematic feel
-- No product visible on this side
+[MIDDLE BAND — 70% height]
+- Full-width photorealistic hero: a real-looking Filipino customer (different from the original ad's subject) holding or using the product with a genuine satisfied expression
+- Large pull-quote overlay on a semi-transparent dark card centered over the lower portion of the hero photo: a short 1-2 sentence customer testimonial in detected dialect (e.g. "Nagamit ko isang beses lang, ramdam ko na agad." or "Sinubukan ko na lahat — ito lang talaga ang nagtrabaho.")
+- Star rating (5 stars, gold) below the quote
+- Customer name below stars: small, white, italic (e.g. "— Maria, Cebu" or "— Ate Joy, QC")
 
-RIGHT HALF — AFTER state:
-- Bright, vibrant, warm tones. 3-point studio lighting: key + fill + rim for separation
-- Same Filipino person transformed: confident, glowing, happy, showing the result
-- Catchlights visible in eyes. Sharp focus. Premium retouching.
-- Product clearly visible, held naturally or shown as the cause of transformation
+[BOTTOM BAND — 15% height, primary brand color background, white text]
+- Same offer block and CTA chips as the reference ad
 
-Clean thin vertical divider line between the two halves. No text overlay in the middle band.
-
-[BOTTOM BAND — 20% height, primary brand color background, white text]
-- Same trust badges, offer block, and CTA chips as the reference ad
-
-HARD RULE: do NOT write the words "Before" or "After" anywhere — let the visual contrast tell the story.
-
-REJECT IF: blurry text, distorted face, extra fingers, plastic skin, the words "Before" or "After", changed brand colors, missing logo, cartoon, anime, 3D render, watermark.
+REJECT IF: blurry text, distorted face, extra fingers, plastic skin, missing logo, changed brand colors, cartoon, anime, 3D render, watermark, generic stock-photo expression.
 
 Final output: production-ready 1:1 square Facebook/Instagram feed ad.`;
       } else {
