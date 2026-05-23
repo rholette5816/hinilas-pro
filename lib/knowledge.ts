@@ -767,7 +767,7 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
     const layers = MODULE_PROMPTS.getIndustryLayers(industry || "");
     return `
-Filipino Meta Ads creative. Square or vertical poster-style layout. Photorealistic hero, bold typographic design. Agency-grade. High-converting.
+Award-winning Filipino Meta Ads creative. Commercial advertising photography composited with bold graphic design. Agency-produced. High-converting. Premium, scroll-stopping quality.
 
 BUSINESS: ${userContext}
 MARKETING ANGLE: ${angle}
@@ -775,47 +775,53 @@ FORMAT: ${format}
 
 DETECT DIALECT from the angle (Tagalog, Bisaya, Taglish, English) and write ALL on-image copy in that exact dialect. Match the slang and tone of the angle word-for-word.
 
-LAYOUT - strict 3-band composition, top to bottom:
+PHOTOGRAPHY STANDARD:
+- Shot on Sony A7R V or Canon EOS R5, 85mm f/1.4 lens
+- Professional 3-point studio lighting: strong key light from 45 degrees, soft fill, rim light from behind for separation
+- Shallow depth of field on background, tack-sharp focus on subject and product
+- Catchlights visible in subject's eyes
+- Natural Filipino skin tones: warm, properly exposed, no oversaturation
+- Magazine-quality retouching: clean skin, no blemishes, no stray hairs
+- Zero AI artifacts: no extra fingers, no morphed faces, no plastic skin, no floating elements
 
-[BAND 1 - TOP HEADLINE STRIP, full width, white background]
-- Brand logo: small, top-left or top-right corner.
-- Line 1: heavy bold black or dark green sans-serif, 3-5 words, slight italic or condensed face. Pulled from angle as a hook line in detected dialect.
-- Line 2: BIGGER, BOLDER, all caps, primary brand color. 2-4 words. Punchline or emotional payoff from the angle.
-- Sub-headline below: thin/medium weight, dark gray or black, ONE line of supporting copy in detected dialect.
+LAYOUT - art-directed 3-band composition, top to bottom:
 
-[BAND 2 - MIDDLE HERO + BENEFITS SPLIT]
-LEFT 55-60%: photorealistic hero image.
+[BAND 1 - TOP HEADLINE STRIP, full width, clean white background]
+- Brand logo: small, crisp, top-left or top-right corner
+- Line 1: heavy condensed bold sans-serif, 3-5 words, dark color, pulled from angle as hook line in detected dialect
+- Line 2: LARGER, ALL CAPS, primary brand color, 2-4 words, emotional punchline from the angle
+- Sub-headline: medium weight, dark gray, one supporting line in detected dialect
+
+[BAND 2 - MIDDLE HERO + BENEFITS]
+LEFT 55-60%: the hero photograph.
 ${layers.person}
 ${layers.environment}
 ${layers.lighting}
-Natural skin tones. Sharp focus. Subject framed naturally - using the product, reacting to it, or product hero shot if no person fits the angle.
+Sharp professional focus. Subject naturally engaged with the product or showing the result. Real human expression, not posed stock-photo stiffness.
 
-RIGHT 40-45%: stack of exactly 3 benefit bullets, vertically centered.
-- Each bullet = circle icon (filled, primary brand color, white pictogram inside) + 2 lines of text.
-- Line A: bold all-caps benefit (2-3 words) in primary brand color.
-- Line B: smaller medium-weight black supporting copy (1 line, 4-7 words).
-- Pull the 3 benefits directly from the angle's value proposition. Translate to detected dialect.
+RIGHT 40-45%: 3 benefit bullets, vertically centered, clean spacing.
+- Each bullet: filled circle icon in primary brand color with white pictogram + bold all-caps benefit label (2-3 words) + one supporting line (4-7 words) in detected dialect
+- Benefits pulled directly from angle's value proposition
 
-[BAND 3 - BOTTOM RIBBON, full width, primary brand color background, white text]
-- Left side: 1-2 trust badges (round seals or shield icons). Use these industry-specific options: ${layers.band3.badges}. Show only the 1-2 most relevant to the angle.
-- Center: bold offer block, oversized text on contrasting plate. Pull offer from angle if mentioned. If no offer in angle, pick from: ${layers.band3.offers}.
-- Right side: 2-3 small CTA chips (icon + label). Pick the most relevant from: ${layers.band3.ctas}.
+[BAND 3 - BOTTOM RIBBON, full width, primary brand color, white text]
+- Left: 1-2 trust badges (round seal or shield style). Industry options: ${layers.band3.badges}. Pick only the most relevant 1-2.
+- Center: oversized bold offer text on a contrasting dark plate. Use offer from angle if present. Otherwise pick from: ${layers.band3.offers}.
+- Right: 2-3 CTA chips (small icon + label). Pick most relevant from: ${layers.band3.ctas}.
 
-${logoDesc ? `BRAND REFERENCE: ${logoDesc}\n- Follow exactly: brand colors, font style, font weight, graphic style.\n- Apply brand colors to: Line 2 of headline, benefit icon fills, benefit Line A text, bottom ribbon background.` : "BRAND PALETTE: pick 1 primary saturated color (red, green, blue, or orange) + black + white. Apply consistently across headline accent, icons, and ribbon."}
-${productDesc ? `HERO PRODUCT: ${productDesc} - must appear visibly in hero image, dominant focal point on the right edge of the hero photo.` : ""}
+${logoDesc ? `BRAND IDENTITY: ${logoDesc}\nApply brand colors precisely to: Line 2 headline, benefit icon fills, benefit label text, ribbon background.` : "BRAND PALETTE: choose 1 strong primary color (deep red, royal blue, forest green, or burnt orange) + black + white. Apply consistently throughout."}
+${productDesc ? `FEATURED PRODUCT: ${productDesc} — must appear as dominant element in the hero photo, sharply in focus, premium presentation.` : ""}
 ${extraDetails ? `CREATIVE DIRECTION: ${extraDetails}` : ""}
 
-STYLE RULES:
-- High saturation, vibrant, scroll-stopping.
-- Strong contrast - every text element must be legible at thumbnail size.
-- White or near-white background in top band only. Avoid muddy mid-tones.
-- All typography is heavy, bold, condensed or chunky. NO thin fonts.
-- Filipino Meta Ads aesthetic: direct, busy-but-organized, sells immediately.
-- Photorealistic hero only - no AI artifacts, no cartoon, no 3D render, no anime.
+QUALITY RULES:
+- Every text block must be perfectly legible at mobile thumbnail size
+- No muddy colors, no dull mid-tones — vibrant, punchy, high contrast
+- Heavy bold condensed typography throughout — zero thin fonts
+- Filipino Meta Ads energy: direct, confident, premium, sells on first glance
+- Photorealistic photography only — no illustration, no cartoon, no 3D render, no anime
 
-NEGATIVE: blurry text, distorted face, extra limbs, watermark, oversaturated skin, horror lighting, cartoon, anime, 3D render, generic stock-photo poses, overlapping text, cropped headlines, empty wasted space.
+REJECT IF: blurry or distorted text, warped faces, extra fingers or limbs, plastic-looking skin, flat lighting, generic stock poses, overlapping copy, horror shadows, watermarks, empty wasted space, anime or cartoon style.
 
-Final output: ready-to-upload Facebook/Instagram feed ad in the requested ${format} format.
+Output: production-ready ${format} Facebook and Instagram feed ad. Premium quality. No revisions needed.
 `;
   },
 };
