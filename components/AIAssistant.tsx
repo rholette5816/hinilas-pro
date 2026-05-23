@@ -118,8 +118,10 @@ export default function AIAssistant() {
         }),
       });
       const data = await res.json();
+      const raw = data.content || data.error || "Something went wrong. Try again.";
+      const clean = raw.replace(/\*\*/g, "").replace(/\*/g, "").replace(/ — /g, " - ").replace(/—/g, "-");
       setMessages((prev) => {
-        const updated = [...prev, { role: "assistant" as const, text: data.content || data.error || "Something went wrong. Try again." }];
+        const updated = [...prev, { role: "assistant" as const, text: clean }];
         saveMessages(updated);
         return updated;
       });
