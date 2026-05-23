@@ -70,7 +70,8 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
     .single();
 
   const referralCode = existing?.referral_code || generateCode(user.id);
-  const referredBy = existing?.referred_by || getCookie(request, "referral_code") || null;
+  const cookieRef = getCookie(request, "referral_code") || null;
+  const referredBy = existing?.referred_by || (cookieRef !== referralCode ? cookieRef : null);
   const isNew = !existing;
 
   if (isNew) {
@@ -79,6 +80,7 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
     const avatar_url = user.user_metadata?.avatar_url || null;
     await adminSupabase.from("user_data").upsert({
       user_id: user.id,
+      email: user.email || null,
       credits_remaining: 0,
       credits_total: 0,
       plan: "lite",
@@ -89,6 +91,23 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
       username,
       avatar_url,
     }, { onConflict: "user_id" });
+
+    // Telegram notification to Ken
+    void (async () => {
+      const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      const chatIds = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
+      if (botToken && chatIds.length > 0) {
+        const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "Unknown";
+        const msg = `🆕 New Hinilas Pro signup!\n\n👤 ${name}\n📧 ${user.email || "no email"}\n🔗 ${referredBy ? `Referred by: ${referredBy}` : "Direct signup"}`;
+        for (const chatId of chatIds) {
+          await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: chatId, text: msg }),
+          }).catch(() => {});
+        }
+      }
+    })();
 
     await sendMetaEvent({
       request,
