@@ -56,7 +56,7 @@ async function uploadBase64ToStorage(
 }
 
 export async function POST(req: NextRequest) {
-  const { prompt, aspectRatio = "1:1", referenceImage, isVariation = false, variationIndex = 0, angle = "" } = await req.json();
+  const { prompt, aspectRatio = "1:1", referenceImage, logoImage, isVariation = false, variationIndex = 0, angle = "" } = await req.json();
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -104,10 +104,25 @@ export async function POST(req: NextRequest) {
     const openai = new OpenAI({ apiKey });
     let imageBase64: string | null = null;
 
-    if (!referenceImage) {
+    if (!referenceImage && !logoImage) {
       const response = await openai.images.generate({
         model: "gpt-image-1",
         prompt: `${prompt}\n\nGenerate this as a ${ratioLabel} image.`,
+        size,
+        n: 1,
+      });
+      imageBase64 = response.data?.[0]?.b64_json ?? null;
+    } else if (!referenceImage && logoImage) {
+      // Main generation with logo reference — use images.edit so model can see the actual logo
+      const [logoHeader, logoB64] = (logoImage as string).split(",");
+      const logoMime = logoHeader.match(/:(.*?);/)?.[1] || "image/png";
+      const logoBuffer = Buffer.from(logoB64, "base64");
+      const { toFile } = await import("openai");
+      const logoFile = await toFile(logoBuffer, "logo.png", { type: logoMime });
+      const response = await openai.images.edit({
+        model: "gpt-image-1",
+        image: logoFile,
+        prompt: `${prompt}\n\nIMPORTANT: The uploaded image is the brand logo. Study its exact colors, font style, and graphic elements. Place this logo accurately in the top corner of the ad. Apply the logo's exact brand colors throughout the design. Generate the full ad as a ${ratioLabel} image.`,
         size,
         n: 1,
       });

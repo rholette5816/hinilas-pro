@@ -155,7 +155,7 @@ export default function CreativePage() {
     }
   }
 
-  async function callImageAPI(prompt: string, referenceImage?: string, isVariation = false, variationIndex = 0): Promise<string | null> {
+  async function callImageAPI(prompt: string, referenceImage?: string, isVariation = false, variationIndex = 0, logoImage?: string): Promise<string | null> {
     const res = await fetch("/api/image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -164,6 +164,7 @@ export default function CreativePage() {
         count: 1,
         aspectRatio: isVariation ? (variationIndex === 0 ? "9:16" : "1.91:1") : "1:1",
         referenceImage,
+        logoImage,
         isVariation,
         variationIndex,
         angle: selectedAngle || "",
@@ -183,14 +184,11 @@ export default function CreativePage() {
     setError("");
     setNoCredits(false);
     try {
-      const [logoDesc, productDesc] = await Promise.all([
-        logoFile ? describeImage(logoFile, "logo") : Promise.resolve(""),
-        productFile ? describeImage(productFile, "product") : Promise.resolve(""),
-      ]);
+      const productDesc = productFile ? await describeImage(productFile, "product") : "";
       const userCtx = buildUserContext(setup);
       const angle = selectedAngle || "General product promotion";
-      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, logoDesc, productDesc, "1:1", setup.industry);
-      const img = await callImageAPI(prompt);
+      const prompt = MODULE_PROMPTS.creative(userCtx, angle, extraPrompt, "", productDesc, "1:1", setup.industry);
+      const img = await callImageAPI(prompt, undefined, false, 0, logoFile ?? undefined);
       if (img) {
         setMainImage(img);
         setCreativeImage(img);
