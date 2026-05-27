@@ -31,6 +31,8 @@ export interface ContentPost {
 
 export interface ContentOutput {
   posts: ContentPost[];
+  scripts?: string[];
+  scriptHookStyle?: string;
   language: string;
   generatedAt: string;
 }

@@ -83,11 +83,11 @@ export default function ContentPage() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("captions");
   const [language, setLanguage] = useState(contentOutput?.language || setup?.language || "Taglish");
-  const [scriptBatch, setScriptBatch] = useState<string[]>([]);
+  const [scriptBatch, setScriptBatch] = useState<string[]>(contentOutput?.scripts || []);
   const [scriptBatchLoading, setScriptBatchLoading] = useState(false);
   const [scriptNoCredits, setScriptNoCredits] = useState(false);
   const [scriptError, setScriptError] = useState("");
-  const [globalHookStyle, setGlobalHookStyle] = useState<HookStyle>("numerical");
+  const [globalHookStyle, setGlobalHookStyle] = useState<HookStyle>((contentOutput?.scriptHookStyle as HookStyle) || "numerical");
   const [copiedScriptBatchIndex, setCopiedScriptBatchIndex] = useState<number | null>(null);
 
   const isLite = plan === "lite";
@@ -180,6 +180,13 @@ export default function ContentPage() {
 
       if (results.length === POST_TYPES.length) {
         setScriptBatch(results);
+        setContentOutput({
+          posts: contentOutput?.posts || [],
+          language,
+          scripts: results,
+          scriptHookStyle: globalHookStyle,
+          generatedAt: new Date().toISOString(),
+        });
       }
       await refreshCredits();
     } catch (err: unknown) {
