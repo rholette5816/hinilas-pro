@@ -7,14 +7,5 @@ export default async function PitchPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!isOwnerUser(user)) redirect("/home");
 
-  return (
-    <main className="flex-1 overflow-hidden">
-      <iframe
-        src="/pitch.html"
-        className="w-full h-full border-0"
-        title="Hinilas Pro Investor Teaser"
-        allow="fullscreen"
-      />
-    </main>
-  );
+  redirect("/pitch.html");
 }
