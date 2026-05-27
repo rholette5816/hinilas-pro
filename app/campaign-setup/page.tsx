@@ -23,9 +23,9 @@ const LEVEL_COLORS: Record<Level, string> = {
 };
 
 const LEVEL_VIDEOS: Record<Level, string> = {
-  Campaign: "https://www.loom.com/embed/e594f91be4314832b75e295791f70ea0?hide_owner=true&hideEmbedTopBar=true",
-  "Ad Set": "https://www.loom.com/embed/7f598578f67540f0a33c2ff45015e116?hide_owner=true&hideEmbedTopBar=true",
-  Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2?hide_owner=true&hideEmbedTopBar=true",
+  Campaign: "https://www.loom.com/embed/e594f91be4314832b75e295791f70ea0",
+  "Ad Set": "https://www.loom.com/embed/7f598578f67540f0a33c2ff45015e116",
+  Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2",
 };
 
 const LEVEL_VIDEO_LINKS: Record<Level, string> = {
@@ -476,7 +476,9 @@ export default function CampaignSetupPage() {
                               src={videoUrl}
                               className="absolute inset-0 w-full h-full"
                               frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                              // @ts-expect-error non-standard but required by Loom
+                              webkitallowfullscreen="true"
+                              mozallowfullscreen="true"
                               allowFullScreen
                             />
                           </div>

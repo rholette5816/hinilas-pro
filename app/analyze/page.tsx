@@ -800,7 +800,8 @@ show(0);
                 {videos.analyze_basic.unlocked ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                      <iframe src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5?hide_owner=true&hideEmbedTopBar=true" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                      {/* @ts-expect-error webkitallowfullscreen/mozallowfullscreen required by Loom */}
+                      <iframe src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5" frameBorder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
                     </div>
                     <div className="px-4 py-2 flex items-center justify-between border-t border-slate-200" style={{ background: "#FFFFFF" }}>
                       {videos.analyze_basic.expiresAt && (
@@ -919,7 +920,8 @@ show(0);
                 {videos.analyze_advanced.unlocked ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                      <iframe src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3?hide_owner=true&hideEmbedTopBar=true" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                      {/* @ts-expect-error webkitallowfullscreen/mozallowfullscreen required by Loom */}
+                      <iframe src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3" frameBorder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
                     </div>
                     <div className="px-4 py-2 flex items-center justify-between border-t border-slate-200" style={{ background: "#FFFFFF" }}>
                       {videos.analyze_advanced.expiresAt && (
