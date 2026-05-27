@@ -312,14 +312,24 @@ export default function Sidebar() {
               </button>
             </div>
             {isOwner && (
-              <button
-                onClick={() => { setMobileOpen(false); router.push("/admin"); }}
-                className="w-full flex items-center justify-center gap-1.5 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-                style={{ background: "rgba(24,119,242,0.12)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.25)" }}
-              >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Admin Dashboard
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setMobileOpen(false); router.push("/admin"); }}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+                  style={{ background: "rgba(24,119,242,0.12)", color: "#1877F2", border: "1px solid rgba(24,119,242,0.25)" }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  Admin Dashboard
+                </button>
+                <button
+                  onClick={() => { setMobileOpen(false); router.push("/pitch"); }}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+                  style={{ background: "rgba(217,119,6,0.12)", color: "#D97706", border: "1px solid rgba(217,119,6,0.25)" }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  Investor Deck
+                </button>
+              </div>
             )}
           </div>
         )}

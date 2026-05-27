@@ -13,6 +13,7 @@ type SetupPayload = {
 
 type UserDataRow = {
   user_id: string;
+  email?: string | null;
   username?: string | null;
   credits_remaining?: number | null;
   credits_total?: number | null;
@@ -341,7 +342,7 @@ export async function GET() {
   ] = await Promise.all([
     admin
       .from("user_data")
-      .select("user_id, username, credits_remaining, credits_total, locked_tier, tier_expires_at, updated_at, setup, research_output, angles_output, selected_angle, copy_output, main_image_url, variation_1_url, variation_2_url, video_1_url, video_2_url, video_3_url, launches_approved")
+      .select("user_id, email, username, credits_remaining, credits_total, locked_tier, tier_expires_at, updated_at, setup, research_output, angles_output, selected_angle, copy_output, main_image_url, variation_1_url, variation_2_url, video_1_url, video_2_url, video_3_url, launches_approved")
       .order("updated_at", { ascending: false }),
     admin.from("credit_transactions").select("user_id, type, amount, description, created_at").order("created_at", { ascending: false }),
     safeRows<TokenLogRow>(
@@ -398,8 +399,14 @@ export async function GET() {
     ),
   ]);
 
-  if (userDataError) return NextResponse.json({ error: userDataError.message }, { status: 500 });
-  if (transactionError) return NextResponse.json({ error: transactionError.message }, { status: 500 });
+  if (userDataError) {
+    console.error("[admin-stats] user data query error:", userDataError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
+  if (transactionError) {
+    console.error("[admin-stats] transaction query error:", transactionError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   const users = (userDataRows || []) as UserDataRow[];
   const transactions = (transactionRows || []) as CreditTransactionRow[];
@@ -422,6 +429,14 @@ export async function GET() {
     }
   }
 
+  // Fallback 1: email stored directly in user_data (set on signup)
+  for (const row of users) {
+    if (row.email?.trim() && !emailByUserId.has(row.user_id)) {
+      emailByUserId.set(row.user_id, row.email.trim());
+    }
+  }
+
+  // Fallback 2: email from topup/feedback/consultation records
   for (const row of [...topups, ...feedbacks, ...consultations]) {
     if (row.user_id && row.user_email && !emailByUserId.has(row.user_id)) {
       emailByUserId.set(row.user_id, row.user_email);
@@ -753,6 +768,17 @@ export async function GET() {
   const returnRate = users.length ? pctNumber(returnUsers, users.length) : 0;
 
   const alerts: Array<{ level: "good" | "info" | "warning" | "critical"; title: string; message: string; action: string }> = [];
+
+  const authUsersWarning = warnings.find(w => w.startsWith("auth.users:"));
+  if (authUsersWarning) {
+    alerts.push({
+      level: "critical",
+      title: "Auth users fetch failed — emails unavailable",
+      message: authUsersWarning,
+      action: "Check SUPABASE_SERVICE_ROLE_KEY in Vercel env vars and verify Supabase project permissions.",
+    });
+  }
+
   if (pendingTopups.length > 0) {
     alerts.push({
       level: "critical",
