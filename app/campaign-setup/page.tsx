@@ -23,9 +23,15 @@ const LEVEL_COLORS: Record<Level, string> = {
 };
 
 const LEVEL_VIDEOS: Record<Level, string> = {
-  Campaign: "https://www.loom.com/embed/e594f91be4314832b75e295791f70ea0",
-  "Ad Set": "https://www.loom.com/embed/7f598578f67540f0a33c2ff45015e116",
-  Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2",
+  Campaign: "https://www.loom.com/embed/e594f91be4314832b75e295791f70ea0?hide_owner=true&hideEmbedTopBar=true",
+  "Ad Set": "https://www.loom.com/embed/7f598578f67540f0a33c2ff45015e116?hide_owner=true&hideEmbedTopBar=true",
+  Ads: "https://www.loom.com/embed/2268db0a4a84402a95eb9c7f0fd7aba2?hide_owner=true&hideEmbedTopBar=true",
+};
+
+const LEVEL_VIDEO_LINKS: Record<Level, string> = {
+  Campaign: "https://www.loom.com/share/e594f91be4314832b75e295791f70ea0",
+  "Ad Set": "https://www.loom.com/share/7f598578f67540f0a33c2ff45015e116",
+  Ads: "https://www.loom.com/share/2268db0a4a84402a95eb9c7f0fd7aba2",
 };
 
 
@@ -470,15 +476,18 @@ export default function CampaignSetupPage() {
                               src={videoUrl}
                               className="absolute inset-0 w-full h-full"
                               frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                               allowFullScreen
                             />
                           </div>
-                          {expiresAt && (
-                            <p className="text-center text-[#1c1e21] text-xs py-2">
-                              Access expires {new Date(expiresAt).toLocaleString()}
-                            </p>
-                          )}
+                          <div className="px-4 py-2 flex items-center justify-between border-t border-slate-200" style={{ background: "#FFFFFF" }}>
+                            {expiresAt && (
+                              <p className="text-[#1c1e21] text-xs">Access expires {new Date(expiresAt).toLocaleString()}</p>
+                            )}
+                            <a href={LEVEL_VIDEO_LINKS[step.level]} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold ml-auto" style={{ color: step.color }}>
+                              Watch on Loom ↗
+                            </a>
+                          </div>
                         </>
                       ) : (
                         <div>

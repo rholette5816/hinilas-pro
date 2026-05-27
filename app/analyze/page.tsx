@@ -800,11 +800,14 @@ show(0);
                 {videos.analyze_basic.unlocked ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                      <iframe src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                      <iframe src="https://www.loom.com/embed/33bbe4f3b6dc41de9d2487eace51e9e5?hide_owner=true&hideEmbedTopBar=true" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
                     </div>
-                    {videos.analyze_basic.expiresAt && (
-                      <p className="text-center text-gray-600 text-xs py-2">Access expires {new Date(videos.analyze_basic.expiresAt).toLocaleString()}</p>
-                    )}
+                    <div className="px-4 py-2 flex items-center justify-between border-t border-slate-200" style={{ background: "#FFFFFF" }}>
+                      {videos.analyze_basic.expiresAt && (
+                        <p className="text-xs" style={{ color: "#65676b" }}>Access expires {new Date(videos.analyze_basic.expiresAt).toLocaleString()}</p>
+                      )}
+                      <a href="https://www.loom.com/share/33bbe4f3b6dc41de9d2487eace51e9e5" target="_blank" rel="noopener noreferrer" className="text-xs font-semibold ml-auto" style={{ color: "#1877F2" }}>Watch on Loom ↗</a>
+                    </div>
                   </>
                 ) : (
                   <div>
@@ -916,11 +919,14 @@ show(0);
                 {videos.analyze_advanced.unlocked ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                      <iframe src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3" allowFullScreen className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
+                      <iframe src="https://www.loom.com/embed/633b09b4378d4f4e863bead19f51b1a3?hide_owner=true&hideEmbedTopBar=true" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" className="absolute inset-0 w-full h-full" style={{ border: "none" }} />
                     </div>
-                    {videos.analyze_advanced.expiresAt && (
-                      <p className="text-center text-gray-600 text-xs py-2">Access expires {new Date(videos.analyze_advanced.expiresAt).toLocaleString()}</p>
-                    )}
+                    <div className="px-4 py-2 flex items-center justify-between border-t border-slate-200" style={{ background: "#FFFFFF" }}>
+                      {videos.analyze_advanced.expiresAt && (
+                        <p className="text-xs" style={{ color: "#65676b" }}>Access expires {new Date(videos.analyze_advanced.expiresAt).toLocaleString()}</p>
+                      )}
+                      <a href="https://www.loom.com/share/633b09b4378d4f4e863bead19f51b1a3" target="_blank" rel="noopener noreferrer" className="text-xs font-semibold ml-auto" style={{ color: "#D97706" }}>Watch on Loom ↗</a>
+                    </div>
                   </>
                 ) : (
                   <div>
