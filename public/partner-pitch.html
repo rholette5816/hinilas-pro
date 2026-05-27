@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hinilas Pro Partner Program</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0F172A;
+    color: #FFFFFF;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .deck {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px 80px;
+  }
+
+  .slide.active { display: flex; }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #D97706;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #FFFFFF;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #FFFFFF;
+    margin-bottom: 16px;
+  }
+
+  .muted { color: #94A3B8; }
+  .orange { color: #D97706; }
+  .white { color: #FFFFFF; }
+
+  p { font-size: 1.1rem; line-height: 1.7; color: #94A3B8; margin-bottom: 12px; }
+
+  /* Cards grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+
+  .card {
+    background: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+  }
+
+  .card-body { font-size: 0.9rem; color: #94A3B8; line-height: 1.5; }
+
+  /* Stat box */
+  .stat-box {
+    background: #1E293B;
+    border: 1px solid #D97706;
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #D97706;
+    margin-bottom: 6px;
+  }
+
+  .stat-label { font-size: 0.85rem; color: #94A3B8; }
+
+  /* Pills */
+  .pills { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+
+  .pill {
+    border: 1px solid #D97706;
+    color: #D97706;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background: #D97706;
+    color: #0F172A;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #334155;
+    color: #E2E8F0;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #1E293B; }
+
+  /* Numbered steps */
+  .steps { display: flex; flex-direction: column; gap: 16px; margin: 16px 0; }
+
+  .step { display: flex; align-items: flex-start; gap: 16px; }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: #D97706;
+    color: #0F172A;
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-content .step-title { font-weight: 700; font-size: 1rem; color: #FFFFFF; margin-bottom: 2px; }
+  .step-content .step-desc { font-size: 0.9rem; color: #94A3B8; }
+
+  /* Milestone timeline */
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+
+  .milestone {
+    background: #1E293B;
+    border: 1px solid #334155;
+    border-top: 3px solid #D97706;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .milestone-month { font-size: 0.75rem; font-weight: 700; color: #D97706; margin-bottom: 6px; text-transform: uppercase; }
+  .milestone-text { font-size: 0.85rem; color: #94A3B8; line-height: 1.4; }
+
+  /* CTA Box */
+  .cta-box {
+    background: #D97706;
+    border-radius: 14px;
+    padding: 28px 32px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .cta-box .cta-title { font-size: 1.3rem; font-weight: 800; color: #0F172A; margin-bottom: 6px; }
+  .cta-box .cta-url { font-size: 0.95rem; color: #1E293B; font-weight: 600; }
+
+  /* Quote */
+  .quote {
+    background: #1E293B;
+    border-left: 4px solid #D97706;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin: 20px 0;
+  }
+
+  .quote p { font-size: 1.3rem; font-weight: 600; color: #FFFFFF; line-height: 1.5; }
+
+  /* Cover */
+  .cover { text-align: center; }
+  .cover .brand { font-size: 1.2rem; font-weight: 800; color: #D97706; letter-spacing: 0.1em; margin-bottom: 20px; }
+  .cover h1 { font-size: 2.2rem; margin-bottom: 16px; }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: #0F172A;
+    border-top: 1px solid #1E293B;
+  }
+
+  .nav-btn {
+    background: #1E293B;
+    border: 1px solid #334155;
+    color: #94A3B8;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+
+  .nav-btn:hover { background: #334155; color: #FFFFFF; }
+  .nav-btn.hidden { visibility: hidden; }
+
+  .counter { font-size: 0.9rem; color: #94A3B8; font-weight: 600; }
+
+  .bold-white { font-weight: 700; color: #FFFFFF; font-size: 1rem; margin-top: 12px; text-align: center; }
+
+  /* Numbered items */
+  .numbered-list { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+  .numbered-item { display: flex; gap: 14px; align-items: flex-start; }
+  .num-badge {
+    min-width: 28px;
+    height: 28px;
+    background: #D97706;
+    color: #0F172A;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .num-text .num-title { font-weight: 700; color: #FFFFFF; font-size: 1rem; }
+  .num-text .num-desc { font-size: 0.9rem; color: #94A3B8; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide active">
+    <div class="slide-inner cover">
+      <div class="brand">HINILAS PRO</div>
+      <h1>Kumita Habang Ginagamit Mo ang Tool Na Nagpapalago ng Negosyo Mo</h1>
+      <p>Partner Program — Earn cash every time someone buys through your link.</p>
+      <p class="muted" style="margin-top:24px;font-size:0.9rem;">Presented by Kevin Rholette Allego</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: THE PROBLEM -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 1</div>
+      <h2>Bakit Hindi Gumagana ang Karamihan sa Extra Income</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Reselling / Dropship</div>
+          <div class="card-body">Kailangan ng puhunan, stocks, at delivery headaches</div>
+        </div>
+        <div class="card">
+          <div class="card-title">MLM</div>
+          <div class="card-body">Produkto na hindi mo ginagamit, puro recruitment pressure</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Freelancing</div>
+          <div class="card-body">Time for money. Pag hindi ka nagtrabaho, wala</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Content Creation</div>
+          <div class="card-body">Taon bago kumita ng malaki</div>
+        </div>
+      </div>
+      <p class="bold-white">"Lahat ng yan, malaking puhunan o malaking oras. Wala sa atin ang may sobra ng dalawa."</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: WHAT IS HINILAS PRO -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 1</div>
+      <h2>Ano ang Hinilas Pro?</h2>
+      <p>Hinilas Pro is an AI-powered Meta Ads tool para sa mga Filipino business owners. Dito gumawa ng ad angles, sales copy, at ad images in minutes. Ginagamit na ng mga seller, freelancer, at negosyante para pabilisin ang kanilang Facebook ads workflow.</p>
+      <div class="pills">
+        <div class="pill">Ad Angles Generator</div>
+        <div class="pill">Sales Copy Writer</div>
+        <div class="pill">AI Ad Image Creator</div>
+      </div>
+      <p class="muted">"Hindi ito phantom product. May output. May resulta. Ginagamit na."</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: THE OPPORTUNITY -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 2</div>
+      <h2>Ang Tanong Na Hindi Mo Pa Natatanong</h2>
+      <div class="quote">
+        <p>"Kung may tool ka na ginagamit mo para kumita, bakit ikaw lang ang kumikita sa sarili mo?"</p>
+      </div>
+      <p>Ang Partner Program ay nagbibigay sa iyo ng pagkakataon na kumita sa bawat tao na ituturo mo sa Hinilas Pro. Habang ginagamit mo ang tool para sa sarili mong negosyo.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: 3 WAYS TO EARN -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 2</div>
+      <h2>3 Paraan Para Kumita</h2>
+      <div class="numbered-list">
+        <div class="numbered-item">
+          <div class="num-badge">1</div>
+          <div class="num-text">
+            <div class="num-title">Direct Commission</div>
+            <div class="num-desc">Kumita agad sa GCash sa bawat sale na gawa mo. Isang Max sale = PHP 649. Isang Flex sale = PHP 250.</div>
+          </div>
+        </div>
+        <div class="numbered-item">
+          <div class="num-badge">2</div>
+          <div class="num-text">
+            <div class="num-title">Team Override</div>
+            <div class="num-desc">Pag naka-recruit ka ng team, may cut ka sa kanilang monthly top-ups. Kahit hindi ka nag-sell.</div>
+          </div>
+        </div>
+        <div class="numbered-item">
+          <div class="num-badge">3</div>
+          <div class="num-text">
+            <div class="num-title">Recruit Through the Tool</div>
+            <div class="num-desc">Gamitin ang tool para gumawa ng content. Yung output mismo ang nagbe-benta para sa iyo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: COMMISSION TABLE -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 2</div>
+      <h2>Magkano ang Kikitain Mo Per Sale</h2>
+      <table>
+        <tr>
+          <th>Binili Nila</th>
+          <th>Kikitain Mo</th>
+          <th>Kailan</th>
+        </tr>
+        <tr><td>Flex Plan PHP 499</td><td style="color:#D97706;font-weight:700;">PHP 250 cash</td><td>Agad pagkatapos ng approval</td></tr>
+        <tr><td>Max Plan PHP 1,299</td><td style="color:#D97706;font-weight:700;">PHP 649 cash</td><td>Agad pagkatapos ng approval</td></tr>
+        <tr><td>Top-up PHP 99</td><td style="color:#D97706;font-weight:700;">PHP 20</td><td>Bawat beses na mag-top up</td></tr>
+        <tr><td>Top-up PHP 179</td><td style="color:#D97706;font-weight:700;">PHP 36</td><td>Bawat beses na mag-top up</td></tr>
+        <tr><td>Top-up PHP 299</td><td style="color:#D97706;font-weight:700;">PHP 60</td><td>Bawat beses na mag-top up</td></tr>
+      </table>
+      <p class="muted">Top-up commission = recurring. Bawat buwan na aktibo sila, kumikita ka.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: RANK AND OVERRIDE -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 2</div>
+      <h2>Team Override — Passive Income System</h2>
+      <p class="muted">Pag aktibo ang team mo, kumikita ka kahit wala kang bagong binenta.</p>
+      <table>
+        <tr>
+          <th>Rank</th>
+          <th>Referrals Needed</th>
+          <th>Monthly Override</th>
+        </tr>
+        <tr><td>Partner</td><td>0</td><td class="muted">Wala pa</td></tr>
+        <tr><td>Hustler</td><td>3</td><td class="muted">Wala pa</td></tr>
+        <tr><td>Leader</td><td>10</td><td style="color:#D97706;font-weight:700;">5% ng team top-ups</td></tr>
+        <tr><td>Educator</td><td>25</td><td style="color:#D97706;font-weight:700;">8% ng team top-ups</td></tr>
+        <tr><td>Top Leader</td><td>50</td><td style="color:#D97706;font-weight:700;">12% ng team top-ups</td></tr>
+      </table>
+      <p class="muted" style="font-size:0.85rem;">Direct downline mo lang. 1 level. Bawat buwan, basta aktibo ang team.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: INCOME PROJECTIONS -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 3</div>
+      <h2>Magkano ang Pwedeng Kitain?</h2>
+      <p class="muted">Realistic. Hindi guaranteed. Depende sa effort mo.</p>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="stat-box">
+          <div class="stat-number">PHP 1,978</div>
+          <div style="font-weight:700;color:#FFFFFF;margin-bottom:4px;">Casual Partner</div>
+          <div class="stat-label">1-2 oras/linggo. 2 Flex + 2 Max sales + 5 top-up referrals.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">PHP 4,547</div>
+          <div style="font-weight:700;color:#FFFFFF;margin-bottom:4px;">Active Hustler</div>
+          <div class="stat-label">5-7 oras/linggo. 8 Flex + 3 Max sales + 15 top-up referrals.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">PHP 3,000</div>
+          <div style="font-weight:700;color:#FFFFFF;margin-bottom:4px;">Leader</div>
+          <div class="stat-label">10 referrals. Personal sales + commissions + team override. Buwan-buwan.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">PHP 8,200</div>
+          <div style="font-weight:700;color:#FFFFFF;margin-bottom:4px;">Top Leader</div>
+          <div class="stat-label">50 referrals. PHP 5,000 sales + PHP 2,000 commissions + PHP 1,200 override.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: GROWTH TIMELINE -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 3</div>
+      <h2>Realistic na Timeline</h2>
+      <div class="timeline">
+        <div class="milestone">
+          <div class="milestone-month">Month 1</div>
+          <div class="milestone-text">First 3 referrals. PHP 750 to PHP 1,500.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-month">Month 2-3</div>
+          <div class="milestone-text">Build content. Reach Hustler. PHP 2,000 to PHP 4,000.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-month">Month 4-5</div>
+          <div class="milestone-text">Push to Leader. PHP 3,000 to PHP 5,000.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-month">Month 6-12</div>
+          <div class="milestone-text">System running. Team active. PHP 5,000 to PHP 8,000+.</div>
+        </div>
+      </div>
+      <p class="bold-white">"6 months. Hindi overnight. Pero consistent."</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: WHY NOT MLM -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 3</div>
+      <h2>Hindi Ito MLM. Eto ang Difference.</h2>
+      <table>
+        <tr>
+          <th>MLM</th>
+          <th>Hinilas Pro Partner</th>
+        </tr>
+        <tr><td>Kailangan bumili para mag-qualify</td><td style="color:#D97706;">Libre mag-join</td></tr>
+        <tr><td>Puro recruitment ang pera</td><td style="color:#D97706;">Direct sales lang, pwede nang kumita</td></tr>
+        <tr><td>Override goes many levels deep</td><td style="color:#D97706;">1 level lang, direct team mo</td></tr>
+        <tr><td>Mahirap ibentang produkto</td><td style="color:#D97706;">Tool na ginagamit na ng market</td></tr>
+        <tr><td>Complicated payout process</td><td style="color:#D97706;font-weight:700;">GCash. Agad.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: HOW TO START -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Part 4</div>
+      <h2>Paano Magsimula?</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Gamitin ang Tool</div>
+            <div class="step-desc">Mag-sign up sa Hinilas Pro. Subukan sa sarili mong ads. Ma-feel mo mismo ang value.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">I-register ang GCash</div>
+            <div class="step-desc">I-register ang GCash number mo sa Partner dashboard. Libre.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">I-share ang Link</div>
+            <div class="step-desc">Sa grupo, sa friends, sa content. Bawat click na nag-convert, kita mo.</div>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:8px;">Walang puhunan. Walang imbentaryo. Kailangan mo lang ng referral link.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: THE CLOSE -->
+  <div class="slide">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="label" style="text-align:center;">Part 4</div>
+      <h2 style="font-size:2.2rem;margin-bottom:12px;">"Dalawa Lang ang Klase ng Tao Dito."</h2>
+      <p class="muted" style="max-width:600px;margin:0 auto 24px;">Yung mag-re-refer ng ibang tao sa tool, at yung mare-refer. Mas maganda kung ikaw yung nasa unang grupo.</p>
+      <div class="cta-box" style="max-width:500px;margin:0 auto;">
+        <div class="cta-title">Sumali Bilang Partner Ngayon — Libre</div>
+        <div class="cta-url">hinilas.pro/affiliate</div>
+      </div>
+      <p class="muted" style="margin-top:20px;font-size:0.85rem;">Questions? Message si Ken directly.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav">
+  <button class="nav-btn hidden" id="prev" onclick="navigate(-1)">Prev</button>
+  <span class="counter" id="counter">1 / 12</span>
+  <button class="nav-btn" id="next" onclick="navigate(1)">Next</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  function show(index) {
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('prev').className = current === 0 ? 'nav-btn hidden' : 'nav-btn';
+    document.getElementById('next').className = current === total - 1 ? 'nav-btn hidden' : 'nav-btn';
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < total) show(next);
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigate(-1);
+  });
+</script>
+</body>
+</html>
