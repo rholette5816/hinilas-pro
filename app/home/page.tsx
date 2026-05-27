@@ -558,6 +558,7 @@ export default function LandingPage() {
             <a href="/privacy" className="transition-colors hover:text-[#1c1e21]">Privacy</a>
             <a href="/terms" className="transition-colors hover:text-[#1c1e21]">Terms</a>
             <a href="/blog" className="transition-colors hover:text-[#1c1e21]">Blog</a>
+            <a href="/affiliateprog.html" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#1c1e21]">Partner Program</a>
             <span>© 2026 Hinilas Pro</span>
           </div>
         </div>

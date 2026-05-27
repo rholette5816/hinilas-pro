@@ -242,9 +242,15 @@ export default function AffiliateDashboardPage() {
                   </button>
                 </div>
               </div>
-              <Link href="/?recruiting=true" className="inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-black text-white" style={{ background: "#D97706" }}>
-                Create Recruiting Content
-              </Link>
+              <div className="flex gap-2">
+                <Link href="/?recruiting=true" className="inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-black text-white" style={{ background: "#D97706" }}>
+                  Create Recruiting Content
+                </Link>
+                <a href="/affiliateprog.html" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black text-white" style={{ background: "#1E293B", border: "1px solid rgba(217,119,6,0.4)" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  Share Pitch Deck
+                </a>
+              </div>
             </div>
           </div>
         </header>
