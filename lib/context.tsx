@@ -37,6 +37,11 @@ export interface ContentOutput {
   generatedAt: string;
 }
 
+export interface AnalyzeOutput {
+  basic?: { output: string; savedAt: string } | null;
+  advanced?: { output: string; savedAt: string } | null;
+}
+
 interface AppContextType {
   setup: UserSetup | null;
   setSetup: (s: UserSetup) => void;
@@ -44,6 +49,8 @@ interface AppContextType {
   setResearchOutput: (s: string) => void;
   contentOutput: ContentOutput | null;
   setContentOutput: (c: ContentOutput) => void;
+  analyzeOutput: AnalyzeOutput | null;
+  setAnalyzeOutput: (a: AnalyzeOutput) => void;
   anglesOutput: string;
   setAnglesOutput: (s: string) => void;
   copyOutput: string;
@@ -86,6 +93,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
   const [researchOutput, setResearchOutputState] = useState("");
   const [contentOutput, setContentOutputState] = useState<ContentOutput | null>(null);
+  const [analyzeOutput, setAnalyzeOutputState] = useState<AnalyzeOutput | null>(null);
   const [anglesOutput, setAnglesOutputState] = useState("");
   const [copyOutput, setCopyOutputState] = useState("");
   const [selectedAngle, setSelectedAngleState] = useState("");
@@ -118,6 +126,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (data.setup) setSetupState(data.setup);
         if (data.research_output) setResearchOutputState(data.research_output);
         if (data.content_output) setContentOutputState(data.content_output);
+        if (data.analyze_output) setAnalyzeOutputState(data.analyze_output);
         if (data.angles_output) setAnglesOutputState(data.angles_output);
         if (data.copy_output) setCopyOutputState(data.copy_output);
         if (data.selected_angle) setSelectedAngleState(data.selected_angle);
@@ -188,6 +197,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function setContentOutput(c: ContentOutput) {
     setContentOutputState(c);
     persist({ content_output: c });
+  }
+
+  function setAnalyzeOutput(a: AnalyzeOutput) {
+    setAnalyzeOutputState(a);
+    persist({ analyze_output: a });
   }
 
   function setAnglesOutput(s: string) {
@@ -283,6 +297,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setup, setSetup,
       researchOutput, setResearchOutput,
       contentOutput, setContentOutput,
+      analyzeOutput, setAnalyzeOutput,
       anglesOutput, setAnglesOutput,
       copyOutput, setCopyOutput,
       selectedAngle, setSelectedAngle,

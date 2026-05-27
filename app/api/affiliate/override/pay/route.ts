@@ -3,8 +3,18 @@ import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
 import { isOwnerUser } from "@/lib/admin";
 import { adminClient, asMoneyNumber, sendTelegramNotification } from "@/lib/affiliate";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`affiliate-override-pay:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!isOwnerUser(user)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -21,7 +31,8 @@ export async function POST(req: Request) {
     .single();
 
   if (overrideError || !override) {
-    return NextResponse.json({ error: overrideError?.message || "Override not found" }, { status: 404 });
+    if (overrideError) console.error("[affiliate-override-pay] override lookup error:", overrideError);
+    return NextResponse.json({ error: "Override not found" }, { status: 404 });
   }
 
   if (override.status === "paid") return NextResponse.json({ success: true });
@@ -33,7 +44,8 @@ export async function POST(req: Request) {
     .single();
 
   if (affiliateError || !affiliate) {
-    return NextResponse.json({ error: affiliateError?.message || "Affiliate not found" }, { status: 404 });
+    if (affiliateError) console.error("[affiliate-override-pay] affiliate lookup error:", affiliateError);
+    return NextResponse.json({ error: "Affiliate not found" }, { status: 404 });
   }
 
   const { error: updateError } = await admin
@@ -41,7 +53,10 @@ export async function POST(req: Request) {
     .update({ status: "paid" })
     .eq("id", overrideId);
 
-  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
+  if (updateError) {
+    console.error("[affiliate-override-pay] override update error:", updateError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   const earningType = override.override_type === "gen2" ? "override_gen2" : "override";
 

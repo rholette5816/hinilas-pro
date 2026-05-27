@@ -3,6 +3,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { sendMetaEvent } from "@/lib/meta-capi";
 import { grantAffiliateCommissions } from "@/lib/affiliate";
+import { logAdminAction } from "@/lib/audit-log";
+import { verifyApprovalToken } from "@/lib/approval-token";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
@@ -14,6 +17,16 @@ async function grantReferralReward(supabase: SupabaseClient, userId: string, cre
     .single();
 
   if (!buyer?.referred_by || buyer.referral_rewarded) return;
+
+  const { data: rewardResult } = await supabase
+    .from("user_data")
+    .update({ referral_rewarded: true })
+    .eq("user_id", userId)
+    .eq("referral_rewarded", false)
+    .select("user_id")
+    .single();
+
+  if (!rewardResult) return;
 
   // Find the referrer by their referral_code
   const { data: referrer } = await supabase
@@ -42,8 +55,6 @@ async function grantReferralReward(supabase: SupabaseClient, userId: string, cre
     description: `Referral reward — your referral made their first purchase`,
   });
 
-  // Mark buyer as referral rewarded so this only fires once
-  await supabase.from("user_data").update({ referral_rewarded: true }).eq("user_id", userId);
 }
 
 function adminClient() {
@@ -54,41 +65,46 @@ function adminClient() {
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  const secret = searchParams.get("secret");
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`topup-approve-link:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
 
-  if (!id || secret !== process.env.TOPUP_WEBHOOK_SECRET) {
+  const { searchParams } = new URL(req.url);
+  const token = searchParams.get("token");
+  const id = token ? verifyApprovalToken(token) : null;
+
+  if (!id) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const supabase = adminClient();
 
-  // Fetch the request
-  const { data: request } = await supabase
+  const { data: request, error: approveError } = await supabase
     .from("top_up_requests")
-    .select("*")
+    .update({ status: "approved", approved_at: new Date().toISOString() })
     .eq("id", id)
-    .single();
+    .eq("status", "pending")
+    .select("*")
+    .maybeSingle();
 
-  if (!request) {
-    return new NextResponse("Request not found", { status: 404 });
+  if (approveError) {
+    console.error("[topup-approve-link] approval update error:", approveError);
+    return new NextResponse("Something went wrong. Please try again.", { status: 500 });
   }
 
-  if (request.status === "approved") {
+  if (!request) {
     return new NextResponse(`
       <html><body style="font-family:Arial;text-align:center;padding:60px;background:#1C1E21;color:#fff">
         <h2 style="color:#D97706">Already Approved</h2>
-        <p style="color:#94A3B8">This top-up request was already approved.</p>
+        <p style="color:#94A3B8">This top-up request was already approved or could not be found.</p>
       </body></html>
     `, { status: 200, headers: { "Content-Type": "text/html" } });
   }
-
-  // Approve it
-  await supabase
-    .from("top_up_requests")
-    .update({ status: "approved", approved_at: new Date().toISOString() })
-    .eq("id", id);
 
   // Fetch current credits
   const { data: userData } = await supabase
@@ -138,6 +154,13 @@ export async function GET(req: NextRequest) {
 
   // Affiliate cash commissions
   await grantAffiliateCommissions(supabase, request, request.amount_paid);
+
+  await logAdminAction({
+    adminEmail: "approval-link",
+    action: "topup_approved",
+    targetId: request.id,
+    details: { source: "topup_approve_link" },
+  });
 
   // Notify user via email
   try {

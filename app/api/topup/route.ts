@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { generateApprovalToken } from "@/lib/approval-token";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 function adminClient() {
   return createAdminClient(
@@ -49,6 +51,14 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = checkRateLimit(`topup:${user.id}`, { limit: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const { package: pkg, referenceNumber, amount, credits, screenshotUrl } = await req.json();
 
   const { data: insertedRequest } = await adminClient()
@@ -69,7 +79,9 @@ export async function POST(req: Request) {
   const requestId = insertedRequest?.id;
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas.pro";
-  const approveUrl = `${baseUrl}/api/topup/approve-link?id=${requestId}&secret=${process.env.TOPUP_WEBHOOK_SECRET}`;
+  const approveUrl = requestId
+    ? `${baseUrl}/api/topup/approve-link?token=${generateApprovalToken(requestId)}`
+    : `${baseUrl}/admin`;
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);

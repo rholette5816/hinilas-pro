@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { verifyApprovalToken } from "@/lib/approval-token";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function adminClient() {
   return createAdminClient(
@@ -9,12 +11,21 @@ function adminClient() {
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = req.nextUrl;
-  const id = searchParams.get("id");
-  const action = searchParams.get("action");
-  const secret = searchParams.get("secret");
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`launch-approve:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
 
-  if (!id || !action || secret !== process.env.TOPUP_WEBHOOK_SECRET) {
+  const { searchParams } = req.nextUrl;
+  const action = searchParams.get("action");
+  const token = searchParams.get("token");
+  const id = token ? verifyApprovalToken(token) : null;
+
+  if (!id || !action) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 

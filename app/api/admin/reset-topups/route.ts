@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
+import { logAdminAction } from "@/lib/audit-log";
 
 function adminClient() {
   return createAdminClient(
@@ -13,7 +14,7 @@ function adminClient() {
 export async function POST() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!isOwnerUser(user)) {
+  if (!user || !isOwnerUser(user)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -25,7 +26,10 @@ export async function POST() {
     .select("user_id, amount")
     .eq("type", "topup");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin-reset-topups] topup transaction query error:", error);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   // Aggregate topup credits per user
   const userTopups = new Map<string, number>();
@@ -51,6 +55,15 @@ export async function POST() {
 
   // Delete all topup transactions
   await admin.from("credit_transactions").delete().eq("type", "topup");
+
+  await logAdminAction({
+    adminEmail: user.email ?? "unknown",
+    action: "topups_reset",
+    details: {
+      usersAffected: userTopups.size,
+      transactionsDeleted: (topups || []).length,
+    },
+  });
 
   return NextResponse.json({
     success: true,

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 
 async function getPosts(): Promise<BlogPost[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  // Server component only: the service-role key stays on the server and is never bundled for the browser.
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return [];
   try {

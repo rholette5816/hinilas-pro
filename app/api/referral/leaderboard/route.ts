@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function adminClient() {
   return createClient(
@@ -8,7 +9,16 @@ function adminClient() {
   );
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`referral-leaderboard:${ip}`, { limit: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const supabase = adminClient();
 
   // Sum referral credits earned per user, join with username

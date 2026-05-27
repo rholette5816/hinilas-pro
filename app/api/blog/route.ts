@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error("[blog] Supabase error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
   return NextResponse.json({ success: true, slug });
@@ -52,6 +52,9 @@ export async function GET(req: NextRequest) {
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[blog] published posts query error:", error);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
   return NextResponse.json({ posts: data });
 }

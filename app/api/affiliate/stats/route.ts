@@ -14,6 +14,7 @@ import {
   getNextRank,
   type AffiliateRank,
 } from "@/lib/affiliate";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 type EarningRow = {
   id: string;
@@ -93,6 +94,14 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = checkRateLimit(`affiliate-stats:${user.id}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const admin = adminClient();
 
   const { data: affiliate, error: affiliateError } = await admin
@@ -101,7 +110,10 @@ export async function GET() {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (affiliateError) return NextResponse.json({ error: affiliateError.message }, { status: 500 });
+  if (affiliateError) {
+    console.error("[affiliate-stats] affiliate lookup error:", affiliateError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
   if (!affiliate) return NextResponse.json({ notAffiliate: true });
 
   const [
@@ -116,9 +128,18 @@ export async function GET() {
     admin.from("user_data").select("referral_code").eq("user_id", user.id).single(),
   ]);
 
-  if (earningsError) return NextResponse.json({ error: earningsError.message }, { status: 500 });
-  if (payoutsError) return NextResponse.json({ error: payoutsError.message }, { status: 500 });
-  if (overridesError) return NextResponse.json({ error: overridesError.message }, { status: 500 });
+  if (earningsError) {
+    console.error("[affiliate-stats] earnings query error:", earningsError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
+  if (payoutsError) {
+    console.error("[affiliate-stats] payouts query error:", payoutsError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
+  if (overridesError) {
+    console.error("[affiliate-stats] overrides query error:", overridesError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   const earnings = (earningsData || []) as EarningRow[];
   const payouts = (payoutsData || []) as PayoutRow[];

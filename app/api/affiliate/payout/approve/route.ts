@@ -1,13 +1,27 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
-import { isOwnerUser } from "@/lib/admin";
+import { isOwnerUser, OWNER_EMAILS } from "@/lib/admin";
 import { adminClient, getHoldCutoffDate } from "@/lib/affiliate";
+import { logAdminAction } from "@/lib/audit-log";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`affiliate-payout-approve:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!isOwnerUser(user)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user || !isOwnerUser(user)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!OWNER_EMAILS.includes((user.email ?? "").toLowerCase())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { payoutId } = await req.json();
   if (!payoutId) return NextResponse.json({ error: "Missing payoutId" }, { status: 400 });
@@ -21,7 +35,8 @@ export async function POST(req: Request) {
     .single();
 
   if (payoutError || !payout) {
-    return NextResponse.json({ error: payoutError?.message || "Payout not found" }, { status: 404 });
+    if (payoutError) console.error("[affiliate-payout-approve] payout lookup error:", payoutError);
+    return NextResponse.json({ error: "Payout not found" }, { status: 404 });
   }
 
   if (payout.status === "paid") return NextResponse.json({ success: true });
@@ -34,7 +49,10 @@ export async function POST(req: Request) {
     .update({ status: "paid", paid_at: paidAt })
     .eq("id", payoutId);
 
-  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
+  if (updateError) {
+    console.error("[affiliate-payout-approve] payout update error:", updateError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   await admin
     .from("affiliate_earnings")
@@ -49,6 +67,13 @@ export async function POST(req: Request) {
     .eq("affiliate_id", payout.affiliate_id)
     .eq("status", "pending")
     .lte("calculated_at", cutoff);
+
+  await logAdminAction({
+    adminEmail: user.email ?? "unknown",
+    action: "payout_approved",
+    targetId: payoutId,
+    details: { affiliateId: payout.affiliate_id, amount: payout.amount },
+  });
 
   try {
     const { data: affiliateUser } = await admin.auth.admin.getUserById(payout.user_id);

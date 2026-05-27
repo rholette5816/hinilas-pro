@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { acquireCronLock } from "@/lib/cron-lock";
 
 export const maxDuration = 60;
 
@@ -168,6 +169,10 @@ export async function GET(req: NextRequest) {
     return unauthorized();
   }
 
+  if (!acquireCronLock("dropoff-emails-signup")) {
+    return NextResponse.json({ message: "Already ran recently" }, { status: 200 });
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ processed: 0, skipped: 0, errors: ["Missing RESEND_API_KEY"] }, { status: 500 });
   }
@@ -232,14 +237,14 @@ export async function GET(req: NextRequest) {
 
         processed += 1;
       } catch (error) {
-        const message = error instanceof Error ? error.message : `Unknown error for ${user.id}`;
-        errors.push(message);
+        console.error("[cron-dropoff-emails-signup] user processing error:", error);
+        errors.push("Some users could not be processed");
       }
     }
 
     return NextResponse.json({ processed, skipped, errors });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown cron error";
-    return NextResponse.json({ processed: 0, skipped: 0, errors: [message] }, { status: 500 });
+    console.error("[cron-dropoff-emails-signup] cron error:", error);
+    return NextResponse.json({ processed: 0, skipped: 0, errors: ["Something went wrong. Please try again."] }, { status: 500 });
   }
 }

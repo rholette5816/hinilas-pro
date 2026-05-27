@@ -3,6 +3,7 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { isOwnerUser } from "@/lib/admin";
 import { deductCreditsAtomic } from "@/lib/credits";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const VIDEO_COST = 1;
 const UNLOCK_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -38,6 +39,14 @@ export async function GET() {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = checkRateLimit(`video-rewards:${user.id}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
   }
 
   const admin = adminClient();
@@ -78,6 +87,14 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = checkRateLimit(`video-rewards:${user.id}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
   }
 
   const body = await req.json().catch(() => ({}));

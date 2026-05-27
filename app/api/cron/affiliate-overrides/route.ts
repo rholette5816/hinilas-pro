@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { acquireCronLock } from "@/lib/cron-lock";
 import {
   ACTIVE_MEMBER_DAYS,
   OVERRIDE_ACTIVE_REQUIRED,
@@ -44,10 +45,19 @@ function isOverrideRank(rank: AffiliateRank) {
   return rank === "Leader" || rank === "Educator" || rank === "Top Leader";
 }
 
+function serverError(context: string, error: unknown) {
+  console.error(`[cron-affiliate-overrides] ${context}:`, error);
+  return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+}
+
 export async function GET(req: Request) {
   const secret = req.headers.get("x-cron-secret");
   if (secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!acquireCronLock("affiliate-overrides")) {
+    return NextResponse.json({ message: "Already ran recently" }, { status: 200 });
   }
 
   const admin = adminClient();
@@ -59,7 +69,7 @@ export async function GET(req: Request) {
     .select("id, user_id, rank, total_paid_referrals, status")
     .eq("status", "active");
 
-  if (affiliateError) return NextResponse.json({ error: affiliateError.message }, { status: 500 });
+  if (affiliateError) return serverError("affiliate query error", affiliateError);
 
   let gen1Earners = 0;
   let gen2Earners = 0;
@@ -77,7 +87,7 @@ export async function GET(req: Request) {
       .eq("affiliate_id", affiliate.id)
       .eq("month", month);
 
-    if (existingOverrideError) return NextResponse.json({ error: existingOverrideError.message }, { status: 500 });
+    if (existingOverrideError) return serverError("existing override query error", existingOverrideError);
     const existingOverrideTypes = new Set(
       ((existingOverrides || []) as ExistingOverrideRow[]).map(row => row.override_type || "gen1")
     );
@@ -121,7 +131,7 @@ export async function GET(req: Request) {
           .gte("approved_at", startIso)
           .lt("approved_at", endIso);
 
-        if (topupError) return NextResponse.json({ error: topupError.message }, { status: 500 });
+        if (topupError) return serverError("gen1 topup query error", topupError);
 
         const teamTopupRevenue = (monthlyTopups || []).reduce((sum, topup) => sum + asMoneyNumber(topup.amount_paid), 0);
         const overrideRate = OVERRIDE_RATES[rank];
@@ -139,7 +149,7 @@ export async function GET(req: Request) {
             status: "pending",
           });
 
-          if (overrideError) return NextResponse.json({ error: overrideError.message }, { status: 500 });
+          if (overrideError) return serverError("gen1 override insert error", overrideError);
 
           const { error: earningError } = await admin.from("affiliate_earnings").insert({
             affiliate_id: affiliate.id,
@@ -150,7 +160,7 @@ export async function GET(req: Request) {
             status: "pending",
           });
 
-          if (earningError) return NextResponse.json({ error: earningError.message }, { status: 500 });
+          if (earningError) return serverError("gen1 earning insert error", earningError);
 
           gen1Earners += 1;
           totalGen1Override += amountEarned;
@@ -192,7 +202,7 @@ export async function GET(req: Request) {
       .gte("approved_at", startIso)
       .lt("approved_at", endIso);
 
-    if (gen2TopupError) return NextResponse.json({ error: gen2TopupError.message }, { status: 500 });
+    if (gen2TopupError) return serverError("gen2 topup query error", gen2TopupError);
 
     const gen2TopupRevenue = (monthlyGen2Topups || []).reduce((sum, topup) => sum + asMoneyNumber(topup.amount_paid), 0);
     const gen2OverrideRate = OVERRIDE_RATES_GEN2[rank];
@@ -210,7 +220,7 @@ export async function GET(req: Request) {
       status: "pending",
     });
 
-    if (gen2OverrideError) return NextResponse.json({ error: gen2OverrideError.message }, { status: 500 });
+    if (gen2OverrideError) return serverError("gen2 override insert error", gen2OverrideError);
 
     const { error: gen2EarningError } = await admin.from("affiliate_earnings").insert({
       affiliate_id: affiliate.id,
@@ -221,7 +231,7 @@ export async function GET(req: Request) {
       status: "pending",
     });
 
-    if (gen2EarningError) return NextResponse.json({ error: gen2EarningError.message }, { status: 500 });
+    if (gen2EarningError) return serverError("gen2 earning insert error", gen2EarningError);
 
     gen2Earners += 1;
     totalGen2Override += gen2AmountEarned;

@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinilas Pro Investor Teaser</title>
+  <style>
+    :root {
+      --bg: #0F172A;
+      --slide-bg: #1E293B;
+      --amber: #D97706;
+      --blue: #1877F2;
+      --white: #FFFFFF;
+      --muted: #94A3B8;
+      --divider: rgba(255,255,255,0.08);
+      --shadow: rgba(0,0,0,0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      font-size: 1.05rem;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg);
+    }
+
+    .slide {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      padding: 52px 28px 82px;
+    }
+
+    .slide[data-active="true"] {
+      display: flex;
+    }
+
+    .slide-inner {
+      width: min(920px, 100%);
+      max-height: calc(100vh - 134px);
+      overflow: hidden;
+      padding: 44px;
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(30,41,59,0.98), rgba(15,23,42,0.96));
+      box-shadow: 0 28px 80px var(--shadow);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 38px;
+      align-items: center;
+    }
+
+    .split.reverse {
+      grid-template-columns: 0.82fr 1.18fr;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    .section-label {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      color: var(--white);
+      font-size: 2.2rem;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .cover-title {
+      color: var(--amber);
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 900;
+    }
+
+    .subheadline {
+      margin: 18px 0 0;
+      color: var(--white);
+      font-size: 1.28rem;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    p {
+      margin: 16px 0 0;
+      line-height: 1.55;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 0.9rem;
+    }
+
+    .body-large {
+      margin-top: 14px;
+      font-size: 1.12rem;
+    }
+
+    .cover-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 58px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    div[data-label] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px dashed var(--amber);
+      border-radius: 8px;
+      background: var(--slide-bg);
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    div[data-label]::before {
+      content: attr(data-label);
+    }
+
+    #cover-photo {
+      width: 260px;
+      height: 320px;
+      justify-self: end;
+    }
+
+    #founder-photo {
+      width: 220px;
+      height: 260px;
+    }
+
+    #close-photo {
+      width: 180px;
+      height: 180px;
+      margin: 26px auto 20px;
+      border-radius: 999px;
+    }
+
+    ul {
+      margin: 20px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    .number-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 26px;
+    }
+
+    .number-item {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 16px;
+      padding: 18px;
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      background: rgba(15,23,42,0.48);
+    }
+
+    .number {
+      color: var(--amber);
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .number-item strong {
+      color: var(--white);
+    }
+
+    .number-item p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.48;
+    }
+
+    .amber-line {
+      margin-top: 24px;
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 34px 0 26px;
+      flex-wrap: nowrap;
+    }
+
+    .flow-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 128px;
+      min-height: 64px;
+      padding: 12px 14px;
+      border: 2px solid var(--amber);
+      border-radius: 8px;
+      background: rgba(30,41,59,0.92);
+      color: var(--white);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .arrow {
+      color: var(--amber);
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    .module-grid,
+    .revenue-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 26px;
+    }
+
+    .module-card,
+    .revenue-card {
+      min-height: 118px;
+      padding: 18px 18px 18px 20px;
+      border-radius: 8px;
+      background: rgba(15,23,42,0.56);
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .module-card {
+      border-left: 4px solid var(--amber);
+    }
+
+    .revenue-card {
+      border-top: 4px solid var(--blue);
+    }
+
+    .module-card strong,
+    .revenue-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--white);
+      font-size: 1.05rem;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .stat-card {
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      border: 1px solid rgba(24,119,242,0.72);
+      border-radius: 8px;
+      background: rgba(15,23,42,0.52);
+      text-align: center;
+    }
+
+    .stat-number {
+      color: var(--amber);
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .stat-label {
+      margin-top: 10px;
+      color: var(--white);
+      font-weight: 750;
+    }
+
+    .screenshot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .screenshot-row div[data-label] {
+      width: 100%;
+      height: 118px;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      margin-top: 30px;
+    }
+
+    .market-title {
+      display: inline-block;
+      padding-bottom: 8px;
+      border-bottom: 3px solid var(--amber);
+      color: var(--white);
+      font-weight: 850;
+    }
+
+    .gtm-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .gtm-card {
+      padding: 18px 20px;
+      border-left: 4px solid var(--amber);
+      border-radius: 8px;
+      background: rgba(15,23,42,0.58);
+    }
+
+    .gtm-title {
+      margin: 0 0 8px;
+      color: var(--amber);
+      font-weight: 850;
+    }
+
+    .gtm-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .goal {
+      margin-top: 10px;
+      color: var(--blue);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .quote {
+      max-width: 680px;
+      margin: 18px auto 0;
+      color: var(--white);
+      font-size: 2.4rem;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+
+    .contact {
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      margin-top: 6px;
+    }
+
+    .contact strong {
+      color: var(--white);
+    }
+
+    .contact .site {
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .nav-button,
+    .counter {
+      position: fixed;
+      z-index: 20;
+      bottom: 24px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .nav-button {
+      min-width: 106px;
+      min-height: 44px;
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      background: rgba(30,41,59,0.92);
+      color: var(--white);
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .nav-button:hover {
+      border-color: var(--amber);
+    }
+
+    .nav-button[hidden] {
+      display: none;
+    }
+
+    #prev {
+      left: 24px;
+    }
+
+    #next {
+      right: 24px;
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #111827;
+    }
+
+    .counter {
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        overflow: auto;
+      }
+
+      .deck,
+      .slide {
+        min-height: 100vh;
+        height: auto;
+      }
+
+      .slide {
+        padding: 24px 16px 92px;
+      }
+
+      .slide-inner {
+        max-height: none;
+        padding: 26px;
+      }
+
+      .split,
+      .split.reverse,
+      .market-grid,
+      .stat-grid,
+      .module-grid,
+      .revenue-grid,
+      .screenshot-row {
+        grid-template-columns: 1fr;
+      }
+
+      #cover-photo,
+      #founder-photo {
+        width: 100%;
+        max-width: 280px;
+        justify-self: start;
+      }
+
+      .flow {
+        flex-wrap: wrap;
+      }
+
+      .flow-box {
+        min-width: 118px;
+      }
+
+      h1,
+      h2 {
+        font-size: 1.9rem;
+      }
+
+      .quote {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .slide-inner {
+        padding: 22px;
+      }
+
+      .cover-title {
+        font-size: 2.7rem;
+      }
+
+      .cover-foot {
+        flex-direction: column;
+        margin-top: 34px;
+      }
+
+      .nav-button {
+        min-width: 88px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+    <section class="slide" data-active="true">
+      <div class="slide-inner split">
+        <div>
+          <p class="section-label">Investor Teaser</p>
+          <h1 class="cover-title">HINILAS PRO</h1>
+          <p class="subheadline">The Meta Ads Engine for Filipino Businesses</p>
+          <p class="muted body-large">Any business. Any industry. Any dialect.</p>
+          <div class="cover-foot">
+            <span>Presented by Kevin Rholette Allego</span>
+            <span>hinilas.pro</span>
+          </div>
+        </div>
+        <div id="cover-photo" class="media-frame" data-label="[KEN PHOTO]"></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner split reverse">
+        <div id="founder-photo" class="media-frame" data-label="[KEN PHOTO]"></div>
+        <div>
+          <p class="section-label">The Founder</p>
+          <h2>Who Is Ken</h2>
+          <ul>
+            <li>Meta Ads operator since 2021. Built and scaled multiple brands across eCommerce, services, food, and retail.</li>
+            <li>Managed ad accounts for dozens of Filipino businesses across every industry.</li>
+            <li>Saw the same problem everywhere: Filipino businesses spending on Meta Ads with no tools built for them.</li>
+            <li>Wrong copy. Wrong angles. Wrong targeting. Money wasted every day.</li>
+            <li>Built Hinilas Pro to solve it. Not as an experiment. As the tool he needed himself.</li>
+            <li>Now it runs live at hinilas.pro, serving Filipino businesses across the country.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">The Opportunity</p>
+        <h2>The Problem No One Is Solving</h2>
+        <div class="number-list">
+          <div class="number-item">
+            <div class="number">1</div>
+            <div>
+              <strong>Filipino businesses are spending billions on Meta Ads with no guidance.</strong>
+              <p>Over 1 million SMEs actively advertise on Facebook daily. Restaurants, clinics, retailers, coaches, service providers. All spending. Most losing.</p>
+            </div>
+          </div>
+          <div class="number-item">
+            <div class="number">2</div>
+            <div>
+              <strong>Every AI ad tool on the market is English-first and Western-built.</strong>
+              <p>AdCreative, Jasper, Copy.ai, none of them understand Taglish, Bisaya, COD funnels, or Messenger-based selling. They were not built for this market.</p>
+            </div>
+          </div>
+          <div class="number-item">
+            <div class="number">3</div>
+            <div>
+              <strong>Filipino businesses figure it out alone.</strong>
+              <p>Wrong angles, wrong copy, wrong creatives. The money bleeds and no one builds the solution because the market is invisible to foreign founders.</p>
+            </div>
+          </div>
+        </div>
+        <p class="amber-line centered">No local-language Meta Ads tool exists. That is the gap.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner centered">
+        <p class="section-label">The Product</p>
+        <h2>What Hinilas Pro Does</h2>
+        <p class="muted">Takes a business profile and turns it into a full campaign in under 10 minutes.</p>
+        <div class="flow" aria-label="Hinilas Pro campaign workflow">
+          <div class="flow-box">Research</div>
+          <div class="arrow">&gt;</div>
+          <div class="flow-box">Angles</div>
+          <div class="arrow">&gt;</div>
+          <div class="flow-box">Copy</div>
+          <div class="arrow">&gt;</div>
+          <div class="flow-box">Creative</div>
+          <div class="arrow">&gt;</div>
+          <div class="flow-box">Campaign Setup</div>
+        </div>
+        <p class="muted">In Taglish. In Bisaya. In the language their customers actually speak.</p>
+        <p class="body-large"><strong>Any business. Any industry. One tool. No experience required.</strong></p>
+        <p class="amber-line">Live at hinilas.pro</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">What It Does</p>
+        <h2>Six Modules. One Complete System.</h2>
+        <div class="module-grid">
+          <div class="module-card"><strong>Market Research</strong>AI-powered buyer psychology and competitor insights</div>
+          <div class="module-card"><strong>Winning Angles</strong>5 tested ad angles generated from research</div>
+          <div class="module-card"><strong>Sales Copy</strong>Full captions, scripts, and hooks in your dialect</div>
+          <div class="module-card"><strong>Ad Creatives</strong>AI-generated image ads in Filipino Meta Ads format</div>
+          <div class="module-card"><strong>Video Scripts</strong>7-day value content and talking head video scripts</div>
+          <div class="module-card"><strong>Campaign Setup</strong>Step-by-step Messenger Ads guide with unlockable video lessons</div>
+        </div>
+        <p class="muted small">Built for restaurants, clinics, retailers, coaches, service providers, and every Filipino business running Facebook ads.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">Proof It Works</p>
+        <h2>Early Traction</h2>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-number">[X]</div><div class="stat-label">Paying Users</div></div>
+          <div class="stat-card"><div class="stat-number">[X]</div><div class="stat-label">Top-up Transactions</div></div>
+          <div class="stat-card"><div class="stat-number">Live</div><div class="stat-label">Affiliate Program</div></div>
+        </div>
+        <ul>
+          <li>Credit-based revenue. Users buy credits and spend per action.</li>
+          <li>Tier lock system: Flex and Max users commit to 30-day plans.</li>
+          <li>Affiliate program built into the product. Distribution scales without headcount.</li>
+          <li>City workshop pipeline launching. Direct user acquisition at zero ad spend.</li>
+        </ul>
+        <div class="screenshot-row"><div class="media-frame" data-label="[SCREENSHOT: Admin Dashboard]"></div><div class="media-frame" data-label="[SCREENSHOT: App Interface]"></div></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">The Opportunity</p>
+        <h2>A Market No One Is Serving</h2>
+        <div class="market-grid">
+          <div>
+            <div class="market-title">Philippines</div>
+            <ul>
+              <li>1M+ SMEs actively advertising on Facebook</li>
+              <li>Fastest-growing digital ad market in Southeast Asia</li>
+              <li>High mobile usage, Messenger-first buying behavior</li>
+              <li>No local-language competitor exists</li>
+            </ul>
+          </div>
+          <div>
+            <div class="market-title">Southeast Asia Expansion</div>
+            <ul>
+              <li>Indonesia: 64M Facebook users, Bahasa-first market</li>
+              <li>Vietnam: 70M users, zero native AI ad tools</li>
+              <li>Thailand: same gap, same opportunity</li>
+              <li>Same product engine. Different language pack.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="amber-line centered body-large">We are not building for one country. We are building the category.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">How We Make Money</p>
+        <h2>Four Revenue Layers</h2>
+        <div class="revenue-grid">
+          <div class="revenue-card"><strong>Credit System</strong>Users buy credits per action. Every research, angle, copy, creative, and video generation costs credits. No subscription required to start.</div>
+          <div class="revenue-card"><strong>Tier Plans</strong>Flex and Max tiers lock users into 30-day commitments at higher credit volumes. Higher spend per user, higher retention.</div>
+          <div class="revenue-card"><strong>Affiliate Commissions</strong>Creators and partners earn on every user they bring in. Self-funding distribution layer already running inside the product.</div>
+          <div class="revenue-card"><strong>Agency and Team Plans (Roadmap)</strong>White-label access for marketing agencies. Team accounts for businesses running multiple brands. Expansion revenue without new product builds.</div>
+        </div>
+        <p class="muted">Low CAC. Recurring behavior. Compounding distribution.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <p class="section-label">How We Grow</p>
+        <h2>Three Channels. Zero Paid Ads.</h2>
+        <div class="gtm-list">
+          <div class="gtm-card">
+            <div class="gtm-title">City Workshops</div>
+            <p>Ken presents live in cities across the Philippines. Teaches Meta Ads fundamentals and introduces Hinilas Pro as the tool. Attendees become paying users on the spot. High trust, high conversion, built on Ken's personal brand.</p>
+            <div class="goal">Phase 1: 1,000 active users</div>
+          </div>
+          <div class="gtm-card">
+            <div class="gtm-title">Tech Creator Affiliates</div>
+            <p>Outreach to content creators in the digital marketing, business, and tech niche. They demo Hinilas Pro to their audience. Commission-based, built into the app. Scales distribution without scaling headcount.</p>
+            <div class="goal">Phase 2: 10,000 users, SEA expansion</div>
+          </div>
+          <div class="gtm-card">
+            <div class="gtm-title">Recruiter Leaders</div>
+            <p>A recruited team of leaders who actively grow the affiliate base and onboard new users. Leaders earn on the network they build. A self-sustaining growth layer that compounds over time.</p>
+            <div class="goal">Phase 3: Self-funding growth engine</div>
+          </div>
+        </div>
+        <p class="amber-line centered">Community-driven. Creator-amplified. Leader-multiplied.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner centered">
+        <p class="section-label">Let's Build This</p>
+        <div class="quote">"We are building the performance marketing infrastructure for Southeast Asia's next 10 million businesses."</div>
+        <p class="muted">Starting in the Philippines. Expanding across Southeast Asia. One language at a time.</p>
+        <div id="close-photo" class="media-frame" data-label="[KEN PHOTO]"></div>
+        <div class="contact">
+          <strong>Kevin Rholette Allego</strong>
+          <span class="muted">Founder, Hinilas Pro</span>
+          <span class="muted">kevinrholette@gmail.com</span>
+          <span class="site">hinilas.pro</span>
+        </div>
+        <p class="amber-line body-large">If this is aligned with where you invest, let us talk.</p>
+      </div>
+    </section>
+
+    <button id="prev" class="nav-button" type="button">Prev</button>
+    <div id="counter" class="counter">1 / 10</div>
+    <button id="next" class="nav-button" type="button">Next</button>
+  </main>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+      var prev = document.getElementById('prev');
+      var next = document.getElementById('next');
+      var counter = document.getElementById('counter');
+      var current = 0;
+
+      function showSlide(index) {
+        current = Math.max(0, Math.min(index, slides.length - 1));
+        slides.forEach(function (slide, slideIndex) {
+          if (slideIndex === current) {
+            slide.setAttribute('data-active', 'true');
+          } else {
+            slide.removeAttribute('data-active');
+          }
+        });
+        prev.hidden = current === 0;
+        next.hidden = current === slides.length - 1;
+        counter.textContent = String(current + 1) + ' / ' + String(slides.length);
+      }
+
+      function goNext() {
+        showSlide(current + 1);
+      }
+
+      function goPrev() {
+        showSlide(current - 1);
+      }
+
+      prev.addEventListener('click', function (event) {
+        event.stopPropagation();
+        goPrev();
+      });
+
+      next.addEventListener('click', function (event) {
+        event.stopPropagation();
+        goNext();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+          goNext();
+        }
+        if (event.key === 'ArrowLeft') {
+          goPrev();
+        }
+      });
+
+      document.querySelector('.deck').addEventListener('click', function (event) {
+        if (event.target.tagName !== 'BUTTON') {
+          goNext();
+        }
+      });
+
+      showSlide(0);
+    }());
+  </script>
+</body>
+</html>

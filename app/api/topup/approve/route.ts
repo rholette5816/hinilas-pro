@@ -3,6 +3,8 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { sendMetaEvent } from "@/lib/meta-capi";
 import { grantAffiliateCommissions } from "@/lib/affiliate";
+import { logAdminAction } from "@/lib/audit-log";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 async function grantReferralReward(supabase: SupabaseClient, userId: string, creditsPurchased: number) {
   const { data: buyer } = await supabase
@@ -12,6 +14,16 @@ async function grantReferralReward(supabase: SupabaseClient, userId: string, cre
     .single();
 
   if (!buyer?.referred_by || buyer.referral_rewarded) return;
+
+  const { data: rewardResult } = await supabase
+    .from("user_data")
+    .update({ referral_rewarded: true })
+    .eq("user_id", userId)
+    .eq("referral_rewarded", false)
+    .select("user_id")
+    .single();
+
+  if (!rewardResult) return;
 
   const { data: referrer } = await supabase
     .from("user_data")
@@ -36,8 +48,6 @@ async function grantReferralReward(supabase: SupabaseClient, userId: string, cre
     amount: reward,
     description: `Referral reward — your referral made their first purchase`,
   });
-
-  await supabase.from("user_data").update({ referral_rewarded: true }).eq("user_id", userId);
 }
 
 // Uses service role key — bypasses RLS to update any user's credits
@@ -49,39 +59,42 @@ function adminClient() {
 }
 
 export async function POST(req: Request) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`topup-approve:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   // Verify secret so only your Google Apps Script can call this
   const secret = req.headers.get("x-webhook-secret");
   if (secret !== process.env.TOPUP_WEBHOOK_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { amount, senderName } = await req.json();
-  if (!amount) return NextResponse.json({ error: "Missing amount" }, { status: 400 });
+  const { id: requestId, senderName } = await req.json();
+  if (!requestId) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   const supabase = adminClient();
 
-  // Find the most recent pending request matching this amount (within last 24 hours)
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { data: requests } = await supabase
-    .from("top_up_requests")
-    .select("*")
-    .eq("status", "pending")
-    .eq("amount_paid", amount)
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(1);
-
-  if (!requests || requests.length === 0) {
-    return NextResponse.json({ error: "No matching pending request found" }, { status: 404 });
-  }
-
-  const request = requests[0];
-
-  // Mark request as approved
-  await supabase
+  const { data: request, error: updateError } = await supabase
     .from("top_up_requests")
     .update({ status: "approved", approved_at: new Date().toISOString(), sender_name: senderName || null })
-    .eq("id", request.id);
+    .eq("id", requestId)
+    .eq("status", "pending")
+    .select("*")
+    .maybeSingle();
+
+  if (updateError) {
+    console.error("[topup-approve] approval update error:", updateError);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
+
+  if (!request) {
+    return NextResponse.json({ message: "Already approved or not found" }, { status: 200 });
+  }
 
   // Fetch current credits
   const { data: userData } = await supabase
@@ -122,7 +135,7 @@ export async function POST(req: Request) {
     user_id: request.user_id,
     type: "topup",
     amount: request.credits_requested,
-    description: `Top-up approved — ${request.package} (₱${amount})`,
+    description: `Top-up approved — ${request.package} (₱${request.amount_paid})`,
   });
 
   await sendMetaEvent({
@@ -136,7 +149,7 @@ export async function POST(req: Request) {
     },
     customData: {
       currency: "PHP",
-      value: Number(amount) || 0,
+      value: Number(request.amount_paid) || 0,
       content_name: request.package,
       content_category: "Top Up",
     },
@@ -146,7 +159,14 @@ export async function POST(req: Request) {
   await grantReferralReward(supabase, request.user_id, request.credits_requested);
 
   // Affiliate cash commissions - writes affiliate_earnings rows
-  await grantAffiliateCommissions(supabase, request, amount);
+  await grantAffiliateCommissions(supabase, request, request.amount_paid);
+
+  await logAdminAction({
+    adminEmail: "webhook",
+    action: "topup_approved",
+    targetId: request.id,
+    details: { source: "topup_approve_api", senderName: senderName || null },
+  });
 
   // Notify user via email
   try {
@@ -161,7 +181,7 @@ export async function POST(req: Request) {
           <p style="font-size:16px;line-height:1.6;">Na-confirm na ang bayad mo. Nandoon na ang credits mo — ready ka na.</p>
           <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:20px;margin:24px 0;">
             <div style="font-size:32px;font-weight:900;color:#16A34A;margin-bottom:4px;">+${request.credits_requested} credits</div>
-            <div style="font-size:13px;color:#6B7280;">${request.package} — ₱${amount} · Credits never expire</div>
+            <div style="font-size:13px;color:#6B7280;">${request.package} — ₱${request.amount_paid} · Credits never expire</div>
           </div>
           <p style="font-size:15px;line-height:1.6;"><strong>Eto na ang next steps mo:</strong></p>
           <ol style="font-size:15px;line-height:1.8;padding-left:20px;color:#374151;">

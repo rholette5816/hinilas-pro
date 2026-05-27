@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { adminClient, calculateWithdrawableEarnings, MIN_PAYOUT_AMOUNT, sendTelegramNotification } from "@/lib/affiliate";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = checkRateLimit(`affiliate-payout:${user.id}`, { limit: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
 
   const admin = adminClient();
 
@@ -49,7 +58,10 @@ export async function POST() {
     status: "requested",
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[affiliate-payout] payout insert error:", error);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   const { data: userData } = await admin
     .from("user_data")

@@ -8,8 +8,6 @@ import { useApp, buildUserContext } from "@/lib/context";
 import { MODULE_PROMPTS, HILAS_KNOWLEDGE } from "@/lib/knowledge";
 import { createClient } from "@/lib/supabase/client";
 
-const STORAGE_KEY = "hinilas_last_analysis";
-
 const BASIC_COLUMNS = [
   "Conversations Started",
   "Cost per Messaging Conversation",
@@ -60,7 +58,7 @@ function PInput({ label, value, onChange, placeholder }: { label: string; value:
 type AnalyzeVideoKey = "analyze_basic" | "analyze_advanced";
 
 export default function AnalyzePage() {
-  const { setup, credits, refreshCredits, plan } = useApp();
+  const { setup, credits, refreshCredits, plan, analyzeOutput, setAnalyzeOutput } = useApp();
   const router = useRouter();
   const [mode, setMode] = useState<Mode | null>(null);
   const isLite = plan === "lite";
@@ -144,20 +142,11 @@ export default function AnalyzePage() {
     });
   }, []);
 
-  // Restore last analyses on load
+  // Restore last analyses from context (Supabase-persisted)
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.basic?.output) { setOutputBasic(parsed.basic.output); setSavedAtBasic(parsed.basic.savedAt); }
-      if (parsed.advanced?.output) { setOutputAdvanced(parsed.advanced.output); setSavedAtAdvanced(parsed.advanced.savedAt); }
-      // legacy single-result migration
-      if (parsed.output && parsed.mode) {
-        if (parsed.mode === "basic") { setOutputBasic(parsed.output); setSavedAtBasic(parsed.savedAt); }
-        else { setOutputAdvanced(parsed.output); setSavedAtAdvanced(parsed.savedAt); }
-      }
-    }
-  }, []);
+    if (analyzeOutput?.basic?.output) { setOutputBasic(analyzeOutput.basic.output); setSavedAtBasic(analyzeOutput.basic.savedAt); }
+    if (analyzeOutput?.advanced?.output) { setOutputAdvanced(analyzeOutput.advanced.output); setSavedAtAdvanced(analyzeOutput.advanced.savedAt); }
+  }, [analyzeOutput]);
 
   const output = mode === "advanced" ? outputAdvanced : outputBasic;
   const savedAt = mode === "advanced" ? savedAtAdvanced : savedAtBasic;
@@ -693,8 +682,7 @@ show(0);
         setOutputBasic(result);
         const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
         setSavedAtBasic(ts);
-        const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, basic: { output: result, savedAt: ts } }));
+        setAnalyzeOutput({ ...analyzeOutput, basic: { output: result, savedAt: ts } });
       } else {
         // Deduct 2 credits for advanced analysis
         if (credits < 2) {
@@ -729,8 +717,7 @@ show(0);
         setOutputAdvanced(result);
         const ts = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
         setSavedAtAdvanced(ts);
-        const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, advanced: { output: result, savedAt: ts } }));
+        setAnalyzeOutput({ ...analyzeOutput, advanced: { output: result, savedAt: ts } });
       }
     } catch {
       if (mode === "basic") setOutputBasic("Something went wrong. Try again.");
@@ -1048,11 +1035,8 @@ show(0);
               </p>
               <button
                 onClick={() => {
-                  if (mode === "advanced") { setOutputAdvanced(""); setSavedAtAdvanced(null); }
-                  else { setOutputBasic(""); setSavedAtBasic(null); }
-                  const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-                  if (mode === "advanced") delete prev.advanced; else delete prev.basic;
-                  localStorage.setItem(STORAGE_KEY, JSON.stringify(prev));
+                  if (mode === "advanced") { setOutputAdvanced(""); setSavedAtAdvanced(null); setAnalyzeOutput({ ...analyzeOutput, advanced: null }); }
+                  else { setOutputBasic(""); setSavedAtBasic(null); setAnalyzeOutput({ ...analyzeOutput, basic: null }); }
                 }}
                 className="text-xs text-red-500 hover:text-red-400"
               >

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 const ALLOWED_PATH_PREFIXES = ["/storage/v1/object/public/ad-creative/"];
 const FETCH_TIMEOUT_MS = 10000;
@@ -19,6 +20,15 @@ function getAllowedHosts() {
 }
 
 export async function GET(req: NextRequest) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`proxy-image:${ip}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const rawUrl = req.nextUrl.searchParams.get("url");
   if (!rawUrl) {
     return NextResponse.json({ error: "Missing url" }, { status: 400 });

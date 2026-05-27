@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function adminClient() {
   return createAdminClient(
@@ -17,6 +18,15 @@ function getBadge(count: number): string {
 }
 
 export async function GET(req: NextRequest) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`launch-leaderboard:${ip}`, { limit: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const { searchParams } = req.nextUrl;
   const period = searchParams.get("period") || "alltime"; // alltime | month
 

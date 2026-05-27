@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { isOwnerUser } from "@/lib/admin";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const TRIGGER_THRESHOLD = 3;
 
@@ -16,6 +17,14 @@ export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ shouldShow: false });
+
+  const rl = checkRateLimit(`feedback-trigger-check:${user.id}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
 
   // Owner accounts never get the auto-prompt
   if (isOwnerUser(user)) return NextResponse.json({ shouldShow: false });

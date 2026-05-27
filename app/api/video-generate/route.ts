@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { GoogleGenAI } from "@google/genai";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
@@ -22,6 +23,18 @@ export async function POST(req: NextRequest) {
   const { prompt, clipIndex } = await req.json();
   if (!prompt || clipIndex === undefined) {
     return NextResponse.json({ error: "prompt and clipIndex are required" }, { status: 400 });
+  }
+
+  const ip = getRequestIp(req);
+  const rateLimit = checkRateLimit(`video-generate:${user.id}:${ip}`, { limit: 3, windowMs: 60_000 });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil(rateLimit.retryAfterMs / 1000)) },
+      }
+    );
   }
 
   // Credit check
@@ -95,7 +108,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ operationName, sessionTs, creditsRemaining: newCredits });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Video generation failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[video-generate] generation error:", err);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

@@ -1,8 +1,18 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { adminClient } from "@/lib/affiliate";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = getRequestIp(req);
+  const rl = checkRateLimit(`affiliate-register:${ip}`, { limit: 3, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,7 +59,10 @@ export async function POST(req: Request) {
     rank: "Partner",
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[affiliate-register] affiliate insert error:", error);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

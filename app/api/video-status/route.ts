@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 120;
 
@@ -53,6 +54,14 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = checkRateLimit(`video-status:${user.id}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const { operationName, clipIndex, sessionTs, angle } = await req.json();
   if (!operationName || clipIndex === undefined) {
     return NextResponse.json({ error: "operationName and clipIndex required" }, { status: 400 });
@@ -98,7 +107,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ done: true, url, error: null });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ done: false, url: null, error: message });
+    console.error("[video-status] status check error:", err);
+    return NextResponse.json({ done: false, url: null, error: "Something went wrong. Please try again." });
   }
 }
