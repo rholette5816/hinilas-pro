@@ -222,7 +222,7 @@ function scoreColor(score: number) {
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-xl ${className}`} style={{ background: "#111827", border: "1px solid rgba(255,255,255,0.08)" }}>
+    <div className={`rounded-xl ${className}`} style={{ background: "#1E293B", border: "1px solid rgba(217,119,6,0.15)" }}>
       {children}
     </div>
   );
@@ -384,7 +384,7 @@ function FunnelTable({ steps }: { steps: ActivationStep[] }) {
 function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onCopy: () => void; copyLabel: string }) {
   return (
     <Card className="overflow-hidden">
-      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+      <div className="px-5 py-4 border-b flex items-center justify-between gap-3 flex-wrap" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
         <div>
           <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#D97706" }}>Generated Report</p>
           <h2 className="text-white font-black text-lg">Report & Analysis</h2>
@@ -393,18 +393,18 @@ function ReportPanel({ report, onCopy, copyLabel }: { report: ReportPayload; onC
         <button
           onClick={onCopy}
           className="px-4 py-2 rounded-xl text-xs font-bold transition-all hover:brightness-110"
-          style={{ background: "#1E293B", color: "#CBD5E1", border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ background: "#0F172A", color: "#CBD5E1", border: "1px solid rgba(217,119,6,0.2)" }}
         >
           {copyLabel}
         </button>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr]">
-        <div className="p-5 space-y-4" style={{ borderRight: "1px solid #e4e6eb" }}>
+        <div className="p-5 space-y-4" style={{ borderRight: "1px solid rgba(217,119,6,0.15)" }}>
           <KPICard label="Health Score" value={`${report.summary.healthScore}/100`} tone={scoreColor(report.summary.healthScore)} />
           <KPICard label="Critical Alerts" value={formatNumber(report.summary.criticalAlerts)} tone={report.summary.criticalAlerts ? "#EF4444" : "#22C55E"} />
           <KPICard label="Watch Alerts" value={formatNumber(report.summary.warningAlerts)} tone={report.summary.warningAlerts ? "#D97706" : "#22C55E"} />
           {report.summary.weakestFunnelStep && (
-            <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div className="rounded-xl p-4" style={{ background: "rgba(217,119,6,0.06)", border: "1px solid rgba(217,119,6,0.15)" }}>
               <p className="text-xs uppercase font-bold tracking-widest" style={{ color: "#94A3B8" }}>Weakest Funnel Step</p>
               <p className="text-white font-bold mt-1">{report.summary.weakestFunnelStep}</p>
             </div>
@@ -591,15 +591,18 @@ export default function AdminDashboardClient() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0B1120" }}>
-        <p style={{ color: "#94A3B8" }}>Loading dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0F172A" }}>
+        <div className="text-center">
+          <div className="w-10 h-10 rounded-full border-2 border-t-transparent mx-auto mb-4 animate-spin" style={{ borderColor: "#D97706", borderTopColor: "transparent" }} />
+          <p style={{ color: "#94A3B8" }}>Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error || !stats) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#0B1120" }}>
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#0F172A" }}>
         <Card className="px-6 py-5 text-center">
           <p className="text-white font-semibold mb-2">Could not load admin dashboard</p>
           <p style={{ color: "#94A3B8" }}>{error || "Unknown error"}</p>
@@ -626,14 +629,17 @@ export default function AdminDashboardClient() {
   ];
 
   return (
-    <div className="min-h-screen px-4 md:px-6 py-8" style={{ background: "#0B1120", color: "#fff" }}>
+    <div className="min-h-screen px-4 md:px-6 py-8" style={{ background: "#0F172A", color: "#fff" }}>
       <div className="max-w-7xl mx-auto">
 
         <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#1877F2" }}>Owner Dashboard</p>
-            <h1 className="text-3xl font-black text-white">Command Center</h1>
-            <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>Live app awareness - refreshes every 60s while active</p>
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3" style={{ background: "rgba(217,119,6,0.12)", border: "1px solid rgba(217,119,6,0.3)" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#D97706" }}>Owner Dashboard</p>
+            </div>
+            <h1 className="text-3xl font-black" style={{ background: "linear-gradient(90deg, #fff 60%, #D97706)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Command Center</h1>
+            <p className="text-sm mt-1" style={{ color: "#64748B" }}>Live — refreshes every 60s</p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -644,12 +650,12 @@ export default function AdminDashboardClient() {
             >
               {reportLoading ? "Generating..." : "Generate Report & Analysis"}
             </button>
-            <Link href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#1E293B", color: "#94A3B8", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <Link href="/" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110" style={{ background: "#0F172A", color: "#94A3B8", border: "1px solid rgba(217,119,6,0.2)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
               Back to App
             </Link>
-            <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#94A3B8" }}>Last Refresh</p>
+            <div className="rounded-xl px-4 py-3 text-right" style={{ background: "#0F172A", border: "1px solid rgba(217,119,6,0.2)" }}>
+              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#64748B" }}>Last Refresh</p>
               <p className="text-sm text-white mt-1">{timeAgo(stats.fetchedAt)}</p>
             </div>
           </div>
@@ -687,8 +693,8 @@ export default function AdminDashboardClient() {
               onClick={() => setActiveTab(tab.key)}
               className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
               style={activeTab === tab.key
-                ? { background: "#1877F2", color: "#fff" }
-                : { background: "#1E293B", color: "#94A3B8", border: "1px solid rgba(255,255,255,0.08)" }}
+                ? { background: "linear-gradient(135deg, #1877F2, #D97706)", color: "#fff", border: "none" }
+                : { background: "#0F172A", color: "#64748B", border: "1px solid rgba(217,119,6,0.15)" }}
             >
               {tab.label}
             </button>
@@ -758,12 +764,12 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="Live Activity" sub="Last 20 credit transactions" />
               </div>
               <div className="max-h-80 overflow-auto">
                 {recentActivity.map((a, i) => (
-                  <div key={`${a.userId}-${a.createdAt}-${i}`} className="px-5 py-3 flex items-center justify-between gap-3" style={{ borderTop: i === 0 ? "none" : "1px solid #e4e6eb" }}>
+                  <div key={`${a.userId}-${a.createdAt}-${i}`} className="px-5 py-3 flex items-center justify-between gap-3" style={{ borderTop: i === 0 ? "none" : "1px solid rgba(255,255,255,0.06)" }}>
                     <div className="min-w-0">
                       <p className="text-white font-semibold text-sm truncate">{a.username}</p>
                       <p className="text-xs mt-0.5 truncate" style={{ color: "#94A3B8" }}>{a.type} - {a.description || "No description"}</p>
@@ -804,12 +810,12 @@ export default function AdminDashboardClient() {
             </div>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="Top 10 Power Users" sub="Highest credit consumption - strongest upsell and testimonial candidates" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <thead style={{ background: "rgba(217,119,6,0.08)" }}>
                     <tr>
                       {["#", "User", "Email", "Plan", "Credits Used", "Credits Left"].map(h => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
@@ -818,7 +824,7 @@ export default function AdminDashboardClient() {
                   </thead>
                   <tbody>
                     {topUsers.map((u, i) => (
-                      <tr key={u.userId} style={{ borderTop: "1px solid #e4e6eb" }}>
+                      <tr key={u.userId} style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                         <td className="px-4 py-3 text-gray-500 text-xs font-bold">#{i + 1}</td>
                         <td className="px-4 py-3 text-white font-medium">{u.username}</td>
                         <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{u.email || "N/A"}</td>
@@ -936,12 +942,12 @@ export default function AdminDashboardClient() {
             </Card>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="Token Breakdown" sub="Input, output, and estimated cost" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <thead style={{ background: "rgba(217,119,6,0.08)" }}>
                     <tr>
                       {["Department", "Calls", "Input", "Output", "Total", "Cost"].map(h => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
@@ -953,7 +959,7 @@ export default function AdminDashboardClient() {
                       const m = tokenStats.byModule[mod] || { prompt: 0, completion: 0, total: 0, calls: 0 };
                       const cost = (m.prompt / 1_000_000) * 0.15 + (m.completion / 1_000_000) * 0.60;
                       return (
-                        <tr key={mod} style={{ borderTop: "1px solid #e4e6eb" }}>
+                        <tr key={mod} style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                           <td className="px-4 py-3 text-white font-medium">{DEPT_LABELS[mod]}</td>
                           <td className="px-4 py-3 text-white">{formatNumber(m.calls)}</td>
                           <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatNumber(m.prompt)}</td>
@@ -973,12 +979,12 @@ export default function AdminDashboardClient() {
         {activeTab === "users" && (
           <div className="space-y-6">
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="All Users" sub="Sortable user list" />
               </div>
               <div className="overflow-auto max-h-[700px]">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <thead style={{ background: "rgba(217,119,6,0.08)" }}>
                     <tr>
                       {[
                         { key: "username", label: "Username" },
@@ -1001,7 +1007,7 @@ export default function AdminDashboardClient() {
                   </thead>
                   <tbody>
                     {sortedUsers.map(u => (
-                      <tr key={u.userId} style={{ borderTop: "1px solid #e4e6eb" }}>
+                      <tr key={u.userId} style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                         <td className="px-4 py-3 text-white font-medium">{u.username}</td>
                         <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{u.email || "N/A"}</td>
                         <td className="px-4 py-3"><PlanPill plan={u.plan} /></td>
@@ -1058,12 +1064,12 @@ export default function AdminDashboardClient() {
             )}
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="Partner Payouts" sub="Send GCash first, then mark the payout as paid" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <thead style={{ background: "rgba(217,119,6,0.08)" }}>
                     <tr>
                       {["Affiliate", "GCash", "Amount", "Requested", "Status", "Action"].map(h => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
@@ -1074,7 +1080,7 @@ export default function AdminDashboardClient() {
                     {affiliatePayouts.map(payout => {
                       const isPaid = payout.status === "paid";
                       return (
-                        <tr key={payout.id} style={{ borderTop: "1px solid #e4e6eb" }}>
+                        <tr key={payout.id} style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                           <td className="px-4 py-3">
                             <p className="text-white font-semibold">{payout.username}</p>
                             <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{payout.email || "N/A"} - {payout.rank}</p>
@@ -1123,12 +1129,12 @@ export default function AdminDashboardClient() {
             </Card>
 
             <Card className="overflow-hidden">
-              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(217,119,6,0.15)" }}>
                 <SectionHeader title="Override Payouts" sub="Monthly team override payouts waiting for manual GCash send" />
               </div>
               <div className="overflow-auto">
                 <table className="w-full text-sm">
-                  <thead style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <thead style={{ background: "rgba(217,119,6,0.08)" }}>
                     <tr>
                       {["Partner", "Type", "Month", "Active", "Team Revenue", "Rate", "Amount", "Action"].map(h => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>{h}</th>
@@ -1139,7 +1145,7 @@ export default function AdminDashboardClient() {
                     {affiliateOverridePayouts.map(override => {
                       const isPaid = override.status === "paid";
                       return (
-                        <tr key={override.id} style={{ borderTop: "1px solid #e4e6eb" }}>
+                        <tr key={override.id} style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                           <td className="px-4 py-3">
                             <p className="text-white font-semibold">{override.username}</p>
                             <p className="text-xs mt-0.5" style={{ color: "#94A3B8" }}>{override.email || "N/A"} - {override.rank}</p>
