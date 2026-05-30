@@ -120,9 +120,15 @@ export async function GET(req: NextRequest) {
   const newCredits = userData.credits_remaining + request.credits_requested;
   const newTotal = userData.credits_total + request.credits_requested;
 
+  let lockedTier: "Flex" | "Max" | null = null;
+  if (request.credits_requested >= 500) lockedTier = "Max";
+  else if (request.credits_requested >= 150) lockedTier = "Flex";
+
+  const tierUpdate = lockedTier ? { locked_tier: lockedTier, tier_expires_at: null } : {};
+
   await supabase
     .from("user_data")
-    .update({ credits_remaining: newCredits, credits_total: newTotal })
+    .update({ credits_remaining: newCredits, credits_total: newTotal, ...tierUpdate })
     .eq("user_id", request.user_id);
 
   await supabase.from("credit_transactions").insert({
