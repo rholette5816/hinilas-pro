@@ -61,7 +61,10 @@ export async function POST(req: Request) {
 
   const { package: pkg, referenceNumber, amount, credits, screenshotUrl } = await req.json();
 
-  const { data: insertedRequest } = await adminClient()
+  const admin = adminClient();
+
+  // Insert as already approved
+  const { data: insertedRequest } = await admin
     .from("top_up_requests")
     .insert({
       user_id: user.id,
@@ -71,45 +74,76 @@ export async function POST(req: Request) {
       credits_requested: credits,
       reference_number: referenceNumber,
       screenshot_url: screenshotUrl || null,
-      status: "pending",
+      status: "approved",
+      approved_at: new Date().toISOString(),
     })
     .select("id")
     .single();
 
-  const requestId = insertedRequest?.id;
+  // Grant credits immediately
+  const { data: userData } = await admin
+    .from("user_data")
+    .select("credits_remaining, credits_total")
+    .eq("user_id", user.id)
+    .single();
 
+  const newCredits = (userData?.credits_remaining || 0) + credits;
+  const newTotal = (userData?.credits_total || 0) + credits;
+
+  let lockedTier: "Flex" | "Max" | null = null;
+  if (credits >= 500) lockedTier = "Max";
+  else if (credits >= 150) lockedTier = "Flex";
+
+  const tierUpdate = lockedTier ? { locked_tier: lockedTier, tier_expires_at: null } : {};
+
+  await admin
+    .from("user_data")
+    .update({ credits_remaining: newCredits, credits_total: newTotal, ...tierUpdate })
+    .eq("user_id", user.id);
+
+  await admin.from("credit_transactions").insert({
+    user_id: user.id,
+    type: "topup",
+    amount: credits,
+    description: `Top-up — ${pkg} (₱${amount})`,
+  });
+
+  // Notify Ken via Telegram with screenshot to verify
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hinilas.pro";
+  const requestId = insertedRequest?.id;
   const approveUrl = requestId
     ? `${baseUrl}/api/topup/approve-link?token=${generateApprovalToken(requestId)}`
     : `${baseUrl}/admin`;
 
+  await sendTelegramNotification(
+    `💰 Payment Submitted — Credits Auto-Granted\n\nUser: ${user.email}\nPackage: ${pkg}\nAmount: ₱${amount}\nCredits added: +${credits}\nRef#: ${referenceNumber || "not provided"}${lockedTier ? `\nTier: ${lockedTier}` : ""}\n\nVerify screenshot above. If fake, deduct from admin:\n${baseUrl}/admin`,
+    screenshotUrl || undefined
+  );
+
+  // Notify user via email
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "Hinilas Pro <onboarding@resend.dev>",
-      to: process.env.FEEDBACK_EMAIL || "admin@hinilas.pro",
-      subject: `New Top-Up Request — ${pkg}`,
+      to: user.email || "",
+      subject: "Your credits have been added — Hinilas Pro",
       html: `
-        <h2>New Top-Up Request</h2>
-        <table style="font-family:Arial;font-size:14px;border-collapse:collapse">
-          <tr><td style="padding:6px 12px;color:#6B7280">User</td><td style="padding:6px 12px"><strong>${user.email}</strong></td></tr>
-          <tr><td style="padding:6px 12px;color:#6B7280">Package</td><td style="padding:6px 12px"><strong>${pkg}</strong></td></tr>
-          <tr><td style="padding:6px 12px;color:#6B7280">Amount Paid</td><td style="padding:6px 12px"><strong>₱${amount}</strong></td></tr>
-          <tr><td style="padding:6px 12px;color:#6B7280">Credits to Add</td><td style="padding:6px 12px"><strong>${credits} credits</strong></td></tr>
-        </table>
-        ${screenshotUrl ? `<p style="margin-top:16px;color:#6B7280;font-size:13px;margin-bottom:8px">Payment Screenshot:</p><img src="${screenshotUrl}" alt="Payment Screenshot" style="max-width:400px;border-radius:8px;border:1px solid #374151" />` : ""}
-        <p style="margin-top:20px"><a href="${approveUrl}" style="background:#22c55e;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">Approve Credits</a></p>
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#1C1E21;color:#fff;border-radius:12px">
+          <h2 style="color:#0866FF;margin-bottom:8px">Credits Added</h2>
+          <p style="color:#94A3B8;margin-bottom:24px">Your payment has been received and your credits are now live.</p>
+          <div style="background:#111827;border-radius:10px;padding:20px;margin-bottom:24px">
+            <div style="font-size:36px;font-weight:900;color:#22c55e;margin-bottom:4px">+${credits} credits</div>
+            <div style="font-size:13px;color:#64748B">${pkg} — ₱${amount}</div>
+          </div>
+          <a href="${baseUrl}" style="display:inline-block;background:#D97706;color:#000;font-weight:bold;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px">Start Using Hinilas Pro</a>
+        </div>
       `,
     });
   } catch {
-    // Email failure doesn't block the request
+    // Email failure doesn't block
   }
 
-  // Telegram notification
-  await sendTelegramNotification(
-    `💰 New Top-Up Request\n\nUser: ${user.email}\nPackage: ${pkg}\nAmount: ₱${amount}\nCredits: ${credits}\n\nApprove here:\n${approveUrl}`,
-    screenshotUrl || undefined
-  );
+  void approveUrl; // kept for future manual override use
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, creditsAdded: credits, newBalance: newCredits });
 }
