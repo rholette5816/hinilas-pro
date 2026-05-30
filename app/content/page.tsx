@@ -43,10 +43,6 @@ const HOOK_STYLE_OPTIONS: { value: HookStyle; label: string }[] = [
   { value: "hereswhy", label: "Here's Why" },
 ];
 
-const MOCK_POSTS: ContentPost[] = POST_TYPES.map((postType, index) => ({
-  type: postType.type,
-  caption: `Sample ${index + 1}: ${postType.type}\n\nThis is preview copy for your content pack. Generate your own captions to replace this with AI-written content for your business.\n\nMessage us to learn more.`,
-}));
 
 function parseContentPosts(raw: string): ContentPost[] {
   const cleaned = raw
@@ -209,12 +205,7 @@ export default function ContentPage() {
     window.setTimeout(() => setCopiedScriptBatchIndex(null), 2000);
   }
 
-  function previewMockData() {
-    setPosts(MOCK_POSTS);
-    setError("");
-  }
-
-  function renderLanguageSelector() {
+function renderLanguageSelector() {
     return (
       <div className="mb-6">
         <label className="block text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-3">
@@ -391,14 +382,6 @@ export default function ContentPage() {
                   style={{ background: "#1877F2", animation: "btnGlowBlue 2s ease-in-out infinite alternate" }}
                 >
                   {loading ? "Generating..." : posts.length > 0 ? "Regenerate Content Pack - 7 credits" : "Generate Content Pack - 7 credits"}
-                </button>
-                <button
-                  onClick={previewMockData}
-                  disabled={loading}
-                  className="px-6 py-3 rounded-lg text-sm font-semibold transition-colors disabled:opacity-40"
-                  style={{ background: "#f2f3f5", color: "#374151", border: "1px solid #E4E6EB" }}
-                >
-                  Preview Mock Data
                 </button>
               </div>
 
