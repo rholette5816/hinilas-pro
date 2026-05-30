@@ -57,6 +57,21 @@ async function grantReferralReward(supabase: SupabaseClient, userId: string, cre
 
 }
 
+async function sendTelegramNotification(message: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatIds = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map(s => s.trim()).filter(Boolean);
+  if (!botToken || chatIds.length === 0) return;
+  for (const chatId of chatIds) {
+    try {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message }),
+      });
+    } catch { /* silent */ }
+  }
+}
+
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -167,6 +182,10 @@ export async function GET(req: NextRequest) {
     targetId: request.id,
     details: { source: "topup_approve_link" },
   });
+
+  await sendTelegramNotification(
+    `✅ Top-Up Approved (email link)\n\nUser: ${request.user_email}\nPackage: ${request.package}\nAmount: ₱${request.amount_paid}\nCredits added: +${request.credits_requested}\nNew balance: ${newCredits} credits${lockedTier ? `\nTier locked: ${lockedTier}` : ""}`
+  );
 
   // Notify user via email
   try {
