@@ -434,6 +434,9 @@ export default function AdminDashboardClient() {
   const [approvingPayoutId, setApprovingPayoutId] = useState("");
   const [approvingOverrideId, setApprovingOverrideId] = useState("");
   const [payoutMsg, setPayoutMsg] = useState("");
+  const [editingCreditsUserId, setEditingCreditsUserId] = useState<string | null>(null);
+  const [editingCreditsValue, setEditingCreditsValue] = useState("");
+  const [savingCredits, setSavingCredits] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -563,6 +566,27 @@ export default function AdminDashboardClient() {
       setPayoutMsg(err instanceof Error ? err.message : "Failed to approve override");
     } finally {
       setApprovingOverrideId("");
+    }
+  }
+
+  async function handleSaveCredits(userId: string) {
+    const credits = parseInt(editingCreditsValue, 10);
+    if (isNaN(credits) || credits < 0) return;
+    setSavingCredits(true);
+    try {
+      const res = await fetch("/api/admin/set-credits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, credits }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setStats(prev => prev ? {
+        ...prev,
+        users: prev.users.map(u => u.userId === userId ? { ...u, creditsRemaining: credits } : u),
+      } : prev);
+      setEditingCreditsUserId(null);
+    } catch { /* silent */ } finally {
+      setSavingCredits(false);
     }
   }
 
@@ -1011,7 +1035,45 @@ export default function AdminDashboardClient() {
                         <td className="px-4 py-3 text-white font-medium">{u.username}</td>
                         <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{u.email || "N/A"}</td>
                         <td className="px-4 py-3"><PlanPill plan={u.plan} /></td>
-                        <td className="px-4 py-3 text-white">{formatNumber(u.creditsRemaining)}</td>
+                        <td className="px-4 py-3">
+                          {editingCreditsUserId === u.userId ? (
+                            <div className="flex items-center gap-1.5">
+                              <input
+                                type="number"
+                                min="0"
+                                value={editingCreditsValue}
+                                onChange={e => setEditingCreditsValue(e.target.value)}
+                                onKeyDown={e => { if (e.key === "Enter") handleSaveCredits(u.userId); if (e.key === "Escape") setEditingCreditsUserId(null); }}
+                                autoFocus
+                                className="w-20 rounded-lg px-2 py-1 text-sm font-bold text-white text-center focus:outline-none"
+                                style={{ background: "#0F172A", border: "1px solid #D97706" }}
+                              />
+                              <button
+                                onClick={() => handleSaveCredits(u.userId)}
+                                disabled={savingCredits}
+                                className="px-2 py-1 rounded-lg text-xs font-bold disabled:opacity-50"
+                                style={{ background: "#22C55E", color: "#000" }}
+                              >
+                                {savingCredits ? "..." : "Save"}
+                              </button>
+                              <button
+                                onClick={() => setEditingCreditsUserId(null)}
+                                className="px-2 py-1 rounded-lg text-xs font-bold"
+                                style={{ background: "rgba(255,255,255,0.08)", color: "#94A3B8" }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => { setEditingCreditsUserId(u.userId); setEditingCreditsValue(String(u.creditsRemaining)); }}
+                              className="flex items-center gap-1.5 group"
+                            >
+                              <span className="font-bold text-white">{formatNumber(u.creditsRemaining)}</span>
+                              <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#D97706" }}>edit</span>
+                            </button>
+                          )}
+                        </td>
                         <td className="px-4 py-3" style={{ color: "#94A3B8" }}>{formatDate(u.signupDate)}</td>
                       </tr>
                     ))}
