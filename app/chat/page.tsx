@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AIOutput from "@/components/AIOutput";
 import { ChatMessage, useApp } from "@/lib/context";
@@ -12,6 +12,8 @@ type PendingIntent = {
   cost: number;
   message: string;
   images: string[];
+  sessionId: string;
+  title?: string;
 };
 
 type AdvancedResponse = {
@@ -31,6 +33,18 @@ type Chip = {
   value?: string;
 };
 
+type ConversationSession = {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type ConversationSidebarProps = {
+  refreshKey: number;
+  onSessionChange: () => void;
+};
+
 const PAID_CARDS = ["research", "angles", "copy", "analyze_basic", "analyze_advanced"];
 
 function newId() {
@@ -48,6 +62,30 @@ function actionLabel(intent: string) {
     creative: "Creative generation",
   };
   return labels[intent] || "Generate output";
+}
+
+function autoTitleFromMessage(message: string) {
+  const title = message.replace(/\s+/g, " ").trim();
+  if (!title) return "New Chat";
+  return title.length > 45 ? `${title.slice(0, 45)}...` : title;
+}
+
+function formatRelativeDate(value: string) {
+  const date = new Date(value);
+  const timestamp = date.getTime();
+  if (Number.isNaN(timestamp)) return "";
+
+  const diffMs = Date.now() - timestamp;
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diffMs < minute) return "Just now";
+  if (diffMs < hour) return `${Math.floor(diffMs / minute)}m ago`;
+  if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`;
+  if (diffMs < 7 * day) return `${Math.floor(diffMs / day)}d ago`;
+
+  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date);
 }
 
 function cardForResponse(data: AdvancedResponse): ChatMessage["card"] {
@@ -107,12 +145,173 @@ async function downloadReport(content: string, intent: string) {
     .save();
 }
 
+function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSidebarProps) {
+  const { activeSessionId, setActiveSessionId, setChatMessages } = useApp();
+  const [sessions, setSessions] = useState<ConversationSession[]>([]);
+  const [loading, setLoading] = useState(false);
+  const initializedRef = useRef(false);
+
+  const fetchSessions = useCallback(async () => {
+    const res = await fetch("/api/chat/sessions");
+    if (!res.ok) {
+      setSessions([]);
+      return [];
+    }
+
+    const data = await res.json();
+    const nextSessions = Array.isArray(data) ? data as ConversationSession[] : [];
+    setSessions(nextSessions);
+    return nextSessions;
+  }, []);
+
+  const createSession = useCallback(async () => {
+    const res = await fetch("/api/chat/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "New Chat" }),
+    });
+    if (!res.ok) return null;
+    return await res.json() as ConversationSession;
+  }, []);
+
+  const ensureFallbackSession = useCallback(async (nextSessions: ConversationSession[]) => {
+    const fallback = nextSessions[0];
+    if (fallback) {
+      await setActiveSessionId(fallback.id);
+      return;
+    }
+
+    const created = await createSession();
+    if (!created) return;
+    await setActiveSessionId(created.id);
+    await setChatMessages(created.id, []);
+    await fetchSessions();
+  }, [createSession, fetchSessions, setActiveSessionId, setChatMessages]);
+
+  useEffect(() => {
+    void fetchSessions();
+  }, [fetchSessions, refreshKey]);
+
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    async function initializeSessions() {
+      const nextSessions = await fetchSessions();
+      if (activeSessionId) return;
+      await ensureFallbackSession(nextSessions);
+    }
+
+    void initializeSessions();
+  }, [activeSessionId, ensureFallbackSession, fetchSessions]);
+
+  async function handleNewChat() {
+    setLoading(true);
+    onSessionChange();
+    try {
+      const created = await createSession();
+      if (!created) return;
+      await setActiveSessionId(created.id);
+      await setChatMessages(created.id, []);
+      await fetchSessions();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSelect(sessionId: string) {
+    if (sessionId === activeSessionId) return;
+    onSessionChange();
+    await setActiveSessionId(sessionId);
+  }
+
+  async function handleDelete(sessionId: string) {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/chat/sessions/${sessionId}`, { method: "DELETE" });
+      if (!res.ok) return;
+      const nextSessions = (await fetchSessions()).filter(session => session.id !== sessionId);
+      if (sessionId === activeSessionId) {
+        onSessionChange();
+        await ensureFallbackSession(nextSessions);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <aside
+      className="hidden md:flex w-60 shrink-0 flex-col"
+      style={{ background: "#ffffff", borderRight: "1px solid rgba(0,0,0,0.08)" }}
+    >
+      <div className="p-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
+        <button
+          type="button"
+          onClick={handleNewChat}
+          disabled={loading}
+          className="w-full rounded-lg px-3 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+          style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}
+        >
+          New Chat
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto py-2">
+        {sessions.map(session => {
+          const isActive = session.id === activeSessionId;
+          return (
+            <div
+              key={session.id}
+              className="group relative mx-2 mb-1 rounded-r-lg border-l-[3px]"
+              style={{
+                background: isActive ? "rgba(217,119,6,0.08)" : "transparent",
+                borderLeftColor: isActive ? "#D97706" : "transparent",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => handleSelect(session.id)}
+                className="w-full px-3 py-2 pr-9 text-left"
+              >
+                <span className="block truncate text-sm font-bold" style={{ color: "#0F172A" }}>
+                  {session.title || "New Chat"}
+                </span>
+                <span className="block truncate text-xs" style={{ color: "#64748B" }}>
+                  {formatRelativeDate(session.updated_at)}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={event => {
+                  event.stopPropagation();
+                  void handleDelete(session.id);
+                }}
+                className="absolute right-2 top-2 h-6 w-6 rounded-full text-sm font-bold opacity-0 transition-opacity group-hover:opacity-100"
+                style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+                aria-label="Delete chat"
+              >
+                &times;
+              </button>
+            </div>
+          );
+        })}
+
+        {!loading && sessions.length === 0 ? (
+          <p className="px-4 py-3 text-xs" style={{ color: "#64748B" }}>No chats yet</p>
+        ) : null}
+      </div>
+    </aside>
+  );
+}
+
 export default function AdvancedChatPage() {
   const router = useRouter();
   const {
     setup,
     credits,
     refreshCredits,
+    activeSessionId,
     chatMessages,
     setChatMessages,
     researchOutput,
@@ -134,6 +333,7 @@ export default function AdvancedChatPage() {
   const [sessionAngles, setSessionAngles] = useState(anglesOutput || "");
   const [notice, setNotice] = useState("");
   const [creativeLoadingId, setCreativeLoadingId] = useState<string | null>(null);
+  const [sessionsRefreshKey, setSessionsRefreshKey] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const hasSetup = !!setup?.businessName;
@@ -150,6 +350,19 @@ export default function AdvancedChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [chatMessages, loading]);
+
+  useEffect(() => {
+    setPendingIntent(null);
+  }, [activeSessionId]);
+
+  function refreshSessionsList() {
+    setSessionsRefreshKey(key => key + 1);
+  }
+
+  async function saveChatMessages(sessionId: string, messages: ChatMessage[], title?: string) {
+    await setChatMessages(sessionId, messages, title);
+    refreshSessionsList();
+  }
 
   const chips = useMemo<Chip[]>(() => {
     if (!hasSetup) return [{ label: "Set up my business", action: "setup" }];
@@ -173,7 +386,9 @@ export default function AdvancedChatPage() {
     return next;
   }, [angleBlocks, hasSetup, selectedAngle, sessionAngles, sessionResearch]);
 
-  async function appendAssistantText(text: string, messagesSoFar: ChatMessage[] = chatMessages) {
+  async function appendAssistantText(text: string, messagesSoFar: ChatMessage[] = chatMessages, sessionId: string | null = activeSessionId) {
+    if (!sessionId) return;
+
     const assistantMsg: ChatMessage = {
       id: newId(),
       role: "assistant",
@@ -182,10 +397,10 @@ export default function AdvancedChatPage() {
       intent: "knowledge",
       createdAt: new Date().toISOString(),
     };
-    await setChatMessages([...messagesSoFar, assistantMsg]);
+    await saveChatMessages(sessionId, [...messagesSoFar, assistantMsg]);
   }
 
-  async function handleAssistantResponse(data: AdvancedResponse, messagesSoFar: ChatMessage[]) {
+  async function handleAssistantResponse(data: AdvancedResponse, messagesSoFar: ChatMessage[], sessionId: string, title?: string) {
     const assistantMsg: ChatMessage = {
       id: newId(),
       role: "assistant",
@@ -198,7 +413,7 @@ export default function AdvancedChatPage() {
     };
 
     const updated = [...messagesSoFar, assistantMsg];
-    await setChatMessages(updated);
+    await saveChatMessages(sessionId, updated, title);
 
     if (data.intent === "research" && data.content) {
       setSessionResearch(data.content);
@@ -221,6 +436,7 @@ export default function AdvancedChatPage() {
   }
 
   async function handleSend(overrideText?: string) {
+    const sessionId = activeSessionId;
     const messageText = (overrideText ?? input).trim();
     const image = attachedImage;
     if (!messageText && !image) return;
@@ -228,8 +444,13 @@ export default function AdvancedChatPage() {
       router.push("/");
       return;
     }
+    if (!sessionId) {
+      setNotice("Starting a new chat. Please try again in a moment.");
+      return;
+    }
 
     setNotice("");
+    const title = chatMessages.length === 0 ? autoTitleFromMessage(messageText) : undefined;
     const userMsg: ChatMessage = {
       id: newId(),
       role: "user",
@@ -238,7 +459,7 @@ export default function AdvancedChatPage() {
       createdAt: new Date().toISOString(),
     };
     const newMessages = [...chatMessages, userMsg];
-    await setChatMessages(newMessages);
+    await saveChatMessages(sessionId, newMessages);
     setInput("");
     setAttachedImage(null);
     setLoading(true);
@@ -256,12 +477,12 @@ export default function AdvancedChatPage() {
       const data = await res.json() as AdvancedResponse;
 
       if (!res.ok) {
-        await appendAssistantText(data.error || "Something went wrong. Please try again.", newMessages);
+        await appendAssistantText(data.error || "Something went wrong. Please try again.", newMessages, sessionId);
         return;
       }
 
       if (data.requiresConfirm) {
-        setPendingIntent({ intent: data.intent, cost: data.cost, message: messageText, images: image ? [image] : [] });
+        setPendingIntent({ intent: data.intent, cost: data.cost, message: messageText, images: image ? [image] : [], sessionId, title });
         const confirmMsg: ChatMessage = {
           id: newId(),
           role: "assistant",
@@ -271,13 +492,13 @@ export default function AdvancedChatPage() {
           cost: data.cost,
           createdAt: new Date().toISOString(),
         };
-        await setChatMessages([...newMessages, confirmMsg]);
+        await saveChatMessages(sessionId, [...newMessages, confirmMsg], title);
         return;
       }
 
-      await handleAssistantResponse(data, newMessages);
+      await handleAssistantResponse(data, newMessages, sessionId, title);
     } catch {
-      await appendAssistantText("Something went wrong. Please try again.", newMessages);
+      await appendAssistantText("Something went wrong. Please try again.", newMessages, sessionId);
     } finally {
       setLoading(false);
     }
@@ -285,17 +506,22 @@ export default function AdvancedChatPage() {
 
   async function handleConfirm() {
     if (!pendingIntent || !hasSetup) return;
+    const sessionId = pendingIntent.sessionId;
+    if (activeSessionId !== sessionId) {
+      setPendingIntent(null);
+      return;
+    }
 
     const messagesWithoutConfirm = chatMessages.filter(msg => msg.card !== "confirm");
     if (credits < pendingIntent.cost) {
       setPendingIntent(null);
-      await appendAssistantText("Not enough credits. Please top up to continue.", messagesWithoutConfirm);
+      await appendAssistantText("Not enough credits. Please top up to continue.", messagesWithoutConfirm, sessionId);
       return;
     }
 
     setLoading(true);
     setNotice("");
-    await setChatMessages(messagesWithoutConfirm);
+    await saveChatMessages(sessionId, messagesWithoutConfirm);
 
     try {
       const res = await fetch("/api/chat/advanced", {
@@ -313,14 +539,14 @@ export default function AdvancedChatPage() {
 
       if (!res.ok) {
         await refreshCredits();
-        await appendAssistantText(data.code === "NO_CREDITS" ? "Not enough credits. Please top up to continue." : data.error || "Something went wrong. Please try again.", messagesWithoutConfirm);
+        await appendAssistantText(data.code === "NO_CREDITS" ? "Not enough credits. Please top up to continue." : data.error || "Something went wrong. Please try again.", messagesWithoutConfirm, sessionId);
         return;
       }
 
-      await handleAssistantResponse(data, messagesWithoutConfirm);
+      await handleAssistantResponse(data, messagesWithoutConfirm, sessionId, pendingIntent.title);
     } catch {
       await refreshCredits();
-      await appendAssistantText("Something went wrong. Please try again.", messagesWithoutConfirm);
+      await appendAssistantText("Something went wrong. Please try again.", messagesWithoutConfirm, sessionId);
     } finally {
       setPendingIntent(null);
       setLoading(false);
@@ -328,8 +554,9 @@ export default function AdvancedChatPage() {
   }
 
   async function handleCancel() {
+    if (!activeSessionId) return;
     setPendingIntent(null);
-    await setChatMessages(chatMessages.filter(msg => msg.card !== "confirm"));
+    await saveChatMessages(activeSessionId, chatMessages.filter(msg => msg.card !== "confirm"));
   }
 
   function handleImageAttach(e: React.ChangeEvent<HTMLInputElement>) {
@@ -359,7 +586,7 @@ export default function AdvancedChatPage() {
   }
 
   async function generateCreative(messageId: string, sourceText: string) {
-    if (!setup || creativeLoadingId) return;
+    if (!setup || creativeLoadingId || !activeSessionId) return;
     if (credits < 2) {
       setNotice("Not enough credits. Please top up to generate a creative.");
       return;
@@ -403,7 +630,7 @@ export default function AdvancedChatPage() {
         ? { ...msg, text: "Creative generated.", images: [image], renderButton: false }
         : msg
       );
-      await setChatMessages(updated);
+      await saveChatMessages(activeSessionId, updated);
     } catch {
       setNotice("Creative generation failed. Please try again.");
     } finally {
@@ -552,7 +779,16 @@ export default function AdvancedChatPage() {
   }
 
   return (
-    <main className="h-screen flex flex-col pt-14 md:pt-12 overflow-hidden">
+    <main className="min-h-screen h-screen flex flex-col pt-14 md:pt-12 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
+        <ConversationSidebar
+          refreshKey={sessionsRefreshKey}
+          onSessionChange={() => {
+            setPendingIntent(null);
+            setNotice("");
+          }}
+        />
+        <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
         <div>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</p>
@@ -569,7 +805,7 @@ export default function AdvancedChatPage() {
         </div>
       )}
 
-      <section className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+      <section className="min-h-0 flex-1 overflow-y-auto px-4 py-5 space-y-4">
         {chatMessages.length === 0 ? (
           <div className="mx-auto max-w-2xl pt-16 text-center">
             <p className="text-xl font-black mb-2" style={{ color: "#0F172A" }}>What do you want to build today?</p>
@@ -635,13 +871,15 @@ export default function AdvancedChatPage() {
           />
           <button
             onClick={() => handleSend()}
-            disabled={(!input.trim() && !attachedImage) || loading}
+            disabled={(!input.trim() && !attachedImage) || loading || !activeSessionId}
             className="p-3 rounded-xl disabled:opacity-40 shrink-0"
             style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}
             aria-label="Send"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           </button>
+        </div>
+      </div>
         </div>
       </div>
     </main>

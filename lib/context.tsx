@@ -60,8 +60,10 @@ interface AppContextType {
   setSetup: (s: UserSetup) => void;
   uiMode: "beginner" | "advanced";
   setUiMode: (mode: "beginner" | "advanced") => Promise<void>;
+  activeSessionId: string | null;
+  setActiveSessionId: (id: string | null) => Promise<void>;
   chatMessages: ChatMessage[];
-  setChatMessages: (msgs: ChatMessage[]) => Promise<void>;
+  setChatMessages: (sessionId: string, msgs: ChatMessage[], title?: string) => Promise<void>;
   researchOutput: string;
   setResearchOutput: (s: string) => void;
   contentOutput: ContentOutput | null;
@@ -109,6 +111,7 @@ export function derivePlan(
 export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
   const [uiMode, setUiModeState] = useState<"beginner" | "advanced">("beginner");
+  const [activeSessionId, setActiveSessionIdState] = useState<string | null>(null);
   const [chatMessages, setChatMessagesState] = useState<ChatMessage[]>([]);
   const [researchOutput, setResearchOutputState] = useState("");
   const [contentOutput, setContentOutputState] = useState<ContentOutput | null>(null);
@@ -166,12 +169,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         });
         if (Array.isArray(data.video_prompts)) setSavedVideoPrompts(data.video_prompts);
 
-        const { data: session } = await supabase
-          .from("chat_sessions")
-          .select("messages")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        if (Array.isArray(session?.messages)) setChatMessagesState(session.messages as ChatMessage[]);
+        const loadedActiveSessionId = typeof data.active_session_id === "string" ? data.active_session_id : null;
+        setActiveSessionIdState(loadedActiveSessionId);
+        if (loadedActiveSessionId) {
+          const res = await fetch(`/api/chat/sessions/${loadedActiveSessionId}`);
+          if (res.ok) {
+            const session = await res.json();
+            if (Array.isArray(session.messages)) setChatMessagesState(session.messages as ChatMessage[]);
+          }
+        }
 
         // Check for unread referral credits — run in background, don't block hydration
         const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
@@ -221,14 +227,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await persist({ ui_mode: mode });
   }
 
-  async function setChatMessages(msgs: ChatMessage[]) {
+  async function loadSessionMessages(sessionId: string | null) {
+    if (!sessionId) {
+      setChatMessagesState([]);
+      return;
+    }
+
+    const res = await fetch(`/api/chat/sessions/${sessionId}`);
+    if (!res.ok) {
+      setChatMessagesState([]);
+      return;
+    }
+
+    const session = await res.json();
+    setChatMessagesState(Array.isArray(session.messages) ? session.messages as ChatMessage[] : []);
+  }
+
+  async function setActiveSessionId(id: string | null) {
+    setActiveSessionIdState(id);
+    if (!id) setChatMessagesState([]);
+
+    await fetch("/api/chat/sessions/active", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId: id }),
+    });
+
+    await loadSessionMessages(id);
+  }
+
+  async function setChatMessages(sessionId: string, msgs: ChatMessage[], title?: string) {
     setChatMessagesState(msgs);
-    if (!userId) return;
-    const supabase = createClient();
-    await supabase.from("chat_sessions").upsert(
-      { user_id: userId, messages: msgs, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" }
-    );
+    const body: { messages: ChatMessage[]; title?: string } = { messages: msgs };
+    if (title) body.title = title;
+
+    await fetch(`/api/chat/sessions/${sessionId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
   }
 
   function setResearchOutput(s: string) {
@@ -338,6 +375,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       setup, setSetup,
       uiMode, setUiMode,
+      activeSessionId, setActiveSessionId,
       chatMessages, setChatMessages,
       researchOutput, setResearchOutput,
       contentOutput, setContentOutput,
