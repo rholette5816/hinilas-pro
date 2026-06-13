@@ -539,7 +539,7 @@ export default function AdvancedChatPage() {
 
   if (!hasSetup) {
     return (
-      <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0B1120" }}>
+      <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0F172A" }}>
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <p className="text-white font-bold text-lg mb-2">Set up your business first</p>
           <p className="text-sm mb-6" style={{ color: "#64748B" }}>Advanced mode needs your business profile to generate results.</p>
@@ -552,7 +552,7 @@ export default function AdvancedChatPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0B1120" }}>
+    <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0F172A" }}>
       <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "rgba(217,119,6,0.15)", background: "#0F172A" }}>
         <div>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</p>
