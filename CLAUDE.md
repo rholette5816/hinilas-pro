@@ -6,8 +6,8 @@ Hinilas Pro is a Next.js SaaS app for Filipino Meta Ads marketers. It's an AI-po
 ## Tech Stack
 - **Framework:** Next.js (App Router, server + client components)
 - **Auth + DB:** Supabase (anon key for client, service role key for admin operations)
-- **AI - Text:** Google Gemini via `@google/generative-ai` (chat, analysis, copy, angles)
-- **AI - Image:** Google Gemini 2.5 Flash Image (`gemini-2.5-flash-image`)
+- **AI - Text:** OpenAI via `openai` SDK — `gpt-4o-mini` (chat, analysis, copy, angles, all modules)
+- **AI - Image:** OpenAI `gpt-image-1` (generation + editing)
 - **Payments:** Manual GCash top-up flow (no PayMongo webhooks yet)
 - **Styling:** Tailwind CSS, dark theme (`#0F172A` base)
 - **Deployment:** Vercel
@@ -16,8 +16,7 @@ Hinilas Pro is a Next.js SaaS app for Filipino Meta Ads marketers. It's an AI-po
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` — admin ops only, never expose to client
-- `GEMINI_IMAGE_API_KEY` — image generation
-- `GEMINI_API_KEY` — text generation (chat, copy, angles, analyze)
+- `OPENAI_API_KEY` — all AI (text + image generation)
 
 ## Supabase Tables
 - `user_data` — user_id, username, avatar_url, credits_remaining, credits_total, plan, referral_code, referred_by, referral_rewarded, updated_at
