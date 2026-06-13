@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { deriveTier } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/client";
+import { buildUserContext as buildUserContextShared } from "@/lib/user-context";
 
 export interface UserSetup {
   businessName: string;
@@ -42,9 +43,25 @@ export interface AnalyzeOutput {
   advanced?: { output: string; savedAt: string } | null;
 }
 
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  intent?: string;
+  card?: "research" | "angles" | "copy" | "analyze" | "analyze_basic" | "analyze_advanced" | "creative" | "text" | "confirm";
+  images?: string[];
+  cost?: number;
+  renderButton?: boolean;
+  createdAt: string;
+}
+
 interface AppContextType {
   setup: UserSetup | null;
   setSetup: (s: UserSetup) => void;
+  uiMode: "beginner" | "advanced";
+  setUiMode: (mode: "beginner" | "advanced") => Promise<void>;
+  chatMessages: ChatMessage[];
+  setChatMessages: (msgs: ChatMessage[]) => Promise<void>;
   researchOutput: string;
   setResearchOutput: (s: string) => void;
   contentOutput: ContentOutput | null;
@@ -91,6 +108,8 @@ export function derivePlan(
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [setup, setSetupState] = useState<UserSetup | null>(null);
+  const [uiMode, setUiModeState] = useState<"beginner" | "advanced">("beginner");
+  const [chatMessages, setChatMessagesState] = useState<ChatMessage[]>([]);
   const [researchOutput, setResearchOutputState] = useState("");
   const [contentOutput, setContentOutputState] = useState<ContentOutput | null>(null);
   const [analyzeOutput, setAnalyzeOutputState] = useState<AnalyzeOutput | null>(null);
@@ -124,6 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       if (data) {
         if (data.setup) setSetupState(data.setup);
+        if (data.ui_mode === "advanced" || data.ui_mode === "beginner") setUiModeState(data.ui_mode);
         if (data.research_output) setResearchOutputState(data.research_output);
         if (data.content_output) setContentOutputState(data.content_output);
         if (data.analyze_output) setAnalyzeOutputState(data.analyze_output);
@@ -145,6 +165,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           v3: data.video_3_url || null,
         });
         if (Array.isArray(data.video_prompts)) setSavedVideoPrompts(data.video_prompts);
+
+        const { data: session } = await supabase
+          .from("chat_sessions")
+          .select("messages")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (Array.isArray(session?.messages)) setChatMessagesState(session.messages as ChatMessage[]);
 
         // Check for unread referral credits — run in background, don't block hydration
         const lastNotified = data.last_notified_at ? new Date(data.last_notified_at) : new Date(0);
@@ -187,6 +214,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function setSetup(s: UserSetup) {
     setSetupState(s);
     persist({ setup: s });
+  }
+
+  async function setUiMode(mode: "beginner" | "advanced") {
+    setUiModeState(mode);
+    await persist({ ui_mode: mode });
+  }
+
+  async function setChatMessages(msgs: ChatMessage[]) {
+    setChatMessagesState(msgs);
+    if (!userId) return;
+    const supabase = createClient();
+    await supabase.from("chat_sessions").upsert(
+      { user_id: userId, messages: msgs, updated_at: new Date().toISOString() },
+      { onConflict: "user_id" }
+    );
   }
 
   function setResearchOutput(s: string) {
@@ -295,6 +337,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider value={{
       setup, setSetup,
+      uiMode, setUiMode,
+      chatMessages, setChatMessages,
       researchOutput, setResearchOutput,
       contentOutput, setContentOutput,
       analyzeOutput, setAnalyzeOutput,
@@ -323,12 +367,5 @@ export function useApp() {
 }
 
 export function buildUserContext(setup: UserSetup, languageOverride?: string): string {
-  return `Business: ${setup.businessName}
-Product/Service: ${setup.product}
-Target Audience: ${setup.targetAudience}
-Unique Selling Offer: ${setup.uniqueSellingOffer || "Not specified"}
-Market: ${setup.market}
-Business Type: ${setup.businessType.replace("_", " ")}
-Stage: ${setup.stage.replace(/_/g, " ")}
-Language/Dialect: ${languageOverride || setup.language}`;
+  return buildUserContextShared(setup, languageOverride);
 }

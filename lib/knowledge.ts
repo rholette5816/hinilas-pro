@@ -636,6 +636,21 @@ Keep output tight. If multiple ad sets exist, give a one-line verdict per ad set
         };
   },
 
+  chat: (userContext: string, message: string) => `
+# USER CONTEXT
+${userContext}
+
+# USER MESSAGE
+${message}
+
+# TASK
+Answer the user's message using only Hinilas Pro and Meta Ads knowledge.
+If the message is casual, reply briefly and guide them toward the next useful step.
+If the message is unrelated to Hinilas Pro or Meta Ads, politely redirect to Meta Ads or Hinilas Pro.
+
+Keep it concise, practical, and mobile-friendly.
+`,
+
   creative: (userContext: string, angle: string, extraDetails: string, logoDesc: string, productDesc: string, format: string, industry?: string) => {
     const layers = MODULE_PROMPTS.getIndustryLayers(industry || "");
     return `

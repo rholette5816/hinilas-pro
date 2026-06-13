@@ -47,10 +47,29 @@ const NAV_ITEMS = [
   },
 ];
 
+const ADVANCED_NAV_ITEMS = [
+  {
+    href: "/chat", label: "Chat", desc: "Advanced mode",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  },
+  {
+    href: "/creative", label: "Library", desc: "Saved images",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+  },
+  {
+    href: "/", label: "Setup", desc: "Business profile",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>,
+  },
+  {
+    href: "/pricing", label: "Pricing", desc: "Credits and plans",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>,
+  },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { credits, creditsTotal, plan, setup, researchOutput, contentOutput, anglesOutput, copyOutput, savedImages } = useApp();
+  const { credits, creditsTotal, plan, setup, researchOutput, contentOutput, anglesOutput, copyOutput, savedImages, uiMode, setUiMode } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [expertOpen, setExpertOpen] = useState(false);
@@ -133,6 +152,15 @@ export default function Sidebar() {
     setTimeout(() => setLockToast(null), 2500);
   }, []);
 
+  async function handleModeChange(mode: "beginner" | "advanced") {
+    await setUiMode(mode);
+    if (mode === "advanced") {
+      router.push("/chat");
+      return;
+    }
+    if (pathname === "/chat") router.push("/");
+  }
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full overflow-hidden">
 
@@ -150,20 +178,44 @@ export default function Sidebar() {
         </div>
       </div>
 
+      {/* Mode toggle */}
+      <div className="px-3 pt-3 shrink-0">
+        <div className="flex rounded-xl overflow-hidden mb-1" style={{ background: "#0F172A", border: "1px solid rgba(217,119,6,0.2)" }}>
+          <button
+            onClick={() => handleModeChange("beginner")}
+            className="flex-1 py-2 text-xs font-bold transition-all"
+            style={uiMode === "beginner"
+              ? { background: "linear-gradient(135deg, #1877F2, #D97706)", color: "#fff" }
+              : { color: "#64748B" }}
+          >
+            Beginner
+          </button>
+          <button
+            onClick={() => handleModeChange("advanced")}
+            className="flex-1 py-2 text-xs font-bold transition-all"
+            style={uiMode === "advanced"
+              ? { background: "linear-gradient(135deg, #1877F2, #D97706)", color: "#fff" }
+              : { color: "#64748B" }}
+          >
+            Advanced
+          </button>
+        </div>
+      </div>
+
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
-        {NAV_ITEMS.map((item) => {
+        {(uiMode === "advanced" ? ADVANCED_NAV_ITEMS : NAV_ITEMS).map((item) => {
           const active = pathname === item.href;
-          const done = completionMap[item.href] ?? false;
-          const lock = lockMap[item.href];
+          const done = uiMode === "beginner" ? completionMap[item.href] ?? false : false;
+          const lock = uiMode === "beginner" ? lockMap[item.href] : undefined;
           const isLocked = lock?.locked ?? false;
-          const showTierLock = item.href === "/content" && plan === "lite";
+          const showTierLock = uiMode === "beginner" && item.href === "/content" && plan === "lite";
           return (
             <Link
               key={item.href}
               href={isLocked ? "#" : item.href}
               onClick={(e) => {
-                if (isLocked) {
+                if (lock?.locked) {
                   e.preventDefault();
                   showLockToast(lock.message);
                   return;
@@ -205,6 +257,8 @@ export default function Sidebar() {
           );
         })}
 
+        {uiMode === "beginner" && (
+          <>
         {/* Divider */}
         <div className="my-2" style={{ borderTop: "1px solid #E4E6EB" }} />
 
@@ -242,6 +296,8 @@ export default function Sidebar() {
           </div>
           <span className="shrink-0 text-sm font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.3)" }}>+2-65 cr</span>
         </button>
+          </>
+        )}
       </nav>
 
       {/* Footer */}
