@@ -539,7 +539,7 @@ export default function AdvancedChatPage() {
 
   if (!hasSetup) {
     return (
-      <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0F172A" }}>
+      <main className="min-h-screen flex flex-col pt-14 md:pt-12">
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <p className="text-white font-bold text-lg mb-2">Set up your business first</p>
           <p className="text-sm mb-6" style={{ color: "#64748B" }}>Advanced mode needs your business profile to generate results.</p>
@@ -552,11 +552,11 @@ export default function AdvancedChatPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col pt-14 md:pt-12" style={{ background: "#0F172A" }}>
-      <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "rgba(217,119,6,0.15)", background: "#0F172A" }}>
+    <main className="min-h-screen flex flex-col pt-14 md:pt-12">
+      <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
         <div>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</p>
-          <p className="text-sm font-black text-white">Advanced Mode</p>
+          <p className="text-sm font-black" style={{ color: "#0F172A" }}>Advanced Mode</p>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "rgba(217,119,6,0.12)", border: "1px solid rgba(217,119,6,0.25)" }}>
           <span className="text-xs font-bold" style={{ color: "#D97706" }}>{credits} cr</span>
@@ -572,7 +572,7 @@ export default function AdvancedChatPage() {
       <section className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
         {chatMessages.length === 0 ? (
           <div className="mx-auto max-w-2xl pt-16 text-center">
-            <p className="text-white text-xl font-black mb-2">What do you want to build today?</p>
+            <p className="text-xl font-black mb-2" style={{ color: "#0F172A" }}>What do you want to build today?</p>
             <p className="text-sm" style={{ color: "#64748B" }}>Ask a free Meta Ads question, or request research, angles, copy, analysis, or a creative.</p>
           </div>
         ) : null}
@@ -580,7 +580,7 @@ export default function AdvancedChatPage() {
         {chatMessages.map(msg => (
           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "user" ? (
-              <div className="max-w-xl rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap" style={{ background: "#1E293B", color: "#F8FAFC", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <div className="max-w-xl rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap" style={{ background: "#1877F2", color: "#ffffff", border: "none" }}>
                 {msg.images?.length ? <img src={msg.images[0]} alt="Attachment" className="mb-2 max-h-52 rounded-lg object-contain bg-black" /> : null}
                 {msg.text || "Attached image"}
               </div>
@@ -590,7 +590,7 @@ export default function AdvancedChatPage() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="rounded-2xl px-4 py-3 text-sm" style={{ background: "rgba(255,255,255,0.08)", color: "#94A3B8" }}>
+            <div className="rounded-2xl px-4 py-3 text-sm" style={{ background: "#ffffff", color: "#64748B", border: "1px solid rgba(0,0,0,0.08)" }}>
               Thinking...
             </div>
           </div>
@@ -598,7 +598,7 @@ export default function AdvancedChatPage() {
         <div ref={bottomRef} />
       </section>
 
-      <div className="px-4 py-3 border-t" style={{ borderColor: "rgba(217,119,6,0.15)", background: "#0F172A" }}>
+      <div className="px-4 py-3 border-t" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 flex-wrap">
           {chips.map(chip => (
             <button
@@ -620,7 +620,7 @@ export default function AdvancedChatPage() {
         )}
 
         <div className="flex items-end gap-2">
-          <label className="cursor-pointer p-2 rounded-xl shrink-0" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <label className="cursor-pointer p-2 rounded-xl shrink-0" style={{ background: "rgba(0,0,0,0.06)" }}>
             <input type="file" accept="image/*" className="hidden" onChange={handleImageAttach} />
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
           </label>
@@ -630,8 +630,8 @@ export default function AdvancedChatPage() {
             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Ask anything or tell me what to generate..."
             rows={1}
-            className="flex-1 resize-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(217,119,6,0.15)", maxHeight: "120px" }}
+            className="flex-1 resize-none rounded-xl px-4 py-3 text-sm focus:outline-none"
+            style={{ background: "#F0F2F5", border: "1px solid rgba(217,119,6,0.3)", color: "#1c1e21", maxHeight: "120px" }}
           />
           <button
             onClick={() => handleSend()}
