@@ -491,12 +491,12 @@ export default function AdvancedChatPage() {
       const cost = msg.cost || 0;
       return (
         <div className="rounded-xl p-4 my-2 max-w-xl" style={{ background: "rgba(217,119,6,0.08)", border: "1px solid rgba(217,119,6,0.3)" }}>
-          <p className="text-sm text-white font-semibold mb-3">{actionLabel(msg.intent || "")} - {cost} credit{cost > 1 ? "s" : ""}</p>
+          <p className="text-sm font-semibold mb-3" style={{ color: "#0F172A" }}>{actionLabel(msg.intent || "")} - {cost} credit{cost > 1 ? "s" : ""}</p>
           <div className="flex gap-2">
-            <button onClick={handleConfirm} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: "#D97706", color: "#000" }}>
+            <button onClick={handleConfirm} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: "#D97706", color: "#fff" }}>
               Confirm
             </button>
-            <button onClick={handleCancel} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: "rgba(255,255,255,0.08)", color: "#94A3B8" }}>
+            <button onClick={handleCancel} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: "rgba(0,0,0,0.06)", color: "#64748B" }}>
               Cancel
             </button>
           </div>
