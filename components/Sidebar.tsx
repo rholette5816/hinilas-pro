@@ -53,16 +53,12 @@ const ADVANCED_NAV_ITEMS = [
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
   },
   {
-    href: "/creative", label: "Library", desc: "Saved images",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
-  },
-  {
-    href: "/", label: "Setup", desc: "Business profile",
-    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>,
-  },
-  {
     href: "/pricing", label: "Pricing", desc: "Credits and plans",
     icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>,
+  },
+  {
+    href: "/affiliate", label: "Partner Program", desc: "Earn cash per referral",
+    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>,
   },
 ];
 
@@ -257,8 +253,7 @@ export default function Sidebar() {
           );
         })}
 
-        {uiMode === "beginner" && (
-          <>
+        <>
         {/* Divider */}
         <div className="my-2" style={{ borderTop: "1px solid #E4E6EB" }} />
 
@@ -296,8 +291,7 @@ export default function Sidebar() {
           </div>
           <span className="shrink-0 text-sm font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.3)" }}>+2-65 cr</span>
         </button>
-          </>
-        )}
+        </>
       </nav>
 
       {/* Footer */}
