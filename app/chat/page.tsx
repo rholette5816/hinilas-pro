@@ -506,14 +506,14 @@ export default function AdvancedChatPage() {
 
     if (msg.card === "text") {
       return (
-        <div className="max-w-xl rounded-2xl px-4 py-3 whitespace-pre-wrap text-sm leading-relaxed" style={{ background: "rgba(255,255,255,0.08)", color: "#E2E8F0", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="max-w-xl rounded-2xl px-4 py-3 whitespace-pre-wrap text-sm leading-relaxed" style={{ background: "#ffffff", color: "#1c1e21", border: "1px solid rgba(0,0,0,0.08)" }}>
           {msg.text}
         </div>
       );
     }
 
     return (
-      <div className="max-w-2xl rounded-2xl p-3" style={{ background: "rgba(15,23,42,0.86)", border: "1px solid rgba(217,119,6,0.22)" }}>
+      <div className="max-w-2xl rounded-2xl p-3" style={{ background: "#ffffff", border: "1px solid rgba(217,119,6,0.3)" }}>
         <div className="flex items-center justify-between gap-3 mb-3 px-1">
           <div>
             <p className="text-xs uppercase font-black tracking-wider" style={{ color: "#D97706" }}>{actionLabel(msg.intent || "")}</p>
@@ -522,13 +522,13 @@ export default function AdvancedChatPage() {
           {msg.intent === "creative" ? <span className="text-xs font-bold" style={{ color: "#60A5FA" }}>Image action</span> : null}
         </div>
         {msg.images?.length ? (
-          <div className="mb-3 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.12)" }}>
+          <div className="mb-3 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
             <img src={msg.images[0]} alt="Generated creative" className="w-full max-h-[520px] object-contain bg-black" />
           </div>
         ) : null}
         {msg.text && msg.card !== "creative" ? <AIOutput content={msg.text} /> : null}
         {msg.text && msg.card === "creative" && !msg.images?.length ? (
-          <p className="text-sm mb-3" style={{ color: "#CBD5E1" }}>{msg.text}</p>
+          <p className="text-sm mb-3" style={{ color: "#1c1e21" }}>{msg.text}</p>
         ) : null}
         <div className="mt-3 flex flex-wrap gap-2">
           {renderActions(msg)}
