@@ -552,8 +552,8 @@ export default function AdvancedChatPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col pt-14 md:pt-12">
-      <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
+    <main className="h-screen flex flex-col pt-14 md:pt-12 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
         <div>
           <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</p>
           <p className="text-sm font-black" style={{ color: "#0F172A" }}>Advanced Mode</p>
@@ -564,7 +564,7 @@ export default function AdvancedChatPage() {
       </div>
 
       {notice && (
-        <div className="px-4 py-2 text-xs font-semibold" style={{ color: "#FBBF24", background: "rgba(217,119,6,0.1)", borderBottom: "1px solid rgba(217,119,6,0.18)" }}>
+        <div className="flex-shrink-0 px-4 py-2 text-xs font-semibold" style={{ color: "#FBBF24", background: "rgba(217,119,6,0.1)", borderBottom: "1px solid rgba(217,119,6,0.18)" }}>
           {notice}
         </div>
       )}
@@ -598,7 +598,7 @@ export default function AdvancedChatPage() {
         <div ref={bottomRef} />
       </section>
 
-      <div className="px-4 py-3 border-t" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
+      <div className="flex-shrink-0 px-4 py-3 border-t" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 flex-wrap">
           {chips.map(chip => (
             <button
