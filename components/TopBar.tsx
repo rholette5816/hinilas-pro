@@ -58,10 +58,12 @@ export default function TopBar() {
           )}
         </div>
 
-        {/* Right - AI Assistant */}
-        <div className="flex items-center gap-2">
-          <AIAssistant />
-        </div>
+        {/* Right - AI Assistant (hidden on /chat advanced mode) */}
+        {pathname !== "/chat" && (
+          <div className="flex items-center gap-2">
+            <AIAssistant />
+          </div>
+        )}
       </div>
 
       <LeaderboardDrawer open={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
