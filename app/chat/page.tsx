@@ -243,16 +243,27 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
   return (
     <aside
       className="hidden md:flex w-60 shrink-0 flex-col"
-      style={{ background: "#ffffff", borderRight: "1px solid rgba(0,0,0,0.08)" }}
+      style={{ background: "#F9F9F8", borderRight: "1px solid rgba(0,0,0,0.08)" }}
     >
-      <div className="p-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
+      {/* Sidebar header */}
+      <div className="px-4 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(0,0,0,0.07)" }}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider leading-none" style={{ color: "#D97706" }}>Hilas AI</p>
+            <p className="text-xs font-medium leading-none mt-0.5" style={{ color: "#64748B" }}>Advanced Mode</p>
+          </div>
+        </div>
         <button
           type="button"
           onClick={handleNewChat}
           disabled={loading}
-          className="w-full rounded-lg px-3 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+          className="w-full rounded-xl px-3 py-2 text-sm font-semibold text-white disabled:opacity-60 flex items-center justify-center gap-2"
           style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}
         >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           New Chat
         </button>
       </div>
@@ -792,13 +803,8 @@ export default function AdvancedChatPage() {
         <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
 
           {/* Slim top bar */}
-          <div className="flex-shrink-0 flex items-center justify-between px-6 py-2 border-b" style={{ borderColor: "rgba(0,0,0,0.06)", background: "#F9F9F8" }}>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</span>
-              <span className="text-xs" style={{ color: "#94A3B8" }}>·</span>
-              <span className="text-xs font-medium" style={{ color: "#64748B" }}>Advanced Mode</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style={{ background: "rgba(217,119,6,0.1)", color: "#D97706" }}>
+          <div className="flex-shrink-0 flex items-center justify-end px-6 py-2 border-b" style={{ borderColor: "rgba(0,0,0,0.06)", background: "#F9F9F8" }}>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: "rgba(217,119,6,0.1)", color: "#D97706", border: "1px solid rgba(217,119,6,0.2)" }}>
               {credits} credits
             </div>
           </div>
@@ -814,19 +820,19 @@ export default function AdvancedChatPage() {
             <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
               {chatMessages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center pt-24 text-center">
-                  <div className="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <div className="flex flex-col items-center justify-center pt-20 text-center">
+                  <div className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center shadow-sm" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   </div>
-                  <p className="text-2xl font-bold mb-2" style={{ color: "#1c1e21" }}>What do you want to build?</p>
-                  <p className="text-sm mb-8 max-w-sm" style={{ color: "#64748B" }}>Ask anything about Meta Ads, or request research, angles, copy, analysis, or a creative.</p>
-                  <div className="flex flex-wrap gap-2 justify-center">
+                  <p className="text-2xl font-bold mb-2" style={{ color: "#1c1e21" }}>How can I help your marketing?</p>
+                  <p className="text-sm mb-8 max-w-xs leading-relaxed" style={{ color: "#64748B" }}>Tell me what you're working on. I'll help you research, build angles, write copy, analyze results, or generate creatives.</p>
+                  <div className="flex flex-wrap gap-2 justify-center max-w-md">
                     {chips.map(chip => (
                       <button
                         key={chip.label}
                         onClick={() => handleChipTap(chip)}
-                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:brightness-95"
-                        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.1)", color: "#1c1e21" }}
+                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:shadow-sm"
+                        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.09)", color: "#374151" }}
                       >
                         {chip.label}
                       </button>
