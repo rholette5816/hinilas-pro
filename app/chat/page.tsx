@@ -733,33 +733,32 @@ export default function AdvancedChatPage() {
 
     if (msg.card === "text") {
       return (
-        <div className="max-w-xl rounded-2xl px-4 py-3 whitespace-pre-wrap text-sm leading-relaxed" style={{ background: "#ffffff", color: "#1c1e21", border: "1px solid rgba(0,0,0,0.08)" }}>
+        <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#1c1e21" }}>
           {msg.text}
         </div>
       );
     }
 
     return (
-      <div className="max-w-2xl rounded-2xl p-3" style={{ background: "#ffffff", border: "1px solid rgba(217,119,6,0.3)" }}>
-        <div className="flex items-center justify-between gap-3 mb-3 px-1">
-          <div>
-            <p className="text-xs uppercase font-black tracking-wider" style={{ color: "#D97706" }}>{actionLabel(msg.intent || "")}</p>
-            {msg.cost ? <p className="text-xs" style={{ color: "#64748B" }}>{msg.cost} credit{msg.cost > 1 ? "s" : ""}</p> : null}
+      <div>
+        {msg.cost ? (
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#D97706" }}>{actionLabel(msg.intent || "")}</span>
+            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(217,119,6,0.1)", color: "#D97706" }}>{msg.cost} cr</span>
           </div>
-          {msg.intent === "creative" ? <span className="text-xs font-bold" style={{ color: "#60A5FA" }}>Image action</span> : null}
-        </div>
+        ) : null}
         {msg.images?.length ? (
-          <div className="mb-3 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
-            <img src={msg.images[0]} alt="Generated creative" className="w-full max-h-[520px] object-contain bg-black" />
+          <div className="mb-4 rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)", maxWidth: "480px" }}>
+            <img src={msg.images[0]} alt="Generated creative" className="w-full object-contain bg-black" />
           </div>
         ) : null}
         {msg.text && msg.card !== "creative" ? <AIOutput content={msg.text} /> : null}
         {msg.text && msg.card === "creative" && !msg.images?.length ? (
-          <p className="text-sm mb-3" style={{ color: "#1c1e21" }}>{msg.text}</p>
+          <p className="text-sm" style={{ color: "#1c1e21" }}>{msg.text}</p>
         ) : null}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {renderActions(msg)}
-        </div>
+        {renderActions(msg) ? (
+          <div className="mt-4 flex flex-wrap gap-2">{renderActions(msg)}</div>
+        ) : null}
       </div>
     );
   }
@@ -779,7 +778,7 @@ export default function AdvancedChatPage() {
   }
 
   return (
-    <main className="min-h-screen h-screen flex flex-col pt-14 md:pt-12 overflow-hidden">
+    <main className="h-screen flex flex-col pt-14 md:pt-12 overflow-hidden" style={{ background: "#F9F9F8" }}>
       <div className="flex flex-1 overflow-hidden">
         <ConversationSidebar
           refreshKey={sessionsRefreshKey}
@@ -788,98 +787,143 @@ export default function AdvancedChatPage() {
             setNotice("");
           }}
         />
+
+        {/* Main chat column */}
         <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</p>
-          <p className="text-sm font-black" style={{ color: "#0F172A" }}>Advanced Mode</p>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "rgba(217,119,6,0.12)", border: "1px solid rgba(217,119,6,0.25)" }}>
-          <span className="text-xs font-bold" style={{ color: "#D97706" }}>{credits} cr</span>
-        </div>
-      </div>
 
-      {notice && (
-        <div className="flex-shrink-0 px-4 py-2 text-xs font-semibold" style={{ color: "#FBBF24", background: "rgba(217,119,6,0.1)", borderBottom: "1px solid rgba(217,119,6,0.18)" }}>
-          {notice}
-        </div>
-      )}
-
-      <section className="min-h-0 flex-1 overflow-y-auto px-4 py-5 space-y-4">
-        {chatMessages.length === 0 ? (
-          <div className="mx-auto max-w-2xl pt-16 text-center">
-            <p className="text-xl font-black mb-2" style={{ color: "#0F172A" }}>What do you want to build today?</p>
-            <p className="text-sm" style={{ color: "#64748B" }}>Ask a free Meta Ads question, or request research, angles, copy, analysis, or a creative.</p>
-          </div>
-        ) : null}
-
-        {chatMessages.map(msg => (
-          <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            {msg.role === "user" ? (
-              <div className="max-w-xl rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap" style={{ background: "#1877F2", color: "#ffffff", border: "none" }}>
-                {msg.images?.length ? <img src={msg.images[0]} alt="Attachment" className="mb-2 max-h-52 rounded-lg object-contain bg-black" /> : null}
-                {msg.text || "Attached image"}
-              </div>
-            ) : renderAssistantMessage(msg)}
-          </div>
-        ))}
-
-        {loading && (
-          <div className="flex justify-start">
-            <div className="rounded-2xl px-4 py-3 text-sm" style={{ background: "#ffffff", color: "#64748B", border: "1px solid rgba(0,0,0,0.08)" }}>
-              Thinking...
+          {/* Slim top bar */}
+          <div className="flex-shrink-0 flex items-center justify-between px-6 py-2 border-b" style={{ borderColor: "rgba(0,0,0,0.06)", background: "#F9F9F8" }}>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#D97706" }}>Hilas AI</span>
+              <span className="text-xs" style={{ color: "#94A3B8" }}>·</span>
+              <span className="text-xs font-medium" style={{ color: "#64748B" }}>Advanced Mode</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style={{ background: "rgba(217,119,6,0.1)", color: "#D97706" }}>
+              {credits} credits
             </div>
           </div>
-        )}
-        <div ref={bottomRef} />
-      </section>
 
-      <div className="flex-shrink-0 px-4 py-3 border-t" style={{ borderColor: "rgba(0,0,0,0.08)", background: "#ffffff" }}>
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 flex-wrap">
-          {chips.map(chip => (
-            <button
-              key={chip.label}
-              onClick={() => handleChipTap(chip)}
-              className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0"
-              style={{ background: "rgba(24,119,242,0.12)", border: "1px solid rgba(24,119,242,0.25)", color: "#60A5FA" }}
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
+          {notice && (
+            <div className="flex-shrink-0 px-6 py-2 text-xs font-semibold text-center" style={{ color: "#D97706", background: "rgba(217,119,6,0.06)", borderBottom: "1px solid rgba(217,119,6,0.12)" }}>
+              {notice}
+            </div>
+          )}
 
-        {attachedImage && (
-          <div className="mb-2 flex items-center gap-2">
-            <img src={attachedImage} alt="Attachment preview" className="w-16 h-16 rounded-lg object-cover" />
-            <button onClick={() => setAttachedImage(null)} className="text-xs font-bold" style={{ color: "#94A3B8" }}>Remove</button>
+          {/* Messages */}
+          <section className="min-h-0 flex-1 overflow-y-auto">
+            <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+
+              {chatMessages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center pt-24 text-center">
+                  <div className="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <p className="text-2xl font-bold mb-2" style={{ color: "#1c1e21" }}>What do you want to build?</p>
+                  <p className="text-sm mb-8 max-w-sm" style={{ color: "#64748B" }}>Ask anything about Meta Ads, or request research, angles, copy, analysis, or a creative.</p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {chips.map(chip => (
+                      <button
+                        key={chip.label}
+                        onClick={() => handleChipTap(chip)}
+                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:brightness-95"
+                        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.1)", color: "#1c1e21" }}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {chatMessages.map(msg => (
+                <div key={msg.id} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  {msg.role === "assistant" && (
+                    <div className="w-8 h-8 rounded-lg shrink-0 mt-0.5 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                  )}
+                  <div className={msg.role === "user" ? "max-w-xl" : "flex-1 min-w-0"}>
+                    {msg.role === "user" ? (
+                      <div className="rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap" style={{ background: "#1877F2", color: "#ffffff" }}>
+                        {msg.images?.length ? <img src={msg.images[0]} alt="Attachment" className="mb-2 max-h-52 rounded-lg object-contain bg-black" /> : null}
+                        {msg.text || "Attached image"}
+                      </div>
+                    ) : renderAssistantMessage(msg)}
+                  </div>
+                </div>
+              ))}
+
+              {loading && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div className="flex items-center gap-1 px-4 py-3 rounded-2xl text-sm" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", color: "#94A3B8" }}>
+                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              )}
+
+              <div ref={bottomRef} />
+            </div>
+          </section>
+
+          {/* Composer — Claude-style floating box */}
+          <div className="flex-shrink-0 px-6 pb-6 pt-3" style={{ background: "#F9F9F8" }}>
+            <div className="max-w-3xl mx-auto">
+              {/* Chips — only shown when messages exist */}
+              {chatMessages.length > 0 && chips.length > 0 && (
+                <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
+                  {chips.map(chip => (
+                    <button
+                      key={chip.label}
+                      onClick={() => handleChipTap(chip)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-all hover:brightness-95"
+                      style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.1)", color: "#64748B" }}
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {attachedImage && (
+                <div className="mb-2 flex items-center gap-2 px-1">
+                  <img src={attachedImage} alt="Attachment preview" className="w-14 h-14 rounded-lg object-cover" />
+                  <button onClick={() => setAttachedImage(null)} className="text-xs font-medium" style={{ color: "#94A3B8" }}>Remove</button>
+                </div>
+              )}
+
+              <div className="flex items-end gap-2 rounded-2xl px-4 py-3 shadow-sm" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.1)" }}>
+                <label className="cursor-pointer p-1.5 rounded-lg shrink-0 transition-all hover:brightness-95" style={{ background: "rgba(0,0,0,0.04)" }}>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageAttach} />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                </label>
+                <textarea
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder="Message Hilas AI..."
+                  rows={1}
+                  className="flex-1 resize-none text-sm focus:outline-none bg-transparent"
+                  style={{ color: "#1c1e21", maxHeight: "160px", lineHeight: "1.6" }}
+                />
+                <button
+                  onClick={() => handleSend()}
+                  disabled={(!input.trim() && !attachedImage) || loading || !activeSessionId}
+                  className="p-2 rounded-lg shrink-0 transition-all disabled:opacity-30"
+                  style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}
+                  aria-label="Send"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </button>
+              </div>
+              <p className="text-center text-xs mt-2" style={{ color: "#CBD5E1" }}>Hilas AI can make mistakes. Verify important outputs.</p>
+            </div>
           </div>
-        )}
 
-        <div className="flex items-end gap-2">
-          <label className="cursor-pointer p-2 rounded-xl shrink-0" style={{ background: "rgba(0,0,0,0.06)" }}>
-            <input type="file" accept="image/*" className="hidden" onChange={handleImageAttach} />
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          </label>
-          <textarea
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder="Ask anything or tell me what to generate..."
-            rows={1}
-            className="flex-1 resize-none rounded-xl px-4 py-3 text-sm focus:outline-none"
-            style={{ background: "#F0F2F5", border: "1px solid rgba(217,119,6,0.3)", color: "#1c1e21", maxHeight: "120px" }}
-          />
-          <button
-            onClick={() => handleSend()}
-            disabled={(!input.trim() && !attachedImage) || loading || !activeSessionId}
-            className="p-3 rounded-xl disabled:opacity-40 shrink-0"
-            style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}
-            aria-label="Send"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          </button>
-        </div>
-      </div>
         </div>
       </div>
     </main>
