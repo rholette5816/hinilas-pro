@@ -880,6 +880,10 @@ export default function AdvancedChatPage() {
         createdAt: new Date().toISOString(),
       };
 
+      // Clear streaming display before committing to state to prevent double render
+      setStreamingText("");
+      setStreamingIntent("");
+
       const updatedMessages = [...messagesSoFar, finalMsg];
       const newTitle = title || (messagesSoFar.length === 0 ? autoTitleFromMessage(message) : undefined);
       await saveChatMessages(sessionId, updatedMessages, newTitle);
