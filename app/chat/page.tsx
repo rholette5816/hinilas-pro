@@ -106,6 +106,18 @@ function cardForResponse(data: AdvancedResponse): ChatMessage["card"] {
   return "text";
 }
 
+function cleanMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "$1")   // **bold**
+    .replace(/\*(.+?)\*/g, "$1")        // *italic*
+    .replace(/_{1,2}(.+?)_{1,2}/g, "$1") // _italic_ or __bold__
+    .replace(/`(.+?)`/g, "$1")          // `code`
+    .replace(/^#{1,6}\s+/gm, "")        // # headings
+    .replace(/^[-*]\s+/gm, "")          // bullet points
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1") // [links](url)
+    .replace(/\s*---+\s*/g, "\n");      // horizontal rules
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -765,7 +777,7 @@ export default function AdvancedChatPage() {
     const assistantMsg: ChatMessage = {
       id: newId(),
       role: "assistant",
-      text,
+      text: cleanMarkdown(text),
       card: "text",
       intent: "knowledge",
       createdAt: new Date().toISOString(),
@@ -851,10 +863,10 @@ export default function AdvancedChatPage() {
         const { done, value } = await reader.read();
         if (done) break;
         fullText += decoder.decode(value, { stream: true });
-        setStreamingText(fullText);
+        setStreamingText(cleanMarkdown(fullText));
       }
 
-      fullText += decoder.decode();
+      fullText = cleanMarkdown(fullText + decoder.decode());
 
       const streamedIntent = res.headers.get("X-Intent") || intent;
       const streamedCost = Number(res.headers.get("X-Cost") || cost);
