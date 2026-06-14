@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AIOutput from "@/components/AIOutput";
 import { ChatMessage, useApp } from "@/lib/context";
@@ -26,16 +26,18 @@ type AdvancedResponse = {
   code?: string;
 };
 
-type Chip = {
-  label: string;
-  prompt?: string;
-  action?: "setup" | "angle";
-  value?: string;
+type ChatProject = {
+  id: string;
+  name: string;
+  color: string;
+  created_at: string;
 };
 
 type ConversationSession = {
   id: string;
   title: string;
+  pinned: boolean;
+  project_id: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -46,6 +48,16 @@ type ConversationSidebarProps = {
 };
 
 const PAID_CARDS = ["research", "angles", "copy", "analyze_basic", "analyze_advanced"];
+
+const LOADING_PHRASES: Record<string, string[]> = {
+  research: ["Pulling market insights...", "Mapping your target audience...", "Analyzing buyer behavior...", "Reading the market..."],
+  angles: ["Finding your strongest hook...", "Building the strategy...", "Crafting your ad angles...", "Thinking through the angles..."],
+  copy: ["Writing your caption...", "Crafting the hook...", "Building your copy...", "Putting the words together..."],
+  analyze_basic: ["Reading your ad data...", "Checking your metrics...", "Reviewing the numbers..."],
+  analyze_advanced: ["Auditing your campaign...", "Going deep on the data...", "Breaking down the results..."],
+  creative: ["Generating the visual...", "Building your ad creative...", "Designing the layout..."],
+  default: ["Working on it...", "Let me think about this...", "On it..."],
+};
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -94,21 +106,6 @@ function cardForResponse(data: AdvancedResponse): ChatMessage["card"] {
   return "text";
 }
 
-function extractAngleBlocks(content: string) {
-  const matches = content.match(/(?:\*\*)?ANGLE\s+\d+:[\s\S]*?(?=(?:\n(?:\*\*)?ANGLE\s+\d+:)|$)/gi);
-  if (matches?.length) return matches.map(block => block.trim()).filter(Boolean);
-  return content
-    .split(/\n(?=\d+\.\s+)/)
-    .map(block => block.trim())
-    .filter(block => block.length > 30)
-    .slice(0, 5);
-}
-
-function angleButtonLabel(block: string, index: number) {
-  const firstLine = block.split("\n").find(Boolean) || `Angle ${index + 1}`;
-  return firstLine.replace(/\*\*/g, "").slice(0, 52);
-}
-
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -145,9 +142,51 @@ async function downloadReport(content: string, intent: string) {
     .save();
 }
 
+function PinIcon({ filled = false }: { filled?: boolean }) {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 17v5" />
+      <path d="M5 17h14" />
+      <path d="M8 3h8l-1 8 4 4v2H5v-2l4-4L8 3z" />
+    </svg>
+  );
+}
+
+function FolderIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 7a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+    </svg>
+  );
+}
+
+function PencilIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 120ms ease" }}>
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  );
+}
+
 function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSidebarProps) {
   const { activeSessionId, setActiveSessionId, setChatMessages } = useApp();
   const [sessions, setSessions] = useState<ConversationSession[]>([]);
+  const [projects, setProjects] = useState<ChatProject[]>([]);
+  const [expandedProjectIds, setExpandedProjectIds] = useState<Set<string>>(() => new Set());
+  const [creatingProject, setCreatingProject] = useState(false);
+  const [newProjectName, setNewProjectName] = useState("");
+  const [renamingProjectId, setRenamingProjectId] = useState<string | null>(null);
+  const [renamingProjectName, setRenamingProjectName] = useState("");
+  const [projectPickerSessionId, setProjectPickerSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const initializedRef = useRef(false);
 
@@ -159,9 +198,31 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
     }
 
     const data = await res.json();
-    const nextSessions = Array.isArray(data) ? data as ConversationSession[] : [];
+    const nextSessions = Array.isArray(data)
+      ? data.map((session: Partial<ConversationSession>) => ({
+        id: session.id || "",
+        title: session.title || "New Chat",
+        pinned: session.pinned === true,
+        project_id: typeof session.project_id === "string" ? session.project_id : null,
+        created_at: session.created_at || "",
+        updated_at: session.updated_at || "",
+      })).filter((session: ConversationSession) => session.id)
+      : [];
     setSessions(nextSessions);
     return nextSessions;
+  }, []);
+
+  const fetchProjects = useCallback(async () => {
+    const res = await fetch("/api/chat/projects");
+    if (!res.ok) {
+      setProjects([]);
+      return [];
+    }
+
+    const data = await res.json();
+    const nextProjects = Array.isArray(data) ? data as ChatProject[] : [];
+    setProjects(nextProjects);
+    return nextProjects;
   }, []);
 
   const createSession = useCallback(async () => {
@@ -193,6 +254,10 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
   }, [fetchSessions, refreshKey]);
 
   useEffect(() => {
+    void fetchProjects();
+  }, [fetchProjects]);
+
+  useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
@@ -219,8 +284,106 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
     }
   }
 
+  function toggleProject(projectId: string) {
+    setExpandedProjectIds(prev => {
+      const next = new Set(prev);
+      if (next.has(projectId)) {
+        next.delete(projectId);
+      } else {
+        next.add(projectId);
+      }
+      return next;
+    });
+  }
+
+  async function handleCreateProject() {
+    const name = newProjectName.trim();
+    if (!name) {
+      setCreatingProject(false);
+      setNewProjectName("");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/chat/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) {
+        const project = await res.json() as ChatProject;
+        setExpandedProjectIds(prev => {
+          const next = new Set(prev);
+          next.add(project.id);
+          return next;
+        });
+        await fetchProjects();
+      }
+    } finally {
+      setCreatingProject(false);
+      setNewProjectName("");
+      setLoading(false);
+    }
+  }
+
+  async function handleRenameProject(projectId: string) {
+    const name = renamingProjectName.trim();
+    setRenamingProjectId(null);
+    setRenamingProjectName("");
+    if (!name) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/chat/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) await fetchProjects();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDeleteProject(projectId: string) {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/chat/projects/${projectId}`, { method: "DELETE" });
+      if (!res.ok) return;
+      await fetchProjects();
+      await fetchSessions();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleTogglePin(session: ConversationSession) {
+    setProjectPickerSessionId(null);
+    const nextPinned = !session.pinned;
+    setSessions(prev => prev.map(item => item.id === session.id ? { ...item, pinned: nextPinned } : item));
+    const res = await fetch(`/api/chat/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pinned: nextPinned }),
+    });
+    if (!res.ok) await fetchSessions();
+  }
+
+  async function handleMoveSession(sessionId: string, projectId: string | null) {
+    setProjectPickerSessionId(null);
+    setSessions(prev => prev.map(item => item.id === sessionId ? { ...item, project_id: projectId } : item));
+    const res = await fetch(`/api/chat/sessions/${sessionId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: projectId }),
+    });
+    if (!res.ok) await fetchSessions();
+  }
+
   async function handleSelect(sessionId: string) {
     if (sessionId === activeSessionId) return;
+    setProjectPickerSessionId(null);
     onSessionChange();
     await setActiveSessionId(sessionId);
   }
@@ -238,6 +401,122 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
     } finally {
       setLoading(false);
     }
+  }
+
+  const pinnedSessions = sessions.filter(session => session.pinned);
+  const recentSessions = sessions.filter(session => !session.pinned && !session.project_id);
+  const hasPinnedOrProjects = pinnedSessions.length > 0 || projects.length > 0;
+
+  function projectSessions(projectId: string) {
+    return sessions.filter(session => !session.pinned && session.project_id === projectId);
+  }
+
+  function renderSectionLabel(label: string, action?: ReactNode) {
+    return (
+      <div className="mt-3 mb-1 flex items-center justify-between px-4">
+        <p className="text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: "#94A3B8" }}>{label}</p>
+        {action}
+      </div>
+    );
+  }
+
+  function renderSessionItem(session: ConversationSession, indent = false) {
+    const isActive = session.id === activeSessionId;
+    return (
+      <div
+        key={session.id}
+        className="group relative mb-1 rounded-r-lg border-l-[3px]"
+        style={{
+          marginLeft: indent ? 20 : 8,
+          marginRight: 8,
+          background: isActive ? "rgba(217,119,6,0.08)" : "transparent",
+          borderLeftColor: isActive ? "#D97706" : "transparent",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => handleSelect(session.id)}
+          className="w-full px-3 py-2 pr-24 text-left"
+        >
+          <span className="block truncate text-sm font-bold" style={{ color: "#0F172A" }}>
+            {session.title || "New Chat"}
+          </span>
+          <span className="block truncate text-xs" style={{ color: "#64748B" }}>
+            {formatRelativeDate(session.updated_at)}
+          </span>
+        </button>
+        <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+          <button
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              void handleTogglePin(session);
+            }}
+            className="h-6 w-6 rounded-full flex items-center justify-center"
+            style={{ color: session.pinned ? "#D97706" : "#64748B", background: "rgba(0,0,0,0.05)" }}
+            aria-label={session.pinned ? "Unpin chat" : "Pin chat"}
+            title={session.pinned ? "Unpin chat" : "Pin chat"}
+          >
+            <PinIcon filled={session.pinned} />
+          </button>
+          <button
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              setProjectPickerSessionId(projectPickerSessionId === session.id ? null : session.id);
+            }}
+            className="h-6 w-6 rounded-full flex items-center justify-center"
+            style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+            aria-label="Move to project"
+            title="Move to project"
+          >
+            <FolderIcon />
+          </button>
+          <button
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              void handleDelete(session.id);
+            }}
+            className="h-6 w-6 rounded-full text-sm font-bold"
+            style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+            aria-label="Delete chat"
+            title="Delete chat"
+          >
+            &times;
+          </button>
+        </div>
+
+        {projectPickerSessionId === session.id ? (
+          <div
+            className="absolute right-2 top-9 z-20 w-44 rounded-lg p-1 shadow-lg"
+            style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.08)" }}
+            onClick={event => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => handleMoveSession(session.id, null)}
+              className="w-full rounded-md px-2 py-1.5 text-left text-xs font-semibold"
+              style={{ color: "#334155" }}
+            >
+              No folder
+            </button>
+            {projects.map(project => (
+              <button
+                key={project.id}
+                type="button"
+                onClick={() => handleMoveSession(session.id, project.id)}
+                className="w-full rounded-md px-2 py-1.5 text-left text-xs font-semibold flex items-center gap-2"
+                style={{ color: "#334155" }}
+              >
+                <span className="h-2 w-2 rounded-full shrink-0" style={{ background: project.color }} />
+                <span className="truncate">{project.name}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
   }
 
   return (
@@ -269,44 +548,147 @@ function ConversationSidebar({ refreshKey, onSessionChange }: ConversationSideba
       </div>
 
       <div className="flex-1 overflow-y-auto py-2">
-        {sessions.map(session => {
-          const isActive = session.id === activeSessionId;
-          return (
-            <div
-              key={session.id}
-              className="group relative mx-2 mb-1 rounded-r-lg border-l-[3px]"
-              style={{
-                background: isActive ? "rgba(217,119,6,0.08)" : "transparent",
-                borderLeftColor: isActive ? "#D97706" : "transparent",
+        {pinnedSessions.length > 0 ? (
+          <>
+            {renderSectionLabel("Pinned")}
+            {pinnedSessions.map(session => renderSessionItem(session))}
+          </>
+        ) : null}
+
+        {renderSectionLabel(
+          "Projects",
+          <button
+            type="button"
+            onClick={() => {
+              setCreatingProject(true);
+              setNewProjectName("");
+            }}
+            className="h-5 w-5 rounded-full text-sm font-black leading-none"
+            style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+            aria-label="Create project"
+            title="Create project"
+          >
+            +
+          </button>
+        )}
+
+        {creatingProject ? (
+          <form
+            className="mx-2 mb-1"
+            onSubmit={event => {
+              event.preventDefault();
+              void handleCreateProject();
+            }}
+          >
+            <input
+              autoFocus
+              value={newProjectName}
+              onChange={event => setNewProjectName(event.target.value)}
+              onKeyDown={event => {
+                if (event.key === "Escape") {
+                  setCreatingProject(false);
+                  setNewProjectName("");
+                }
               }}
-            >
-              <button
-                type="button"
-                onClick={() => handleSelect(session.id)}
-                className="w-full px-3 py-2 pr-9 text-left"
-              >
-                <span className="block truncate text-sm font-bold" style={{ color: "#0F172A" }}>
-                  {session.title || "New Chat"}
-                </span>
-                <span className="block truncate text-xs" style={{ color: "#64748B" }}>
-                  {formatRelativeDate(session.updated_at)}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={event => {
-                  event.stopPropagation();
-                  void handleDelete(session.id);
+              placeholder="Project name"
+              className="w-full rounded-lg px-3 py-2 text-sm font-semibold outline-none"
+              style={{ color: "#0F172A", background: "#ffffff", border: "1px solid rgba(0,0,0,0.08)" }}
+            />
+          </form>
+        ) : null}
+
+        {projects.map(project => {
+          const isOpen = expandedProjectIds.has(project.id);
+          const children = projectSessions(project.id);
+
+          if (renamingProjectId === project.id) {
+            return (
+              <form
+                key={project.id}
+                className="mx-2 mb-1"
+                onSubmit={event => {
+                  event.preventDefault();
+                  void handleRenameProject(project.id);
                 }}
-                className="absolute right-2 top-2 h-6 w-6 rounded-full text-sm font-bold opacity-0 transition-opacity group-hover:opacity-100"
-                style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
-                aria-label="Delete chat"
               >
-                &times;
-              </button>
+                <input
+                  autoFocus
+                  value={renamingProjectName}
+                  onChange={event => setRenamingProjectName(event.target.value)}
+                  onBlur={() => void handleRenameProject(project.id)}
+                  onKeyDown={event => {
+                    if (event.key === "Escape") {
+                      setRenamingProjectId(null);
+                      setRenamingProjectName("");
+                    }
+                  }}
+                  className="w-full rounded-lg px-3 py-2 text-sm font-semibold outline-none"
+                  style={{ color: "#0F172A", background: "#ffffff", border: "1px solid rgba(0,0,0,0.08)" }}
+                />
+              </form>
+            );
+          }
+
+          return (
+            <div key={project.id} className="mb-1">
+              <div className="group relative mx-2 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => toggleProject(project.id)}
+                  className="w-full flex items-center gap-2 px-3 py-2 pr-16 text-left rounded-lg"
+                  style={{ color: "#334155" }}
+                >
+                  <ChevronIcon open={isOpen} />
+                  <span className="shrink-0" style={{ color: project.color }}><FolderIcon /></span>
+                  <span className="truncate text-sm font-bold">{project.name}</span>
+                </button>
+                <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                  <button
+                    type="button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      setRenamingProjectId(project.id);
+                      setRenamingProjectName(project.name);
+                    }}
+                    className="h-6 w-6 rounded-full flex items-center justify-center"
+                    style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+                    aria-label="Rename project"
+                    title="Rename project"
+                  >
+                    <PencilIcon />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      void handleDeleteProject(project.id);
+                    }}
+                    className="h-6 w-6 rounded-full text-sm font-bold"
+                    style={{ color: "#64748B", background: "rgba(0,0,0,0.05)" }}
+                    aria-label="Delete project"
+                    title="Delete project"
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
+              {isOpen ? (
+                <div>
+                  {children.length > 0 ? children.map(session => renderSessionItem(session, true)) : (
+                    <p className="px-8 py-1 text-xs" style={{ color: "#94A3B8" }}>No chats</p>
+                  )}
+                </div>
+              ) : null}
             </div>
           );
         })}
+
+        {recentSessions.length > 0 ? (
+          <>
+            {hasPinnedOrProjects ? renderSectionLabel("Recent") : null}
+            {recentSessions.map(session => renderSessionItem(session))}
+          </>
+        ) : null}
 
         {!loading && sessions.length === 0 ? (
           <p className="px-4 py-3 text-xs" style={{ color: "#64748B" }}>No chats yet</p>
@@ -325,42 +707,44 @@ export default function AdvancedChatPage() {
     activeSessionId,
     chatMessages,
     setChatMessages,
-    researchOutput,
-    setResearchOutput,
-    anglesOutput,
-    setAnglesOutput,
-    setCopyOutput,
-    selectedAngle,
-    setSelectedAngle,
     setCreativeImage,
     saveAdImages,
   } = useApp();
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingPhrase, setLoadingPhrase] = useState(LOADING_PHRASES.default[0]);
+  const [streamingText, setStreamingText] = useState("");
+  const [streamingIntent, setStreamingIntent] = useState("");
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [pendingIntent, setPendingIntent] = useState<PendingIntent | null>(null);
-  const [sessionResearch, setSessionResearch] = useState(researchOutput || "");
-  const [sessionAngles, setSessionAngles] = useState(anglesOutput || "");
   const [notice, setNotice] = useState("");
   const [creativeLoadingId, setCreativeLoadingId] = useState<string | null>(null);
   const [sessionsRefreshKey, setSessionsRefreshKey] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const hasSetup = !!setup?.businessName;
-  const angleBlocks = useMemo(() => extractAngleBlocks(sessionAngles), [sessionAngles]);
-
-  useEffect(() => {
-    if (researchOutput) setSessionResearch(researchOutput);
-  }, [researchOutput]);
-
-  useEffect(() => {
-    if (anglesOutput) setSessionAngles(anglesOutput);
-  }, [anglesOutput]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [chatMessages, loading]);
+  }, [chatMessages, loading, streamingText]);
+
+  useEffect(() => {
+    if (!loading) {
+      setLoadingPhrase(LOADING_PHRASES.default[0]);
+      return;
+    }
+
+    const phrases = LOADING_PHRASES[streamingIntent] || LOADING_PHRASES.default;
+    let phraseIndex = 0;
+    setLoadingPhrase(phrases[phraseIndex]);
+    const interval = window.setInterval(() => {
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      setLoadingPhrase(phrases[phraseIndex]);
+    }, 1800);
+
+    return () => window.clearInterval(interval);
+  }, [loading, streamingIntent]);
 
   useEffect(() => {
     setPendingIntent(null);
@@ -374,28 +758,6 @@ export default function AdvancedChatPage() {
     await setChatMessages(sessionId, messages, title);
     refreshSessionsList();
   }
-
-  const chips = useMemo<Chip[]>(() => {
-    if (!hasSetup) return [{ label: "Set up my business", action: "setup" }];
-
-    const next: Chip[] = [];
-    if (!sessionResearch) {
-      next.push({ label: "Research my market - 1 cr", prompt: "Research my market" });
-    } else if (!sessionAngles) {
-      next.push({ label: "Generate 5 angles - 1 cr", prompt: "Generate 5 ad angles from my research" });
-    } else if (!selectedAngle) {
-      angleBlocks.slice(0, 2).forEach((block, index) => {
-        next.push({ label: angleButtonLabel(block, index), action: "angle", value: block });
-      });
-    } else {
-      next.push(
-        { label: "Write ad copy - 1 cr", prompt: "Write ad copy from my selected angle" },
-        { label: "Make creative - 2 cr", prompt: "Make me a creative from my selected angle" }
-      );
-    }
-    next.push({ label: "Ask anything (free)", prompt: "" });
-    return next;
-  }, [angleBlocks, hasSetup, selectedAngle, sessionAngles, sessionResearch]);
 
   async function appendAssistantText(text: string, messagesSoFar: ChatMessage[] = chatMessages, sessionId: string | null = activeSessionId) {
     if (!sessionId) return;
@@ -426,23 +788,97 @@ export default function AdvancedChatPage() {
     const updated = [...messagesSoFar, assistantMsg];
     await saveChatMessages(sessionId, updated, title);
 
-    if (data.intent === "research" && data.content) {
-      setSessionResearch(data.content);
-      setResearchOutput(data.content);
-    }
-    if (data.intent === "angles" && data.content) {
-      setSessionAngles(data.content);
-      setAnglesOutput(data.content);
-    }
-    if (data.intent === "copy" && data.content) {
-      setCopyOutput(data.content);
-    }
     if (data.intent === "select_angle" && data.content) {
-      setSelectedAngle(data.content);
       setNotice("Angle saved for copy and creative.");
     }
     if (data.cost > 0 && data.intent !== "creative") {
       await refreshCredits();
+    }
+  }
+
+  async function streamGeneration(
+    intent: string,
+    cost: number,
+    message: string,
+    images: string[],
+    sessionId: string,
+    messagesSoFar: ChatMessage[],
+    title?: string
+  ) {
+    setLoading(true);
+    setStreamingIntent(intent);
+    setStreamingText("");
+
+    try {
+      const res = await fetch("/api/chat/advanced", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, images, confirmed: true, intent, stream: true }),
+      });
+
+      const contentType = res.headers.get("Content-Type") || "";
+
+      if (!res.ok) {
+        const data = contentType.includes("application/json")
+          ? await res.json().catch(() => ({} as AdvancedResponse))
+          : {} as AdvancedResponse;
+        await refreshCredits();
+        await appendAssistantText(
+          data.code === "NO_CREDITS" ? "Not enough credits. Please top up to continue." : data.error || "Something went wrong. Please try again.",
+          messagesSoFar,
+          sessionId
+        );
+        return;
+      }
+
+      if (contentType.includes("application/json")) {
+        const data = await res.json() as AdvancedResponse;
+        await handleAssistantResponse(data, messagesSoFar, sessionId, title);
+        return;
+      }
+
+      if (!res.body) {
+        await refreshCredits();
+        await appendAssistantText("Something went wrong. Please try again.", messagesSoFar, sessionId);
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullText += decoder.decode(value, { stream: true });
+        setStreamingText(fullText);
+      }
+
+      fullText += decoder.decode();
+
+      const streamedIntent = res.headers.get("X-Intent") || intent;
+      const streamedCost = Number(res.headers.get("X-Cost") || cost);
+      const finalMsg: ChatMessage = {
+        id: newId(),
+        role: "assistant",
+        text: fullText,
+        card: PAID_CARDS.includes(streamedIntent) ? streamedIntent as ChatMessage["card"] : "text",
+        intent: streamedIntent,
+        cost: streamedCost > 0 ? streamedCost : undefined,
+        createdAt: new Date().toISOString(),
+      };
+
+      const updatedMessages = [...messagesSoFar, finalMsg];
+      const newTitle = title || (messagesSoFar.length === 0 ? autoTitleFromMessage(message) : undefined);
+      await saveChatMessages(sessionId, updatedMessages, newTitle);
+      await refreshCredits();
+    } catch {
+      await refreshCredits();
+      await appendAssistantText("Something went wrong. Please try again.", messagesSoFar, sessionId);
+    } finally {
+      setStreamingText("");
+      setStreamingIntent("");
+      setLoading(false);
     }
   }
 
@@ -482,7 +918,6 @@ export default function AdvancedChatPage() {
         body: JSON.stringify({
           message: messageText || "Analyze this screenshot.",
           images: image ? [image] : [],
-          sessionState: { research: sessionResearch, selectedAngle },
         }),
       });
       const data = await res.json() as AdvancedResponse;
@@ -507,7 +942,7 @@ export default function AdvancedChatPage() {
         return;
       }
 
-      await handleAssistantResponse(data, newMessages, sessionId, title);
+      await streamGeneration(data.intent || "knowledge", data.cost || 0, messageText || "Analyze this screenshot.", image ? [image] : [], sessionId, newMessages, title);
     } catch {
       await appendAssistantText("Something went wrong. Please try again.", newMessages, sessionId);
     } finally {
@@ -534,34 +969,13 @@ export default function AdvancedChatPage() {
     setNotice("");
     await saveChatMessages(sessionId, messagesWithoutConfirm);
 
-    try {
-      const res = await fetch("/api/chat/advanced", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: pendingIntent.message || "Continue",
-          images: pendingIntent.images,
-          sessionState: { research: sessionResearch, selectedAngle },
-          intent: pendingIntent.intent,
-          confirmed: true,
-        }),
-      });
-      const data = await res.json() as AdvancedResponse;
-
-      if (!res.ok) {
-        await refreshCredits();
-        await appendAssistantText(data.code === "NO_CREDITS" ? "Not enough credits. Please top up to continue." : data.error || "Something went wrong. Please try again.", messagesWithoutConfirm, sessionId);
-        return;
-      }
-
-      await handleAssistantResponse(data, messagesWithoutConfirm, sessionId, pendingIntent.title);
-    } catch {
-      await refreshCredits();
-      await appendAssistantText("Something went wrong. Please try again.", messagesWithoutConfirm, sessionId);
-    } finally {
-      setPendingIntent(null);
-      setLoading(false);
-    }
+    const intent = pendingIntent.intent;
+    const cost = pendingIntent.cost;
+    const message = pendingIntent.message || "Continue";
+    const images = pendingIntent.images;
+    const title = pendingIntent.title;
+    setPendingIntent(null);
+    await streamGeneration(intent, cost, message, images, sessionId, messagesWithoutConfirm, title);
   }
 
   async function handleCancel() {
@@ -579,23 +993,6 @@ export default function AdvancedChatPage() {
     e.target.value = "";
   }
 
-  async function saveAngle(angle: string) {
-    setSelectedAngle(angle);
-    setNotice("Angle saved for copy and creative.");
-  }
-
-  function handleChipTap(chip: Chip) {
-    if (chip.action === "setup") {
-      router.push("/");
-      return;
-    }
-    if (chip.action === "angle" && chip.value) {
-      saveAngle(chip.value);
-      return;
-    }
-    setInput(chip.prompt ?? "");
-  }
-
   async function generateCreative(messageId: string, sourceText: string) {
     if (!setup || creativeLoadingId || !activeSessionId) return;
     if (credits < 2) {
@@ -606,7 +1003,7 @@ export default function AdvancedChatPage() {
     setCreativeLoadingId(messageId);
     setNotice("");
     try {
-      const angle = selectedAngle || sourceText || "General product promotion";
+      const angle = sourceText || "General product promotion";
       const prompt = MODULE_PROMPTS.creative(
         buildUserContext(setup, setup.language),
         angle,
@@ -653,34 +1050,24 @@ export default function AdvancedChatPage() {
     if (msg.card === "research") {
       return (
         <button
-          onClick={() => {
-            setSessionResearch(msg.text);
-            setResearchOutput(msg.text);
-            setNotice("Research saved for angles.");
-          }}
+          onClick={() => navigator.clipboard.writeText(msg.text)}
           className="px-3 py-2 rounded-lg text-xs font-bold"
-          style={{ background: "rgba(24,119,242,0.12)", color: "#60A5FA", border: "1px solid rgba(24,119,242,0.25)" }}
+          style={{ background: "rgba(255,255,255,0.08)", color: "#CBD5E1", border: "1px solid rgba(255,255,255,0.12)" }}
         >
-          Use in Angles
+          Copy research
         </button>
       );
     }
 
     if (msg.card === "angles") {
-      const blocks = extractAngleBlocks(msg.text);
       return (
-        <div className="flex flex-wrap gap-2">
-          {blocks.map((block, index) => (
-            <button
-              key={`${msg.id}-${index}`}
-              onClick={() => saveAngle(block)}
-              className="px-3 py-2 rounded-lg text-xs font-bold"
-              style={{ background: "rgba(24,119,242,0.12)", color: "#60A5FA", border: "1px solid rgba(24,119,242,0.25)" }}
-            >
-              Use angle {index + 1}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={() => navigator.clipboard.writeText(msg.text)}
+          className="px-3 py-2 rounded-lg text-xs font-bold"
+          style={{ background: "rgba(255,255,255,0.08)", color: "#CBD5E1", border: "1px solid rgba(255,255,255,0.12)" }}
+        >
+          Copy angles
+        </button>
       );
     }
 
@@ -711,7 +1098,7 @@ export default function AdvancedChatPage() {
     if (msg.card === "creative") {
       return (
         <button
-          onClick={() => generateCreative(msg.id, selectedAngle || msg.text)}
+          onClick={() => generateCreative(msg.id, msg.text)}
           disabled={creativeLoadingId === msg.id}
           className="px-4 py-2 rounded-lg text-xs font-bold disabled:opacity-50"
           style={{ background: "#D97706", color: "#000" }}
@@ -802,13 +1189,6 @@ export default function AdvancedChatPage() {
         {/* Main chat column */}
         <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
 
-          {/* Slim top bar */}
-          <div className="flex-shrink-0 flex items-center justify-end px-6 py-2 border-b" style={{ borderColor: "rgba(0,0,0,0.06)", background: "#F9F9F8" }}>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: "rgba(217,119,6,0.1)", color: "#D97706", border: "1px solid rgba(217,119,6,0.2)" }}>
-              {credits} credits
-            </div>
-          </div>
-
           {notice && (
             <div className="flex-shrink-0 px-6 py-2 text-xs font-semibold text-center" style={{ color: "#D97706", background: "rgba(217,119,6,0.06)", borderBottom: "1px solid rgba(217,119,6,0.12)" }}>
               {notice}
@@ -825,19 +1205,7 @@ export default function AdvancedChatPage() {
                     <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   </div>
                   <p className="text-2xl font-bold mb-2" style={{ color: "#1c1e21" }}>How can I help your marketing?</p>
-                  <p className="text-sm mb-8 max-w-xs leading-relaxed" style={{ color: "#64748B" }}>Tell me what you're working on. I'll help you research, build angles, write copy, analyze results, or generate creatives.</p>
-                  <div className="flex flex-wrap gap-2 justify-center max-w-md">
-                    {chips.map(chip => (
-                      <button
-                        key={chip.label}
-                        onClick={() => handleChipTap(chip)}
-                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:shadow-sm"
-                        style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.09)", color: "#374151" }}
-                      >
-                        {chip.label}
-                      </button>
-                    ))}
-                  </div>
+                  <p className="text-sm mb-8 max-w-xs leading-relaxed" style={{ color: "#64748B" }}>Tell me what you are working on. I can help you research, build angles, write copy, analyze results, or generate creatives.</p>
                 </div>
               ) : null}
 
@@ -859,16 +1227,24 @@ export default function AdvancedChatPage() {
                 </div>
               ))}
 
-              {loading && (
+              {streamingText && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-lg shrink-0 mt-0.5 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div className="flex-1 min-w-0 text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "#1c1e21" }}>
+                    {streamingText}
+                    <span className="inline-block w-0.5 h-4 ml-0.5 align-middle animate-pulse" style={{ background: "#D97706" }} />
+                  </div>
+                </div>
+              )}
+
+              {loading && !streamingText && (
                 <div className="flex gap-3 justify-start">
                   <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1877F2, #D97706)" }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   </div>
-                  <div className="flex items-center gap-1 px-4 py-3 rounded-2xl text-sm" style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.07)", color: "#94A3B8" }}>
-                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#D97706", animationDelay: "300ms" }} />
-                  </div>
+                  <p className="text-sm italic pt-2" style={{ color: "#94A3B8" }}>{loadingPhrase}</p>
                 </div>
               )}
 
@@ -879,22 +1255,6 @@ export default function AdvancedChatPage() {
           {/* Composer — Claude-style floating box */}
           <div className="flex-shrink-0 px-6 pb-6 pt-3" style={{ background: "#F9F9F8" }}>
             <div className="max-w-3xl mx-auto">
-              {/* Chips — only shown when messages exist */}
-              {chatMessages.length > 0 && chips.length > 0 && (
-                <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
-                  {chips.map(chip => (
-                    <button
-                      key={chip.label}
-                      onClick={() => handleChipTap(chip)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-all hover:brightness-95"
-                      style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.1)", color: "#64748B" }}
-                    >
-                      {chip.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-
               {attachedImage && (
                 <div className="mb-2 flex items-center gap-2 px-1">
                   <img src={attachedImage} alt="Attachment preview" className="w-14 h-14 rounded-lg object-cover" />

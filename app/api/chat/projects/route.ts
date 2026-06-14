@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-function normalizeTitle(value: unknown) {
-  if (typeof value !== "string") return "New Chat";
-  const title = value.trim();
-  return title || "New Chat";
+function normalizeName(value: unknown) {
+  if (typeof value !== "string") return null;
+  const name = value.trim();
+  return name || null;
+}
+
+function normalizeColor(value: unknown) {
+  if (typeof value !== "string") return "#64748B";
+  const color = value.trim();
+  return color || "#64748B";
 }
 
 export async function GET() {
@@ -16,11 +22,10 @@ export async function GET() {
   }
 
   const { data, error } = await supabase
-    .from("chat_sessions")
-    .select("id, title, pinned, project_id, created_at, updated_at")
+    .from("chat_projects")
+    .select("id, name, color, created_at")
     .eq("user_id", user.id)
-    .order("pinned", { ascending: false })
-    .order("updated_at", { ascending: false });
+    .order("created_at", { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -38,12 +43,20 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const title = normalizeTitle(body.title);
+  const name = normalizeName(body.name);
+
+  if (!name) {
+    return NextResponse.json({ error: "name must be a non-empty string" }, { status: 400 });
+  }
 
   const { data, error } = await supabase
-    .from("chat_sessions")
-    .insert({ user_id: user.id, title })
-    .select("id, title, messages, pinned, project_id, created_at, updated_at")
+    .from("chat_projects")
+    .insert({
+      user_id: user.id,
+      name,
+      color: normalizeColor(body.color),
+    })
+    .select("id, name, color, created_at")
     .single();
 
   if (error) {

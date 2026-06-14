@@ -27,7 +27,7 @@ export async function GET(_req: Request, context: RouteContext) {
 
   const { data, error } = await supabase
     .from("chat_sessions")
-    .select("id, user_id, title, messages, created_at, updated_at")
+    .select("id, user_id, title, messages, pinned, project_id, created_at, updated_at")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -52,7 +52,7 @@ export async function PATCH(req: Request, context: RouteContext) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const update: { messages?: ChatMessage[]; title?: string; updated_at: string } = {
+  const update: { messages?: ChatMessage[]; title?: string; pinned?: boolean; project_id?: string | null; updated_at: string } = {
     updated_at: new Date().toISOString(),
   };
 
@@ -71,12 +71,37 @@ export async function PATCH(req: Request, context: RouteContext) {
     update.title = title;
   }
 
+  if (typeof body.pinned === "boolean") {
+    update.pinned = body.pinned;
+  }
+
+  if ("project_id" in body) {
+    if (typeof body.project_id === "string") {
+      const { data: project, error: projectError } = await supabase
+        .from("chat_projects")
+        .select("id")
+        .eq("id", body.project_id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (projectError) {
+        return NextResponse.json({ error: projectError.message }, { status: 500 });
+      }
+      if (!project) {
+        return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      }
+      update.project_id = body.project_id;
+    } else {
+      update.project_id = null;
+    }
+  }
+
   const { data, error } = await supabase
     .from("chat_sessions")
     .update(update)
     .eq("id", id)
     .eq("user_id", user.id)
-    .select("id, user_id, title, messages, created_at, updated_at")
+    .select("id, user_id, title, messages, pinned, project_id, created_at, updated_at")
     .maybeSingle();
 
   if (error) {

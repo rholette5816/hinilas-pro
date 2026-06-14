@@ -25,6 +25,13 @@ type SessionState = {
   selectedAngle?: string;
 };
 
+type BeginnerContext = {
+  research_output?: string | null;
+  angles_output?: string | null;
+  selected_angle?: string | null;
+  copy_output?: string | null;
+};
+
 type ExecuteParams = {
   req: NextRequest;
   openai: OpenAI;
@@ -33,8 +40,10 @@ type ExecuteParams = {
   message: string;
   images: string[];
   sessionState: SessionState;
+  savedContext: BeginnerContext;
   setup: BuildUserContextSetup;
   shouldBill: boolean;
+  stream: boolean;
 };
 
 const INTENT_COST: Record<Intent, number> = {
@@ -156,32 +165,79 @@ async function imageParts(images: string[]): Promise<OpenAI.Chat.ChatCompletionC
   return parts;
 }
 
-function buildPrompt(intent: Intent, userCtx: string, setup: BuildUserContextSetup, message: string, sessionState: SessionState): string {
+function cleanContextValue(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.trim();
+}
+
+function buildSavedContextSection(intent: Intent, savedContext: BeginnerContext) {
+  const fields: Array<[string, string]> = [];
+
+  if (intent === "angles") {
+    fields.push(["Research", cleanContextValue(savedContext.research_output)]);
+  } else if (intent === "copy") {
+    fields.push(["Angles", cleanContextValue(savedContext.angles_output)]);
+    fields.push(["Selected Angle", cleanContextValue(savedContext.selected_angle)]);
+  } else if (intent === "research" || intent === "knowledge" || intent === "smalltalk") {
+    fields.push(["Research", cleanContextValue(savedContext.research_output)]);
+    fields.push(["Angles", cleanContextValue(savedContext.angles_output)]);
+    fields.push(["Selected Angle", cleanContextValue(savedContext.selected_angle)]);
+    fields.push(["Copy", cleanContextValue(savedContext.copy_output)]);
+  }
+
+  const lines = fields
+    .filter(([, value]) => value.length > 0)
+    .map(([label, value]) => `${label}: ${value}`);
+
+  if (lines.length === 0) return "";
+
+  return `# SAVED CONTEXT FROM BEGINNER MODE
+${lines.join("\n")}
+
+Use this context when it helps, and ignore it when it doesn't.`;
+}
+
+function withSavedContext(prompt: string, intent: Intent, savedContext: BeginnerContext) {
+  const savedContextSection = buildSavedContextSection(intent, savedContext);
+  return savedContextSection ? `${prompt}\n\n${savedContextSection}` : prompt;
+}
+
+function buildPrompt(intent: Intent, userCtx: string, setup: BuildUserContextSetup, message: string, sessionState: SessionState, savedContext: BeginnerContext): string {
+  let prompt: string;
+
   switch (intent) {
     case "research":
-      return MODULE_PROMPTS.research(userCtx, setup.language);
+      prompt = MODULE_PROMPTS.research(userCtx, setup.language);
+      break;
     case "angles":
-      return MODULE_PROMPTS.angles(userCtx, sessionState.research || "", setup.language);
+      prompt = MODULE_PROMPTS.angles(userCtx, cleanContextValue(savedContext.research_output) || sessionState.research || "", setup.language);
+      break;
     case "copy": {
-      const angle = sessionState.selectedAngle || message || "Use the strongest angle for this business.";
-      return `${MODULE_PROMPTS.copy(userCtx, ["PAS", "AIDA"], setup.language)}
+      const angle = cleanContextValue(savedContext.selected_angle) || sessionState.selectedAngle || message || "Use the strongest angle for this business.";
+      prompt = `${MODULE_PROMPTS.copy(userCtx, ["PAS", "AIDA"], setup.language)}
 
 # SELECTED ANGLE
 ${angle}
 
 # ADVANCED CHAT INSTRUCTION
 If no ad image is attached, write the captions from the selected angle and business context.`;
+      break;
     }
     case "analyze_basic":
-      return MODULE_PROMPTS.analyze(userCtx, "");
+      prompt = MODULE_PROMPTS.analyze(userCtx, "");
+      break;
     case "analyze_advanced":
-      return `${MODULE_PROMPTS.analyzeAdvanced(userCtx, "")}\n\n# USER DATA\n${message}`;
+      prompt = `${MODULE_PROMPTS.analyzeAdvanced(userCtx, "")}\n\n# USER DATA\n${message}`;
+      break;
     case "knowledge":
     case "smalltalk":
     case "offtopic":
     default:
-      return MODULE_PROMPTS.chat(userCtx, message);
+      prompt = MODULE_PROMPTS.chat(userCtx, message);
+      break;
   }
+
+  return withSavedContext(prompt, intent, savedContext);
 }
 
 async function executeAdvancedChat({
@@ -192,8 +248,10 @@ async function executeAdvancedChat({
   message,
   images,
   sessionState,
+  savedContext,
   setup,
   shouldBill,
+  stream,
 }: ExecuteParams) {
   if (intent === "creative") {
     return NextResponse.json({
@@ -217,13 +275,51 @@ async function executeAdvancedChat({
 
   try {
     const userCtx = buildUserContext(setup, setup.language);
-    const prompt = sanitizePrompt(buildPrompt(intent, userCtx, setup, message, sessionState));
+    const prompt = sanitizePrompt(buildPrompt(intent, userCtx, setup, message, sessionState, savedContext));
     const userContent: Array<OpenAI.Chat.ChatCompletionContentPartText | OpenAI.Chat.ChatCompletionContentPartImage> = [
       { type: "text", text: prompt },
     ];
 
     if (images.length > 0 && (intent === "analyze_basic" || intent === "copy")) {
       userContent.push(...await imageParts(images));
+    }
+
+    if (stream) {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: HILAS_KNOWLEDGE },
+          { role: "user", content: userContent },
+        ],
+        stream: true,
+      });
+
+      const readable = new ReadableStream({
+        async start(controller) {
+          const encoder = new TextEncoder();
+          try {
+            for await (const chunk of completion) {
+              const token = chunk.choices[0]?.delta?.content || "";
+              if (token) controller.enqueue(encoder.encode(token));
+            }
+          } catch (err) {
+            console.error("[advanced-chat] stream error:", err);
+            if (deducted) {
+              await refundViaCreditRoute(req, cost, `Refund: ${intent} failed`);
+            }
+          } finally {
+            controller.close();
+          }
+        },
+      });
+
+      return new Response(readable, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-Intent": intent,
+          "X-Cost": String(cost),
+        },
+      });
     }
 
     const completion = await openai.chat.completions.create({
@@ -256,6 +352,7 @@ export async function POST(req: NextRequest) {
     ? body.sessionState as SessionState
     : {};
   const confirmed = body.confirmed === true;
+  const stream = body.stream === true;
 
   if (!message.trim() && images.length === 0) {
     return NextResponse.json({ error: "Message is required." }, { status: 400 });
@@ -288,7 +385,7 @@ export async function POST(req: NextRequest) {
 
   const { data: userData } = await supabase
     .from("user_data")
-    .select("setup")
+    .select("setup, research_output, angles_output, selected_angle, copy_output")
     .eq("user_id", user.id)
     .single();
 
@@ -296,33 +393,18 @@ export async function POST(req: NextRequest) {
   if (!setup?.businessName) {
     return NextResponse.json({ error: "Business setup required.", code: "SETUP_REQUIRED" }, { status: 400 });
   }
+  const savedContext: BeginnerContext = {
+    research_output: cleanContextValue(userData?.research_output),
+    angles_output: cleanContextValue(userData?.angles_output),
+    selected_angle: cleanContextValue(userData?.selected_angle),
+    copy_output: cleanContextValue(userData?.copy_output),
+  };
 
   const openai = new OpenAI({ apiKey });
 
   if (!confirmed) {
     const classified = await classify(openai, sanitizePrompt(message), images.length > 0);
-    if (classified.intent === "creative") {
-      return NextResponse.json({
-        intent: "creative",
-        cost: INTENT_COST.creative,
-        renderButton: true,
-        content: "Ready to generate a creative from your selected angle.",
-      });
-    }
-    if (classified.cost === 0) {
-      return executeAdvancedChat({
-        req,
-        openai,
-        intent: classified.intent,
-        cost: 0,
-        message,
-        images,
-        sessionState,
-        setup,
-        shouldBill: false,
-      });
-    }
-    return NextResponse.json({ ...classified, requiresConfirm: true });
+    return NextResponse.json({ ...classified, requiresConfirm: classified.cost > 0 });
   }
 
   const intent = normalizeIntent(body.intent);
@@ -335,7 +417,9 @@ export async function POST(req: NextRequest) {
     message,
     images,
     sessionState,
+    savedContext,
     setup,
     shouldBill: cost > 0 && intent !== "creative",
+    stream,
   });
 }
