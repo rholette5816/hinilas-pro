@@ -52,7 +52,7 @@ const FAQS = [
   { q: "How does Hinilas Pro work?", a: "You enter your business profile once. Hinilas Pro uses it to guide market research, build ad angles, write copy, and prepare campaign assets in a structured workflow." },
   { q: "Who is this for?", a: "It is built for Filipino sellers, business owners, and ad operators who need faster decisions and cleaner campaign assets without jumping between multiple tools." },
   { q: "Is it a magic button?", a: "No. It gives you better research, clearer angles, and faster drafts. You still review the output, adjust it to your offer, and run the campaign responsibly." },
-  { q: "How much does it cost?", a: "Access starts at ₱499 for Flex — 150 credits, never expires. When you run out, top up anytime starting at ₱99. No monthly fees." },
+  { q: "How much does it cost?", a: "Access starts at ₱499 for Flex, 150 credits, never expires. When you run out, top up anytime starting at ₱99. No monthly fees." },
   { q: "Do I need to be techy?", a: "No. Hinilas Pro is built for non-techy business owners. If you can fill out a form and click a button, you can use every feature." },
 ];
 
@@ -298,7 +298,7 @@ export default function LandingPage() {
             <button onClick={openModal} className="rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-sm font-semibold transition-colors hover:bg-[#f2f3f5]" style={{ color: MUTED }} type="button">Sign in</button>
             <button onClick={openModal} className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 text-sm font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827" }} type="button">
               <span className="sm:hidden">Get Access</span>
-              <span className="hidden sm:inline">Get Access — ₱499 →</span>
+              <span className="hidden sm:inline">Get Access, ₱499 →</span>
             </button>
           </div>
         </div>
@@ -335,7 +335,7 @@ export default function LandingPage() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
-              Get Access — ₱499 →
+              Get Access, ₱499 →
             </button>
             <button onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })} className="rounded-xl border bg-white px-6 py-4 text-sm font-bold transition-colors hover:bg-slate-50" style={{ borderColor: BORDER, color: TEXT }} type="button">
               See how it works
@@ -516,10 +516,10 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-8 text-center lg:py-16">
           <p className="mb-3 text-xs font-black uppercase tracking-widest" style={{ color: BRAND_BLUE }}>Simple pricing</p>
           <h2 className="text-3xl font-black tracking-tight text-[#050505] sm:text-4xl">Pay for credits. Not subscriptions.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">₱499 gets you 150 credits and full Flex access — forever. When you run out, top up anytime. Less than the cost of one wrong boosted post.</p>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#1c1e21]">₱499 gets you 150 credits and full Flex access, forever. When you run out, top up anytime. Less than the cost of one wrong boosted post.</p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button onClick={openModal} className="rounded-xl px-7 py-4 text-base font-black transition-all hover:brightness-105" style={{ background: BRAND_ORANGE, color: "#111827", boxShadow: "0 14px 30px rgba(217,119,6,0.28)" }} type="button">
-              Get Access — ₱499 →
+              Get Access, ₱499 →
             </button>
             <a href="/pricing" className="rounded-xl border bg-white px-6 py-4 text-sm font-bold transition-colors hover:bg-slate-50" style={{ borderColor: BORDER, color: TEXT }}>
               See full pricing
