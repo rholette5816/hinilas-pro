@@ -75,19 +75,20 @@ async function handlePostAuth(supabase: ReturnType<typeof import("@supabase/ssr"
   const isNew = !existing;
 
   if (isNew) {
-    // New user — no free credits, must pay ₱499 for Flex access
+    // TEMPORARY: ₱499 Flex paywall paused — new users get 50 free credits instead of 0.
+    // welcome_drip_granted is set true so the old 15-credit drip doesn't stack on top.
     const username = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User";
     const avatar_url = user.user_metadata?.avatar_url || null;
     await adminSupabase.from("user_data").upsert({
       user_id: user.id,
       email: user.email || null,
-      credits_remaining: 0,
-      credits_total: 0,
+      credits_remaining: 50,
+      credits_total: 50,
       plan: "lite",
       referral_code: referralCode,
       referred_by: referredBy,
       referral_rewarded: false,
-      welcome_drip_granted: false,
+      welcome_drip_granted: true,
       username,
       avatar_url,
     }, { onConflict: "user_id" });

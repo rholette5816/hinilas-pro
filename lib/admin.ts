@@ -23,6 +23,9 @@ function isLockActive(tierExpiresAt: string | Date | null | undefined): boolean 
   return expiry.getTime() > Date.now();
 }
 
+// TEMPORARY: ₱499 Flex paywall paused. Everyone gets free Flex access until this flag is reverted to false.
+const FREE_FLEX_ACCESS = true;
+
 export function deriveTier(
   credits: number,
   lockedTier?: string | null,
@@ -33,7 +36,7 @@ export function deriveTier(
     return normalizedLock;
   }
   if (credits >= 300) return "Max";
-  if (credits >= 50) return "Flex";
+  if (credits >= 50 || FREE_FLEX_ACCESS) return "Flex";
   return "Lite";
 }
 
